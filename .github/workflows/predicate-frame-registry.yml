@@ -53,21 +53,23 @@ jobs:
         with:
           python-version: "3.11"
       - name: Run predicate/frame registry tests
+        id: predicate-frame-tests
         shell: bash
         run: |
           set +e
           python -m unittest discover -s tests -p "test_predicate_frame_registry.py" -v 2>&1 | tee predicate-frame-ci.log
           test_status=${PIPESTATUS[0]}
-          set -e
-          if [ "$test_status" -ne 0 ]; then exit "$test_status"; fi
+          echo "test_status=${test_status}" >> "$GITHUB_OUTPUT"
+          exit "${test_status}"
       - name: Run operator/scope registry tests
+        id: operator-scope-tests
         shell: bash
         run: |
           set +e
           python -m unittest discover -s tests -p "test_operator_scope_registry.py" -v 2>&1 | tee operator-scope-ci.log
           test_status=${PIPESTATUS[0]}
-          set -e
-          if [ "$test_status" -ne 0 ]; then exit "$test_status"; fi
+          echo "test_status=${test_status}" >> "$GITHUB_OUTPUT"
+          exit "${test_status}"
       - name: Verify immutable implementation baselines
         if: success()
         shell: bash
