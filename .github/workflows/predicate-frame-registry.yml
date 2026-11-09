@@ -14,6 +14,18 @@ on:
       - "implementations/semantic-workbench-js/v0.5.4/semantic-composer.js"
       - "implementations/python-kernel/v0.4.0/usg/foundation/frames.py"
       - "implementations/python-kernel/v0.4.0/usg/model/frames.py"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "interoperability/predicate-frame-registry/**"
+      - "specifications/predicate-frame-registry-1.0.schema.json"
+      - "tests/test_predicate_frame_registry.py"
+      - ".github/workflows/predicate-frame-registry.yml"
+      - "implementations/semantic-workbench-js/v0.5.4/semantic-core.js"
+      - "implementations/semantic-workbench-js/v0.5.4/semantic-composer.js"
+      - "implementations/python-kernel/v0.4.0/usg/foundation/frames.py"
+      - "implementations/python-kernel/v0.4.0/usg/model/frames.py"
   workflow_dispatch:
 
 permissions:
@@ -24,8 +36,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+      - name: Ensure archived implementation baselines remain unchanged
+        run: |
+          git fetch origin main --depth=1
+          git diff --exit-code FETCH_HEAD...HEAD -- archives implementations
       - name: Validate predicate-to-frame registry against source baselines
         run: python -m unittest discover -s tests -p "test_predicate_frame_registry.py" -v
