@@ -39,7 +39,7 @@ jobs:
           python - <<'PY'
           from pathlib import Path, PurePosixPath
           import hashlib, zipfile
-
+          
           jobs = [
               {
                   "archive": Path("archives/workbench/USG_Semantic_Workbench_v0.5.4.zip"),
@@ -54,11 +54,10 @@ jobs:
                   "strip": "",
               },
           ]
-
+          
           for job in jobs:
               archive = job["archive"]
-              data = archive.read_bytes()
-              actual = hashlib.sha256(data).hexdigest()
+              actual = hashlib.sha256(archive.read_bytes()).hexdigest()
               if actual != job["sha256"]:
                   raise SystemExit(f"SHA-256 mismatch for {archive}: {actual}")
               target = job["target"]
