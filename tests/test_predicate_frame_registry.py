@@ -103,7 +103,7 @@ class PredicateFrameRegistryTests(unittest.TestCase):
         }
         for key, expected in expected_sets.items():
             self.assertEqual(set(vocabulary[key]), expected, f"Vocabulary drift in {key}")
-        composer_match = re.search(r"const VERBS = \\[(.*?)\\]\\.map\\(v =>", self.composer_source, re.S)
+        composer_match = re.search(r"const VERBS = \[(.*?)\]\.map\(v =>", self.composer_source, re.S)
         self.assertIsNotNone(composer_match, "Could not locate source-composer verb vocabulary")
         composer_predicates = set(re.findall(r"predicate:'([A-Z_]+)'", composer_match.group(1)))
         self.assertEqual(set(vocabulary["semanticComposerPredicates"]), composer_predicates)
