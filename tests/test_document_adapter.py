@@ -147,6 +147,8 @@ class DocumentAdapterTests(unittest.TestCase):
             "operandRefs": ["test:expr:arg", "test:expr:arg2"],
             "params": {"predicate": "NEEDS", "roles": ["AGENT", "THEME"]},
         }
+        document["unresolvedItems"][0]["scopeRef"] = "test:expr:holds"
+        document["derivations"][0]["outputRefs"] = ["test:expr:holds"]
         document["expressions"].append({
             "id": "test:expr:holds", "op": "HOLDS", "sort": "PROP",
             "operandRefs": ["test:expr:predication"], "params": {},
