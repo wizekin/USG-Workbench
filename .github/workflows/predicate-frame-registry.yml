@@ -1,0 +1,31 @@
+name: Predicate-to-frame registry conformance
+
+on:
+  push:
+    branches:
+      - main
+      - "phase1/**"
+    paths:
+      - "interoperability/predicate-frame-registry/**"
+      - "specifications/predicate-frame-registry-1.0.schema.json"
+      - "tests/test_predicate_frame_registry.py"
+      - ".github/workflows/predicate-frame-registry.yml"
+      - "implementations/semantic-workbench-js/v0.5.4/semantic-core.js"
+      - "implementations/semantic-workbench-js/v0.5.4/semantic-composer.js"
+      - "implementations/python-kernel/v0.4.0/usg/foundation/frames.py"
+      - "implementations/python-kernel/v0.4.0/usg/model/frames.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-registry:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Validate predicate-to-frame registry against source baselines
+        run: python -m unittest discover -s tests -p "test_predicate_frame_registry.py" -v
