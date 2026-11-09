@@ -1,1 +1,3 @@
 Trigger the one-time extraction of the checksum-verified original USG archives into versioned implementation directories. This marker is retained as an audit record.
+
+Second extraction pass: enforce exact archive file counts and force-add ignored archive members.
