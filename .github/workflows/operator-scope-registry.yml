@@ -1,0 +1,51 @@
+name: Operator and scope registry conformance
+
+on:
+  pull_request:
+    paths:
+      - "interoperability/operator-scope-registry/**"
+      - "specifications/operator-scope-registry-1.0.schema.json"
+      - "tests/test_operator_scope_registry.py"
+      - ".github/workflows/operator-scope-registry.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  operator-scope-conformance:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run operator and scope registry tests
+        shell: bash
+        run: |
+          set +e
+          python -m unittest discover -s tests -p "test_operator_scope_registry.py" -v 2>&1 | tee operator-scope-ci.log
+          test_status=${PIPESTATUS[0]}
+          set -e
+          if [ "$test_status" -ne 0 ]; then
+            exit "$test_status"
+          fi
+
+      - name: Verify immutable implementation baselines
+        run: |
+          git fetch origin main
+          git diff --exit-code origin/main...HEAD -- archives implementations
+
+      - name: Upload diagnostic log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: operator-scope-ci-log
+          path: operator-scope-ci.log
+          if-no-files-found: warn
