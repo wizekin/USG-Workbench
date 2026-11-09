@@ -383,7 +383,7 @@
   ],
   "policy": {
     "defaultForUnlistedPredicate": "UNSUPPORTED",
-    "unknownPredicateBehavior": "Do not select a frame by lexical similarity. Return UNSUPPORTED.",
+    "unknownPredicateBehavior": "Never select a frame by lexical similarity. Return UNSUPPORTED.",
     "unmetApplicabilityBehavior": "Return PARTIAL or UNRESOLVED with the failed conditions; do not claim EXACT compatibility.",
     "semanticLossBehavior": "Never drop, flatten, invent, or silently coerce an argument or semantic operator.",
     "versioning": "Treat each published registry version as immutable. Add or change mappings only with source evidence, tests, and a new registry version."
