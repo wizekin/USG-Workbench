@@ -67,11 +67,16 @@ def _annotation_from_contract(data: Mapping[str, Any] | None, node_id: str):
     })
 
 
-def contract_graph_roots_to_semir(
+def contract_graph_roots_to_semir_partial(
     expressions: Iterable[Mapping[str, Any]],
     root_refs: Iterable[str],
 ) -> dict[str, Any]:
-    """Build several proposition roots with one memo, preserving cross-root DAG sharing."""
+    """Import each root independently while sharing successfully built DAG nodes.
+
+    A failed root does not prevent an unrelated supported root from being
+    projected. The result reports failed roots and the exact nodes reachable
+    from successful roots.
+    """
     try:
         from usg.grammar.node import Node, OPS
     except Exception as exc:
@@ -87,12 +92,6 @@ def contract_graph_roots_to_semir(
         node_map[node_id] = item
 
     roots = list(root_refs)
-    if not roots:
-        return {}
-    for root in roots:
-        if root not in node_map:
-            raise ContractMappingError(f"Missing root expression {root}", node_refs=[root])
-
     built: dict[str, Node] = {}
     visiting: set[str] = set()
 
@@ -142,10 +141,41 @@ def contract_graph_roots_to_semir(
         finally:
             visiting.discard(node_id)
 
-    result = {}
+    imported_roots: dict[str, Node] = {}
+    failed_roots: dict[str, str] = {}
     for root in roots:
-        result[root] = build(root)
-    return result
+        try:
+            imported_roots[root] = build(root)
+        except ContractMappingError as exc:
+            failed_roots[root] = str(exc)
+
+    reachable: set[str] = set()
+    pending = list(imported_roots)
+    while pending:
+        node_id = pending.pop()
+        if node_id in reachable or node_id not in node_map:
+            continue
+        reachable.add(node_id)
+        pending.extend(node_map[node_id].get("operandRefs", []))
+
+    return {
+        "roots": imported_roots,
+        "failedRoots": failed_roots,
+        "mappedNodeRefs": sorted(reachable),
+    }
+
+
+def contract_graph_roots_to_semir(
+    expressions: Iterable[Mapping[str, Any]],
+    root_refs: Iterable[str],
+) -> dict[str, Any]:
+    """Strict multi-root conversion; preserves shared DAG identity or fails."""
+    result = contract_graph_roots_to_semir_partial(expressions, root_refs)
+    if result["failedRoots"]:
+        failures = "; ".join(f"{ref}: {message}" for ref, message in result["failedRoots"].items())
+        raise ContractMappingError(f"One or more expression roots are not representable: {failures}",
+                                   node_refs=result["failedRoots"].keys())
+    return result["roots"]
 
 
 def contract_graph_to_semir(
