@@ -93,6 +93,30 @@ class PredicateFrameRegistryTests(unittest.TestCase):
         self.assertEqual(self.registry["baselines"]["pythonKernel"]["version"], "0.4.0")
         self.assertEqual(self.registry["baselines"]["pythonKernel"]["grammarVersion"], "1.0")
 
+    def test_vocabulary_inventory_matches_the_workbench_source(self):
+        vocabulary = self.registry["sourceVocabulary"]
+        expected_sets = {
+            "semanticCoreEventPredicates": quoted_set(self.core_source, "EVENT_PREDICATES"),
+            "semanticCoreStatePredicates": quoted_set(self.core_source, "STATE_PREDICATES"),
+            "semanticCoreRelationPredicates": quoted_set(self.core_source, "RELATION_PREDICATES"),
+            "semanticCoreTransitivePredicates": quoted_set(self.core_source, "TRANSITIVE_PREDICATES"),
+        }
+        for key, expected in expected_sets.items():
+            self.assertEqual(set(vocabulary[key]), expected, f"Vocabulary drift in {key}")
+        composer_match = re.search(r"const VERBS = \\[(.*?)\\]\\.map\\(v =>", self.composer_source, re.S)
+        self.assertIsNotNone(composer_match, "Could not locate source-composer verb vocabulary")
+        composer_predicates = set(re.findall(r"predicate:'([A-Z_]+)'", composer_match.group(1)))
+        self.assertEqual(set(vocabulary["semanticComposerPredicates"]), composer_predicates)
+
+    def test_schema_and_evidence_files_exist(self):
+        schema_path = ROOT / "specifications/predicate-frame-registry-1.0.schema.json"
+        schema = json.loads(schema_path.read_text(encoding="utf-8"))
+        self.assertEqual(schema["$schema"], "https://json-schema.org/draft/2020-12/schema")
+        self.assertEqual(schema["properties"]["registryId"]["const"], self.registry["registryId"])
+        for mapping in self.registry["mappings"]:
+            for evidence_path in mapping["evidence"]:
+                self.assertTrue((ROOT / evidence_path).is_file(), evidence_path)
+
     def test_every_vocabulary_predicate_has_exactly_one_disposition(self):
         vocabulary = source_vocab(self.registry)
         mapped = []
