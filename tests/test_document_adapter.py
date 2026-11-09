@@ -224,6 +224,20 @@ class DocumentAdapterTests(unittest.TestCase):
         errors = validate_contract_document(document)
         self.assertTrue(any("textHash does not match" in error for error in errors))
 
+    def test_contract_operator_arity_is_checked_even_before_kernel_projection(self):
+        document = self.make_document()
+        document["expressions"][2]["operandRefs"] = ["test:expr:alice"]
+        errors = validate_contract_document(document)
+        self.assertTrue(any("RELATE" in error and "invalid arity" in error for error in errors))
+
+    def test_assertion_with_unrepresentable_evidence_link_stays_canonical_only(self):
+        document = self.make_document()
+        document["assertions"][0]["evidenceRefs"] = ["test:evidence"]
+        imported = document_to_python(document)
+        self.assertNotIn("test:assertion", imported.assertions)
+        self.assertIn("test:assertion", imported.mapping_report["unmappedRefs"])
+        self.assertEqual(imported.export_contract_document(), document)
+
 
 if __name__ == "__main__":
     unittest.main()
