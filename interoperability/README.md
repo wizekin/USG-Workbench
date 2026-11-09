@@ -19,4 +19,13 @@ Mappings must be exact and documented. Unsupported or lossy mappings must be rep
 - Covers negation, modal force/flavor, quantifier structure, logical connectives, and explicit graph-scope conversion requirements.
 - Exact/conditional mappings are separated from ambiguous, partial, and unsupported readings.
 
-Both registries target the immutable baseline pair: Workbench v0.5.4 and Python reference kernel v0.4.0. They do not yet implement the complete document adapter or establish round-trip interoperability. Relation mappings, nested proposition arguments, document metadata, and end-to-end conversion remain separate Phase 1 tasks.
+### Step 3 — document-level Python adapter (implementation in progress)
+
+- [Python adapter package](python_adapter/README.md)
+- Canonical contract: [USG-SEM/1.0](../specifications/USG-SEM-1.0.md)
+- JSON Schema: [usg-sem-1.0.schema.json](../specifications/usg-sem-1.0.schema.json)
+- Preserves the entire canonical document for exact export while projecting only source records, supported SemIR roots and assertions that have exact Python kernel 0.4.0 equivalents.
+- Referents, mentions, evidence assessments, contexts, definitions, expression relations, unresolved items, derivations, validation metadata and extensions remain canonical-only and are explicitly reported as partial/unmapped where no exact native model exists.
+- No SQLite migration, Workbench runtime integration, or changes to either immutable implementation baseline are included.
+
+The registries and adapter target the immutable baseline pair: Workbench v0.5.4 and Python reference kernel 0.4.0. They do not yet establish complete runtime interoperability.

@@ -7,10 +7,15 @@ on:
     paths:
       - "interoperability/predicate-frame-registry/**"
       - "interoperability/operator-scope-registry/**"
+      - "interoperability/python_adapter/**"
       - "specifications/predicate-frame-registry-1.0.schema.json"
       - "specifications/operator-scope-registry-1.0.schema.json"
+      - "specifications/USG-SEM-1.0.md"
+      - "specifications/usg-sem-1.0.schema.json"
       - "tests/test_predicate_frame_registry.py"
       - "tests/test_operator_scope_registry.py"
+      - "tests/test_document_adapter.py"
+      - "tests/README.md"
       - ".github/workflows/predicate-frame-registry.yml"
       - "implementations/semantic-workbench-js/v0.5.4/semantic-core.js"
       - "implementations/semantic-workbench-js/v0.5.4/semantic-composer.js"
@@ -23,10 +28,15 @@ on:
     paths:
       - "interoperability/predicate-frame-registry/**"
       - "interoperability/operator-scope-registry/**"
+      - "interoperability/python_adapter/**"
       - "specifications/predicate-frame-registry-1.0.schema.json"
       - "specifications/operator-scope-registry-1.0.schema.json"
+      - "specifications/USG-SEM-1.0.md"
+      - "specifications/usg-sem-1.0.schema.json"
       - "tests/test_predicate_frame_registry.py"
       - "tests/test_operator_scope_registry.py"
+      - "tests/test_document_adapter.py"
+      - "tests/README.md"
       - ".github/workflows/predicate-frame-registry.yml"
       - "implementations/semantic-workbench-js/v0.5.4/semantic-core.js"
       - "implementations/semantic-workbench-js/v0.5.4/semantic-composer.js"
@@ -51,6 +61,8 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+      - name: Install contract validation dependency
+        run: python -m pip install "jsonschema>=4.18,<5"
       - name: Run predicate/frame registry tests
         id: predicate-frame-tests
         shell: bash
@@ -69,6 +81,15 @@ jobs:
           test_status=${PIPESTATUS[0]}
           echo "test_status=${test_status}" >> "$GITHUB_OUTPUT"
           exit "${test_status}"
+      - name: Run document-level Python adapter tests
+        id: document-adapter-tests
+        shell: bash
+        run: |
+          set +e
+          python -m unittest discover -s tests -p "test_document_adapter.py" -v 2>&1 | tee document-adapter-ci.log
+          test_status=${PIPESTATUS[0]}
+          echo "test_status=${test_status}" >> "$GITHUB_OUTPUT"
+          exit "${test_status}"
       - name: Verify immutable implementation baselines
         if: success()
         shell: bash
@@ -83,5 +104,6 @@ jobs:
           path: |
             predicate-frame-ci.log
             operator-scope-ci.log
+            document-adapter-ci.log
           if-no-files-found: warn
           retention-days: 7
