@@ -46,12 +46,14 @@ jobs:
                   "target": Path("implementations/semantic-workbench-js/v0.5.4"),
                   "sha256": "9c76280ad000abaf14b52545bf6de9d25656744428f1257519c2c09ebff434a9",
                   "strip": "USG_Semantic_Workbench_v0.5.4/",
+        "expected_files": 56,
               },
               {
                   "archive": Path("archives/python-kernel/usg-semantic-kernel-corrected.zip"),
                   "target": Path("implementations/python-kernel/v0.4.0"),
                   "sha256": "de3c4466b61ac1d09f23761b7c31faa0f685fdf3bfb148e7e60f132552e1095e",
                   "strip": "",
+        "expected_files": 152,
               },
           ]
           
@@ -153,7 +155,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add README.md implementations
+          git add -f README.md implementations
           if git diff --cached --quiet; then
             echo "No implementation changes to commit."
           else
