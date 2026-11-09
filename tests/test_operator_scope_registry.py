@@ -1,7 +1,6 @@
 """Source-backed conformance checks for USG-OSR/1.0."""
 
 import json
-import re
 import unittest
 from pathlib import Path
 
@@ -35,20 +34,20 @@ class OperatorScopeRegistryTests(unittest.TestCase):
         self.assertEqual(len(keys), len(set(keys)))
         for entry in entries:
             self.assertIn(entry["status"], {"EXACT", "CONDITIONAL_EXACT", "PARTIAL_ONLY", "UNSUPPORTED"})
-            self.assertIn(entry["sourceType"], {"OPERATOR"})
-            self.assertTrue(entry["conditions"] is not None)
+            self.assertEqual(entry["sourceType"], "OPERATOR")
+            self.assertIsInstance(entry["conditions"], list)
             if entry["status"] in {"PARTIAL_ONLY", "UNSUPPORTED"}:
                 self.assertIsNone(entry["target"])
         self.assertIn("MODAL_OPERATORS", self.core)
         for modal in ("MIGHT", "MAY", "COULD", "CAN", "MUST", "SHOULD", "WILL", "WOULD", "EXPECTED", "UNKNOWN"):
-            self.assertRegex(self.core, rf"['"]{modal}['"]")
+            self.assertTrue(f"'{modal}'" in self.core or f'"{modal}"' in self.core, modal)
         self.assertIn("NEGATION", self.core)
         self.assertIn("POLARITY", self.core)
         self.assertIn("UNRESOLVED_SCOPE", self.core)
 
     def test_python_modal_and_operator_signatures_exist(self):
         for operator in ("NOT", "AND", "OR", "COND", "IMPLIES", "Q", "MODAL", "TENSE"):
-            self.assertRegex(self.python, rf'"{operator}": Sig\\(')
+            self.assertIn(f'"{operator}": Sig(', self.python)
         self.assertIn('"force"', self.python)
         self.assertIn('"flavor"', self.python)
         self.assertIn("FORCES = frozenset", self.python)
