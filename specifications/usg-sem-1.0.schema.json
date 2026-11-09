@@ -998,3 +998,274 @@
       "additionalProperties": true
     },
     "validation": {
+      "type": "object",
+      "required": [
+        "structuralStatus",
+        "checks"
+      ],
+      "properties": {
+        "structuralStatus": {
+          "type": "string",
+          "enum": [
+            "PASS",
+            "FAIL",
+            "UNCERTAIN",
+            "NOT_CHECKED"
+          ]
+        },
+        "checks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "checkId",
+              "result"
+            ],
+            "properties": {
+              "checkId": {
+                "type": "string"
+              },
+              "result": {
+                "type": "string",
+                "enum": [
+                  "PASS",
+                  "FAIL",
+                  "UNCERTAIN",
+                  "NOT_CHECKED"
+                ]
+              },
+              "message": {
+                "type": "string"
+              },
+              "affectedRefs": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/id"
+                }
+              }
+            },
+            "additionalProperties": true
+          }
+        },
+        "validator": {
+          "type": "string"
+        },
+        "contractVersion": {
+          "const": "USG-SEM/1.0"
+        }
+      },
+      "additionalProperties": true
+    },
+    "mapping": {
+      "type": "object",
+      "required": [
+        "sourceProfile",
+        "sourceVersion",
+        "status",
+        "unmappedRefs"
+      ],
+      "properties": {
+        "sourceProfile": {
+          "type": "string"
+        },
+        "sourceVersion": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "LOSSLESS",
+            "PARTIAL",
+            "UNMAPPED"
+          ]
+        },
+        "unmappedRefs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "targetMappings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "targetProfile",
+              "targetVersion",
+              "status",
+              "unmappedRefs"
+            ],
+            "properties": {
+              "targetProfile": {
+                "type": "string"
+              },
+              "targetVersion": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "LOSSLESS",
+                  "PARTIAL",
+                  "UNMAPPED"
+                ]
+              },
+              "unmappedRefs": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/id"
+                }
+              },
+              "notes": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "definitions": {
+      "type": "object",
+      "required": [
+        "concepts",
+        "frames",
+        "roles",
+        "relations"
+      ],
+      "properties": {
+        "grammarVersion": {
+          "type": "string"
+        },
+        "ontologyRelease": {
+          "type": "string"
+        },
+        "concepts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "label",
+              "semanticKind",
+              "version"
+            ],
+            "properties": {
+              "id": {
+                "$ref": "#/$defs/id"
+              },
+              "label": {
+                "type": "string"
+              },
+              "semanticKind": {
+                "$ref": "#/$defs/semanticKind"
+              },
+              "version": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "definition": {
+                "type": "string"
+              },
+              "lifecycleStage": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": true
+          }
+        },
+        "frames": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "label",
+              "version",
+              "roles"
+            ],
+            "properties": {
+              "id": {
+                "$ref": "#/$defs/id"
+              },
+              "label": {
+                "type": "string"
+              },
+              "version": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "semanticKind": {
+                "$ref": "#/$defs/semanticKind"
+              },
+              "roles": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": true
+          }
+        },
+        "roles": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "label"
+            ],
+            "properties": {
+              "id": {
+                "$ref": "#/$defs/id"
+              },
+              "label": {
+                "type": "string"
+              },
+              "constraints": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            },
+            "additionalProperties": true
+          }
+        },
+        "relations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "label"
+            ],
+            "properties": {
+              "id": {
+                "$ref": "#/$defs/id"
+              },
+              "label": {
+                "type": "string"
+              },
+              "properties": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            },
+            "additionalProperties": true
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
