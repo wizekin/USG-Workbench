@@ -38,7 +38,7 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path, PurePosixPath
-          import hashlib, zipfile
+          import hashlib, shutil, zipfile
           
           jobs = [
               {
@@ -63,6 +63,8 @@ jobs:
               if actual != job["sha256"]:
                   raise SystemExit(f"SHA-256 mismatch for {archive}: {actual}")
               target = job["target"]
+              if target.exists():
+                  shutil.rmtree(target)
               target.mkdir(parents=True, exist_ok=True)
               with zipfile.ZipFile(archive) as zf:
                   bad = zf.testzip()
