@@ -154,16 +154,20 @@ class PredicateFrameRegistryTests(unittest.TestCase):
         self.assertEqual(self.registry["policy"]["defaultForUnlistedPredicate"], "UNSUPPORTED")
         self.assertIn("never", self.registry["policy"]["unknownPredicateBehavior"].lower())
 
-    def test_registry_does_not_modify_baseline_implementations(self):
-        changed_paths = {
-            "interoperability/predicate-frame-registry/v1.0.0.json",
-            "interoperability/predicate-frame-registry/README.md",
-            "specifications/predicate-frame-registry-1.0.schema.json",
-            "tests/test_predicate_frame_registry.py",
-            ".github/workflows/predicate-frame-registry.yml",
-        }
-        self.assertEqual(len(changed_paths), 5)
-        self.assertFalse(any(path.startswith("implementations/") for path in changed_paths))
+    def test_non_mappings_do_not_claim_a_target_frame(self):
+        for entry in self.registry["nonMappings"]:
+            self.assertTrue(entry["sourcePredicateIds"])
+            self.assertTrue(entry["reason"])
+            self.assertNotIn("target", entry)
+            self.assertNotIn("targetFrame", entry)
+
+    def test_every_active_mapping_is_backed_by_workbench_predicate_sets(self):
+        events = quoted_set(self.core_source, "EVENT_PREDICATES")
+        transitives = quoted_set(self.core_source, "TRANSITIVE_PREDICATES")
+        for mapping in self.registry["mappings"]:
+            for predicate in mapping["source"]["predicateIds"]:
+                self.assertIn(predicate, events)
+                self.assertIn(predicate, transitives)
 
 
 if __name__ == "__main__":
