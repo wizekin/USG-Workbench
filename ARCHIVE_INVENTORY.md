@@ -38,3 +38,19 @@ SHA-256 was calculated from the exact archive bytes retrieved from GitHub. Both 
 These checks establish archive integrity, source extraction feasibility, and successful execution of each package's own test suite in the inspection environment. They do not establish unrestricted English or Arabic understanding, general semantic accuracy, or full interoperability between the implementations.
 
 The two projects have different internal representations, runtime environments, version histories, and documented review/acceptance policies. They remain distinct baselines. No semantic mappings or cross-implementation compatibility are claimed.
+
+
+## Extraction and repository verification
+
+Both archives have now been extracted into the versioned implementation directories:
+
+- Workbench 0.5.4: 56 files in implementations/semantic-workbench-js/v0.5.4/.
+- Python kernel 0.4.0: 152 files in implementations/python-kernel/v0.4.0/.
+
+The final recursive Git tree was checked after commit: exactly 56 Workbench files and 152 Python-kernel files are present. No test-generated Python bytecode was committed. The original ZIPs remain in archives/ and their SHA-256 values were rechecked during the extraction workflow.
+
+A GitHub Actions run on 2026-11-09 completed successfully after performing fresh tests against the extracted copies:
+- Workbench test command: bash tests/run_all_tests.sh — passed.
+- Python kernel test command: python -m unittest discover -s tests -t . — passed.
+
+The extracted source is a preserved baseline, not a merged application. No source code was changed as part of this extraction; repository-level README and navigation documentation were added separately.
