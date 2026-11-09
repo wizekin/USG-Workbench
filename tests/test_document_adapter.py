@@ -151,12 +151,19 @@ class DocumentAdapterTests(unittest.TestCase):
             "id": "test:expr:holds", "op": "HOLDS", "sort": "PROP",
             "operandRefs": ["test:expr:predication"], "params": {},
         })
-        document["rootExpressionRefs"] = ["test:expr:holds"]
+        document["expressions"].append({
+            "id": "test:expr:otherroot", "op": "RELATE", "sort": "PROP",
+            "operandRefs": ["test:expr:arg", "test:expr:arg2"],
+            "params": {"relation": "RELATED_TO"},
+        })
+        document["rootExpressionRefs"] = ["test:expr:holds", "test:expr:otherroot"]
         document["assertions"][0]["expressionRef"] = "test:expr:holds"
         imported = document_to_python(document)
-        self.assertEqual(imported.expression_roots, {})
+        self.assertEqual(set(imported.expression_roots), {"test:expr:otherroot"})
+        self.assertEqual(imported.expression_roots["test:expr:otherroot"].op, "RELATE")
         self.assertEqual(imported.mapping_report["status"], "PARTIAL")
         self.assertIn("test:expr:predication", imported.mapping_report["unmappedRefs"])
+        self.assertIn("test:expr:holds", imported.mapping_report["unmappedRefs"])
         self.assertEqual(imported.export_contract_document(), document)
 
     def test_multiple_roots_preserve_shared_dag_identity(self):
