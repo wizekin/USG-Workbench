@@ -1,4 +1,4 @@
-name: Predicate-to-frame registry conformance
+name: USG interoperability registry conformance
 
 on:
   push:
@@ -7,33 +7,41 @@ on:
       - "phase1/**"
     paths:
       - "interoperability/predicate-frame-registry/**"
+      - "interoperability/operator-scope-registry/**"
       - "specifications/predicate-frame-registry-1.0.schema.json"
+      - "specifications/operator-scope-registry-1.0.schema.json"
       - "tests/test_predicate_frame_registry.py"
+      - "tests/test_operator_scope_registry.py"
       - ".github/workflows/predicate-frame-registry.yml"
       - "implementations/semantic-workbench-js/v0.5.4/semantic-core.js"
       - "implementations/semantic-workbench-js/v0.5.4/semantic-composer.js"
       - "implementations/python-kernel/v0.4.0/usg/foundation/frames.py"
       - "implementations/python-kernel/v0.4.0/usg/model/frames.py"
+      - "implementations/python-kernel/v0.4.0/usg/grammar/node.py"
   pull_request:
     branches:
       - main
     paths:
       - "interoperability/predicate-frame-registry/**"
+      - "interoperability/operator-scope-registry/**"
       - "specifications/predicate-frame-registry-1.0.schema.json"
+      - "specifications/operator-scope-registry-1.0.schema.json"
       - "tests/test_predicate_frame_registry.py"
+      - "tests/test_operator_scope_registry.py"
       - ".github/workflows/predicate-frame-registry.yml"
       - "implementations/semantic-workbench-js/v0.5.4/semantic-core.js"
       - "implementations/semantic-workbench-js/v0.5.4/semantic-composer.js"
       - "implementations/python-kernel/v0.4.0/usg/foundation/frames.py"
       - "implementations/python-kernel/v0.4.0/usg/model/frames.py"
+      - "implementations/python-kernel/v0.4.0/usg/grammar/node.py"
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  validate-registry:
-    name: Validate registry and preserve baselines
+  validate-registries:
+    name: Validate interoperability registries and preserve baselines
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
@@ -44,26 +52,35 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Run source-backed registry tests
-        id: registry-tests
+      - name: Run predicate/frame registry tests
         shell: bash
         run: |
           set +e
           python -m unittest discover -s tests -p "test_predicate_frame_registry.py" -v 2>&1 | tee predicate-frame-ci.log
           test_status=${PIPESTATUS[0]}
-          echo "test_status=${test_status}" >> "$GITHUB_OUTPUT"
-          exit "${test_status}"
+          set -e
+          if [ "$test_status" -ne 0 ]; then exit "$test_status"; fi
+      - name: Run operator/scope registry tests
+        shell: bash
+        run: |
+          set +e
+          python -m unittest discover -s tests -p "test_operator_scope_registry.py" -v 2>&1 | tee operator-scope-ci.log
+          test_status=${PIPESTATUS[0]}
+          set -e
+          if [ "$test_status" -ne 0 ]; then exit "$test_status"; fi
       - name: Verify immutable implementation baselines
         if: success()
         shell: bash
         run: |
           git fetch origin main --depth=1
           git diff --exit-code FETCH_HEAD...HEAD -- archives implementations
-      - name: Upload diagnostic test log
+      - name: Upload diagnostic logs
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: predicate-frame-ci-log
-          path: predicate-frame-ci.log
+          name: interoperability-registry-ci-logs
+          path: |
+            predicate-frame-ci.log
+            operator-scope-ci.log
           if-no-files-found: warn
           retention-days: 7
