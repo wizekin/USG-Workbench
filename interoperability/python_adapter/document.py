@@ -14,7 +14,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Mapping
 
-from .usg_sem_1 import ContractMappingError, contract_graph_roots_to_semir, mapping_report_for_python
+from .usg_sem_1 import ContractMappingError, contract_graph_roots_to_semir_partial, mapping_report_for_python
 
 
 SCHEMA_PATH = Path(__file__).resolve().parents[2] / "specifications" / "usg-sem-1.0.schema.json"
@@ -353,22 +353,14 @@ def document_to_python(
 
     expression_items = payload.get("expressions", [])
     expression_report = mapping_report_for_python(expression_items)
-    expression_roots: dict[str, Any] = {}
-    if expression_items and not expression_report["unmappedRefs"]:
-        try:
-            expression_roots = contract_graph_roots_to_semir(expression_items, payload.get("rootExpressionRefs", []))
-        except Exception as exc:
-            diagnostics.append(f"expression graph: {exc}")
-    reachable: set[str] = set()
+    expression_import = contract_graph_roots_to_semir_partial(
+        expression_items, payload.get("rootExpressionRefs", [])
+    )
+    expression_roots = expression_import["roots"]
+    for root_ref, reason in expression_import["failedRoots"].items():
+        diagnostics.append(f"expression root {root_ref}: {reason}")
     expr_map = {item["id"]: item for item in expression_items}
-    pending = list(payload.get("rootExpressionRefs", []))
-    while pending:
-        node_id = pending.pop()
-        if node_id in reachable or node_id not in expr_map:
-            continue
-        reachable.add(node_id)
-        pending.extend(expr_map[node_id].get("operandRefs", []))
-    mapped_expr_ids = reachable if expression_roots else set()
+    mapped_expr_ids = set(expression_import["mappedNodeRefs"])
     expression_unmapped = sorted(set(expr_map) - mapped_expr_ids)
     unmapped.extend(expression_unmapped)
     record_mapping["expressions"] = {
