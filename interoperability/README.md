@@ -6,9 +6,17 @@ Mappings must be exact and documented. Unsupported or lossy mappings must be rep
 
 ## Current Phase 1 work
 
+### Step 1 — predicate-to-frame registry
+
 - [Predicate-to-frame registry 1.0.0](predicate-frame-registry/README.md)
 - Registry data: [v1.0.0.json](predicate-frame-registry/v1.0.0.json)
-- Baseline pair: Workbench v0.5.4 → Python reference kernel v0.4.0
 - Initial result: one conditional exact mapping (`CLOSES/CLOSED` → `CLOSE@1`); other reviewed predicates are explicitly non-mapped.
 
-This registry covers predicate/frame identity and role correspondence only. Operators, scopes, nested propositions, document metadata, and round-trip adapters remain separate Phase 1 tasks.
+### Step 2 — operator and scope registry
+
+- [Operator and scope registry 1.0.0](operator-scope-registry/README.md)
+- Registry data: [v1.0.0.json](operator-scope-registry/v1.0.0.json)
+- Covers negation, modal force/flavor, quantifier structure, logical connectives, and explicit graph-scope conversion requirements.
+- Exact/conditional mappings are separated from ambiguous, partial, and unsupported readings.
+
+Both registries target the immutable baseline pair: Workbench v0.5.4 and Python reference kernel v0.4.0. They do not yet implement the complete document adapter or establish round-trip interoperability. Relation mappings, nested proposition arguments, document metadata, and end-to-end conversion remain separate Phase 1 tasks.

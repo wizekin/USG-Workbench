@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wizekin.github.io/USG-Workbench/specifications/operator-scope-registry-1.0.schema.json",
+  "title": "USG Operator and Scope Registry 1.0",
+  "type": "object",
+  "required": ["registryId", "registryVersion", "baselines", "operatorMappings", "quantifierMappings", "connectiveMappings", "scopePolicy", "policy"],
+  "properties": {
+    "registryId": {"const": "USG-OSR/1.0"},
+    "registryVersion": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "status": {"enum": ["initial-baseline", "reviewed"]},
+    "baselines": {"type": "object", "required": ["workbench", "pythonKernel"], "properties": {
+      "workbench": {"type": "object", "required": ["version", "semanticSchema"], "properties": {"version": {"const": "0.5.4"}, "semanticSchema": {"const": "USG-SR/0.5.1"}}},
+      "pythonKernel": {"type": "object", "required": ["version", "grammarVersion"], "properties": {"version": {"const": "0.4.0"}, "grammarVersion": {"const": "1.0"}}}
+    }},
+    "operatorMappings": {"type": "array", "items": {"type": "object", "required": ["sourceType", "sourceOperator", "status", "target", "conditions"], "properties": {
+      "sourceType": {"const": "OPERATOR"}, "sourceOperator": {"type": "string"}, "sourceOperatorType": {"type": "string"}, "status": {"enum": ["EXACT", "CONDITIONAL_EXACT", "PARTIAL_ONLY", "UNSUPPORTED"]},
+      "target": {"type": ["object", "null"]}, "conditions": {"type": "array", "items": {"type": "string"}}, "reason": {"type": "string"}
+    }}},
+    "quantifierMappings": {"type": "array", "items": {"type": "object", "required": ["sourceOperator", "status", "target", "conditions"], "properties": {
+      "sourceOperator": {"type": "string"}, "status": {"enum": ["EXACT", "CONDITIONAL_EXACT", "PARTIAL_ONLY", "UNSUPPORTED"]},
+      "target": {"type": ["object", "null"]}, "conditions": {"type": "array", "items": {"type": "string"}}, "reason": {"type": "string"}
+    }}},
+    "connectiveMappings": {"type": "array", "items": {"type": "object", "required": ["sourceConnective", "status", "target", "conditions"], "properties": {
+      "sourceConnective": {"type": "string"}, "status": {"enum": ["EXACT", "CONDITIONAL_EXACT", "PARTIAL_ONLY", "UNSUPPORTED"]},
+      "target": {"type": ["object", "null"]}, "conditions": {"type": "array", "items": {"type": "string"}}, "reason": {"type": "string"}
+    }}},
+    "scopePolicy": {"type": "object", "required": ["representation", "requirements"], "properties": {"representation": {"type": "string"}, "requirements": {"type": "array", "items": {"type": "string"}}}},
+    "policy": {"type": "object", "required": ["unknownBehavior", "lossBehavior", "versioning"], "properties": {
+      "unknownBehavior": {"type": "string"}, "lossBehavior": {"type": "string"}, "versioning": {"type": "string"}
+    }}
+  },
+  "additionalProperties": false
+}
