@@ -13,7 +13,7 @@
       "pythonKernel": {"type": "object", "required": ["version", "grammarVersion"], "properties": {"version": {"const": "0.4.0"}, "grammarVersion": {"const": "1.0"}}}
     }},
     "operatorMappings": {"type": "array", "items": {"type": "object", "required": ["sourceType", "sourceOperator", "status", "target", "conditions"], "properties": {
-      "sourceType": {"const": "OPERATOR"}, "sourceOperator": {"type": "string"}, "status": {"enum": ["EXACT", "CONDITIONAL_EXACT", "PARTIAL_ONLY", "UNSUPPORTED"]},
+      "sourceType": {"const": "OPERATOR"}, "sourceOperator": {"type": "string"}, "sourceOperatorType": {"type": "string"}, "status": {"enum": ["EXACT", "CONDITIONAL_EXACT", "PARTIAL_ONLY", "UNSUPPORTED"]},
       "target": {"type": ["object", "null"]}, "conditions": {"type": "array", "items": {"type": "string"}}, "reason": {"type": "string"}
     }}},
     "quantifierMappings": {"type": "array", "items": {"type": "object", "required": ["sourceOperator", "status", "target", "conditions"], "properties": {
