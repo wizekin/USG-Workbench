@@ -198,6 +198,32 @@ class DocumentAdapterTests(unittest.TestCase):
         with self.assertRaises(ContractMappingError):
             document_to_python(document)
 
+    def test_all_document_level_reference_families_are_checked(self):
+        document = self.make_document()
+        document["mentions"][0]["antecedentReferentRef"] = "missing:referent"
+        document["contexts"][0]["agentRef"] = "missing:agent"
+        document["expressionRelations"] = [{
+            "id": "test:relation",
+            "type": "SUPPORTS",
+            "sourceExpressionRef": "test:expr:needs",
+            "targetExpressionRef": "missing:expression",
+            "verificationStatus": "UNKNOWN",
+        }]
+        document["unresolvedItems"][0]["evidenceRefs"] = ["missing:evidence"]
+        document["derivations"][0]["outputRefs"] = ["missing:record"]
+        errors = validate_contract_document(document)
+        self.assertTrue(any("antecedentReferentRef" in error for error in errors))
+        self.assertTrue(any("agentRef" in error for error in errors))
+        self.assertTrue(any("expression relation" in error for error in errors))
+        self.assertTrue(any("unresolved item" in error and "evidenceRef" in error for error in errors))
+        self.assertTrue(any("derivation" in error for error in errors))
+
+    def test_source_hash_is_verified_against_exact_utf8_text(self):
+        document = self.make_document()
+        document["sources"][0]["textHash"] = "0" * 64
+        errors = validate_contract_document(document)
+        self.assertTrue(any("textHash does not match" in error for error in errors))
+
 
 if __name__ == "__main__":
     unittest.main()
