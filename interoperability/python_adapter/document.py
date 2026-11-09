@@ -236,8 +236,16 @@ def validate_contract_document(document: Mapping[str, Any], schema_path: str | P
     referents = {x["id"]: x for x in document["referents"]}
     mentions = {x["id"]: x for x in document["mentions"]}
     evidence = {x["id"]: x for x in document["evidence"]}
+    contexts = {x["id"]: x for x in document["contexts"]}
+    known_ids = set(all_ids)
+
     if document["primarySourceRef"] not in sources:
         errors.append("primarySourceRef does not resolve")
+    for source in sources.values():
+        if source.get("textHash") and source.get("hashAlgorithm", "SHA-256") == "SHA-256":
+            actual = hashlib.sha256(source["text"].encode("utf-8")).hexdigest()
+            if actual.lower() != source["textHash"].lower():
+                errors.append(f"source {source['id']} textHash does not match exact UTF-8 source text")
 
     for item in expressions.values():
         for child in item.get("operandRefs", []):
@@ -245,12 +253,24 @@ def validate_contract_document(document: Mapping[str, Any], schema_path: str | P
                 errors.append(f"expression {item['id']} has dangling operandRef {child}")
         for span in (item.get("annotations") or {}).get("spans", []):
             _validate_span(span, sources, errors, f"expression {item['id']}")
+        params = item.get("params", {})
+        for evidence_ref in params.get("evidenceRefs", []):
+            if evidence_ref not in evidence:
+                errors.append(f"expression {item['id']} has dangling evidenceRef {evidence_ref}")
+        mention_ref = params.get("mentionRef")
+        if mention_ref and mention_ref not in mentions:
+            errors.append(f"expression {item['id']} has dangling mentionRef {mention_ref}")
+        local_ref = params.get("ref") if item.get("op") == "REF" else None
+        if isinstance(local_ref, str) and local_ref.startswith("wb:entity:") and local_ref not in referents:
+            errors.append(f"REF expression {item['id']} has dangling local referent ref {local_ref}")
+
     for root in document["rootExpressionRefs"]:
         if root not in expressions:
             errors.append(f"missing root expression {root}")
         elif expressions[root]["sort"] != "PROP":
             errors.append(f"root expression {root} is not PROP-sorted")
 
+    # Iterative DFS: do not impose a recursion-depth or semantic-size limit.
     color: dict[str, int] = {}
     for root in expressions:
         if color.get(root) == 2:
@@ -275,25 +295,73 @@ def validate_contract_document(document: Mapping[str, Any], schema_path: str | P
                     elif color.get(child) != 2:
                         stack.append((child, False))
 
-    for item in document["mentions"]:
-        if item.get("referentRef") and item["referentRef"] not in referents:
-            errors.append(f"mention {item['id']} has dangling referentRef")
-        if item.get("antecedentMentionRef") and item["antecedentMentionRef"] not in mentions:
-            errors.append(f"mention {item['id']} has dangling antecedentMentionRef")
+    for item in mentions.values():
+        for field, target in (
+            ("referentRef", referents),
+            ("antecedentMentionRef", mentions),
+            ("antecedentReferentRef", referents),
+        ):
+            ref = item.get(field)
+            if ref and ref not in target:
+                errors.append(f"mention {item['id']} has dangling {field}: {ref}")
+
+    for item in referents.values():
+        if item.get("sourceRef") and item["sourceRef"] not in sources:
+            errors.append(f"referent {item['id']} has dangling sourceRef")
+        if item.get("sourceSpan"):
+            _validate_span(item["sourceSpan"], sources, errors, f"referent {item['id']}")
+
     for item in document["assertions"]:
         if item["expressionRef"] not in expressions:
             errors.append(f"assertion {item['id']} has dangling expressionRef")
         if item.get("sourceRef") and item["sourceRef"] not in sources:
             errors.append(f"assertion {item['id']} has dangling sourceRef")
+        context_ref = (item.get("evaluationContext") or {}).get("contextRef")
+        if context_ref and context_ref not in contexts:
+            errors.append(f"assertion {item['id']} has dangling contextRef")
+        for evidence_ref in item.get("evidenceRefs", []):
+            if evidence_ref not in evidence:
+                errors.append(f"assertion {item['id']} has dangling evidenceRef {evidence_ref}")
+
     for item in document["evidence"]:
         source = sources.get(item["sourceRef"])
         if source is None:
             errors.append(f"evidence {item['id']} has dangling sourceRef")
-        else:
-            _validate_span(item["span"], sources, errors, f"evidence {item['id']}")
-            span = item["span"]
-            if source["text"][span["start"]:span["end"]] != item["quote"]:
-                errors.append(f"evidence {item['id']} quote does not match exact source span")
+            continue
+        _validate_span(item["span"], sources, errors, f"evidence {item['id']}")
+        span = item["span"]
+        if source["text"][span["start"]:span["end"]] != item["quote"]:
+            errors.append(f"evidence {item['id']} quote does not match exact source span")
+
+    for item in contexts.values():
+        for field, target in (
+            ("parentRef", contexts),
+            ("sourceRef", sources),
+            ("agentRef", referents),
+        ):
+            ref = item.get(field)
+            if ref and ref not in target:
+                errors.append(f"context {item['id']} has dangling {field}: {ref}")
+
+    for item in document["expressionRelations"]:
+        if item["sourceExpressionRef"] not in expressions or item["targetExpressionRef"] not in expressions:
+            errors.append(f"expression relation {item['id']} has dangling endpoint")
+        for evidence_ref in item.get("evidenceRefs", []):
+            if evidence_ref not in evidence:
+                errors.append(f"expression relation {item['id']} has dangling evidenceRef {evidence_ref}")
+
+    for item in document["unresolvedItems"]:
+        scope_ref = item.get("scopeRef")
+        if scope_ref and scope_ref not in expressions:
+            errors.append(f"unresolved item {item['id']} has dangling scopeRef {scope_ref}")
+        for evidence_ref in item.get("evidenceRefs", []):
+            if evidence_ref not in evidence:
+                errors.append(f"unresolved item {item['id']} has dangling evidenceRef {evidence_ref}")
+
+    for item in document["derivations"]:
+        for ref in item.get("inputRefs", []) + item.get("outputRefs", []):
+            if ref not in known_ids:
+                errors.append(f"derivation {item['id']} has dangling ref {ref}")
     return errors
 
 
