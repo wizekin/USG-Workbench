@@ -31,7 +31,7 @@ def frame_catalog(source):
         roles = {}
         for role_match in re.finditer(r'\bt([12])\(\s*"([A-Z_]+)"([^)]*)\)', block, re.S):
             helper, role_name, tail = role_match.groups()
-            args = [part.strip() for part in tail.split(",")]
+            args = [part.strip() for part in tail.split(",") if part.strip()]
             required_index = 0 if helper == "1" else 1
             required = len(args) > required_index and args[required_index] == "True"
             class_match = re.search(r'\bcls\s*=\s*"([^"]+)"', tail)
