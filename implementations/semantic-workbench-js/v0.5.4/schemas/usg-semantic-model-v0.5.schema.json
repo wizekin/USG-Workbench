@@ -1,0 +1,824 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:usg:schemas:semantic-model:0.5.1",
+  "title": "USG Canonical Semantic Model v0.5",
+  "description": "Compositional expression graph for source-grounded candidate meanings. A valid graph is not proof of semantic correctness or truth.",
+  "$ref": "#/$defs/semanticModel",
+  "$defs": {
+    "semanticEntity": {
+      "type": "object",
+      "required": [
+        "id",
+        "canonicalText",
+        "type",
+        "aliases",
+        "identityStatus"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "canonicalText": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "type": "string"
+        },
+        "aliases": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "identityStatus": {
+          "enum": [
+            "source_linked",
+            "provisional",
+            "reviewed",
+            "unresolved"
+          ]
+        }
+      },
+      "additionalProperties": true
+    },
+    "semanticMention": {
+      "type": "object",
+      "required": [
+        "id",
+        "entityId",
+        "surfaceText",
+        "mentionType",
+        "resolutionStatus"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "entityId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "surfaceText": {
+          "type": "string"
+        },
+        "mentionType": {
+          "type": "string"
+        },
+        "resolutionStatus": {
+          "enum": [
+            "linked",
+            "resolved",
+            "unresolved"
+          ]
+        },
+        "antecedentEntityId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "sourceSpan": {
+          "type": [
+            "object",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": true
+    },
+    "semanticEvidence": {
+      "type": "object",
+      "required": [
+        "id",
+        "sourceText",
+        "quote",
+        "start",
+        "end",
+        "exactSourceMatch",
+        "verificationMeaning"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "sourceText": {
+          "type": "string"
+        },
+        "quote": {
+          "type": "string"
+        },
+        "start": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "end": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "exactSourceMatch": {
+          "type": "boolean"
+        },
+        "modelQuote": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "modelQuoteVerified": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "verificationMeaning": {
+          "const": "source_alignment_only_not_semantic_entailment"
+        }
+      },
+      "additionalProperties": true
+    },
+    "semanticArgument": {
+      "type": "object",
+      "required": [
+        "role",
+        "entityId",
+        "mentionId"
+      ],
+      "properties": {
+        "role": {
+          "type": "string"
+        },
+        "entityId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "mentionId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "variableId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "bindingEntityId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": true
+    },
+    "predicationExpression": {
+      "type": "object",
+      "required": [
+        "id",
+        "type",
+        "predicate",
+        "arguments",
+        "argumentRequirements",
+        "grammaticalTense",
+        "aspect",
+        "temporalFrame",
+        "attribution",
+        "provenance",
+        "completeness",
+        "evidenceRefs",
+        "sourceClaimId",
+        "eventFrame"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "type": {
+          "const": "PREDICATION"
+        },
+        "predicate": {
+          "type": "string",
+          "minLength": 1
+        },
+        "arguments": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "$ref": "#/$defs/semanticArgument"
+          }
+        },
+        "grammaticalTense": {
+          "enum": [
+            "past",
+            "present",
+            "future",
+            "unknown"
+          ]
+        },
+        "aspect": {
+          "enum": [
+            "simple",
+            "progressive",
+            "perfect",
+            "habitual",
+            "unknown"
+          ]
+        },
+        "temporalFrame": {
+          "type": "object",
+          "required": [
+            "referenceTime",
+            "temporalAdverbials",
+            "sourceTense",
+            "clauseEvidence"
+          ],
+          "properties": {
+            "referenceTime": {
+              "type": "string"
+            },
+            "temporalAdverbials": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "sourceTense": {
+              "type": "string"
+            },
+            "clauseEvidence": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "additionalProperties": true
+        },
+        "attribution": {
+          "type": "object",
+          "required": [
+            "kind",
+            "status",
+            "truthStatus"
+          ],
+          "properties": {
+            "kind": {
+              "const": "source_voice"
+            },
+            "status": {
+              "type": "string"
+            },
+            "truthStatus": {
+              "const": "not_independently_established"
+            }
+          },
+          "additionalProperties": true
+        },
+        "provenance": {
+          "type": "object"
+        },
+        "completeness": {
+          "type": "object",
+          "required": [
+            "status",
+            "missingRoles"
+          ],
+          "properties": {
+            "status": {
+              "enum": [
+                "complete",
+                "underspecified",
+                "unresolved",
+                "not_applicable"
+              ]
+            },
+            "missingRoles": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "note": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": true
+        },
+        "evidenceRefs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "sourceClaimId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "eventFrame": {
+          "type": "object",
+          "required": [
+            "id",
+            "kind",
+            "predicate",
+            "participants",
+            "attributes"
+          ],
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "kind": {
+              "enum": [
+                "event",
+                "state",
+                "relation",
+                "unknown"
+              ]
+            },
+            "predicate": {
+              "type": "string"
+            },
+            "participants": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "role",
+                  "entityId"
+                ],
+                "properties": {
+                  "role": {
+                    "type": "string"
+                  },
+                  "entityId": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "variableId": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "bindingEntityId": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  }
+                },
+                "additionalProperties": true
+              }
+            },
+            "attributes": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          },
+          "additionalProperties": true
+        },
+        "argumentRequirements": {
+          "type": "object",
+          "required": [
+            "requiredRoles",
+            "missingRoles"
+          ],
+          "properties": {
+            "requiredRoles": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "missingRoles": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "operatorExpression": {
+      "type": "object",
+      "required": [
+        "id",
+        "type",
+        "operatorType",
+        "operator",
+        "scope",
+        "evidenceRefs"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "type": {
+          "const": "OPERATOR"
+        },
+        "operatorType": {
+          "enum": [
+            "NEGATION",
+            "MODAL",
+            "QUANTIFIER",
+            "POLARITY",
+            "UNRESOLVED_SCOPE"
+          ]
+        },
+        "operator": {
+          "type": "string"
+        },
+        "force": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "variable": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "restrictor": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "scope": {
+          "type": "object",
+          "required": [
+            "targetId",
+            "scopeKind"
+          ],
+          "properties": {
+            "targetId": {
+              "type": "string"
+            },
+            "scopeKind": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": true
+        },
+        "surfaceText": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "evidenceRefs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "variableBinding": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "properties": {
+            "variable": {
+              "type": "string"
+            },
+            "role": {
+              "type": "string"
+            },
+            "restrictorEntityId": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "connectiveExpression": {
+      "type": "object",
+      "required": [
+        "id",
+        "type",
+        "connective"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "type": {
+          "const": "CONNECTIVE"
+        },
+        "connective": {
+          "enum": [
+            "CONDITIONAL",
+            "EXCEPTION",
+            "AND",
+            "OR",
+            "CONTRAST",
+            "WHEN",
+            "CONCESSIVE"
+          ]
+        },
+        "antecedentId": {
+          "type": "string"
+        },
+        "consequentId": {
+          "type": "string"
+        },
+        "operandIds": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "string"
+          }
+        },
+        "logicalStatus": {
+          "enum": [
+            "conditional_not_asserted",
+            "unresolved_proposition",
+            "exception_relation_asserted",
+            "coordination_asserted",
+            "when_clause_not_asserted"
+          ]
+        },
+        "marker": {
+          "type": "string"
+        },
+        "disjunctionSemantics": {
+          "enum": [
+            "inclusive_or_unspecified",
+            "exclusive"
+          ]
+        },
+        "attribution": {
+          "type": "object"
+        },
+        "evidenceRefs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "anyOf": [
+        {
+          "required": [
+            "antecedentId",
+            "consequentId"
+          ]
+        },
+        {
+          "required": [
+            "operandIds"
+          ]
+        }
+      ],
+      "additionalProperties": true
+    },
+    "semanticExpression": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/predicationExpression"
+        },
+        {
+          "$ref": "#/$defs/operatorExpression"
+        },
+        {
+          "$ref": "#/$defs/connectiveExpression"
+        }
+      ]
+    },
+    "semanticRelation": {
+      "type": "object",
+      "required": [
+        "id",
+        "type",
+        "sourceExpressionId",
+        "targetExpressionId",
+        "attribution",
+        "verification",
+        "evidenceRefs"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "CAUSE",
+            "CONTRADICTS",
+            "SUPPORTS",
+            "ATTACKS",
+            "RELATED_TO"
+          ]
+        },
+        "sourceExpressionId": {
+          "type": "string"
+        },
+        "targetExpressionId": {
+          "type": "string"
+        },
+        "attribution": {
+          "type": "object"
+        },
+        "verification": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "evidenceRefs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "note": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": true
+    },
+    "semanticModel": {
+      "type": "object",
+      "required": [
+        "profile",
+        "version",
+        "canonical",
+        "compatibilityView",
+        "source",
+        "entities",
+        "mentions",
+        "evidence",
+        "expressions",
+        "relations",
+        "rootExpressionIds",
+        "acceptanceBoundary",
+        "unresolvedItems"
+      ],
+      "properties": {
+        "profile": {
+          "const": "USG-SR/0.5.1"
+        },
+        "version": {
+          "const": "0.5.1"
+        },
+        "canonical": {
+          "const": true
+        },
+        "compatibilityView": {
+          "const": "record.claims"
+        },
+        "source": {
+          "type": "object",
+          "required": [
+            "text",
+            "language",
+            "sourceId"
+          ],
+          "properties": {
+            "text": {
+              "type": "string"
+            },
+            "language": {
+              "type": "string"
+            },
+            "sourceId": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "additionalProperties": true
+        },
+        "entities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/semanticEntity"
+          }
+        },
+        "mentions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/semanticMention"
+          }
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/semanticEvidence"
+          }
+        },
+        "expressions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/semanticExpression"
+          }
+        },
+        "relations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/semanticRelation"
+          }
+        },
+        "rootExpressionIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "acceptanceBoundary": {
+          "type": "object",
+          "required": [
+            "requiresHumanReview",
+            "acceptedIntoKnowledgeBase",
+            "objectiveTruthEstablished"
+          ],
+          "properties": {
+            "requiresHumanReview": {
+              "const": true
+            },
+            "acceptedIntoKnowledgeBase": {
+              "const": false
+            },
+            "objectiveTruthEstablished": {
+              "const": false
+            }
+          },
+          "additionalProperties": true
+        },
+        "buildNotes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "unresolvedItems": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/unresolvedItem"
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "unresolvedItem": {
+      "type": "object",
+      "required": [
+        "id",
+        "surfaceText",
+        "reason",
+        "status"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "surfaceText": {
+          "type": "string"
+        },
+        "reason": {
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "unresolved",
+            "unsupported",
+            "ambiguous"
+          ]
+        },
+        "evidenceRef": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "scope": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": true
+    }
+  }
+}

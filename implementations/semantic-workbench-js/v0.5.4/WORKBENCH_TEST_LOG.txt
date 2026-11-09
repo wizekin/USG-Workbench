@@ -1,0 +1,344 @@
+USG Semantic Workbench v0.5.4 - automated test suite
+
+Semantic foundation tests: 44 passed, 0 failed.
+PASS: source composer safely parsed: The customer does not dislike the tool.
+PASS: canonical semantic graph validates: The customer does not dislike the tool.
+PASS: no unresolved semantic structure for supported case: The customer does not dislike the tool.
+PASS: NOT scopes over DISLIKE
+PASS: NOT DISLIKE retains the explicit TOOL argument
+PASS: source composer safely parsed: The customer might not need the tool.
+PASS: canonical semantic graph validates: The customer might not need the tool.
+PASS: no unresolved semantic structure for supported case: The customer might not need the tool.
+PASS: MIGHT takes scope over NOT, which takes scope over NEEDS
+PASS: source composer safely parsed: The customer needs the tool, but does not need it.
+PASS: canonical semantic graph validates: The customer needs the tool, but does not need it.
+PASS: no unresolved semantic structure for supported case: The customer needs the tool, but does not need it.
+PASS: BUT preserves two independent clause propositions
+PASS: omitted subject and pronoun object are resolved from discourse context
+PASS: BUT becomes a top-level CONTRAST connective
+PASS: source composer safely parsed: If prices increase, the customer will stop using the tool.
+PASS: canonical semantic graph validates: If prices increase, the customer will stop using the tool.
+PASS: no unresolved semantic structure for supported case: If prices increase, the customer will stop using the tool.
+PASS: IF forms a directed conditional connective
+PASS: IF antecedent and consequent retain independent tense
+PASS: IF antecedent is not promoted to an asserted fact
+PASS: source composer safely parsed: Unless prices increase, the customer does not need the tool.
+PASS: canonical semantic graph validates: Unless prices increase, the customer does not need the tool.
+PASS: no unresolved semantic structure for supported case: Unless prices increase, the customer does not need the tool.
+PASS: UNLESS is represented as EXCEPTION, not ordinary IF
+PASS: UNLESS preserves both the negative consequent and exception marker
+PASS: UNLESS compatibility metadata retains exception-specific effect and status
+PASS: UNLESS metadata explicitly links its consequent to the parent negative claim
+PASS: canonical EXCEPTION connective agrees with claim-level condition metadata
+PASS: UNLESS explicitly scopes NOT over its exception condition (IF NOT P, Q)
+PASS: semantic validator detects disagreement between EXCEPTION graph and compatibility metadata
+PASS: source composer safely parsed: When prices increase, the customer stops using the tool.
+PASS: canonical semantic graph validates: When prices increase, the customer stops using the tool.
+PASS: no unresolved semantic structure for supported case: When prices increase, the customer stops using the tool.
+PASS: WHEN is distinct from an IF conditional
+PASS: WHEN retains temporal effect metadata across the claim and canonical graph
+PASS: semantic validator rejects WHEN metadata that collapses temporal meaning into a generic conditional
+PASS: source composer safely parsed: Although prices increased, the customer stopped using the tool.
+PASS: canonical semantic graph validates: Although prices increased, the customer stopped using the tool.
+PASS: no unresolved semantic structure for supported case: Although prices increased, the customer stopped using the tool.
+PASS: ALTHOUGH relates two separate propositions through CONCESSIVE
+PASS: CONCESSIVE connective retains valid evidence references for both clauses
+PASS: source composer safely parsed: The customer stopped using the tool because it failed.
+PASS: canonical semantic graph validates: The customer stopped using the tool because it failed.
+PASS: no unresolved semantic structure for supported case: The customer stopped using the tool because it failed.
+PASS: BECAUSE clause resolves IT to the tool and creates a separate cause proposition
+PASS: CAUSE retains source attribution and is not marked independently verified
+PASS: source composer safely parsed: The customer bought a tool. He uses it every day.
+PASS: canonical semantic graph validates: The customer bought a tool. He uses it every day.
+PASS: no unresolved semantic structure for supported case: The customer bought a tool. He uses it every day.
+PASS: cross-sentence HE and IT resolve to prior discourse entities
+PASS: EVERY DAY is attached to the USES event, not the object
+PASS: canonical graph preserves both resolved pronoun surface mentions
+PASS: source composer safely parsed: The customer needs the tool or wants a refund.
+PASS: canonical semantic graph validates: The customer needs the tool or wants a refund.
+PASS: no unresolved semantic structure for supported case: The customer needs the tool or wants a refund.
+PASS: OR keeps two propositions and creates an explicit disjunction
+PASS: OR remains inclusive/unspecified instead of assuming exclusive alternatives
+PASS: source composer safely parsed: The customer buys the tool and uses it every day.
+PASS: canonical semantic graph validates: The customer buys the tool and uses it every day.
+PASS: no unresolved semantic structure for supported case: The customer buys the tool and uses it every day.
+PASS: AND retains both propositions within a conjunction
+PASS: source composer safely parsed: Not every customer needs the tool.
+PASS: canonical semantic graph validates: Not every customer needs the tool.
+PASS: no unresolved semantic structure for supported case: Not every customer needs the tool.
+PASS: NOT EVERY is represented as NOT over FORALL
+PASS: source composer safely parsed: No customer needs the tool.
+PASS: canonical semantic graph validates: No customer needs the tool.
+PASS: no unresolved semantic structure for supported case: No customer needs the tool.
+PASS: NO CUSTOMER is represented as FORALL over NOT
+PASS: source composer safely parsed: The customer is expected to need the tool.
+PASS: canonical semantic graph validates: The customer is expected to need the tool.
+PASS: no unresolved semantic structure for supported case: The customer is expected to need the tool.
+PASS: EXPECTED is not flattened into deontic MUST
+PASS: source composer safely parsed: Prices were different.
+PASS: canonical semantic graph validates: Prices were different.
+PASS: no unresolved semantic structure for supported case: Prices were different.
+PASS: Prices were different remains a complete assertion without a comparison target
+PASS: source composer safely parsed: If demand decreases, the company reduces production.
+PASS: canonical semantic graph validates: If demand decreases, the company reduces production.
+PASS: no unresolved semantic structure for supported case: If demand decreases, the company reduces production.
+PASS: conditional composition generalizes to unseen predicate vocabulary
+PASS: source composer safely parsed: The customer will stop using the tool if prices increase.
+PASS: canonical semantic graph validates: The customer will stop using the tool if prices increase.
+PASS: no unresolved semantic structure for supported case: The customer will stop using the tool if prices increase.
+PASS: trailing IF clauses compose like leading IF clauses
+PASS: source composer safely parsed: The customer stopped using the tool although prices increased.
+PASS: canonical semantic graph validates: The customer stopped using the tool although prices increased.
+PASS: no unresolved semantic structure for supported case: The customer stopped using the tool although prices increased.
+PASS: trailing ALTHOUGH clauses compose as concessive relations
+PASS: source composer safely parsed: The customer stops using the tool unless prices increase.
+PASS: canonical semantic graph validates: The customer stops using the tool unless prices increase.
+PASS: no unresolved semantic structure for supported case: The customer stops using the tool unless prices increase.
+PASS: trailing UNLESS clauses compose as exception relations
+PASS: source composer safely parsed: The customer stops using the tool when prices increase.
+PASS: canonical semantic graph validates: The customer stops using the tool when prices increase.
+PASS: no unresolved semantic structure for supported case: The customer stops using the tool when prices increase.
+PASS: trailing WHEN clauses compose as temporal relations
+PASS: source composer safely parsed: Because it failed, the customer stopped using the tool.
+PASS: canonical semantic graph validates: Because it failed, the customer stopped using the tool.
+PASS: no unresolved semantic structure for supported case: Because it failed, the customer stopped using the tool.
+PASS: leading BECAUSE clauses preserve cause/effect relation and resolve pronouns
+PASS: source composer safely parsed: Although inventory fell, the business increased output.
+PASS: canonical semantic graph validates: Although inventory fell, the business increased output.
+PASS: no unresolved semantic structure for supported case: Although inventory fell, the business increased output.
+PASS: concessive composition generalizes to additional verb frames
+PASS: a transitive clause with a missing object is not declared a complete source parse
+PASS: an incomplete conditional consequent is not silently accepted
+PASS: empty model quantifier placeholders do not create UNRESOLVED_SCOPE
+PASS: placeholder event attributes are discarded while source-grounded attributes survive
+
+Semantic composition tests: 110 passed, 0 failed.
+PASS: browser adapter preserves the server repetition-abort audit and Ollama error body
+PASS: browser adapter creates a typed transport audit when the Workbench bridge cannot be reached
+PASS: app pipeline uses source composition for: The customer does not dislike the tool.
+PASS: app pipeline returns valid v0.5.1 canonical graph: The customer does not dislike the tool.
+PASS: original LLM proposal is retained for audit: The customer does not dislike the tool.
+PASS: empty model quantifier metadata cannot contaminate: The customer does not dislike the tool.
+PASS: app pipeline uses source composition for: The customer might not need the tool.
+PASS: app pipeline returns valid v0.5.1 canonical graph: The customer might not need the tool.
+PASS: original LLM proposal is retained for audit: The customer might not need the tool.
+PASS: empty model quantifier metadata cannot contaminate: The customer might not need the tool.
+PASS: app pipeline uses source composition for: The customer needs the tool, but does not need it.
+PASS: app pipeline returns valid v0.5.1 canonical graph: The customer needs the tool, but does not need it.
+PASS: original LLM proposal is retained for audit: The customer needs the tool, but does not need it.
+PASS: empty model quantifier metadata cannot contaminate: The customer needs the tool, but does not need it.
+PASS: the case-3 CONTRADICTS candidate is present in both compatibility and canonical graph relations
+PASS: app pipeline uses source composition for: If prices increase, the customer will stop using the tool.
+PASS: app pipeline returns valid v0.5.1 canonical graph: If prices increase, the customer will stop using the tool.
+PASS: original LLM proposal is retained for audit: If prices increase, the customer will stop using the tool.
+PASS: empty model quantifier metadata cannot contaminate: If prices increase, the customer will stop using the tool.
+PASS: app pipeline uses source composition for: Unless prices increase, the customer does not need the tool.
+PASS: app pipeline returns valid v0.5.1 canonical graph: Unless prices increase, the customer does not need the tool.
+PASS: original LLM proposal is retained for audit: Unless prices increase, the customer does not need the tool.
+PASS: empty model quantifier metadata cannot contaminate: Unless prices increase, the customer does not need the tool.
+PASS: app pipeline uses source composition for: When prices increase, the customer stops using the tool.
+PASS: app pipeline returns valid v0.5.1 canonical graph: When prices increase, the customer stops using the tool.
+PASS: original LLM proposal is retained for audit: When prices increase, the customer stops using the tool.
+PASS: empty model quantifier metadata cannot contaminate: When prices increase, the customer stops using the tool.
+PASS: app pipeline uses source composition for: Although prices increased, the customer stopped using the tool.
+PASS: app pipeline returns valid v0.5.1 canonical graph: Although prices increased, the customer stopped using the tool.
+PASS: original LLM proposal is retained for audit: Although prices increased, the customer stopped using the tool.
+PASS: empty model quantifier metadata cannot contaminate: Although prices increased, the customer stopped using the tool.
+PASS: app pipeline uses source composition for: The customer stopped using the tool because it failed.
+PASS: app pipeline returns valid v0.5.1 canonical graph: The customer stopped using the tool because it failed.
+PASS: original LLM proposal is retained for audit: The customer stopped using the tool because it failed.
+PASS: empty model quantifier metadata cannot contaminate: The customer stopped using the tool because it failed.
+PASS: app pipeline uses source composition for: The customer bought a tool. He uses it every day.
+PASS: app pipeline returns valid v0.5.1 canonical graph: The customer bought a tool. He uses it every day.
+PASS: original LLM proposal is retained for audit: The customer bought a tool. He uses it every day.
+PASS: empty model quantifier metadata cannot contaminate: The customer bought a tool. He uses it every day.
+PASS: app pipeline uses source composition for: The customer needs the tool or wants a refund.
+PASS: app pipeline returns valid v0.5.1 canonical graph: The customer needs the tool or wants a refund.
+PASS: original LLM proposal is retained for audit: The customer needs the tool or wants a refund.
+PASS: empty model quantifier metadata cannot contaminate: The customer needs the tool or wants a refund.
+PASS: app pipeline uses source composition for: Not every customer needs the tool.
+PASS: app pipeline returns valid v0.5.1 canonical graph: Not every customer needs the tool.
+PASS: original LLM proposal is retained for audit: Not every customer needs the tool.
+PASS: empty model quantifier metadata cannot contaminate: Not every customer needs the tool.
+PASS: app pipeline uses source composition for: No customer needs the tool.
+PASS: app pipeline returns valid v0.5.1 canonical graph: No customer needs the tool.
+PASS: original LLM proposal is retained for audit: No customer needs the tool.
+PASS: empty model quantifier metadata cannot contaminate: No customer needs the tool.
+PASS: app pipeline uses source composition for: The customer is expected to need the tool.
+PASS: app pipeline returns valid v0.5.1 canonical graph: The customer is expected to need the tool.
+PASS: original LLM proposal is retained for audit: The customer is expected to need the tool.
+PASS: empty model quantifier metadata cannot contaminate: The customer is expected to need the tool.
+PASS: app pipeline uses source composition for: Prices were different.
+PASS: app pipeline returns valid v0.5.1 canonical graph: Prices were different.
+PASS: original LLM proposal is retained for audit: Prices were different.
+PASS: empty model quantifier metadata cannot contaminate: Prices were different.
+PASS: unsupported clause is not replaced by a speculative source parse
+PASS: empty quantifier placeholders are removed in the ordinary model-adapter path
+PASS: placeholder event attributes are removed in the ordinary model-adapter path
+PASS: uncomposable model proposal remains the regular candidate instead of being hidden
+PASS: model adapter preserves all 15 returned claims rather than silently truncating at 12
+PASS: model adapter preserves all unresolved items rather than truncating at 8
+PASS: model adapter preserves more than five source condition candidates
+PASS: model adapter preserves more than twelve event attributes
+PASS: full nested semantic structure is retained in the raw proposal rather than rejected or silently flattened
+PASS: unsupported WAIT pattern remains on the model-adapter path for condition-normalization coverage
+PASS: model-adapter normalization corrects model-proposed UNLESS effect and status from the source marker
+PASS: model-adapter derives the UNLESS consequence from the parent claim and replaces a dangling model consequent ID
+PASS: model-adapter condition metadata produces a canonical EXCEPTION connective
+
+App composition integration tests: 72 passed, 0 failed.
+PASS: Workbench browser adapter preserves the typed repetition-abort category
+PASS: adapter preserves both Ollama HTTP status and Workbench bridge HTTP status
+PASS: adapter retains the full Ollama error body and server generation audit
+PASS: bridge transport failure is assigned a distinct category
+PASS: transport fallback audit records no response and the underlying connection error code
+PASS: invalid bridge response JSON is diagnosed with its complete raw body
+
+App failure-audit integration tests: 6 passed, 0 failed.
+PASS: subclass pattern creates one SUBCLASS_OF claim
+PASS: leading articles are removed from concept labels
+PASS: measurement relation is extracted
+PASS: measurement entities are normalized
+PASS: negative NEEDS proposition is extracted
+PASS: negation is preserved
+PASS: does-not-need is represented in present tense
+PASS: unless clause is represented separately
+PASS: unless consequence is explicitly linked to the source-grounded negative parent claim rather than left unspecified
+PASS: the condition is not merged into the object phrase
+PASS: LLM null object is retained without crashing
+PASS: definite reference is preserved independently of the normalized entity label
+PASS: malformed null condition is ignored while valid condition survives
+PASS: negative LIKE remains LIKE with negative polarity
+PASS: definite object reference survives article normalization
+PASS: present simple is retained for a negative LIKE sentence
+PASS: clear present-tense source marker corrects an inconsistent model tense
+PASS: tense correction is disclosed in validation warnings
+PASS: negative MEASURES does not imply inability or change the predicate
+PASS: unsupported inability wording is flagged instead of silently accepted as a consequence of negation
+PASS: main-clause tense is detected separately from a past-tense because clause
+PASS: because clause receives its own past-tense cause proposition
+PASS: because clause is linked to the effect through an explicit causal explanation
+PASS: causal relation is attributed to the source rather than treated as independently verified
+PASS: missing NEEDS object is recovered from the explicit source phrase
+PASS: recovered object retains the source definite article
+PASS: negative NEEDS retains its base predicate and polarity
+PASS: DOES_NOT_LIKE is normalized to LIKE with negative polarity
+PASS: negated LIKE preserves the definite object reference
+PASS: predicate negation normalization is disclosed to the user
+PASS: negative MEASURES remains a negative MEASURES proposition
+PASS: negative MEASURES is present tense
+PASS: because sentence recovers the omitted main-clause object
+PASS: because sentence retains present tense on the main claim
+PASS: because clause is a separate past-tense proposition
+PASS: causal link points to the correct separate cause and effect claims
+PASS: causal relation retains an exact source evidence span
+PASS: causal relation is clearly marked as asserted by the source
+PASS: cause and effect are represented as two propositions, not one merged claim
+PASS: DIFFER can be interpreted as a sentence-level proposition while retaining its unstated comparison frame
+PASS: an unstated comparison target is task-specific context, not automatic global semantic incompleteness
+PASS: knowledge display renders the objectless past-tense cause claim naturally
+PASS: Meaning view renders the explicit causal explanation
+PASS: Structure view renders the causal link between claim IDs
+PASS: Evidence view renders the causal source span
+PASS: JSON export identifies the v0.5 semantic representation schema
+PASS: actual v0.3.2 Qwen export fixture loads with all four original test cases
+PASS: actual Qwen null-object response is repaired from its source text
+PASS: invalid model quote is distinguished from the exact full-source evidence fallback
+PASS: fallback evidence offsets exactly cover the original source
+PASS: fixture retains the model’s original DISLIKES proposal for audit
+PASS: actual DISLIKES plus negative output is source-reconciled to LIKE plus negative polarity
+PASS: source-based negated-LIKE repair is disclosed in warnings
+PASS: does not dislike is not incorrectly rewritten by the narrow does not like repair
+PASS: actual because-clause cause claim preserves its context-dependent comparison frame
+PASS: context-dependent comparison is not incorrectly promoted to a global unresolved error
+PASS: a sentence-level complete DIFFER claim is not forced to PARTIAL solely because its comparison set is implicit
+PASS: batch summary separately counts completed, partial, unresolved, and fallback results
+PASS: unsupported because clause is preserved as unresolved, not guessed
+PASS: unresolved causal subclause is visible alongside a valid main claim
+PASS: malformed model claims are rejected with an explicit unresolved note
+PASS: family-membership wording is normalized to subclass relation
+PASS: unsupported complex sentence remains unresolved without fabricated claims
+PASS: offline NEEDS parser separates the effect and because-clause claims
+PASS: offline NEEDS parser retains the main object and present tense
+PASS: offline because-clause claim retains past tense
+PASS: offline parser also produces an explicit causal link
+PASS: offline because parser stores a task-specific comparison frame without global incompleteness
+PASS: offline cause record is complete at sentence level while comparison tasks remain context-dependent
+PASS: accepted knowledge stores both the effect and cause propositions
+PASS: accepted causal link is remapped to persistent knowledge-base claim IDs
+PASS: accepted LLM proposal remains visibly distinguished by provenance
+PASS: accepted proposition pairs persist their contradiction candidate with remapped knowledge-base IDs
+PASS: starter knowledge derives exactly three claims
+PASS: subclass transitivity derives Sparrow → Animal
+PASS: instance inheritance derives Tweety → Bird
+PASS: inference chain derives Tweety → Animal
+PASS: rerunning reasoning does not duplicate derived claims
+PASS: v0.4 simple inference excludes modal and quantified claims
+PASS: v0.4 simple inference excludes a present-grammatical claim with future temporal reference
+PASS: batch parser trims lines and ignores blanks
+PASS: batch export identifies its dedicated schema and workbench version
+PASS: batch export summary counts each result state
+PASS: v0.4 extracts the consequent as its own proposition
+PASS: v0.4 preserves future tense on the consequent
+PASS: v0.4 stores the IF antecedent as a nested proposition with independent present tense
+PASS: v0.4 does not treat a conditional antecedent as an asserted observation
+PASS: v0.4 registers entities appearing inside nested conditions
+PASS: v0.5 builds a canonical expression graph alongside the v0.4 compatibility claim view
+PASS: v0.5 exposes the IF construction as a canonical scoped connective
+PASS: a structurally valid, resolved conditional is eligible for completed batch status
+PASS: v0.4 preserves both opposing clauses as separate propositions
+PASS: v0.4 creates a contradiction candidate only for matching proposition frames
+PASS: v0.4 does not equate distinct modal operators merely because their broad modality labels match
+PASS: v0.4 does not flag different event-frequency frames as direct contradictions
+PASS: v0.4 preserves “might” as an explicit modal operator and possibility force
+PASS: v0.4 preserves the past-to-present temporal change
+PASS: v0.4 does not mark opposite claims at different times as a contradiction
+PASS: v0.4 does not confuse “no longer” with the quantifier “no”
+PASS: v0.4 resolves the Gemma-style “it” object in paired NEEDS claims and retains its mention
+PASS: v0.4 resolves a model-proposed “it” cause subject to the explicit tool antecedent
+PASS: v0.4 repairs model-style pronoun and frequency argument conflation in the supported purchase/use discourse
+PASS: v0.4 resolves “He” and “it” to the earlier customer and tool entities
+PASS: v0.4 preserves pronoun surface mentions and antecedent identity
+PASS: v0.4 represents “every day” as a structured event frequency
+PASS: v0.4 represents “not every” as negation over a universal quantifier
+PASS: v0.4 keeps predicate polarity separate from quantifier-scope negation
+PASS: v0.4 does not collapse “not every” into “no customer” semantics
+PASS: v0.4 represents “no customer” as universal negative quantification, distinct from “not every”
+PASS: v0.4 resolves “it” in the cause clause to the tool entity
+PASS: v0.4 retains source attribution rather than asserting objective causation
+PASS: v0.4 records the causal-clause pronoun mention
+PASS: v0.4 separates sentence-level interpretability from comparison-task completeness
+PASS: v0.4 preserves “does not dislike” without converting it into positive LIKE
+PASS: v0.4 source-corrects the model modal operator while preserving time aspect and event attributes
+PASS: v0.4 repairs model polarity duplication when source negation scopes over “every”
+PASS: v0.4 source-corrects a model future-tense error on a present-simple IF antecedent
+PASS: v0.4 source-corrects nested modal operator and grammatical tense while preserving its future reference time
+PASS: v0.4 preserves a serialized malformed condition as unresolved instead of storing “[object Object]”
+PASS: v0.5 export declares its representation profile and mandatory human-review boundary
+PASS: missing required argument is surfaced in the canonical graph as a partial interpretation
+PASS: batch status does not call a partially represented proposition completed
+PASS: knowledge acceptance is blocked while the canonical semantic graph contains unresolved items
+PASS: v0.5 ships a machine-readable JSON Schema for the canonical compositional semantic model
+PASS: v0.5 schema requires structured unresolved content and defines an explicit unresolved-scope operator
+
+All smoke tests passed.
+PASS: health endpoint exposes the Workbench version and model timeout.
+PASS: root UI is served successfully by the Workbench server.
+PASS: a slow Ollama response is aborted at the configured timeout and returns a clear error.
+PASS: an out-of-range timeout safely falls back to 180 seconds.
+PASS: deterministic diagnosis accepts semantically large collections without item-count caps.
+PASS: reviewer missingContent entries are promoted to repair findings.
+PASS: adaptive output budget retries a length-terminated generation.
+PASS: second-pass audit detects omitted source content and triggers targeted repair.
+PASS: corrected proposal is re-reviewed by the same model and returned with an audit trace.
+PASS: prompts explicitly prohibit semantic item-count limits.
+PASS: full raw model responses and partial length-stop outputs are retained for diagnosis.
+PASS: uncertain second-pass assessment is surfaced as needs_review.
+PASS: repetition-limit abort is distinguished from output-token truncation and retains Ollama error details.
+PASS: malformed Ollama response envelopes are classified as parse failures and retain the full raw body.
+PASS: a complete HTTP/JSON response that still omits a required USG field is diagnosed as proposal_contract_failure, not a transport error.
+PASS: exhausted invalid-JSON repair is diagnosed separately and preserves the failed raw repair response.
+PASS: both Draft 2020-12 schemas are valid schemas
+PASS: 7 canonical semantic-model fixtures validate
+PASS: complete v0.5 semantic-record fixture validates
+Schema validation: 10 checks passed (2 metaschemas, 7 graph fixtures, 1 full record).

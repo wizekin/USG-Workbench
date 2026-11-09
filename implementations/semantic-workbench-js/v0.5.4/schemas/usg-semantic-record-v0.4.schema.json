@@ -1,0 +1,166 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:usg:schemas:semantic-record:0.4.0",
+  "title": "USG Semantic Record v0.4",
+  "description": "Candidate semantic representation produced by USG Semantic Workbench. A record is not automatically a fact or proof of truth.",
+  "type": "object",
+  "required": ["schema", "schemaVersion", "sourceText", "claims", "representationProfile", "validation"],
+  "properties": {
+    "schema": { "const": "USG-SEMANTIC-RECORD" },
+    "schemaVersion": { "const": "0.4.0" },
+    "representationProfile": { "const": "USG-SR/0.4" },
+    "analyzedAt": { "type": "string", "format": "date-time" },
+    "ok": { "type": "boolean" },
+    "engine": { "type": "string" },
+    "intent": { "type": "string" },
+    "interpretation": { "type": "string" },
+    "sourceText": { "type": "string" },
+    "claims": { "type": "array", "items": { "$ref": "#/$defs/claim" } },
+    "entities": { "type": "array", "items": { "$ref": "#/$defs/entityRegistryEntry" } },
+    "mentions": { "type": "array", "items": { "$ref": "#/$defs/mention" } },
+    "claimRelations": { "type": "array", "items": { "$ref": "#/$defs/claimRelation" } },
+    "explanations": { "type": "array", "items": { "type": "object" } },
+    "unresolved": { "type": "array", "items": { "type": "string" } },
+    "warnings": { "type": "array", "items": { "type": "string" } },
+    "validation": { "$ref": "#/$defs/validation" }
+  },
+  "$defs": {
+    "entity": {
+      "type": "object",
+      "required": ["text", "canonicalText", "surfaceText", "type", "reference"],
+      "properties": {
+        "text": { "type": "string", "minLength": 1 },
+        "canonicalText": { "type": "string", "minLength": 1 },
+        "surfaceText": { "type": "string", "minLength": 1 },
+        "type": { "type": "string" },
+        "reference": { "enum": ["definite", "indefinite", "unmarked", "unknown", "resolved_pronoun"] },
+        "entityId": { "type": ["string", "null"] }
+      },
+      "additionalProperties": true
+    },
+    "proposition": {
+      "type": "object",
+      "required": ["subject", "predicate", "object", "polarity", "tense", "modality"],
+      "properties": {
+        "subject": { "$ref": "#/$defs/entity" },
+        "predicate": { "type": "string", "minLength": 1 },
+        "object": { "oneOf": [{ "$ref": "#/$defs/entity" }, { "type": "null" }] },
+        "polarity": { "enum": ["positive", "negative", "unknown"] },
+        "tense": { "enum": ["past", "present", "future", "unknown"] },
+        "modality": { "enum": ["asserted", "possible", "necessary", "obligatory", "possible_or_ability", "unknown"] },
+        "time": { "type": "object" },
+        "modalScope": { "type": "object" }
+      },
+      "additionalProperties": true
+    },
+    "condition": {
+      "type": "object",
+      "required": ["id", "marker", "scope", "effect", "proposition", "logicalStatus"],
+      "properties": {
+        "id": { "type": "string" },
+        "marker": { "type": "string" },
+        "scope": { "type": "string" },
+        "effect": { "type": "string" },
+        "proposition": { "oneOf": [{ "$ref": "#/$defs/proposition" }, { "type": "null" }] },
+        "consequence": { "type": "string" },
+        "evidenceText": { "type": ["string", "null"] },
+        "evidence": { "oneOf": [{ "$ref": "#/$defs/evidence" }, { "type": "null" }] },
+        "logicalStatus": { "enum": ["conditional_not_asserted", "unresolved_proposition"] }
+      },
+      "additionalProperties": true
+    },
+    "evidence": {
+      "type": "object",
+      "required": ["sourceText", "quote", "start", "end", "verified"],
+      "properties": {
+        "sourceText": { "type": "string" },
+        "quote": { "type": "string" },
+        "start": { "type": "integer", "minimum": 0 },
+        "end": { "type": "integer", "minimum": 0 },
+        "verified": { "type": "boolean" },
+        "modelQuote": { "type": ["string", "null"] },
+        "modelQuoteVerified": { "type": ["boolean", "null"] }
+      },
+      "additionalProperties": true
+    },
+    "claim": {
+      "allOf": [{ "$ref": "#/$defs/proposition" }],
+      "type": "object",
+      "required": ["id", "subject", "predicate", "object", "polarity", "tense", "modality", "conditions", "completeness", "evidence", "provenance", "sourceKind", "confidence"],
+      "properties": {
+        "id": { "type": "string" },
+        "conditions": { "type": "array", "items": { "$ref": "#/$defs/condition" } },
+        "causalLinks": { "type": "array", "items": { "type": "object" } },
+        "modalScope": { "type": ["object", "null"] },
+        "time": { "type": ["object", "null"] },
+        "quantifierScope": { "type": ["object", "null"] },
+        "comparisonFrame": { "type": ["object", "null"] },
+        "eventAttributes": { "type": "array", "items": { "type": "object" } },
+        "completeness": {
+          "type": "object",
+          "required": ["status", "missingRoles", "note"],
+          "properties": {
+            "status": { "enum": ["complete", "underspecified", "unresolved", "not_applicable"] },
+            "missingRoles": { "type": "array", "items": { "type": "string" } },
+            "note": { "type": "string" }
+          }
+        },
+        "semanticStatus": { "type": "string" },
+        "evidence": { "$ref": "#/$defs/evidence" },
+        "provenance": { "type": "string" },
+        "sourceKind": { "type": "string" },
+        "ruleId": { "type": ["string", "null"] },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "createdAt": { "type": "string" },
+        "note": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "entityRegistryEntry": {
+      "type": "object",
+      "required": ["id", "canonicalText", "type"],
+      "properties": {
+        "id": { "type": "string" },
+        "canonicalText": { "type": "string" },
+        "type": { "type": "string" }
+      }
+    },
+    "mention": {
+      "type": "object",
+      "required": ["entityId", "surfaceText", "canonicalText", "mentionType", "antecedentId"],
+      "properties": {
+        "entityId": { "type": "string" },
+        "surfaceText": { "type": "string" },
+        "canonicalText": { "type": "string" },
+        "mentionType": { "type": "string" },
+        "antecedentId": { "type": ["string", "null"] }
+      }
+    },
+    "claimRelation": {
+      "type": "object",
+      "required": ["id", "type", "fromClaimId", "toClaimId", "scope", "status"],
+      "properties": {
+        "id": { "type": "string" },
+        "type": { "enum": ["CONTRADICTS", "SUPPORTS", "ATTACKS", "RELATED_TO"] },
+        "fromClaimId": { "type": "string" },
+        "toClaimId": { "type": "string" },
+        "scope": { "type": "string" },
+        "status": { "enum": ["candidate", "accepted", "rejected"] },
+        "note": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "validation": {
+      "type": "object",
+      "required": ["status", "claimCount", "unresolvedCount", "underspecifiedCount", "allClaimsRequireReview"],
+      "properties": {
+        "status": { "enum": ["candidate", "partial", "unresolved"] },
+        "claimCount": { "type": "integer", "minimum": 0 },
+        "unresolvedCount": { "type": "integer", "minimum": 0 },
+        "underspecifiedCount": { "type": "integer", "minimum": 0 },
+        "allClaimsRequireReview": { "const": true }
+      }
+    }
+  },
+  "additionalProperties": true
+}
