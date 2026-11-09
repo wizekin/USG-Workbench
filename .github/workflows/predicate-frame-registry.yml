@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - "phase1/**"
     paths:
       - "interoperability/predicate-frame-registry/**"
       - "interoperability/operator-scope-registry/**"
