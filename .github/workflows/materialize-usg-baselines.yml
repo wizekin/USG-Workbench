@@ -1,10 +1,6 @@
 name: Materialize USG baseline archives
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - "MATERIALIZE_BASELINES_TRIGGER"
   workflow_dispatch:
 
 permissions:
