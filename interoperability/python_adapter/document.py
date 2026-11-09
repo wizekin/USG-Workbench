@@ -19,6 +19,42 @@ from .usg_sem_1 import ContractMappingError, contract_graph_roots_to_semir_parti
 
 SCHEMA_PATH = Path(__file__).resolve().parents[2] / "specifications" / "usg-sem-1.0.schema.json"
 
+# Contract signatures are intentionally independent of kernel 0.4.0 OPS:
+# USG-SEM includes constructors the current kernel does not yet implement.
+_CONTRACT_SIGNATURES = {
+    "REF": ("TERM", 0, 0, ()), "KIND": ("TERM", 0, 0, ()), "VAR": ("TERM", 0, 0, ()),
+    "REIFY": ("TERM", 1, 1, ("SIT|PROP",)), "LIT": ("VAL", 0, 0, ()),
+    "VALUE": ("VAL", 0, 0, ()), "HOLE": ("ANY", 0, 0, ()),
+    "TIME_LIT": ("TIME", 0, 0, ()), "TIME_REL": ("TIME", 0, 0, ()),
+    "SPEECH_TIME": ("TIME", 0, 0, ()), "UNRESOLVED_TIME": ("TIME", 0, 0, ()),
+    "EXTENT": ("TIME", 1, 1, ("SIT",)), "APPLY": ("SIT", 0, None, ()),
+    "ASPECT": ("SIT", 1, 1, ("SIT",)), "COMPOSE": ("SIT", 2, None, ("SIT",)),
+    "HOLDS": ("PROP", 1, 1, ("SIT",)), "RELATE": ("PROP", 2, 2, ("TERM", "TERM")),
+    "PROPERTY": ("PROP", 2, 3, ("TERM", "VAL", "VAL")), "NOT": ("PROP", 1, 1, ("PROP",)),
+    "AND": ("PROP", 2, None, ("PROP",)), "OR": ("PROP", 2, None, ("PROP",)),
+    "IMPLIES": ("PROP", 2, 2, ("PROP", "PROP")), "COND": ("PROP", 2, 2, ("PROP", "PROP")),
+    "COUNTERFACTUAL": ("PROP", 2, 2, ("PROP", "PROP")), "Q": ("PROP", 2, 3, ("PROP", "PROP", "TERM")),
+    "MODAL": ("PROP", 1, 1, ("PROP",)), "TENSE": ("PROP", 2, 2, ("TIME", "PROP")),
+    "TEMPORAL": ("PROP", 2, 2, ("TIME", "TIME")), "ATTRIBUTE": ("PROP", 2, 2, ("TERM", "PROP")),
+    "SAME_AS": ("PROP", 2, 2, ("TERM", "TERM")), "DIFFERENT_FROM": ("PROP", 2, 2, ("TERM", "TERM")),
+    "DIRECT": ("PROP", 2, 2, ("TERM", "SIT")), "FIG": ("PROP", 2, 2, ("ANY", "ANY")),
+    "ALT": (None, 2, None, ("ANY",)), "ASSERT": ("PROP", 1, 1, ("PROP",)),
+    "ERROR": ("ANY", 0, 0, ()), "PREDICATE_APP": ("SIT", 0, None, ("TERM",)),
+    "CONNECTIVE": ("PROP", 2, None, ("PROP",)), "QUANTIFIER": ("PROP", 1, 1, ("PROP",)),
+    "UNRESOLVED_REF": ("TERM", 0, 0, ()), "OPAQUE": (None, 0, None, ("ANY",)),
+}
+_CONTRACT_REQUIRED_PARAMS = {
+    "REF": ("ref",), "KIND": ("concept",), "VAR": ("name",), "LIT": ("value", "vtype"),
+    "HOLE": ("state",), "TIME_LIT": ("form", "value"), "TIME_REL": ("expr",),
+    "UNRESOLVED_TIME": ("text",), "APPLY": ("frame", "version", "roles"),
+    "ASPECT": ("aspect",), "COMPOSE": ("kind",), "RELATE": ("relation",),
+    "PROPERTY": ("property",), "Q": ("quant", "var"), "MODAL": ("force", "flavor"),
+    "TENSE": ("tense",), "TEMPORAL": ("allen",), "ATTRIBUTE": ("mode",),
+    "SAME_AS": ("scope",), "FIG": ("mapping",), "ALT": ("group", "ranks"),
+    "ERROR": ("code",),
+}
+
+
 
 def _canonical_bytes(value: Any) -> bytes:
     return json.dumps(
@@ -254,13 +290,43 @@ def validate_contract_document(document: Mapping[str, Any], schema_path: str | P
         for span in (item.get("annotations") or {}).get("spans", []):
             _validate_span(span, sources, errors, f"expression {item['id']}")
         params = item.get("params", {})
+        op = item.get("op")
+        signature = _CONTRACT_SIGNATURES.get(op)
+        if signature:
+            result_sort, min_args, max_args, expected_sorts = signature
+            operand_sorts = [expressions.get(ref, {}).get("sort") for ref in item.get("operandRefs", [])]
+            count = len(operand_sorts)
+            if count < min_args or (max_args is not None and count > max_args):
+                errors.append(f"{op} {item['id']} has invalid arity {count}")
+            if result_sort is not None and item.get("sort") != result_sort:
+                errors.append(f"{op} {item['id']} has result sort {item.get('sort')}; expected {result_sort}")
+            if op == "ALT":
+                known_sorts = {value for value in operand_sorts if value not in ("ANY", None)}
+                expected_alt_sort = next(iter(known_sorts)) if len(known_sorts) == 1 else "ANY"
+                if len(known_sorts) > 1 or item.get("sort") != expected_alt_sort:
+                    errors.append(f"ALT {item['id']} has inconsistent alternative sorts")
+            for index, actual_sort in enumerate(operand_sorts):
+                expected = expected_sorts[min(index, len(expected_sorts) - 1)] if expected_sorts else "ANY"
+                if actual_sort is not None and expected != "ANY" and actual_sort not in expected.split("|"):
+                    errors.append(f"{op} {item['id']} operand {index} has sort {actual_sort}; expected {expected}")
+            for required_param in _CONTRACT_REQUIRED_PARAMS.get(op, ()):
+                if required_param not in params:
+                    errors.append(f"{op} {item['id']} is missing required parameter {required_param}")
+        if op == "APPLY" and len(params.get("roles", [])) != len(item.get("operandRefs", [])):
+            errors.append(f"APPLY {item['id']} roles/operandRefs length mismatch")
+        if op == "ALT" and len(params.get("ranks", [])) != len(item.get("operandRefs", [])):
+            errors.append(f"ALT {item['id']} ranks/operandRefs length mismatch")
+        if op == "PREDICATE_APP" and len(params.get("roles", [])) != len(item.get("operandRefs", [])):
+            errors.append(f"PREDICATE_APP {item['id']} roles/operandRefs length mismatch")
+        if op == "CONNECTIVE" and len(params.get("operandRoles", [])) != len(item.get("operandRefs", [])):
+            errors.append(f"CONNECTIVE {item['id']} operandRoles/operandRefs length mismatch")
         for evidence_ref in params.get("evidenceRefs", []):
             if evidence_ref not in evidence:
                 errors.append(f"expression {item['id']} has dangling evidenceRef {evidence_ref}")
         mention_ref = params.get("mentionRef")
         if mention_ref and mention_ref not in mentions:
             errors.append(f"expression {item['id']} has dangling mentionRef {mention_ref}")
-        local_ref = params.get("ref") if item.get("op") == "REF" else None
+        local_ref = params.get("ref") if op == "REF" else None
         if isinstance(local_ref, str) and local_ref.startswith("wb:entity:") and local_ref not in referents:
             errors.append(f"REF expression {item['id']} has dangling local referent ref {local_ref}")
 
