@@ -1,0 +1,391 @@
+{
+  "registryId": "USG-PFR/1.0",
+  "registryVersion": "1.0.0",
+  "status": "initial-baseline",
+  "createdOn": "2026-11-09",
+  "baselines": {
+    "workbench": {
+      "implementation": "USG Semantic Workbench",
+      "version": "0.5.4",
+      "semanticSchema": "USG-SR/0.5.1",
+      "sourceFiles": [
+        "implementations/semantic-workbench-js/v0.5.4/semantic-core.js",
+        "implementations/semantic-workbench-js/v0.5.4/semantic-composer.js"
+      ]
+    },
+    "pythonKernel": {
+      "implementation": "USG Python reference kernel",
+      "version": "0.4.0",
+      "grammarVersion": "1.0",
+      "ontologyRelease": "0.2",
+      "foundationVersion": "0.2",
+      "frameDefinitionFile": "implementations/python-kernel/v0.4.0/usg/foundation/frames.py",
+      "frameResolutionFile": "implementations/python-kernel/v0.4.0/usg/model/frames.py",
+      "expressionGrammarFile": "implementations/python-kernel/v0.4.0/usg/grammar/node.py"
+    }
+  },
+  "sourceVocabulary": {
+    "semanticComposerPredicates": [
+      "STOP_USING",
+      "BOUGHT",
+      "NEEDS",
+      "DISLIKE",
+      "LIKE",
+      "INCREASE",
+      "DECREASE",
+      "REDUCE",
+      "FAIL",
+      "USES",
+      "WANTS",
+      "SELLS",
+      "PRODUCES",
+      "RECEIVES",
+      "BREAKS",
+      "STARTS",
+      "CLOSES",
+      "MEASURES"
+    ],
+    "semanticCoreEventPredicates": [
+      "BOUGHT",
+      "BUY",
+      "USES",
+      "USED",
+      "STOP_USING",
+      "FAIL",
+      "FAILS",
+      "INCREASE",
+      "DECREASE",
+      "CHANGE",
+      "MEASURES",
+      "ACQUIRED",
+      "PURCHASED",
+      "REDUCE",
+      "REDUCES",
+      "SELLS",
+      "SOLD",
+      "PRODUCES",
+      "PRODUCED",
+      "RECEIVES",
+      "RECEIVED",
+      "BREAKS",
+      "BROKE",
+      "STARTS",
+      "STARTED",
+      "CLOSES",
+      "CLOSED"
+    ],
+    "semanticCoreStatePredicates": [
+      "NEEDS",
+      "NEED",
+      "LIKE",
+      "DISLIKE",
+      "WANTS",
+      "WANT",
+      "HAS_PROPERTY",
+      "EXISTS",
+      "KNOWS",
+      "BELIEVES"
+    ],
+    "semanticCoreRelationPredicates": [
+      "SUBCLASS_OF",
+      "INSTANCE_OF",
+      "PART_OF",
+      "CAUSES",
+      "DIFFER",
+      "RELATED_TO"
+    ],
+    "semanticCoreTransitivePredicates": [
+      "NEEDS",
+      "NEED",
+      "LIKE",
+      "LIKED",
+      "DISLIKE",
+      "DISLIKED",
+      "WANTS",
+      "WANT",
+      "BUY",
+      "BUYS",
+      "BOUGHT",
+      "PURCHASE",
+      "PURCHASES",
+      "PURCHASED",
+      "ACQUIRE",
+      "ACQUIRES",
+      "ACQUIRED",
+      "USE",
+      "USES",
+      "USED",
+      "STOP_USING",
+      "MEASURE",
+      "MEASURES",
+      "REDUCE",
+      "REDUCES",
+      "SELL",
+      "SELLS",
+      "SOLD",
+      "PRODUCE",
+      "PRODUCES",
+      "PRODUCED",
+      "RECEIVE",
+      "RECEIVES",
+      "RECEIVED",
+      "BREAK",
+      "BREAKS",
+      "BROKE",
+      "START",
+      "STARTS",
+      "STARTED",
+      "CLOSE",
+      "CLOSES",
+      "CLOSED"
+    ]
+  },
+  "mappings": [
+    {
+      "mappingId": "WB054-CLOSES-to-PYK040-CLOSE-v1",
+      "status": "CONDITIONAL_EXACT",
+      "direction": "WORKBENCH_PREDICATION_TO_PYTHON_APPLY",
+      "source": {
+        "implementation": "USG Semantic Workbench",
+        "version": "0.5.4",
+        "nodeType": "PREDICATION",
+        "predicateIds": [
+          "CLOSES",
+          "CLOSED"
+        ],
+        "argumentRoles": [
+          "subject",
+          "object"
+        ]
+      },
+      "target": {
+        "implementation": "USG Python reference kernel",
+        "version": "0.4.0",
+        "operator": "APPLY",
+        "frame": "CLOSE",
+        "frameVersion": 1,
+        "situationKind": "EVENT"
+      },
+      "roleMap": [
+        {
+          "sourceRole": "subject",
+          "targetRole": "AGENT"
+        },
+        {
+          "sourceRole": "object",
+          "targetRole": "UNDERGOER"
+        }
+      ],
+      "requiredSourceRoles": [
+        "subject",
+        "object"
+      ],
+      "requiredTargetRoles": [
+        "UNDERGOER"
+      ],
+      "targetRoleConstraints": [
+        {
+          "targetRole": "AGENT",
+          "requiredSemanticClass": "Agent"
+        },
+        {
+          "targetRole": "UNDERGOER",
+          "requiredSemanticClass": "Artifact"
+        }
+      ],
+      "applicabilityConditions": [
+        "The Workbench predicate ID must be CLOSES or CLOSED.",
+        "The source construction must express the active transitive close sense: subject is the agent and object is the entity whose openness changes.",
+        "Both subject and object must resolve to explicit referents; an unresolved pronoun, missing object, or unknown filler does not satisfy this mapping.",
+        "The subject must be known to satisfy the Python frame role class Agent, and the object must be known to satisfy Artifact (or a class accepted as its subclass by the Python ontology). Unknown entity types produce PARTIAL/UNRESOLVED compatibility, not an exact mapping.",
+        "No additional semantically material source arguments may be discarded. They must be mapped by a separate approved rule or cause PARTIAL compatibility.",
+        "Polarity, modality, quantifier scope, tense, aspect, attribution, temporal information, evidence, and provenance are outside this predicate-frame mapping and must be handled by their own mappings."
+      ],
+      "semanticBasis": [
+        "Python CLOSE@1 specializes STATE_CHANGE@1. It inherits the AGENT role from STATE_CHANGE and narrows UNDERGOER to Artifact; UNDERGOER is required.",
+        "CLOSE@1 pins the changed dimension to Openness, direction to DECREASE, and target value to ClosedState.",
+        "Workbench v0.5.4 classifies CLOSES/CLOSED as event predicates and requires subject/object roles for these transitive predicates."
+      ],
+      "nonCoverage": [
+        "This mapping does not cover intransitive or middle uses such as 'The door closed' because the current Workbench transitive argument contract does not identify the same role structure.",
+        "This mapping does not by itself convert the surrounding USG-SEM expression tree or document metadata."
+      ],
+      "evidence": [
+        "implementations/semantic-workbench-js/v0.5.4/semantic-core.js",
+        "implementations/semantic-workbench-js/v0.5.4/semantic-composer.js",
+        "implementations/python-kernel/v0.4.0/usg/foundation/frames.py",
+        "implementations/python-kernel/v0.4.0/usg/model/frames.py"
+      ]
+    }
+  ],
+  "nonMappings": [
+    {
+      "id": "needs",
+      "sourcePredicateIds": [
+        "NEEDS",
+        "NEED"
+      ],
+      "status": "NO_EXACT_FRAME",
+      "reason": "The Python 0.4.0 frame catalogue has no frame whose defined semantics represent needing. Reusing a generic state frame would assert a meaning the target frame does not define."
+    },
+    {
+      "id": "likes",
+      "sourcePredicateIds": [
+        "LIKE",
+        "LIKED"
+      ],
+      "status": "NO_EXACT_FRAME",
+      "reason": "The frame catalogue has no exact liking/positive-preference frame. Do not map by broad similarity to ATTITUDE or EXPERIENCE_STATE."
+    },
+    {
+      "id": "dislikes",
+      "sourcePredicateIds": [
+        "DISLIKE",
+        "DISLIKED"
+      ],
+      "status": "NO_EXACT_FRAME",
+      "reason": "The frame catalogue has no exact disliking/negative-preference frame. ALLERGIC and other experience-state frames have different meanings."
+    },
+    {
+      "id": "wants",
+      "sourcePredicateIds": [
+        "WANTS",
+        "WANT"
+      ],
+      "status": "ARGUMENT_KIND_MISMATCH",
+      "reason": "Python WANT@1 requires CONTENT of kind EVENT. The current Workbench predication represents its object as an entity argument, not an event-valued content expression. A direct entity-to-CONTENT conversion would be a kind error."
+    },
+    {
+      "id": "belief-and-knowledge",
+      "sourcePredicateIds": [
+        "KNOWS",
+        "BELIEVES"
+      ],
+      "status": "ARGUMENT_KIND_MISMATCH",
+      "reason": "Python KNOW@1 and BELIEVE@1 require proposition-valued CONTENT. The current Workbench PREDICATION object slot is an entity referent, not a proposition. A mapping needs an explicit embedded proposition, not a surface object."
+    },
+    {
+      "id": "commercial-transactions",
+      "sourcePredicateIds": [
+        "BOUGHT",
+        "BUY",
+        "BUYS",
+        "PURCHASE",
+        "PURCHASES",
+        "PURCHASED",
+        "ACQUIRED",
+        "ACQUIRE",
+        "ACQUIRES",
+        "SELLS",
+        "SELL",
+        "SOLD"
+      ],
+      "status": "REQUIRED_ROLES_UNAVAILABLE",
+      "reason": "Python COMMERCIAL_TRANSACTION@1 requires BUYER, SELLER, and GOODS. The current Workbench subject/object structure supplies at most two arguments, and the subject role differs between buy and sell perspectives. ACQUIRE is also broader than purchase. No full mapping is approved; missing parties must not be invented."
+    },
+    {
+      "id": "receiving",
+      "sourcePredicateIds": [
+        "RECEIVE",
+        "RECEIVES",
+        "RECEIVED"
+      ],
+      "status": "PARTIAL_ONLY",
+      "reason": "The Python GIVE@1 frame can express a recipient perspective, but the Workbench receive predication supplies recipient and theme without the required transfer AGENT/SOURCE. It may be explored as a partial candidate later, but it is not an exact mapping."
+    },
+    {
+      "id": "state-change-verbs",
+      "sourcePredicateIds": [
+        "INCREASE",
+        "DECREASE",
+        "CHANGE",
+        "REDUCE",
+        "REDUCES",
+        "BREAK",
+        "BREAKS",
+        "BROKE"
+      ],
+      "status": "INSUFFICIENT_STATE_CHANGE_PARAMETERS",
+      "reason": "STATE_CHANGE@1 is not a generic synonym frame. It requires a defined change dimension and has direction/target-value semantics. These Workbench predicates do not consistently provide the exact dimension, initial/final state, or target-value information needed for a lossless mapping."
+    },
+    {
+      "id": "start-and-failure",
+      "sourcePredicateIds": [
+        "FAIL",
+        "FAILS",
+        "START",
+        "STARTS",
+        "STARTED"
+      ],
+      "status": "NO_EXACT_FRAME",
+      "reason": "The frame catalogue has no exact START or FAIL frame. Mapping either to generic STATE_CHANGE or ATTEMPT would alter or overstate the source meaning."
+    },
+    {
+      "id": "use-and-stop-using",
+      "sourcePredicateIds": [
+        "USE",
+        "USES",
+        "USED",
+        "STOP_USING"
+      ],
+      "status": "NO_EXACT_FRAME",
+      "reason": "No frame in the Python 0.4.0 foundation expresses the same use/stop-using predication with an exact role contract."
+    },
+    {
+      "id": "production",
+      "sourcePredicateIds": [
+        "PRODUCE",
+        "PRODUCES",
+        "PRODUCED"
+      ],
+      "status": "NO_EXACT_FRAME",
+      "reason": "No CREATE/PRODUCE event frame exists in the Python 0.4.0 frame catalogue. Do not substitute a generic transformation or information-processing frame."
+    },
+    {
+      "id": "measurement",
+      "sourcePredicateIds": [
+        "MEASURE",
+        "MEASURES"
+      ],
+      "status": "NO_EXACT_FRAME",
+      "reason": "The frame catalogue has no exact measurement frame and the Workbench predicate does not establish the required measurement instrument, quantity, or result semantics."
+    },
+    {
+      "id": "relations",
+      "sourcePredicateIds": [
+        "SUBCLASS_OF",
+        "INSTANCE_OF",
+        "PART_OF",
+        "CAUSES",
+        "DIFFER",
+        "RELATED_TO"
+      ],
+      "status": "OUT_OF_SCOPE_RELATION_MAPPING",
+      "reason": "These are relation predicates, not a homogeneous event-frame family. They require a separate relation/operator mapping. In particular, CAUSATION@1 relates propositions, while the current relation predicates may carry entity arguments."
+    },
+    {
+      "id": "property-and-existence",
+      "sourcePredicateIds": [
+        "HAS_PROPERTY",
+        "EXISTS"
+      ],
+      "status": "OUT_OF_SCOPE_PREDICATE_FAMILY",
+      "reason": "These predicates require property/identity/existence semantics rather than a frame match. Their conversion belongs in a separate predicate-to-expression/operator mapping."
+    },
+    {
+      "id": "ambiguous-close-id",
+      "sourcePredicateIds": [
+        "CLOSE"
+      ],
+      "status": "SOURCE_CLASSIFICATION_MISMATCH",
+      "reason": "The identifier CLOSE appears in the Workbench transitive-argument vocabulary but is not included in its event-predicate classification set. It is not covered by the CLOSES/CLOSED mapping until the source predicate classification is made consistent."
+    }
+  ],
+  "policy": {
+    "defaultForUnlistedPredicate": "UNSUPPORTED",
+    "unknownPredicateBehavior": "Do not select a frame by lexical similarity. Return UNSUPPORTED.",
+    "unmetApplicabilityBehavior": "Return PARTIAL or UNRESOLVED with the failed conditions; do not claim EXACT compatibility.",
+    "semanticLossBehavior": "Never drop, flatten, invent, or silently coerce an argument or semantic operator.",
+    "versioning": "Treat each published registry version as immutable. Add or change mappings only with source evidence, tests, and a new registry version."
+  }
+}
