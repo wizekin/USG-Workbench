@@ -46,14 +46,14 @@ jobs:
                   "target": Path("implementations/semantic-workbench-js/v0.5.4"),
                   "sha256": "9c76280ad000abaf14b52545bf6de9d25656744428f1257519c2c09ebff434a9",
                   "strip": "USG_Semantic_Workbench_v0.5.4/",
-        "expected_files": 56,
+                  "expected_files": 56,
               },
               {
                   "archive": Path("archives/python-kernel/usg-semantic-kernel-corrected.zip"),
                   "target": Path("implementations/python-kernel/v0.4.0"),
                   "sha256": "de3c4466b61ac1d09f23761b7c31faa0f685fdf3bfb148e7e60f132552e1095e",
                   "strip": "",
-        "expected_files": 152,
+                  "expected_files": 152,
               },
           ]
           
@@ -88,7 +88,9 @@ jobs:
                       out.parent.mkdir(parents=True, exist_ok=True)
                       out.write_bytes(zf.read(info))
               files = [p for p in target.rglob("*") if p.is_file()]
-              print(f"{archive}: extracted {len(files)} files to {target}")
+              if len(files) != job["expected_files"]:
+                  raise SystemExit("Unexpected extracted file count: " + str(len(files)) + " != " + str(job["expected_files"]))
+              print(f"{archive}: extracted and verified {len(files)} files to {target}")
           PY
 
       - name: Run Workbench test suite
