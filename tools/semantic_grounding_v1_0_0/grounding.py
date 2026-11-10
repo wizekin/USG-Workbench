@@ -399,10 +399,7 @@ class GroundingIndex:
                     "child_expression_id": child_id,
                     "operator_params": deepcopy(node.get("params", {})),
                 }
-                if child_id == target_expression_id:
-                    paths.append(current_path + [entry])
-                else:
-                    walk(child_id, current_path + [entry])
+                walk(child_id, current_path + [entry])
             stack.pop()
 
         walk(root_expression_id, [])
