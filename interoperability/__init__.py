@@ -1,0 +1,1 @@
+"""Versioned USG interoperability adapters."""
