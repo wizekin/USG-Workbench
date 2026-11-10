@@ -5,10 +5,12 @@ but there is no cross-table transaction or unique constraint enforcing USG's
 per-document compare-and-swap revision rule under concurrent writers.
 """
 from __future__ import annotations
+from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from hashlib import sha256
 import json
+import os
 from pathlib import Path
 import threading
 from typing import Any
@@ -87,7 +89,39 @@ class CanonicalDocumentStore:
         self._db = lancedb.connect(self.path)
         self._lock = threading.RLock()
         self._closed = False
+        self._lock_path = Path(self.path).with_name(Path(self.path).name + ".usg-writer.lock")
         self._table = self._open_or_create_canonical_table()
+
+    @contextmanager
+    def _writer_lock(self):
+        """Serialize adapter writers across processes on the same local filesystem."""
+        self._lock_path.parent.mkdir(parents=True, exist_ok=True)
+        handle = open(self._lock_path, "a+b")
+        try:
+            if os.name == "nt":
+                import msvcrt
+                handle.seek(0)
+                if handle.read(1) == b"":
+                    handle.seek(0)
+                    handle.write(b"0")
+                    handle.flush()
+                handle.seek(0)
+                msvcrt.locking(handle.fileno(), msvcrt.LK_LOCK, 1)
+            else:
+                import fcntl
+                fcntl.flock(handle.fileno(), fcntl.LOCK_EX)
+            yield
+        finally:
+            try:
+                if os.name == "nt":
+                    import msvcrt
+                    handle.seek(0)
+                    msvcrt.locking(handle.fileno(), msvcrt.LK_UNLCK, 1)
+                else:
+                    import fcntl
+                    fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
+            finally:
+                handle.close()
 
     def _open_or_create_canonical_table(self):
         names = self._db.table_names()
@@ -167,7 +201,10 @@ class CanonicalDocumentStore:
         raw = canonical_bytes(document)
         digest = sha256(raw).hexdigest()
         now = self._now()
-        with self._lock:
+        with self._lock, self._writer_lock():
+            # Reopen the table handle after acquiring the cross-process lock so
+            # the CAS check sees the newest committed manifest.
+            self._table = self._db.open_table(CANONICAL_TABLE)
             rows = self._rows_for_document(did)
             if rows:
                 rows.sort(key=lambda x: x["revision"])
@@ -194,9 +231,11 @@ class CanonicalDocumentStore:
                     raise RevisionConflictError(did, 0, expected_revision)
                 revision, predecessor, created_at = 1, None, now
 
-            # One append is atomic as a Lance table transaction. There is no
-            # conditional unique key, so the read/check/append sequence is not
-            # a database-enforced compare-and-swap under competing writers.
+            # One append is atomic as a Lance table transaction. LanceDB has no
+            # per-document unique conditional key, so the local OS lock makes
+            # this adapter's read/check/append sequence a serialized CAS on
+            # the same local filesystem. Direct table writers bypassing this
+            # adapter are outside that guarantee.
             self._table.add([{
                 "document_id": did, "revision": revision,
                 "predecessor_revision": predecessor, "profile_id": document["profileId"],
