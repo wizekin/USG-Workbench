@@ -1,0 +1,53 @@
+name: Phase 3 Step 3.5 Conditions and Contradictions
+
+on:
+  pull_request:
+    paths:
+      - "tools/document_analysis_services_v1_0_0/**"
+      - "tools/scope_aware_rules_v1_0_0/**"
+      - "tools/semantic_evidence_assessment_v1_0_0/**"
+      - "tests/test_phase3_conditions_contradictions.py"
+      - ".github/workflows/phase3-step-3-5-conditions-contradictions.yml"
+  push:
+    branches: [main]
+    paths:
+      - "tools/document_analysis_services_v1_0_0/**"
+      - "tests/test_phase3_conditions_contradictions.py"
+      - ".github/workflows/phase3-step-3-5-conditions-contradictions.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  conditions-contradictions:
+    name: phase3-conditions-contradictions
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install required dependency
+        run: python -m pip install "jsonschema>=4.18,<5"
+      - name: Compile document analysis packages
+        run: |
+          python -m compileall -q tools/scope_aware_rules_v1_0_0
+          python -m compileall -q tools/document_analysis_services_v1_0_0
+      - name: Run Step 3.5 tests
+        run: python -m unittest discover -s tests -p "test_phase3_conditions_contradictions.py" -v
+      - name: Run Phase 3 storage/query/rule regressions
+        run: |
+          python -m unittest discover -s tests -p "test_phase3_graph_store.py" -v
+          python -m unittest discover -s tests -p "test_phase3_persistent_query.py" -v
+          python -m unittest discover -s tests -p "test_phase3_scope_aware_rules.py" -v
+      - name: Run Phase 1 and Phase 2 regressions
+        run: |
+          python -m unittest discover -s tests -p "test_phase1_exit_acceptance.py" -v
+          python -m unittest discover -s tests -p "test_phase2_grounding.py" -v
+          python -m unittest discover -s tests -p "test_phase2_inference_executor.py" -v
+          python -m unittest discover -s tests -p "test_phase2_evidence_assessment.py" -v
+          python -m unittest discover -s tests -p "test_phase2_query_interface.py" -v
