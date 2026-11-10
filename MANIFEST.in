@@ -1,0 +1,17 @@
+include README.md
+include pyproject.toml
+include setup.py
+include requirements-phase3.lock
+include requirements-build.lock
+include MANIFEST.in
+recursive-include specifications *.json
+recursive-include rules *.json
+recursive-include benchmarks *.json
+recursive-include tools/usg-kernel-lab *.py *.html *.bat *.md
+recursive-include examples *.json *.md
+recursive-include release *.json
+recursive-include documentation *.md
+recursive-include interoperability *.py
+recursive-include implementations/python-kernel/v0.7.0/usg_discourse_v07 *.py
+
+recursive-include scripts *.py

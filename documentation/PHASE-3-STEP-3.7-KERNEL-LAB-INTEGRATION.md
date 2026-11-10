@@ -1,6 +1,6 @@
 # Phase 3 Step 3.7 — Kernel Lab product integration
 
-**Status:** IMPLEMENTED — awaiting exact-PR-head CI and merge.
+**Status:** COMPLETE — merged in [PR #67](https://github.com/wizekin/USG-Workbench/pull/67).
 **UI:** existing local USG Kernel Lab, extended additively.
 **Backend:** the same `USGApplication` dispatcher and SQLite canonical store used by Step 3.6.
 

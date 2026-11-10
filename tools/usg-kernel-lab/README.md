@@ -43,6 +43,12 @@ From the repository root:
 py tools/usg-kernel-lab/server.py
 ```
 
+After installing the package, the same integrated browser lab can be launched with one command:
+
+```powershell
+usg-workbench lab --db .\\usg-workbench.sqlite3
+```
+
 Then open [http://127.0.0.1:8765](http://127.0.0.1:8765).
 
 The server binds only to `127.0.0.1`. The default canonical database is `usg-workbench.sqlite3` in the repository root. Choose a different file with:
