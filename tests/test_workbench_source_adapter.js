@@ -3,6 +3,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const adapter = require('../interoperability/workbench_adapter');
+const semanticCore = require('../implementations/semantic-workbench-js/v0.5.4/semantic-core.js');
 
 function fixture() {
   const sourceText = '😀 Alice needs it.';
@@ -68,6 +69,34 @@ function fixture() {
     buildNotes: []
   };
 }
+
+
+test('converts an actual semantic-core build result without requiring manual review', async () => {
+  const sourceText = 'Alice needs the tool.';
+  const built = semanticCore.buildSemanticModel({
+    sourceText,
+    sourceId: 'actual-core-fixture',
+    claims: [{
+      id: 'claim-actual-1',
+      subject: { canonicalText: 'Alice', surfaceText: 'Alice', type: 'person', entityId: 'alice' },
+      predicate: 'NEEDS',
+      object: { canonicalText: 'the tool', surfaceText: 'the tool', type: 'artifact', entityId: 'tool' },
+      polarity: 'positive',
+      tense: 'present',
+      modality: 'asserted',
+      time: { referenceTime: 'present', temporalAdverbials: [], aspect: 'simple' },
+      evidence: { start: 0, end: sourceText.length, quote: sourceText }
+    }]
+  });
+  assert.equal(built.validation.valid, true);
+  const { document, report } = await adapter.workbenchToContract(built.model);
+  const predicate = document.expressions.find(x => x.op === 'PREDICATE_APP');
+  assert.ok(predicate);
+  assert.equal(predicate.params.predicate, 'NEEDS');
+  assert.deepEqual(predicate.params.roles, ['SUBJECT', 'OBJECT']);
+  assert.equal(report.status, 'LOSSLESS');
+  assert.equal(document.sources[0].text, sourceText);
+});
 
 test('maps a Workbench graph into USG-SEM without flattening operators or EXCEPTION direction', async () => {
   const model = fixture();
