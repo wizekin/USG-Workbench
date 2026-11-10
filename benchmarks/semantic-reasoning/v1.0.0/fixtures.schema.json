@@ -51,7 +51,8 @@
         "input_snapshot",
         "task",
         "expected",
-        "determinism_required"
+        "determinism_required",
+        "rationale"
       ],
       "properties": {
         "id": {
@@ -342,6 +343,10 @@
         },
         "determinism_required": {
           "type": "boolean"
+        },
+        "rationale": {
+          "type": "string",
+          "minLength": 40
         }
       }
     }
