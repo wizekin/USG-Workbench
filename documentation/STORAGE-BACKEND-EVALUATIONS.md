@@ -89,23 +89,6 @@ LanceDB is evaluated both as a potential canonical snapshot store and as a compl
 
 The key contract question is whether LanceDB's table-level MVCC and append commits can meet USG's per-document compare-and-swap revision guarantees. The adapter deliberately reports duplicate revision rows as integrity failures; the append/read/CAS sequence is not a database-enforced unique conditional transaction. A sidecar retrieval index is rebuildable and must never become authoritative semantic truth.
 
-### Candidate 3 initial measured result: LanceDB
-
-The corrected three-run benchmark on the 1,204-expression USG document showed:
-- Initial write: 2.5% faster than SQLite (114.0 ms vs 117.0 ms)
-- Warm read: 2.5% slower (112.8 ms vs 110.1 ms)
-- Idempotent write: effectively equal (109.4 ms vs 108.9 ms)
-- Revision update: 5.9% faster (110.4 ms vs 117.2 ms)
-- Revision listing: 2.23 ms vs 0.075 ms (about 29.7× slower, but still a low absolute latency)
-- Integrity verification: 7.5% faster (107.1 ms vs 115.8 ms)
-- Canonical table disk footprint: 373,007 B vs 958,464 B (61.1% smaller)
-
-This artifact was produced before adding the local cross-instance writer lock, so the final benchmark is rerun after that addition. The retrieval sidecar's vector/FTS index storage is not included in the canonical-table size.
-
-The initial implementation revealed that a table append is atomic, but LanceDB does not expose a per-document unique conditional append. The adapter now adds an OS-level local writer lock around read/check/append and refreshes the table manifest after acquiring the lock. This can serialize compare-and-swap updates made through this adapter by separate local instances. Direct writes that bypass the adapter are outside this guarantee; object-store deployments need a separate conditional coordination design.
-
-The retrieval test confirms exact nearest-neighbor mechanics with synthetic known-answer vectors and full-text search with a Lance FTS index. This validates the retrieval engine mechanics, not semantic quality of real embeddings; no model-generated embedding quality claim is made.
-
 ### Candidate 3 final measured result: LanceDB after local CAS locking
 
 Final benchmark artifact: GitHub Actions run 42821729870, artifact `phase3-lancedb-benchmark`. Three runs, each using the same 1,204-expression canonical USG document:
@@ -124,4 +107,40 @@ The final run includes the local writer lock and table-handle refresh. All Lance
 
 **Decision:** LanceDB is a promising candidate for local canonical storage and a strong complementary retrieval layer. It provides near-SQLite latency for the tested operations and a 61.1% smaller canonical-table footprint, with slower revision-history listing (about 5 ms absolute). The adapter's OS file lock supplies local compare-and-swap serialization for writers that use the adapter; direct table writes bypass that guarantee. The retrieval sidecar remains independently rebuildable. Actual embedding generation and semantic retrieval quality have not yet been tested.
 
-Do not promote it as the default until Qdrant is evaluated and the final cross-candidate decision is made. SQLite remains the active backend for now.
+Do not promote it as the default until Qdrant is evaluated and the final cross-candidate decision is made. SQLite remains the active backend for now.\n\n
+## Candidate 4: Qdrant
+
+Qdrant is a vector database and semantic-search engine. Its Python client supports persistent local mode without a server and a server mode for multi-client use. Qdrant points consist of a vector and optional payload, making it possible to attach canonical USG snapshot bytes as payload while keeping vector retrieval records in a separate collection. See the [Qdrant client local-mode documentation](https://github.com/qdrant/qdrant-client) and [point/payload model](https://qdrant.tech/documentation/manage-data/points/).
+
+This evaluation intentionally separates two questions:
+1. Can Qdrant payloads preserve canonical USG-SEM/1.0 snapshots and revision history without loss?
+2. Is Qdrant a useful optional vector-retrieval layer for USG?
+
+The canonical collection uses a neutral one-dimensional placeholder vector because Qdrant requires points to have vectors. It is not used for semantic similarity. Real retrieval vectors live in a separate collection. No semantic meaning is attributed to the placeholder vector or to the synthetic test vectors.
+
+### Qdrant local-mode topology limitation
+
+The persistent local Python client locks its storage directory to a single client/process. The Qdrant client explicitly recommends Qdrant server mode when concurrent access is required. The adapter therefore tests local persistence and same-process thread serialization, and includes a regression proving a second local client cannot open the same directory concurrently. This is a significant limitation for a general canonical document store. Server mode can serve multiple clients, but Qdrant does not provide the relational transaction/unique conditional revision semantics required to make the multi-step USG compare-and-swap workflow atomic by itself. See the [local-mode lock implementation](https://github.com/qdrant/qdrant-client/blob/master/qdrant_client/local/qdrant_local.py).
+
+The Qdrant adapter is evaluation-only. It does not alter the active SQLite store or USG-SEM/1.0 contracts. Its benchmark compares the same snapshot operations against SQLite; vector search is tested separately with deterministic known-answer vectors. The results will decide whether Qdrant belongs as an optional retrieval sidecar, not whether it should replace the canonical store.\n\n
+### Candidate 4 preliminary measured result: Qdrant local mode
+
+Benchmark artifact: GitHub Actions run 42822528134, artifact `phase3-qdrant-benchmark`. Three repetitions used the same 1,204-expression USG document.
+
+| Operation | SQLite median | Qdrant local median | Qdrant / SQLite |
+|---|---:|---:|---:|
+| Initial write | 248.4 ms | 239.9 ms | 0.966× |
+| Warm read (7-read median) | 244.8 ms | 235.3 ms | 0.961× |
+| Idempotent write | 240.5 ms | 468.5 ms | 1.948× |
+| Revision update | 254.3 ms | 481.0 ms | 1.891× |
+| Revision history | 0.106 ms | 0.158 ms | 1.493× |
+| Integrity verification | 244.8 ms | 239.8 ms | 0.979× |
+| On-disk files after close | 958,464 B | 394,360 B | 0.411× |
+
+**Benchmark fairness limitation:** this is a snapshot-payload workload, not an apples-to-apples replacement benchmark for all SQLite capabilities. The SQLite store maintains relational/derived semantic indexes; the Qdrant adapter stores full snapshots in payloads and does not reproduce those normalized expression/assertion/evidence/source indexes. The Qdrant vector-retrieval collection is also excluded from the canonical-store disk-footprint measurement. Therefore the 58.9% smaller measured footprint is not evidence that Qdrant would use 58.9% less space for equivalent indexed USG functionality.
+
+Qdrant's initial snapshot write/read and integrity-check timings are close to SQLite in this narrow workload. Idempotent writes and revision updates are about 1.9× slower because the adapter must scroll and inspect the current revision before writing. Revision history is around 0.16 ms absolute. The vector retrieval test passed with deterministic known-answer vectors and payload preservation; this does not assess semantic embedding quality or large-scale retrieval throughput.
+
+The adapter passed all dedicated tests, including local persistence/reopen, canonical Unicode round-trip, large graph preservation, tampering detection, stale-writer rejection, same-process competing threads, and the expected failure to open the same local storage directory from a second client. The Qdrant, SQLite baseline, and Phase 1/2 test gates passed.
+
+**Decision:** Qdrant is not a suitable direct replacement for the canonical USG graph store in this design. It is designed for vector similarity and payload filtering, not relational revision/index management. Its local mode is single-process exclusive; server mode is required for multiple concurrent clients, and a server deployment would still need a separately designed single-writer/coordination layer for USG's revision CAS contract. Qdrant remains a strong optional vector-retrieval sidecar candidate, with canonical snapshots retained in a transactional document store.
