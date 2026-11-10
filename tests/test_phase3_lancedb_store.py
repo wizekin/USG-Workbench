@@ -53,6 +53,37 @@ class LanceDBStoreTests(unittest.TestCase):
         with self.assertRaises(RevisionConflictError):
             self.store.put_document(stale, expected_revision=1)
 
+    def test_two_store_instances_serialize_competing_compare_and_swap_writers(self):
+        self.store.put_document(self.document)
+        other = CanonicalDocumentStore(Path(self.temp.name) / "lance")
+        first_change = deepcopy(self.document)
+        first_change["extensions"]["writer"] = "first"
+        second_change = deepcopy(self.document)
+        second_change["extensions"]["writer"] = "second"
+
+        from concurrent.futures import ThreadPoolExecutor
+        from threading import Barrier
+        barrier = Barrier(2)
+
+        def attempt(store, changed):
+            barrier.wait()
+            try:
+                return store.put_document(changed, expected_revision=1).revision
+            except RevisionConflictError:
+                return "CONFLICT"
+
+        try:
+            with ThreadPoolExecutor(max_workers=2) as pool:
+                outcomes = [
+                    pool.submit(attempt, self.store, first_change),
+                    pool.submit(attempt, other, second_change),
+                ]
+                results = [item.result() for item in outcomes]
+            self.assertEqual(sorted(str(x) for x in results), ["2", "CONFLICT"])
+            self.assertEqual([x["revision"] for x in self.store.list_revisions(self.document["documentId"])], [1, 2])
+        finally:
+            other.close()
+
     def test_duplicate_revision_rows_are_rejected(self):
         first = self.store.put_document(self.document)
         rows = self.store._rows_for_document(self.document["documentId"])
