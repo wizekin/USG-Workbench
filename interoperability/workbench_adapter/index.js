@@ -192,6 +192,7 @@
 
     const canonicalExpressions = [];
     const argumentNodes = [];
+    const partialRefs = [];
     const usedExpressionIds = new Set(expressions.map(x => opaqueId('expr', x.id)));
     function addArgumentNode(nativeExpression, argument, index) {
       const id = opaqueId('argument', nativeExpression.id + ':' + index + ':' + argument.role);
@@ -238,7 +239,7 @@
           variable: node.variable || null, restrictor: clone(node.restrictor || null),
           variableBinding: clone(node.variableBinding || null), surfaceText: node.surfaceText || null,
           evidenceRefs: arr(node.evidenceRefs).map(evidenceRef), nativeExpression: clone(node) };
-        if (op === 'OPAQUE') params.preservationReason = 'Workbench operator kind/polarity has no exact registered USG-SEM constructor mapping.';
+        if (op === 'OPAQUE') { params.preservationReason = 'Workbench operator kind/polarity has no exact registered USG-SEM constructor mapping.'; partialRefs.push(id); }
         canonicalExpressions.push({ id, op, sort: 'PROP', operandRefs: [target], params,
           interpretationStatus: op === 'OPAQUE' ? 'UNRESOLVED' : 'RESOLVED', nativeId: node.id });
       } else if (node.type === 'CONNECTIVE') {
@@ -261,7 +262,14 @@
           interpretationStatus: 'RESOLVED', nativeId: node.id });
       } else {
         const idRef = expressionRef(node.id);
-        canonicalExpressions.push({ id: idRef, op: 'OPAQUE', sort: 'ANY', operandRefs: [],
+        const childIds = [];
+        if (node.scope?.targetId) childIds.push(node.scope.targetId);
+        if (node.antecedentId) childIds.push(node.antecedentId);
+        if (node.consequentId) childIds.push(node.consequentId);
+        childIds.push(...arr(node.operandIds));
+        const operandRefs = childIds.map(expressionRef);
+        partialRefs.push(idRef);
+        canonicalExpressions.push({ id: idRef, op: 'OPAQUE', sort: 'ANY', operandRefs,
           params: { nativeType: node.type || 'unknown', nativeExpression: clone(node),
             preservationReason: 'Unrecognized Workbench expression type; preserved without semantic coercion.' },
           interpretationStatus: 'UNRESOLVED', nativeId: node.id });
@@ -291,16 +299,15 @@
     });
 
     const buildNotes = arr(model.buildNotes);
-    const unresolvedRefs = canonicalUnresolved.map(x => x.id);
-    const unmappedRefs = [];
+    const unmappedRefs = [...new Set(partialRefs)];
     if (buildNotes.length) {
       for (let i = 0; i < buildNotes.length; i++) unmappedRefs.push('wb:warning:' + i);
     }
-    const mappingStatus = buildNotes.length ? 'PARTIAL' : 'LOSSLESS';
+    const mappingStatus = unmappedRefs.length ? 'PARTIAL' : 'LOSSLESS';
     const derivations = [{
       id: opaqueId('derivation', 'semantic-core:' + model.version),
       method: 'COMPOSITION', component: 'USGSemanticCore/' + model.version,
-      ruleIds: Array.from(new Set(expressions.flatMap(x => arr(x.provenance?.ruleId).concat(x.provenance?.ruleId || [])))).filter(Boolean),
+      ruleIds: Array.from(new Set(expressions.map(x => x.provenance?.ruleId).filter(x => typeof x === 'string' && x.length))),
       inputRefs: [sourceRef], outputRefs: roots.map(expressionRef),
       status: buildNotes.length ? 'INCOMPLETE' : 'VALIDATED', diagnostics: buildNotes.slice()
     }];
@@ -316,6 +323,8 @@
       extensions: { [NAMESPACE]: { adapterVersion: VERSION, sourceProfile: model.profile,
         sourceVersion: model.version, nativeModel: clone(model), nativeModelDigest: await sha256(stable(model)) } }
     };
+    const canonicalProjectionDigest = await sha256(stable({ ...document, extensions: {} }));
+    document.extensions[NAMESPACE].canonicalProjectionDigest = canonicalProjectionDigest;
     return { document, report: { status: mappingStatus, sourceProfile: SOURCE_PROFILE,
       sourceVersion: model.version, convertedCounts: { sources: sources.length, referents: referents.length,
         mentions: canonicalMentions.length, expressions: canonicalExpressions.length, evidence: canonicalEvidence.length,
@@ -327,7 +336,14 @@
     const payload = document?.extensions?.[NAMESPACE];
     if (!payload || !payload.nativeModel || !payload.nativeModelDigest) return { present: false, valid: false };
     const actual = await sha256(stable(payload.nativeModel));
-    return { present: true, valid: actual === payload.nativeModelDigest, expected: payload.nativeModelDigest, actual };
+    const projection = clone(document);
+    projection.extensions = {};
+    const projectionActual = await sha256(stable(projection));
+    const nativeValid = actual === payload.nativeModelDigest;
+    const projectionValid = projectionActual === payload.canonicalProjectionDigest;
+    return { present: true, valid: nativeValid && projectionValid, nativeValid, projectionValid,
+      expectedNative: payload.nativeModelDigest, actualNative: actual,
+      expectedProjection: payload.canonicalProjectionDigest, actualProjection: projectionActual };
   }
 
   return { VERSION, SOURCE_PROFILE, NAMESPACE, workbenchToContract, verifyNativeSnapshot,
