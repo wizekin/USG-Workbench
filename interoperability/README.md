@@ -123,3 +123,14 @@ The registries and adapter target the immutable baseline pair: Workbench v0.5.4 
 - Distinguishes MENTION, REFERENT, and SOURCE reference spaces. Surface equality, aliases, or shared Referent links never merge Mention identities.
 - Does not infer antecedents, coreference, or referent assignments. Resolution status is not used to invent a link-presence rule.
 - This is a model-only step; USG-SEM document adapter integration and full round-trip remain for the following step.
+
+
+### Step 5J — USG-SEM/1.0 ↔ Python Mention model v0.7.0 document adapter
+
+- [Step 5J Mention document adapter contract](python-kernel-extension/STEP-5J-MENTION-DOCUMENT-ADAPTER.md); implementation: [document_v07.py](python_adapter/document_v07.py).
+- Public APIs: `document_to_kernel_v07()` and `kernel_v07_document_to_contract()`; lazily exported from `interoperability.python_adapter`.
+- Projects Mention occurrence identity, exact surface text, known resolution status, optional mention type, and explicit typed Referent/antecedent links.
+- Source spans project only when the explicit Source exists, Unicode code-point bounds are valid, and the exact source substring matches the Mention surface.
+- Dangling links, unknown statuses, misaligned spans, and additional properties remain canonical-only and are reported per field. No reference target is inferred from ID text.
+- Native edits merge only into Mention records. All other record families and canonical sidecars remain preserved; stale snapshots and invalid full-document exports are rejected.
+- Does not infer antecedents, coreference, or Referent assignments. The v0.7.0 model, v0.6.0 Referent adapter, v0.5.0 kernel, USG-SEM/1.0, Workbench v0.5.4, archives, immutable baselines, and existing Node.js action versions remain unchanged.
