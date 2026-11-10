@@ -101,9 +101,7 @@ class Phase2RuleSemanticsTests(unittest.TestCase):
 
     def test_registry_constraint_kind_without_semantics_is_rejected(self):
         contract = copy.deepcopy(self.contract)
-        contract["constraint_semantics"] = [
-            item for item in contract["constraint_semantics"] if item["kind"] != "same_binding"
-        ]
+        contract["constraint_semantics"][0]["kind"] = "typed_reference"
         with self.assertRaisesRegex(SemanticsValidationError, "constraint semantics coverage mismatch"):
             validate_semantics(contract, self.registry, self.schema, self.registry_schema)
 
