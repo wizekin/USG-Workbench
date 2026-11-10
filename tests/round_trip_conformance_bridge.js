@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const adapter = require('../interoperability/workbench_adapter');
 
 function makeModel({ warnings = false, opaque = false } = {}) {
-  const text = '😀 Alice needs the tool unless Bob agrees; when Carol arrives, Alice helps.';
+  const text = '😀 Alice needs the tool unless Bob agrees; when Carol arrives, Alice helps it.';
   const span = (needle, occurrence = 0) => {
     let from = 0, at = -1;
     for (let i = 0; i <= occurrence; i++) {
@@ -58,7 +58,7 @@ function makeModel({ warnings = false, opaque = false } = {}) {
   mentions.push({
     id: 'it-mention', entityId: null, surfaceText: 'it', mentionType: 'pronoun',
     resolutionStatus: 'unresolved', antecedentEntityId: null,
-    sourceSpan: { start: text.length - 1, end: text.length }
+    sourceSpan: span('it')
   });
 
   const evidenceRecords = [
@@ -74,7 +74,7 @@ function makeModel({ warnings = false, opaque = false } = {}) {
       scope: { targetId: 'not-needs', scopeKind: 'whole_expression' }, evidenceRefs: ['needs-evidence'] },
     predication('agrees', 'AGREES', 'bob', 'alice', 'agrees', 'past', 'perfect'),
     predication('arrives', 'ARRIVES', 'carol', null, 'arrives', 'future', 'progressive'),
-    predication('helps', 'HELPS', 'alice', 'bob', 'helps', 'present', 'habitual'),
+    predication('helps', 'HELPS', 'alice', null, 'helps', 'present', 'habitual'),
     { id: 'forall-root', type: 'OPERATOR', operatorType: 'QUANTIFIER', operator: 'FORALL',
       variable: 'x', restrictor: { entityId: 'person-class', predicate: 'INSTANCE_OF' },
       variableBinding: { variable: 'x', role: 'subject', restrictorEntityId: 'person-class' },
@@ -82,8 +82,8 @@ function makeModel({ warnings = false, opaque = false } = {}) {
     { id: 'not-forall-root', type: 'OPERATOR', operatorType: 'NEGATION', operator: 'NOT',
       scope: { targetId: 'forall-root', scopeKind: 'whole_expression' }, evidenceRefs: ['needs-evidence'] },
     { id: 'exists-root', type: 'OPERATOR', operatorType: 'QUANTIFIER', operator: 'EXISTS',
-      variable: 'y', restrictor: { entityId: 'person-class', predicate: 'INSTANCE_OF' },
-      variableBinding: { variable: 'y', role: 'subject', restrictorEntityId: 'person-class' },
+      variable: 'x', restrictor: { entityId: 'person-class', predicate: 'INSTANCE_OF' },
+      variableBinding: { variable: 'x', role: 'subject', restrictorEntityId: 'person-class' },
       scope: { targetId: 'not-needs', scopeKind: 'quantifier_body' }, evidenceRefs: ['needs-evidence'] },
     { id: 'no-root', type: 'OPERATOR', operatorType: 'NEGATION', operator: 'NOT',
       scope: { targetId: 'exists-root', scopeKind: 'whole_expression' }, evidenceRefs: ['needs-evidence'] },
@@ -107,6 +107,16 @@ function makeModel({ warnings = false, opaque = false } = {}) {
       logicalStatus: 'concessive_relation_asserted', marker: 'although',
       evidenceRefs: ['agrees-evidence', 'helps-evidence'] }
   ];
+  const needs = expressions.find(x => x.id === 'needs');
+  needs.arguments[0].variableId = 'x';
+  needs.arguments[0].bindingEntityId = 'person-class';
+  needs.eventFrame.participants[0].variableId = 'x';
+  needs.eventFrame.participants[0].bindingEntityId = 'person-class';
+  const helps = expressions.find(x => x.id === 'helps');
+  helps.arguments.push({ role: 'object', entityId: null, mentionId: 'it-mention' });
+  helps.argumentRequirements.missingRoles = ['object'];
+  helps.eventFrame.participants.push({ role: 'object', entityId: null });
+  helps.completeness = { status: 'unresolved', missingRoles: ['object'] };
   if (opaque) {
     expressions.push({ id: 'opaque-root', type: 'OPERATOR', operatorType: 'POLARITY',
       operator: 'UNKNOWN', scope: { targetId: 'needs', scopeKind: 'whole_expression' },
