@@ -84,9 +84,9 @@ def run_group(name: str, patterns: list[str]) -> dict:
             check=False,
         )
         output = (completed.stdout or "") + (completed.stderr or "")
-        match = re.search(r"Ran\\s+(\\d+)\\s+tests?", output)
+        match = re.search(r"Ran\s+(\d+)\s+tests?", output)
         tests_run = int(match.group(1)) if match else 0
-        skipped_match = re.search(r"skipped=(\\d+)", output)
+        skipped_match = re.search(r"skipped=(\d+)", output)
         skipped = int(skipped_match.group(1)) if skipped_match else 0
         total_tests += tests_run
         print(output)
