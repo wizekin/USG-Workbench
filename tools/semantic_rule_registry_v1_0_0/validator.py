@@ -74,11 +74,13 @@ def validate_registry(
 
         variable_names = {item["name"] for item in rule["variables"]}
         for premise in rule["premises"]:
-            for field, variable in premise["match"]["field_bindings"].items():
-                if variable not in variable_names:
-                    errors.append(
-                        f"{identity[0]} premise {premise['premise_id']} binds undeclared variable {variable!r} at {field}"
-                    )
+            for field, bound_value in premise["match"]["field_bindings"].items():
+                bound_variables = bound_value if isinstance(bound_value, list) else [bound_value]
+                for variable in bound_variables:
+                    if variable not in variable_names:
+                        errors.append(
+                            f"{identity[0]} premise {premise['premise_id']} binds undeclared variable {variable!r} at {field}"
+                        )
 
         for conclusion in rule["conclusion_templates"]:
             for value in _walk_strings(conclusion["template"]):
