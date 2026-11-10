@@ -139,7 +139,9 @@ test('converts canonical code-point spans back to Workbench UTF-16 offsets', asy
 
 test('canonical edits win over stale native payload and force PARTIAL status', async () => {
   const { document } = await sourceAdapter.workbenchToContract(sourceModel());
-  document.expressions.find(x => x.nativeId === 'needs').params.predicate = 'WANTS';
+  const editedPredicate = document.expressions.find(x => x.nativeId === 'needs');
+  editedPredicate.params.predicate = 'WANTS';
+  editedPredicate.params.eventFrame.predicate = 'WANTS';
   const result = await adapter.contractToWorkbench(document);
   const predicate = result.model.expressions.find(x => x.id === 'needs');
   assert.equal(predicate.predicate, 'WANTS');
