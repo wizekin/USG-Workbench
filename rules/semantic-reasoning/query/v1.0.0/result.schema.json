@@ -11,6 +11,7 @@
     "document_sha256",
     "completion_status",
     "goal_status",
+    "assumptions",
     "goal",
     "source_assertions",
     "scope_assertions",
@@ -143,6 +144,12 @@
         "canonical_document_mutated": {
           "const": false
         }
+      }
+    },
+    "assumptions": {
+      "type": "array",
+      "items": {
+        "type": "object"
       }
     }
   }
