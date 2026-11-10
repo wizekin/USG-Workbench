@@ -14,6 +14,7 @@ from interoperability.python_adapter.document_v15 import (
 )
 from interoperability.python_adapter.usg_sem_1 import ContractMappingError
 from test_python_kernel_v15_document_adapter import CompleteDocumentAdapterV15Tests
+from test_python_kernel_v15_document_adapter import CompleteDocumentAdapterV15Tests
 
 
 class Phase1ExitAcceptanceTests(unittest.TestCase):
