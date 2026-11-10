@@ -64,6 +64,22 @@ def validate_semantics(
         )
 
     catalog = {item["code"] for item in contract["diagnostic_catalog"]}
+    if len(catalog) != len(contract["diagnostic_catalog"]):
+        errors.append("diagnostic catalogue contains duplicate codes")
+    if len({item["kind"] for item in contract["constraint_semantics"]}) != len(contract["constraint_semantics"]):
+        errors.append("constraint semantics contains duplicate kinds")
+    if len({item["code"] for item in contract["outcomes"]}) != len(contract["outcomes"]):
+        errors.append("applicability outcomes contain duplicate codes")
+    scope_axes = {item["axis"] for item in contract["scope_policies"]}
+    expected_scope_axes = {"typed_identity", "context", "attribution", "polarity", "modality", "quantifier", "temporal", "roles", "definition_grounding"}
+    if scope_axes != expected_scope_axes:
+        errors.append(f"scope policy coverage mismatch: missing={sorted(expected_scope_axes - scope_axes)}, extra={sorted(scope_axes - expected_scope_axes)}")
+    catalog_diagnostics = set()
+    for item in contract["constraint_semantics"]:
+        catalog_diagnostics.update(item["failure_diagnostics"])
+    missing_constraint_diagnostics = catalog_diagnostics - catalog
+    if missing_constraint_diagnostics:
+        errors.append(f"constraint diagnostics missing from catalogue: {sorted(missing_constraint_diagnostics)}")
     used_diagnostics = set()
     for rule in registry["rules"]:
         used_diagnostics.update(rule["diagnostics"])
@@ -100,6 +116,11 @@ def validate_semantics(
         policy = policies["RULE_ELIGIBLE_ASSERTION"]
         if policy["allowed_epistemic_statuses"] != ["SOURCE_ASSERTED"]:
             errors.append("initial rule eligibility must remain SOURCE_ASSERTED-only")
+        if policy["unknown_origin_outcome"] != "UNKNOWN":
+            errors.append("unknown assertion origin must remain UNKNOWN")
+        commitments = {item["commitment"]: item for item in policy["commitment_rules"]}
+        if set(commitments) != {"AUTHOR", "ATTRIBUTED", "NONE"} or not commitments["ATTRIBUTED"]["require_attributed_to_ref"]:
+            errors.append("commitment and attributed referent requirements must be explicit")
         if policy["inferred_premise_chaining_allowed"] or policy["verified_status_auto_promotion"]:
             errors.append("inferred chaining and verified-status auto-promotion must remain disabled")
 
