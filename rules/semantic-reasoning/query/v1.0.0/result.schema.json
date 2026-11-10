@@ -1,0 +1,148 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wizekin.github.io/USG-Workbench/semantic-query-result-1.0.0.schema.json",
+  "title": "USG Structured Query Result 1.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "profile_id",
+    "query_id",
+    "document_id",
+    "document_sha256",
+    "completion_status",
+    "goal_status",
+    "goal",
+    "source_assertions",
+    "scope_assertions",
+    "inference_candidates",
+    "derivations",
+    "evidence_assessment",
+    "conflicts",
+    "relation_claims",
+    "unresolved_questions",
+    "unsupported_portions",
+    "explanation",
+    "diagnostics",
+    "safety"
+  ],
+  "properties": {
+    "profile_id": {
+      "const": "USG-QUERY/1.0.0"
+    },
+    "query_id": {
+      "type": "string"
+    },
+    "document_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "document_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "completion_status": {
+      "enum": [
+        "COMPLETE",
+        "INCOMPLETE",
+        "AMBIGUOUS",
+        "UNRESOLVED",
+        "UNSUPPORTED",
+        "INVALID_INPUT"
+      ]
+    },
+    "goal_status": {
+      "enum": [
+        "SOURCE_ASSERTED_NOT_VERIFIED",
+        "DERIVED_NOT_VERIFIED",
+        "DISPUTED",
+        "UNKNOWN",
+        "CONFLICTING",
+        "NOT_ESTABLISHED",
+        "AMBIGUOUS",
+        "UNRESOLVED",
+        "UNSUPPORTED"
+      ]
+    },
+    "goal": {
+      "type": "object"
+    },
+    "source_assertions": {
+      "type": "array"
+    },
+    "scope_assertions": {
+      "type": "array"
+    },
+    "inference_candidates": {
+      "type": "array"
+    },
+    "derivations": {
+      "type": "array"
+    },
+    "evidence_assessment": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "conflicts": {
+      "type": "array"
+    },
+    "relation_claims": {
+      "type": "array"
+    },
+    "unresolved_questions": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "unsupported_portions": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "explanation": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "diagnostics": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "safety": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "truth_promotion",
+        "absence_means_false",
+        "free_text_inference",
+        "inferred_premise_chaining",
+        "canonical_document_mutated"
+      ],
+      "properties": {
+        "truth_promotion": {
+          "const": false
+        },
+        "absence_means_false": {
+          "const": false
+        },
+        "free_text_inference": {
+          "const": false
+        },
+        "inferred_premise_chaining": {
+          "const": false
+        },
+        "canonical_document_mutated": {
+          "const": false
+        }
+      }
+    }
+  }
+}
