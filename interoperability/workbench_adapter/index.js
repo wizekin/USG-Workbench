@@ -329,7 +329,7 @@
         const wrapperId = opaqueId('holds', child.nativeId || child.id);
         if (!holdsWrappers.has(wrapperId)) {
           const wrapper = { id: wrapperId, op: 'HOLDS', sort: 'PROP',
-            operandRefs: [child.id], params: {}, nativeId: child.nativeId };
+            operandRefs: [child.id], params: {} };
           holdsWrappers.set(wrapperId, wrapper);
           canonicalById.set(wrapperId, wrapper);
         }
