@@ -47,5 +47,6 @@ Mappings must be exact and documented. Unsupported or lossy mappings must be rep
 - **5S completed and merged:** native UnresolvedItem model v1.2.0. [Step 5S contract](python-kernel-extension/STEP-5S-NATIVE-UNRESOLVED-ITEM-MODEL.md). It preserves distinct unresolved statuses and leaves ambiguous scope/candidate references opaque.
 - **5T completed and merged:** loss-preserving UnresolvedItem document adapter v1.2.0. [Step 5T contract](python-kernel-extension/STEP-5T-UNRESOLVED-ITEM-DOCUMENT-ADAPTER.md).
 - **5U completed and merged:** native Derivation model v1.3.0. [Step 5U contract](python-kernel-extension/STEP-5U-NATIVE-DERIVATION-MODEL.md). It preserves heterogeneous provenance references as opaque IDs and keeps derivation status distinct from truth.
-- **5V implemented on branch:** loss-preserving Derivation document adapter v1.3.0. [Step 5V contract](python-kernel-extension/STEP-5V-DERIVATION-DOCUMENT-ADAPTER.md).
+- **5V completed and merged:** loss-preserving Derivation document adapter v1.3.0. [Step 5V contract](python-kernel-extension/STEP-5V-DERIVATION-DOCUMENT-ADAPTER.md).
+- **5W implemented on branch:** native Definitions catalogue model v1.4.0. [Step 5W contract](python-kernel-extension/STEP-5W-NATIVE-DEFINITIONS-MODEL.md). It models Concepts, Frames, Roles, and Relations without inferring ontology or relation semantics.
 - Existing v0.4.0–v1.0.0 model packages, Workbench v0.5.4, USG-SEM/1.0, archives, and immutable baselines remain unchanged.
