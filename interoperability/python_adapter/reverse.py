@@ -206,6 +206,17 @@ def _assertion_to_contract(assertion: Any, opaque_id: str, refs: Mapping[Any, st
     if expression_id is None:
         raise ContractMappingError("Assertion content Ref has no canonical expression identity")
     expression_id = root_id_map.get(expression_id, expression_id)
+    lifecycle_map = {"VALIDATED_FORMALLY": "FORMALLY_VALIDATED"}
+    lifecycle_stage = lifecycle_map.get(assertion.lifecycle.value, assertion.lifecycle.value)
+    contract_lifecycle = {
+        "DISCOVERED", "STRUCTURED", "FORMALLY_VALIDATED", "AUTOMATICALLY_EVALUATED",
+        "CORROBORATED", "PROMOTED", "REJECTED", "DEFERRED", "DEPRECATED",
+    }
+    if lifecycle_stage not in contract_lifecycle:
+        archival.setdefault(opaque_id, {})["unsupportedLifecycle"] = assertion.lifecycle.value
+        raise ContractMappingError(
+            f"Python lifecycle {assertion.lifecycle.value!r} has no USG-SEM/1.0 equivalent"
+        )
     result = {
         "id": opaque_id,
         "expressionRef": expression_id,
@@ -216,9 +227,7 @@ def _assertion_to_contract(assertion: Any, opaque_id: str, refs: Mapping[Any, st
             "kind": assertion.eval_context.value,
             **({"name": assertion.eval_context_name} if assertion.eval_context_name is not None else {}),
         },
-        "lifecycleStage": {
-            "VALIDATED_FORMALLY": "FORMALLY_VALIDATED",
-        }.get(assertion.lifecycle.value, assertion.lifecycle.value),
+        "lifecycleStage": lifecycle_stage,
     }
     if assertion.source is not None:
         source_id = refs.get(assertion.source)
