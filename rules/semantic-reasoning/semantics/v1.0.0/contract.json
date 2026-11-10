@@ -92,10 +92,11 @@
       "token": "RULE_ELIGIBLE_ASSERTION",
       "scope": "Initial USG-RULE/1.0.0 reference rules",
       "required_fields": [
-        "epistemicStatus",
-        "interpretationStatus",
-        "commitment",
-        "evaluationContext"
+        "assertion.epistemicStatus",
+        "expression.interpretationStatus",
+        "assertion.origin",
+        "assertion.commitment",
+        "assertion.evaluationContext"
       ],
       "allowed_epistemic_statuses": [
         "SOURCE_ASSERTED"
@@ -128,7 +129,32 @@
       "unresolved_interpretation_outcome": "UNRESOLVED",
       "attribution_policy": "PRESERVE_EXACT_COMMITMENT_AND_ATTRIBUTED_REFERENT",
       "inferred_premise_chaining_allowed": false,
-      "verified_status_auto_promotion": false
+      "verified_status_auto_promotion": false,
+      "allowed_origins": [
+        "SOURCE_TEXT",
+        "GRAMMATICAL",
+        "BACKGROUND_INFERENCE",
+        "IMPORTED_RESOURCE",
+        "CURATED"
+      ],
+      "unknown_origin_outcome": "UNKNOWN",
+      "commitment_rules": [
+        {
+          "commitment": "AUTHOR",
+          "require_attributed_to_ref": false,
+          "behavior": "Preserve exact commitment and do not infer a different author."
+        },
+        {
+          "commitment": "ATTRIBUTED",
+          "require_attributed_to_ref": true,
+          "behavior": "Resolve attributedToRef exactly and require the same attribution binding across premises."
+        },
+        {
+          "commitment": "NONE",
+          "require_attributed_to_ref": false,
+          "behavior": "Preserve NONE; do not upgrade to AUTHOR or ATTRIBUTED."
+        }
+      ]
     }
   ],
   "scope_policies": [
@@ -173,116 +199,232 @@
     {
       "kind": "same_binding",
       "meaning": "All occurrences of one variable bind to the same value type and exact identity; labels are never substituted.",
-      "failure_outcome": "NOT_APPLICABLE",
-      "failure_diagnostic": "RULE_BINDING_MISMATCH"
+      "failure_outcomes": [
+        "NOT_APPLICABLE",
+        "UNRESOLVED"
+      ],
+      "failure_diagnostics": [
+        "RULE_BINDING_MISMATCH",
+        "RULE_REFERENCE_UNRESOLVED"
+      ]
     },
     {
       "kind": "typed_reference",
       "meaning": "A reference resolves to an existing target of the exact declared record type. A wrong target type is invalid input; a dangling target is unresolved.",
-      "failure_outcome": "INVALID_INPUT",
-      "failure_diagnostic": "RULE_TYPED_REFERENCE_MISMATCH"
+      "failure_outcomes": [
+        "INVALID_INPUT",
+        "UNRESOLVED"
+      ],
+      "failure_diagnostics": [
+        "RULE_TYPED_REFERENCE_MISMATCH",
+        "RULE_REFERENCE_UNRESOLVED"
+      ]
     },
     {
       "kind": "constructor_is",
       "meaning": "The constructor/operator token must match exactly; no aliases or lexical approximations are applied.",
-      "failure_outcome": "NOT_APPLICABLE",
-      "failure_diagnostic": "RULE_CONNECTIVE_MISMATCH"
+      "failure_outcomes": [
+        "NOT_APPLICABLE",
+        "UNSUPPORTED"
+      ],
+      "failure_diagnostics": [
+        "RULE_CONNECTIVE_MISMATCH",
+        "RULE_CONSTRUCTOR_UNSUPPORTED"
+      ]
     },
     {
       "kind": "operator_direction",
       "meaning": "Directed operator roles and operands must match their declared positions exactly; a conditional is never reversed.",
-      "failure_outcome": "NOT_APPLICABLE",
-      "failure_diagnostic": "RULE_CONDITIONAL_DIRECTION_MISMATCH"
+      "failure_outcomes": [
+        "NOT_APPLICABLE"
+      ],
+      "failure_diagnostics": [
+        "RULE_CONDITIONAL_DIRECTION_MISMATCH"
+      ]
     },
     {
       "kind": "status_eligible",
       "meaning": "The premise must satisfy the named rule eligibility policy. UNKNOWN remains unknown; DISPUTED remains conflicting; missing status is unresolved.",
-      "failure_outcome": "NOT_APPLICABLE",
-      "failure_diagnostic": "RULE_PREMISE_INELIGIBLE"
+      "failure_outcomes": [
+        "NOT_APPLICABLE",
+        "UNKNOWN",
+        "UNRESOLVED",
+        "CONFLICTING"
+      ],
+      "failure_diagnostics": [
+        "RULE_PREMISE_INELIGIBLE",
+        "RULE_PREMISE_STATUS_UNKNOWN",
+        "RULE_REFERENCE_UNRESOLVED",
+        "RULE_PREMISE_DISPUTED"
+      ]
     },
     {
       "kind": "context_equal",
       "meaning": "Context identity is exact by typed context reference, not by context label or kind alone.",
-      "failure_outcome": "NOT_APPLICABLE",
-      "failure_diagnostic": "RULE_CONTEXT_MISMATCH"
+      "failure_outcomes": [
+        "NOT_APPLICABLE",
+        "UNRESOLVED"
+      ],
+      "failure_diagnostics": [
+        "RULE_CONTEXT_MISMATCH",
+        "RULE_REFERENCE_UNRESOLVED"
+      ]
     },
     {
       "kind": "context_preserved",
       "meaning": "A conclusion retains the exact input context reference; no automatic transfer to WORLD or another context is allowed.",
-      "failure_outcome": "NOT_APPLICABLE",
-      "failure_diagnostic": "RULE_CONTEXT_TRANSFER_FORBIDDEN"
+      "failure_outcomes": [
+        "NOT_APPLICABLE",
+        "UNRESOLVED"
+      ],
+      "failure_diagnostics": [
+        "RULE_CONTEXT_TRANSFER_FORBIDDEN",
+        "RULE_REFERENCE_UNRESOLVED"
+      ]
     },
     {
       "kind": "attribution_preserved",
       "meaning": "Commitment, attributed referent, and attribution scope are preserved exactly across the rule application.",
-      "failure_outcome": "NOT_APPLICABLE",
-      "failure_diagnostic": "RULE_ATTRIBUTION_MISMATCH"
+      "failure_outcomes": [
+        "NOT_APPLICABLE",
+        "UNRESOLVED",
+        "CONFLICTING"
+      ],
+      "failure_diagnostics": [
+        "RULE_ATTRIBUTION_MISMATCH",
+        "RULE_REFERENCE_UNRESOLVED",
+        "RULE_PREMISE_DISPUTED"
+      ]
     },
     {
       "kind": "polarity_preserved",
       "meaning": "Negation, polarity, and their operator scope are preserved exactly; no positive/negative conversion is implicit.",
-      "failure_outcome": "NOT_APPLICABLE",
-      "failure_diagnostic": "RULE_POLARITY_MISMATCH"
+      "failure_outcomes": [
+        "NOT_APPLICABLE",
+        "UNRESOLVED"
+      ],
+      "failure_diagnostics": [
+        "RULE_POLARITY_MISMATCH",
+        "RULE_REFERENCE_UNRESOLVED"
+      ]
     },
     {
       "kind": "modality_preserved",
       "meaning": "Modal operator, force, scope, and operand identity are preserved exactly; possible is not actual and necessity is not possibility.",
-      "failure_outcome": "NOT_APPLICABLE",
-      "failure_diagnostic": "RULE_MODALITY_MISMATCH"
+      "failure_outcomes": [
+        "NOT_APPLICABLE",
+        "UNRESOLVED"
+      ],
+      "failure_diagnostics": [
+        "RULE_MODALITY_MISMATCH",
+        "RULE_REFERENCE_UNRESOLVED"
+      ]
     },
     {
       "kind": "quantifier_scope_preserved",
       "meaning": "Quantifier type, bound-variable identity, restrictor, body, and scope nesting remain exact and ordered.",
-      "failure_outcome": "NOT_APPLICABLE",
-      "failure_diagnostic": "RULE_QUANTIFIER_SCOPE_MISMATCH"
+      "failure_outcomes": [
+        "NOT_APPLICABLE",
+        "UNRESOLVED"
+      ],
+      "failure_diagnostics": [
+        "RULE_QUANTIFIER_SCOPE_MISMATCH",
+        "RULE_REFERENCE_UNRESOLVED"
+      ]
     },
     {
       "kind": "temporal_order_preserved",
       "meaning": "Temporal relation direction and source/target event references remain exact; BEFORE(A,B) does not imply BEFORE(B,A).",
-      "failure_outcome": "NOT_APPLICABLE",
-      "failure_diagnostic": "TEMPORAL_DIRECTION_CHANGED"
+      "failure_outcomes": [
+        "NOT_APPLICABLE"
+      ],
+      "failure_diagnostics": [
+        "TEMPORAL_DIRECTION_CHANGED"
+      ]
     },
     {
       "kind": "role_order_preserved",
       "meaning": "Role names and their argument/filler positions remain paired in declared order; no positional swap or role coercion is permitted.",
-      "failure_outcome": "NOT_APPLICABLE",
-      "failure_diagnostic": "RULE_ROLE_ORDER_MISMATCH"
+      "failure_outcomes": [
+        "NOT_APPLICABLE",
+        "INVALID_INPUT"
+      ],
+      "failure_diagnostics": [
+        "RULE_ROLE_ORDER_MISMATCH",
+        "RULE_TYPED_REFERENCE_MISMATCH"
+      ]
     },
     {
       "kind": "definition_version_exact",
       "meaning": "Definition grounding requires exact registered identity and version. A label-only match is ambiguous, not a resolution.",
-      "failure_outcome": "UNRESOLVED",
-      "failure_diagnostic": "RULE_DEFINITION_VERSION_MISMATCH"
+      "failure_outcomes": [
+        "UNRESOLVED",
+        "AMBIGUOUS"
+      ],
+      "failure_diagnostics": [
+        "RULE_DEFINITION_VERSION_MISMATCH",
+        "RULE_BINDING_AMBIGUOUS"
+      ]
     },
     {
       "kind": "domain_closed",
       "meaning": "The exact named domain must be explicitly declared closed under a task-scoped policy; no global closure is inferred.",
-      "failure_outcome": "NOT_APPLICABLE",
-      "failure_diagnostic": "CLOSED_WORLD_NOT_DECLARED"
+      "failure_outcomes": [
+        "NOT_APPLICABLE",
+        "UNRESOLVED"
+      ],
+      "failure_diagnostics": [
+        "CLOSED_WORLD_NOT_DECLARED",
+        "RULE_REFERENCE_UNRESOLVED"
+      ]
     },
     {
       "kind": "domain_complete",
       "meaning": "The named domain snapshot must be demonstrably complete for the queried predicate and scope; unknown or partial completeness cannot license negation.",
-      "failure_outcome": "UNKNOWN",
-      "failure_diagnostic": "CLOSED_WORLD_DOMAIN_INCOMPLETE"
+      "failure_outcomes": [
+        "NOT_APPLICABLE",
+        "UNKNOWN"
+      ],
+      "failure_diagnostics": [
+        "CLOSED_WORLD_DOMAIN_INCOMPLETE",
+        "RULE_PREMISE_STATUS_UNKNOWN"
+      ]
     },
     {
       "kind": "absence_within_domain",
       "meaning": "Absence is evaluated only within the exact named, closed, complete domain snapshot and the queried predicate/entity scope.",
-      "failure_outcome": "NOT_APPLICABLE",
-      "failure_diagnostic": "ABSENCE_OUTSIDE_DECLARED_DOMAIN"
+      "failure_outcomes": [
+        "NOT_APPLICABLE",
+        "UNRESOLVED"
+      ],
+      "failure_diagnostics": [
+        "ABSENCE_OUTSIDE_DECLARED_DOMAIN",
+        "RULE_REFERENCE_UNRESOLVED"
+      ]
     },
     {
       "kind": "explicit_assumption_present",
       "meaning": "A required task assumption must be explicitly present and reference the exact domain/policy it governs.",
-      "failure_outcome": "NOT_APPLICABLE",
-      "failure_diagnostic": "CLOSED_WORLD_POLICY_MISSING"
+      "failure_outcomes": [
+        "NOT_APPLICABLE",
+        "UNRESOLVED"
+      ],
+      "failure_diagnostics": [
+        "CLOSED_WORLD_POLICY_MISSING",
+        "RULE_REFERENCE_UNRESOLVED"
+      ]
     },
     {
       "kind": "premise_available",
       "meaning": "Every required premise must be present as a valid typed record. An absent match is not negation; a dangling reference is unresolved.",
-      "failure_outcome": "NOT_APPLICABLE",
-      "failure_diagnostic": "RULE_PREMISE_MISSING"
+      "failure_outcomes": [
+        "NOT_APPLICABLE",
+        "UNRESOLVED"
+      ],
+      "failure_diagnostics": [
+        "RULE_PREMISE_MISSING",
+        "RULE_REFERENCE_UNRESOLVED"
+      ]
     }
   ],
   "conflict_policy": {
@@ -384,6 +526,10 @@
     {
       "code": "RULE_CONNECTIVE_MISMATCH",
       "meaning": "rule connective mismatch"
+    },
+    {
+      "code": "RULE_CONSTRUCTOR_UNSUPPORTED",
+      "meaning": "The premise uses a constructor outside the enabled semantic subset."
     },
     {
       "code": "RULE_CONTEXT_MISMATCH",
