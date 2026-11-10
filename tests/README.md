@@ -104,3 +104,15 @@ document adapter suite. It verifies typed source identity, exact round-trip,
 native text edits with SHA-256 recomputation, and canonical-only preservation
 for unsupported or absent source enum values. The same suite retains the Step
 5D full-document, graph-edit, and stale-snapshot checks.
+
+
+## Phase 2 Step 2.2 — Semantic reasoning benchmark
+
+```bash
+python -m pip install "jsonschema>=4.18,<5"
+python -m unittest discover -s tests -p "test_semantic_reasoning_benchmark.py" -v
+```
+
+The versioned corpus is in `benchmarks/semantic-reasoning/v1.0.0/`. It includes fixture and candidate-result JSON Schemas plus frozen pre-inference thresholds. The evaluator is `tools/semantic_reasoning_benchmark_v1_0_0/evaluator.py`; it scores structured candidate results and does not execute inference. Tests validate the 35 fixtures and inject prohibited conclusions, scope/evidence errors, missing provenance, dropped items, resource truncation, nondeterminism, and per-category coverage failures.
+
+See [Phase 2 Step 2.2 documentation](../documentation/PHASE-2-STEP-2.2-BENCHMARK-CORPUS-AND-EVALUATOR.md).

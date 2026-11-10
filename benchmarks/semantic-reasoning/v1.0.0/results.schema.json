@@ -1,0 +1,191 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wizekin.github.io/usg-workbench/semantic-reasoning-benchmark/v1.0.0/results.schema.json",
+  "title": "USG Semantic Reasoning Benchmark Candidate Results",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "benchmark_id",
+    "benchmark_version",
+    "results"
+  ],
+  "properties": {
+    "benchmark_id": {
+      "const": "USG-SEMANTIC-REASONING"
+    },
+    "benchmark_version": {
+      "const": "1.0.0"
+    },
+    "results": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/result"
+      }
+    }
+  },
+  "$defs": {
+    "result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fixture_id",
+        "completion_status",
+        "conclusions",
+        "diagnostics",
+        "scope_bindings",
+        "evidence_assessments",
+        "derivations",
+        "preserved_item_ids",
+        "repeat_outputs"
+      ],
+      "properties": {
+        "fixture_id": {
+          "type": "string"
+        },
+        "completion_status": {
+          "enum": [
+            "complete",
+            "partial",
+            "ambiguous",
+            "unresolved",
+            "unsupported",
+            "conflicting",
+            "incomplete"
+          ]
+        },
+        "conclusions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "diagnostics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "scope_bindings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "check_id",
+              "binding"
+            ],
+            "properties": {
+              "check_id": {
+                "type": "string"
+              },
+              "binding": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "evidence_assessments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "check_id",
+              "assessment"
+            ],
+            "properties": {
+              "check_id": {
+                "type": "string"
+              },
+              "assessment": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "derivations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "derivation_id",
+              "conclusion_id"
+            ],
+            "properties": {
+              "derivation_id": {
+                "type": "string"
+              },
+              "conclusion_id": {
+                "type": "string"
+              },
+              "method": {
+                "type": "string"
+              },
+              "rule_id": {
+                "type": "string"
+              },
+              "rule_version": {
+                "type": "string"
+              },
+              "input_refs": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "output_refs": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "status": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "preserved_item_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "repeat_outputs": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "object"
+          }
+        },
+        "resource": {
+          "type": "object",
+          "required": [
+            "interrupted",
+            "truncated",
+            "input_item_count",
+            "preserved_item_count"
+          ],
+          "properties": {
+            "interrupted": {
+              "type": "boolean"
+            },
+            "truncated": {
+              "type": "boolean"
+            },
+            "input_item_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "preserved_item_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "processed_operations": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        }
+      }
+    }
+  }
+}
