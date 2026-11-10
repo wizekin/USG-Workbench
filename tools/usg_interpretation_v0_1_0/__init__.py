@@ -1,14 +1,16 @@
-"""Versioned source ingestion and conservative segmentation primitives."""
+"""Versioned source ingestion, segmentation, and lexical analysis primitives."""
 from .source import (
-    LANGUAGE_PROFILES,
-    SourceSnapshot,
-    TextSegment,
-    SegmentedSource,
-    ingest_source,
-    segment_source,
+    LANGUAGE_PROFILES, SourceSnapshot, TextSegment, SegmentedSource,
+    ingest_source, segment_source,
+)
+from .lexical import (
+    LEXICAL_ANALYSIS_VERSION, Token, LexicalEntry, LexicalResource,
+    LexicalCandidate, TokenAnalysis, LexicalAnalysis, tokenize, LexicalAnalyzer,
 )
 
 __all__ = [
     "LANGUAGE_PROFILES", "SourceSnapshot", "TextSegment", "SegmentedSource",
-    "ingest_source", "segment_source",
+    "ingest_source", "segment_source", "LEXICAL_ANALYSIS_VERSION", "Token",
+    "LexicalEntry", "LexicalResource", "LexicalCandidate", "TokenAnalysis",
+    "LexicalAnalysis", "tokenize", "LexicalAnalyzer",
 ]
