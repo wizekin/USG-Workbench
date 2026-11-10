@@ -46,9 +46,13 @@ Mappings must be exact and documented. Unsupported or lossy mappings must be rep
 - **5R completed and merged:** loss-preserving ExpressionRelation document adapter v1.1.0. [Step 5R contract](python-kernel-extension/STEP-5R-EXPRESSION-RELATION-DOCUMENT-ADAPTER.md).
 - **5S completed and merged:** native UnresolvedItem model v1.2.0. [Step 5S contract](python-kernel-extension/STEP-5S-NATIVE-UNRESOLVED-ITEM-MODEL.md). It preserves distinct unresolved statuses and leaves ambiguous scope/candidate references opaque.
 - **5T completed and merged:** loss-preserving UnresolvedItem document adapter v1.2.0. [Step 5T contract](python-kernel-extension/STEP-5T-UNRESOLVED-ITEM-DOCUMENT-ADAPTER.md).
+- **5T1 completed and merged:** corrected UnresolvedItem v1.2.1 with typed Expression `scopeRef` and typed Evidence references. The historical v1.2.0 package remains unchanged.
 - **5U completed and merged:** native Derivation model v1.3.0. [Step 5U contract](python-kernel-extension/STEP-5U-NATIVE-DERIVATION-MODEL.md). It preserves heterogeneous provenance references as opaque IDs and keeps derivation status distinct from truth.
 - **5V completed and merged:** loss-preserving Derivation document adapter v1.3.0. [Step 5V contract](python-kernel-extension/STEP-5V-DERIVATION-DOCUMENT-ADAPTER.md).
 - **5W completed and merged:** native Definitions catalogue model v1.4.0. [Step 5W contract](python-kernel-extension/STEP-5W-NATIVE-DEFINITIONS-MODEL.md). It models Concepts, Frames, Roles, and Relations without inferring ontology or relation semantics.
 - **5X completed and merged:** loss-preserving Definitions catalogue document adapter v1.4.0. [Step 5X contract](python-kernel-extension/STEP-5X-DEFINITIONS-DOCUMENT-ADAPTER.md).
-- **5Y implemented on branch:** composed USG-SEM/1.0 document adapter v1.5.1. [Step 5Y contract](python-kernel-extension/STEP-5Y-COMPLETE-DOCUMENT-ADAPTER.md). It composes the family-specific adapters and merges each family's changes without cross-family overwrites.
-- Existing v0.4.0–v1.0.0 model packages, Workbench v0.5.4, USG-SEM/1.0, archives, and immutable baselines remain unchanged.
+- **5Y completed and merged:** composed USG-SEM/1.0 document adapter v1.5.0. [Step 5Y contract](python-kernel-extension/STEP-5Y-COMPLETE-DOCUMENT-ADAPTER.md).
+- **5Y1 completed and merged:** composed adapter v1.5.1 delegates to the corrected UnresolvedItem v1.2.1 adapter and verifies typed cross-family references.
+- **5Z implemented on branch:** Phase 1 exit acceptance tests and completion record. [Exit acceptance criteria](PHASE-1-EXIT-ACCEPTANCE.md). Phase 1 is not marked complete until the full exit CI gate passes and the PR is merged.
+
+Existing v0.4.0–v1.0.0 model packages, Workbench v0.5.4, USG-SEM/1.0, archives, and immutable baselines remain unchanged.
