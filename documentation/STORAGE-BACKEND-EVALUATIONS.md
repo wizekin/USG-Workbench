@@ -164,6 +164,8 @@ RocksDB is the most interesting alternative if USG adopts a dedicated single-own
 
 Do not change the production backend, migrate existing databases, or remove the SQLite implementation based on these evaluations. Keep the storage abstraction and benchmark harness so a future candidate can be assessed without changing USG semantic contracts.
 
-### Scope note: LMDB
+### LMDB evaluation (separate candidate)
 
-The four-candidate sequence explicitly requested after the initial storage discussion was RocksDB, DuckDB, LanceDB, and Qdrant. **LMDB has not been evaluated in this sequence.** The original LMDB replacement request therefore remains a separate open candidate; it must pass the same canonical-store, concurrency, recovery, and benchmark gates before any final replacement decision.
+LMDB was also evaluated separately in [PR #56](https://github.com/wizekin/USG-Workbench/pull/56), which was intentionally closed without merging the experimental backend. Its correctness suite passed the tested Phase 3 contract, including exact canonical round-trip, Unicode, revisions, idempotency, compare-and-swap conflict rejection, atomic rollback, integrity/index checks, large-graph preservation, reopen recovery, and concurrent reader/writer behavior.
+
+On the same 1,204-expression workload, LMDB was approximately 2.2–2.7% slower than SQLite for initial write, warm read, revision update, integrity verification, and index rebuild; it was faster for idempotent writes and revision listing. Its allocated storage was 1.586× SQLite (about 58.6% larger). This is not a material performance or storage improvement for the current USG workload. **Decision: retain SQLite; do not merge or activate the LMDB backend.**
