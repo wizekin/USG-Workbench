@@ -540,8 +540,9 @@ class CanonicalDocumentStore:
         try:
             stored = self.get_document(document_id, revision)
             return {
-                "status": "PASS",
                 **stored.metadata(),
+                "status": "PASS",
+                "document_status": stored.status,
                 "record_counts": {
                     "sources": len(stored.document.get("sources", [])),
                     "expressions": len(stored.document.get("expressions", [])),
