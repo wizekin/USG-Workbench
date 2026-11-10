@@ -53,6 +53,13 @@ class LanceDBStoreTests(unittest.TestCase):
         with self.assertRaises(RevisionConflictError):
             self.store.put_document(stale, expected_revision=1)
 
+    def test_duplicate_revision_rows_are_rejected(self):
+        first = self.store.put_document(self.document)
+        rows = self.store._rows_for_document(self.document["documentId"])
+        self.store._table.add([rows[0]])
+        with self.assertRaises(IntegrityError):
+            self.store.get_document(self.document["documentId"])
+
     def test_table_time_travel_preserves_older_snapshot(self):
         self.store.put_document(self.document)
         table = self.store._table
