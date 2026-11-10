@@ -34,7 +34,7 @@
     {
       "id": "en.known_but_unregistered.unsupported",
       "language": "en",
-      "text": "code writes Ada",
+      "text": "Ada code writes",
       "expected_completion_status": "UNSUPPORTED",
       "expected_expression_count": 0
     },
