@@ -180,7 +180,9 @@
 
     const canonicalEvidence = evidence.map(item => {
       const start = item.start, end = item.end;
-      const span = spanFromNative(sourceText, sourceRef, start, end, 'evidence ' + item.id, item.quote);
+      if (item.sourceText !== undefined && item.sourceText !== sourceText) throw new Error('Evidence ' + item.id + ' belongs to a different source string.');
+      const expectedQuote = item.exactSourceMatch === true ? item.quote : undefined;
+      const span = spanFromNative(sourceText, sourceRef, start, end, 'evidence ' + item.id, expectedQuote);
       return {
         id: opaqueId('evidence', item.id), sourceRef, span, quote: String(item.quote || ''),
         alignmentStatus: evidenceStatus(item), semanticSupportStatus: 'NOT_ESTABLISHED',
@@ -220,25 +222,33 @@
           predicate: node.predicate, roles: args.map(arg => String(arg.role || 'other').toUpperCase()),
           argumentRequirements: clone(node.argumentRequirements || {}),
           grammaticalTense: node.grammaticalTense || 'unknown', aspect: node.aspect || 'unknown',
-          temporalFrame: clone(node.temporalFrame || {}), eventFrame: clone(node.eventFrame || {}),
+          temporalFrame: clone(node.temporalFrame || {}),
+          eventFrame: { id: node.eventFrame?.id || null, kind: node.eventFrame?.kind || 'unknown',
+            predicate: node.eventFrame?.predicate || node.predicate,
+            participants: arr(node.eventFrame?.participants).map(p => ({ role: p.role,
+              referentRef: p.entityId ? referentRef(p.entityId) : null,
+              variableId: p.variableId || null,
+              bindingReferentRef: p.bindingEntityId ? referentRef(p.bindingEntityId) : null })),
+            attributes: clone(node.eventFrame?.attributes || []) },
           attribution: clone(node.attribution || {}), provenance: clone(node.provenance || {}),
           completeness: clone(node.completeness || {}), evidenceRefs: arr(node.evidenceRefs).map(evidenceRef),
-          sourceClaimId: node.sourceClaimId || null,
+          nativeSourceClaimId: node.sourceClaimId || null,
           argumentBindings: args.map(arg => ({ role: arg.role, variableId: arg.variableId || null,
             bindingReferentRef: arg.bindingEntityId ? referentRef(arg.bindingEntityId) : null,
             mentionRef: arg.mentionId ? mentionRef(arg.mentionId) : null })),
-          nativeExpression: clone(node)
         };
         canonicalExpressions.push({ id, op: 'PREDICATE_APP', sort: 'SIT', operandRefs, params,
-          interpretationStatus: node.completeness?.status === 'unresolved' ? 'UNRESOLVED' : 'RESOLVED', nativeId: node.id });
+          interpretationStatus: ['unresolved','underspecified'].includes(String(node.completeness?.status || '').toLowerCase()) ? 'UNRESOLVED' : 'RESOLVED', nativeId: node.id });
       } else if (node.type === 'OPERATOR') {
         const target = expressionRef(node.scope?.targetId);
         const op = operatorConstructor(node);
         const params = { operatorType: node.operatorType, operator: node.operator,
           scopeKind: node.scope?.scopeKind || 'unknown', force: node.force || null,
-          variable: node.variable || null, restrictor: clone(node.restrictor || null),
-          variableBinding: clone(node.variableBinding || null), surfaceText: node.surfaceText || null,
-          evidenceRefs: arr(node.evidenceRefs).map(evidenceRef), nativeExpression: clone(node) };
+          variable: node.variable || null,
+          restrictor: node.restrictor ? { ...clone(node.restrictor), referentRef: node.restrictor.entityId ? referentRef(node.restrictor.entityId) : null } : null,
+          variableBinding: node.variableBinding ? { ...clone(node.variableBinding),
+            restrictorReferentRef: node.variableBinding.restrictorEntityId ? referentRef(node.variableBinding.restrictorEntityId) : null } : null,
+          surfaceText: node.surfaceText || null, evidenceRefs: arr(node.evidenceRefs).map(evidenceRef) };
         if (op === 'OPAQUE') { params.preservationReason = 'Workbench operator kind/polarity has no exact registered USG-SEM constructor mapping.'; partialRefs.push(id); }
         canonicalExpressions.push({ id, op, sort: 'PROP', operandRefs: [target], params,
           interpretationStatus: op === 'OPAQUE' ? 'UNRESOLVED' : 'RESOLVED', nativeId: node.id });
@@ -254,10 +264,13 @@
         const params = { connective: node.connective, marker: node.marker || null,
           operandRoles, logicalStatus: node.logicalStatus || null,
           antecedentInterpretation: node.antecedentInterpretation || null,
-          conditionMetadata: clone(node.conditionMetadata || null),
+          conditionMetadata: node.conditionMetadata ? { effect: node.conditionMetadata.effect || null,
+            logicalStatus: node.conditionMetadata.logicalStatus || null,
+            consequence: node.conditionMetadata.consequence || null,
+            consequenceInterpretation: node.conditionMetadata.consequenceInterpretation || null,
+            nativeConsequentClaimId: node.conditionMetadata.consequentClaimId || null } : null,
           disjunctionSemantics: node.disjunctionSemantics || null,
-          attribution: clone(node.attribution || {}), evidenceRefs: arr(node.evidenceRefs).map(evidenceRef),
-          nativeExpression: clone(node) };
+          attribution: clone(node.attribution || {}), evidenceRefs: arr(node.evidenceRefs).map(evidenceRef) };
         canonicalExpressions.push({ id, op: 'CONNECTIVE', sort: 'PROP', operandRefs, params,
           interpretationStatus: 'RESOLVED', nativeId: node.id });
       } else {
@@ -270,8 +283,8 @@
         const operandRefs = childIds.map(expressionRef);
         partialRefs.push(idRef);
         canonicalExpressions.push({ id: idRef, op: 'OPAQUE', sort: 'ANY', operandRefs,
-          params: { nativeType: node.type || 'unknown', nativeExpression: clone(node),
-            preservationReason: 'Unrecognized Workbench expression type; preserved without semantic coercion.' },
+          params: { nativeType: node.type || 'unknown',
+            preservationReason: 'Unrecognized Workbench expression type; preserved in the namespaced native snapshot without semantic coercion.' },
           interpretationStatus: 'UNRESOLVED', nativeId: node.id });
       }
     }
