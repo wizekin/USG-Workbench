@@ -168,7 +168,7 @@ class EvidenceAssessmentEngine:
                 "relation_label_is_not_proof": True,
             })
 
-        conflicts = self._conflicts(assertion_ids, assertions, expressions)
+        conflicts = self._conflicts(assertion_ids, assertions, expressions, {item["id"]: item for item in document.get("contexts", [])}, {item["id"]: item for item in document.get("referents", [])})
         corroboration = self._corroboration(assertion_ids, assertions, evidence, sources)
         external = [{
             "subject_ref": item["subject_ref"], "verifier_id": item["verifier_id"],
@@ -192,7 +192,7 @@ class EvidenceAssessmentEngine:
         }
         return self._validate_result(result)
 
-    def _conflicts(self, assertion_ids, assertions, expressions):
+    def _conflicts(self, assertion_ids, assertions, expressions, contexts, referents):
         selected = [assertions[item] for item in assertion_ids if item in assertions]
         eligible = [item for item in selected if item.get("epistemicStatus") in {"SOURCE_ASSERTED", "DISPUTED"}]
         negatives = {}
@@ -205,6 +205,9 @@ class EvidenceAssessmentEngine:
         seen = set()
         for positive in eligible:
             positive_id = positive.get("expressionRef")
+            positive_expression = expressions.get(positive_id)
+            if not positive_expression or positive_expression.get("sort") != "PROP" or positive_expression.get("interpretationStatus") != "RESOLVED":
+                continue
             negative_ids = negatives.get(positive_id, [])
             for negative in eligible:
                 if negative.get("expressionRef") not in negative_ids or positive["id"] == negative["id"]:
@@ -215,12 +218,16 @@ class EvidenceAssessmentEngine:
                     continue
                 seen.add(pair)
                 pctx, nctx = positive.get("evaluationContext", {}), negative.get("evaluationContext", {})
+                same_context = contexts.get(pctx.get("contextRef"))
                 same_scope = (
-                    pctx.get("kind") == nctx.get("kind")
+                    same_context is not None
+                    and same_context.get("kind") == pctx.get("kind")
+                    and pctx.get("kind") == nctx.get("kind")
                     and pctx.get("contextRef") == nctx.get("contextRef")
                     and isinstance(pctx.get("contextRef"), str)
                     and positive.get("commitment") == negative.get("commitment")
                     and positive.get("attributedToRef") == negative.get("attributedToRef")
+                    and (positive.get("commitment") != "ATTRIBUTED" or positive.get("attributedToRef") in referents)
                 )
                 if same_scope:
                     pairs.append({
