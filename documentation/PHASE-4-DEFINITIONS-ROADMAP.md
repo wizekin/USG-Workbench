@@ -1,6 +1,7 @@
 # USG Phase 4 — Definitions and Roadmap
 
-**Status:** Step 4.1 definition frozen; implementation steps 4.2–4.13 remain pending.
+**Status:** Phase 4 v0.1.0 bounded demonstrator — exit acceptance implemented; pending exact-main CI merge.
+**Implementation record:** Steps 4.1–4.13 have versioned definitions, implementation, benchmark, and acceptance artifacts.
 **Step 4.1 contract:** [Interpretation definitions and acceptance contract](PHASE-4-STEP-4.1-INTERPRETATION-CONTRACT.md).  
 **Prerequisites:** Phase 1, Phase 2, and Phase 3 exit acceptance records.  
 **Normative semantic contract:** `USG-SEM/1.0` remains unchanged.  
@@ -9,7 +10,7 @@
 
 ## 1. Purpose
 
-Phases 1–3 established the semantic interchange contract, a bounded deterministic reasoning layer, and a persistent local semantic workbench. Their principal input is already-structured USG-SEM data. The Phase 3 local API deliberately returns an explicit unsupported response for raw-text interpretation.
+Phases 1–3 established the semantic interchange contract, a bounded deterministic reasoning layer, and a persistent local semantic workbench. Their principal input is already-structured USG-SEM data. The Phase 3 local API originally returned an explicit unsupported response for raw-text interpretation; Phase 4 now adds a bounded offline pipeline and Kernel Lab interface.
 
 Phase 4 addresses that missing boundary: how source text is transformed into a structured semantic representation that can be validated, stored, queried, and reasoned over by the accepted system.
 
@@ -289,6 +290,10 @@ Each capability must be separately specified, benchmarked, and accepted before b
 - Existing Workbench and Python kernel lineages remain distinct. New interpretation components must be additive and explicitly versioned.
 - The database benchmark decision remains unchanged: SQLite is canonical unless a future complete evaluation justifies a migration.
 
-## 11. Phase 4 definition status
+## 11. Phase 4 implementation and acceptance status
 
-This document establishes the initial Phase 4 definitions and proposed ordered roadmap. It does not mean Step 4.1 or any implementation step has passed acceptance. The next action is a focused Step 4.1 review that checks every definition against the current schemas, native models, adapters, and benchmark fixtures, then freezes the exact initial language/corpus and acceptance contract before implementation begins.
+The v0.1.0 bounded demonstrator implements Steps 4.1–4.13. Its accepted behavior is intentionally narrow: exact source ingestion and spans; Unicode tokenization; a tiny injected English/Arabic lexicon; explicit English SVO and MSA Arabic SVO/VSO patterns; registered `write` / `كتب` predicate frames; mention extraction with unresolved repeat-surface candidates; explicit discourse-marker detection; conservative assertion/evidence projections; versioned in-memory resource and association registries; optional source-span-validated model proposals; a raw-text API and Kernel Lab UI backed by the existing SQLite store; and a six-case frozen benchmark.
+
+The Phase 4 exit gate accepts only this bounded demonstrator profile. It does **not** accept the broader construction families listed as future scope in Step 4.1. Multi-sentence composition, nested syntax, negation/modality/tense/aspect scope, coordination, broad lexical coverage, general coreference, implicit discourse inference, and semantic-support inference remain disabled or unresolved. The benchmark measures the bounded fixture set only; it is not evidence of unrestricted English/Arabic understanding.
+
+The normative `USG-SEM/1.0` schema, Phase 1–3 contracts, canonical SQLite backend, and archived/historical implementations remain unchanged. Further coverage requires versioned resources and construction-specific fixtures before any new capability is enabled.

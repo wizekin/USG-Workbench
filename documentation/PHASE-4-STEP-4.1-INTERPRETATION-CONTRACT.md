@@ -45,6 +45,18 @@ The first profile will be built incrementally and only enabled when its step-spe
 
 This is a staged coverage list, not a statement that all items are implemented now. Each family is disabled by default until its own acceptance fixtures and adversarial cases pass.
 
+### 2.1.1 Actually enabled in the v0.1.0 demonstrator
+
+The initial accepted implementation enables only these narrow cases:
+
+- English: one complete three-word `PROPN/NOUN SUBJECT + VERB + NOUN OBJECT` sequence using explicitly registered lexical entries; the bundled example is `Ada writes code`.
+- Modern Standard Arabic: one complete three-word `VERB + NOUN SUBJECT + NOUN OBJECT` (VSO) or `NOUN SUBJECT + VERB + NOUN OBJECT` (SVO) sequence using explicitly registered lexical entries; the bundled example is `كتب الطالب الدرس`.
+- Exact source preservation, Unicode token spans, conservative sentence segmentation, unknown-word abstention, unsupported-shape abstention, and canonical SQLite persistence.
+- Explicit connective-marker detection for a small English/Arabic marker list. This detects marker presence only and does not infer full scope or entailment.
+- Proper/nominal/pronoun mention extraction from resolved lexical entries. Repeated surface forms remain unresolved candidates and are not identity links.
+
+The bundled demonstration lexicon is intentionally tiny. A `COMPLETE` result means all content in this narrow enabled demonstrator scope was processed; it does not imply broad language coverage. All other constructions remain disabled or return partial/unsupported results.
+
 ### 2.2 Explicitly out of scope
 
 - unrestricted English or Arabic understanding;
