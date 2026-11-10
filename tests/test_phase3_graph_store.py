@@ -183,6 +183,16 @@ class CanonicalGraphStoreTests(unittest.TestCase):
             len(document["expressions"]),
         )
 
+    def test_declared_source_hash_must_match_exact_utf8_text(self):
+        document = deepcopy(self.document)
+        source = document["sources"][0]
+        source["textHash"] = "0" * 64
+        source["hashAlgorithm"] = "SHA-256"
+        source["encoding"] = "UTF-8"
+        with self.assertRaises(InvalidDocumentError) as raised:
+            self.store.put_document(document)
+        self.assertTrue(any("SOURCE_HASH_MISMATCH" in item for item in raised.exception.diagnostics))
+
     def test_invalid_document_is_rejected_before_persistence(self):
         invalid = deepcopy(self.document)
         invalid.pop("profileId")
