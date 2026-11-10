@@ -1,4 +1,4 @@
-name: Phase 3 Graph Store and Backend Evaluation
+name: Phase 3 Graph Store and LMDB Backend Evaluation
 
 on:
   pull_request:
