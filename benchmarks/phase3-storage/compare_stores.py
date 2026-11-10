@@ -63,8 +63,7 @@ def run_once(backend: str, document: dict, root: Path) -> dict:
             raise RuntimeError(f"{backend}: final revision mismatch")
         if integrity["status"] != "PASS":
             raise RuntimeError(f"{backend}: integrity check failed: {integrity}")
-        if len(history) != 1 or history[0]["revision"] != 1:
-            # history is measured before revision 2 and therefore must contain one row.
+        if len(history) != 2 or [item["revision"] for item in history] != [1, 2]:
             raise RuntimeError(f"{backend}: revision history mismatch")
         if not rebuilt or any(count < 0 for count in rebuilt.values()):
             raise RuntimeError(f"{backend}: index rebuild returned invalid counts")
