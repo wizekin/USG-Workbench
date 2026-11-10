@@ -30,4 +30,4 @@ The archive inventory records fresh tests and limitations for the original packa
 ## Current phase
 
 - **Phase 1:** COMPLETE. See [Phase 1 exit acceptance](interoperability/PHASE-1-EXIT-ACCEPTANCE.md).
-- **Phase 2:** Steps 2.1–2.9 COMPLETE. The deterministic executor, independent evidence/conflict assessment, structured query interface, and local Kernel Lab integration are implemented and merged. See the [Phase 2 roadmap](documentation/PHASE-2-ROADMAP.md) and [Step 2.10 final exit acceptance](documentation/PHASE-2-STEP-2.10-EXIT-ACCEPTANCE.md). The final integrated acceptance gate remains pending; Phase 2 is not declared complete until it passes.
+- **Phase 2:** COMPLETE for the implemented and tested scope. Steps 2.1–2.10 are merged and the final integrated acceptance gate passed on the exact merged main commit. See the [Phase 2 roadmap](documentation/PHASE-2-ROADMAP.md), [Step 2.10 acceptance record](documentation/PHASE-2-STEP-2.10-EXIT-ACCEPTANCE.md), and [successful merged-main workflow](https://github.com/wizekin/USG-Workbench/actions/runs/42811673922). Deferred capabilities remain explicitly out of scope.

@@ -1,7 +1,10 @@
 # USG Phase 2 — Semantic Reasoning Roadmap
 
 **Phase:** 2 — Evidence-grounded, rule-governed semantic reasoning  
-**Status:** Steps 2.1–2.9 complete; deterministic inference, evidence/conflict assessment, structured query/explanation, and integrated local Kernel Lab are implemented; final Phase 2 exit acceptance remains pending  
+**Status:** COMPLETE — all implementation steps and final integrated acceptance passed on the merged main commit
+**Acceptance commit:** da0760ac13029892f40a08a412e139c34a8e48d3
+**Acceptance run:** [Phase 2 Exit Acceptance — successful](https://github.com/wizekin/USG-Workbench/actions/runs/42811673922)
+**Acceptance report:** phase2-exit-acceptance-report artifact uploaded by the successful merged-main run  
 **Prerequisite:** Phase 1 exit accepted (USG-SEM/1.0 and composed adapter v1.5.1)  
 **Normative Phase 1 record:** [Phase 1 exit acceptance](../interoperability/PHASE-1-EXIT-ACCEPTANCE.md)
 
@@ -228,4 +231,4 @@ Step 2.8 is merged and adds the `USG-QUERY/1.0.0` exact-reference query API and 
 
 Step 2.9 is merged and extends the existing local-only Kernel Lab with the Phase 2 query interface, 13 versioned query fixtures, individual query execution, full benchmark comparison, trace inspection, and JSON export. The existing v0.7 Mention adapter testing workflow remains intact; the lab binds only to loopback and has no telemetry or cloud calls.
 
-**Next implementation step:** Phase 2 Step 2.10 — final exit acceptance. Run the complete Phase 2 regression and benchmark suite, verify the strict false-inference gate and every compatibility invariant, publish a machine-readable acceptance report, and declare unsupported capabilities explicitly. Phase 2 must not be declared complete if any required gate is missing, failed, or inconclusive.
+**Phase 2 COMPLETE.** Step 2.10 passed on the exact PR head and again on the merged main commit da0760ac13029892f40a08a412e139c34a8e48d3. The merged-main workflow run [42811673922](https://github.com/wizekin/USG-Workbench/actions/runs/42811673922) completed successfully, including the integrated Phase 2 and Phase 1 compatibility/exit acceptance job and machine-readable report upload. This completion applies only to the explicitly implemented and tested scope; deferred capabilities in Section 9 remain out of scope.

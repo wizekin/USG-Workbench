@@ -1,6 +1,9 @@
 # Phase 2 Step 2.10 — Final Exit Acceptance
 
-**Status:** Acceptance gate implemented; final acceptance is pending successful execution on the exact pull-request head and merged main commit.
+**Status:** ACCEPTED — exact PR-head acceptance and merged-main acceptance both passed.
+**Merged commit:** da0760ac13029892f40a08a412e139c34a8e48d3
+**Merged-main workflow:** [Run 42811673922 — success](https://github.com/wizekin/USG-Workbench/actions/runs/42811673922)
+**Acceptance report:** phase2-exit-acceptance-report artifact uploaded by the successful merged-main run.
 
 ## Purpose
 
@@ -54,4 +57,4 @@ Passing structural, inference, or regression tests does not promote a source ass
 
 The accepted Phase 2 implementation remains a bounded, deterministic reasoning system over explicit USG-SEM/1.0 structures and the enabled rule subset. It does not establish unrestricted natural-language understanding, objective truth determination, open-domain entailment, autonomous rule learning, distributed execution, multilingual coverage, or production readiness.
 
-The final phase status must remain pending if the acceptance workflow is missing, failed, inconclusive, or has not run on the exact merged commit.
+Phase 2 is complete for the implemented and tested scope. The merged-main acceptance run passed and uploaded the machine-readable report. Deferred capabilities remain explicitly outside this acceptance.
