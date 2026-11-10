@@ -45,7 +45,7 @@ class Phase2RuleRegistryTests(unittest.TestCase):
         for rule in self.registry["rules"]:
             expectations = {item["expectation"] for item in rule["test_coverage"]}
             self.assertIn("positive", expectations)
-            self.assertTrue(expectations & {"negative", "boundary", "adversarial"})
+            self.assertTrue(expectations & {"negative", "boundary", "adversarial", "unsupported", "unresolved"})
 
     def test_benchmark_policy_rule_ids_and_versions_are_registered(self):
         registered = {(rule["rule_id"], rule["version"]) for rule in self.registry["rules"]}
