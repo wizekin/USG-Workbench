@@ -100,7 +100,7 @@ test('converts UTF-16 source offsets to Unicode code-point offsets', async () =>
   assert.deepEqual([alice.sourceSpan.start, alice.sourceSpan.end], [2, 7]);
   assert.deepEqual([it.sourceSpan.start, it.sourceSpan.end], [14, 16]);
   const evidence = document.evidence[0];
-  assert.deepEqual([evidence.span.start, evidence.span.end], [9, 14]);
+  assert.deepEqual([evidence.span.start, evidence.span.end], [8, 13]);
   assert.equal(evidence.quote, 'needs');
 });
 
