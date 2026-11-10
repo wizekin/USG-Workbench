@@ -84,8 +84,18 @@ def main():
          "interpretationStatus": "RESOLVED"}
         for i in range(args.extra_expressions)
     ])
-    result = {"benchmark": "USG Phase 3 SQLite vs Qdrant local mode", "repeats": args.repeats,
-              "extra_expressions": args.extra_expressions, "backends": {}}
+    result = {
+        "benchmark": "USG Phase 3 SQLite vs Qdrant local mode",
+        "scope": (
+            "Snapshot-payload persistence workload only. Qdrant does not reproduce "
+            "SQLite's normalized semantic indexes; the separate vector retrieval "
+            "collection and its index/storage costs are excluded. Do not interpret "
+            "disk-size ratios as equivalent full-featured store comparisons."
+        ),
+        "qdrant_canonical_vectors": "neutral one-dimensional placeholder; not used for semantic search",
+        "repeats": args.repeats,
+        "extra_expressions": args.extra_expressions,
+        "backends": {}}
     for backend in ("sqlite", "qdrant"):
         samples = []
         for index in range(args.repeats):
