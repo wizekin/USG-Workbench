@@ -8,7 +8,9 @@ on:
       - "interoperability/predicate-frame-registry/**"
       - "interoperability/operator-scope-registry/**"
       - "interoperability/python_adapter/**"
+      - "interoperability/workbench_adapter/**"
       - "interoperability/round-trip-conformance/**"
+      - "interoperability/workbench_adapter/**"
       - "specifications/predicate-frame-registry-1.0.schema.json"
       - "specifications/operator-scope-registry-1.0.schema.json"
       - "specifications/USG-SEM-1.0.md"
@@ -16,7 +18,11 @@ on:
       - "tests/test_predicate_frame_registry.py"
       - "tests/test_operator_scope_registry.py"
       - "tests/test_document_adapter.py"
+      - "tests/test_workbench_source_adapter.py"
+      - "tests/test_workbench_source_adapter.js"
       - "tests/test_round_trip_conformance.py"
+      - "tests/test_workbench_source_adapter.py"
+      - "tests/test_workbench_source_adapter.js"
       - "tests/README.md"
       - ".github/workflows/predicate-frame-registry.yml"
       - "implementations/semantic-workbench-js/v0.5.4/semantic-core.js"
@@ -65,6 +71,10 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
       - name: Install contract validation dependency
         run: python -m pip install "jsonschema>=4.18,<5"
       - name: Run predicate/frame registry tests
@@ -94,6 +104,24 @@ jobs:
           test_status=${PIPESTATUS[0]}
           echo "test_status=${test_status}" >> "$GITHUB_OUTPUT"
           exit "${test_status}"
+      - name: Run Workbench source adapter tests
+        id: workbench-source-adapter-tests
+        shell: bash
+        run: |
+          set +e
+          node --test tests/test_workbench_source_adapter.js 2>&1 | tee workbench-source-adapter-ci.log
+          test_status=${PIPESTATUS[0]}
+          echo "test_status=${test_status}" >> "$GITHUB_OUTPUT"
+          exit "${test_status}"
+      - name: Validate Workbench adapter output against USG-SEM schema
+        id: workbench-source-schema-tests
+        shell: bash
+        run: |
+          set +e
+          python -m unittest discover -s tests -p "test_workbench_source_adapter.py" -v 2>&1 | tee workbench-source-schema-ci.log
+          test_status=${PIPESTATUS[0]}
+          echo "test_status=${test_status}" >> "$GITHUB_OUTPUT"
+          exit "${test_status}"
       - name: Verify immutable implementation baselines
         if: success()
         shell: bash
@@ -109,5 +137,7 @@ jobs:
             predicate-frame-ci.log
             operator-scope-ci.log
             document-adapter-ci.log
+            workbench-source-adapter-ci.log
+            workbench-source-schema-ci.log
           if-no-files-found: warn
           retention-days: 7
