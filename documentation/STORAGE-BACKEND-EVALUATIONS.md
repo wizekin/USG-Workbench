@@ -30,3 +30,29 @@ A candidate may be useful as a secondary retrieval layer even if it fails canoni
 Initial implementation uses rocksdict in raw byte mode, synchronous WAL writes, atomic WriteBatch, consistent read snapshots, and a process-shared OS file lock around compare-and-swap writer critical sections. The lock is necessary because ordinary WriteBatch is atomic but does not itself provide conditional compare-and-swap transactions.
 
 This adapter is an evaluation prototype, not the active backend. The test suite and benchmark decide whether to proceed.
+
+
+## Candidate 1 measured result: RocksDB (initial benchmark)
+
+Benchmark artifact from the corrected adapter run: GitHub Actions run 42819794960, artifact `phase3-rocksdb-benchmark`. Three repetitions used the same 1,204-expression USG document and identical operations. These are measurements from the hosted Ubuntu CI runner, not universal performance guarantees.
+
+| Operation | SQLite median | RocksDB median | RocksDB / SQLite |
+|---|---:|---:|---:|
+| Initial write | 175.0 ms | 168.0 ms | 0.960× |
+| Warm read (7-read median) | 160.7 ms | 162.2 ms | 1.009× |
+| Idempotent write | 160.5 ms | 157.6 ms | 0.982× |
+| Revision update | 166.9 ms | 167.8 ms | 1.005× |
+| Revision history | 0.109 ms | 0.062 ms | 0.565× |
+| Integrity verification | 160.4 ms | 161.9 ms | 1.010× |
+| Index rebuild | 262.7 ms | 164.1 ms | 0.625× |
+| On-disk files after close | 962,560 B | 294,585 B | 0.306× |
+
+The first benchmark exposed excess work in the RocksDB idempotent/update path (it performed a full integrity/index read). That path was corrected to match SQLite's behavior: verify the stored snapshot hash and compare the digest, without rescanning derived indexes during the write. The table above is from the corrected implementation.
+
+### Preliminary interpretation
+
+RocksDB is promising for this workload: approximately 69.4% less disk space, comparable warm reads and integrity checks, and faster index rebuild/history operations. Initial write and revision-update latencies are effectively comparable. This is a meaningful storage-footprint improvement, not a dramatic general speedup.
+
+The RocksDB adapter uses one embedded primary process per database directory. A sidecar OS lock serializes writer critical sections but cannot make RocksDB's exclusive database-open lock support multiple independent primary processes. The added concurrency regression checks concurrent readers and serialized writers within one process. If USG requires multiple independent processes to open the same database concurrently, this candidate does not meet that topology without a separate single-owner service.
+
+**Current status:** promising candidate, not yet promoted. Await the latest concurrency regression workflow on commit `db64ae4630572c1812e6494a3259a63c31a9c939`. Even if accepted as a canonical-store candidate, continue the separately requested DuckDB, LanceDB, and Qdrant evaluations. No default backend change is made by this evaluation.
