@@ -101,4 +101,4 @@ No aggregate score may conceal a failure in a critical invariant. A failed criti
 
 Phase 1 is complete. Phase 2 Steps 2.1–2.10 are complete for their documented scope. The final Phase 2 merged-main acceptance run [42811673922](https://github.com/wizekin/USG-Workbench/actions/runs/42811673922) passed. The completion record was merged in [PR #53](https://github.com/wizekin/USG-Workbench/pull/53).
 
-Phase 3 begins with Step 3.1. No Phase 3 implementation is considered complete until its own tests and acceptance gate pass.
+Step 3.1 contract is defined. Step 3.2 implementation is in progress in tools/semantic_graph_store_v1_0_0, with its dedicated test suite and workflow. Step 3.2 is not complete until the exact PR-head checks pass and the implementation is merged.
