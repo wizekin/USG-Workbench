@@ -7,10 +7,12 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import platform
 from pathlib import Path
+import re
+import subprocess
 import sys
-import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
 TESTS = ROOT / "tests"
@@ -44,59 +46,75 @@ CHECK_GROUPS = {
         "test_workbench_source_adapter.py",
     ],
     "phase2_compatibility": [
-        "test_phase2_*.py",
+        "test_phase2_grounding.py",
+        "test_phase2_inference_executor.py",
+        "test_phase2_evidence_assessment.py",
+        "test_phase2_query_interface.py",
+        "test_phase2_rule_registry.py",
+        "test_phase2_rule_semantics.py",
         "test_semantic_reasoning_benchmark.py",
     ],
 }
 
 
-def _details(items):
-    return [
-        {"test": test.id(), "traceback": trace}
-        for test, trace in items
-    ]
-
-
 def run_group(name: str, patterns: list[str]) -> dict:
-    loader = unittest.TestLoader()
-    suite = unittest.TestSuite()
-    discovered = 0
+    # Each historical test pattern runs in its own interpreter. Several Phase 1
+    # adapters intentionally load different kernel versions; a shared process
+    # leaks sys.path/module state between those frozen suites.
+    env = os.environ.copy()
+    extra_paths = [
+        str(TESTS),
+        str(ROOT / "implementations" / "python-kernel" / "v0.5.0"),
+    ]
+    if env.get("PYTHONPATH"):
+        extra_paths.append(env["PYTHONPATH"])
+    env["PYTHONPATH"] = os.pathsep.join(extra_paths)
+
+    pattern_results = []
+    failures = []
+    total_tests = 0
     for pattern in patterns:
-        sub = loader.discover(
-            start_dir=str(TESTS),
-            pattern=pattern,
-            top_level_dir=str(TESTS),
+        completed = subprocess.run(
+            [sys.executable, "-m", "unittest", "discover",
+             "-s", str(TESTS), "-p", pattern, "-v"],
+            cwd=ROOT,
+            env=env,
+            capture_output=True,
+            text=True,
+            check=False,
         )
-        count = sub.countTestCases()
-        discovered += count
-        suite.addTests(sub)
+        output = (completed.stdout or "") + (completed.stderr or "")
+        match = re.search(r"Ran\\s+(\\d+)\\s+tests?", output)
+        tests_run = int(match.group(1)) if match else 0
+        skipped_match = re.search(r"skipped=(\\d+)", output)
+        skipped = int(skipped_match.group(1)) if skipped_match else 0
+        total_tests += tests_run
+        print(output)
+        pattern_results.append({
+            "pattern": pattern,
+            "return_code": completed.returncode,
+            "tests_run": tests_run,
+            "skipped": skipped,
+        })
+        if completed.returncode != 0 or tests_run == 0 or skipped:
+            failures.append({
+                "pattern": pattern,
+                "return_code": completed.returncode,
+                "tests_run": tests_run,
+                "skipped": skipped,
+                "output_tail": output[-12000:],
+            })
 
-    if discovered == 0:
-        return {
-            "check_id": name,
-            "status": "FAIL",
-            "patterns": patterns,
-            "tests_discovered": 0,
-            "tests_run": 0,
-            "failures": [],
-            "errors": [{"test": "discovery", "traceback": "No tests discovered for this required check."}],
-            "skipped": [],
-        }
-
-    result = unittest.TextTestRunner(stream=sys.stdout, verbosity=2).run(suite)
-    failures = _details(result.failures)
-    errors = _details(result.errors)
-    skipped = [{"test": test.id(), "reason": reason} for test, reason in result.skipped]
-    status = "PASS" if not failures and not errors and not skipped else "FAIL"
     return {
         "check_id": name,
-        "status": status,
+        "status": "PASS" if not failures else "FAIL",
         "patterns": patterns,
-        "tests_discovered": discovered,
-        "tests_run": result.testsRun,
+        "tests_discovered": total_tests,
+        "tests_run": total_tests,
+        "pattern_results": pattern_results,
         "failures": failures,
-        "errors": errors,
-        "skipped": skipped,
+        "errors": [],
+        "skipped": sum(item["skipped"] for item in pattern_results),
     }
 
 
