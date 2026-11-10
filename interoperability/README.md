@@ -31,8 +31,8 @@ Mappings must be exact and documented. Unsupported or lossy mappings must be rep
 ### Step 4 — round-trip conformance (active)
 
 - [Round-trip conformance design and verified gap inventory](round-trip-conformance/README.md)
-- Establishes the required four-boundary conversion cycle and semantic invariants.
-- Initial audit confirms that a Workbench-to-contract adapter and a Python-projection-to-contract serializer are still missing. Step 3's unchanged-snapshot export is not treated as a reverse serializer.
-- The Workbench baseline uses UTF-16 string offsets; USG-SEM requires Unicode code-point offsets. This conversion must be explicit and tested.
+- **4A completed:** [Workbench v0.5.4 → USG-SEM/1.0 source adapter](workbench_adapter/README.md), including exact native snapshot retention, partial-mapping diagnostics, and UTF-16 → Unicode code-point offset conversion.
+- Node adapter tests and Python JSON Schema validation are included in CI.
+- **4B–4D remain:** Python projection reverse serializer, Workbench reconstruction adapter, and end-to-end semantic invariant suite. Step 3's unchanged-snapshot export is not treated as a reverse serializer.
 
 The registries and adapter target the immutable baseline pair: Workbench v0.5.4 and Python reference kernel 0.4.0. They do not yet establish complete runtime interoperability.
