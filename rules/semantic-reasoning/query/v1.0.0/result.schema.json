@@ -6,6 +6,8 @@
   "additionalProperties": false,
   "required": [
     "profile_id",
+    "policy_id",
+    "policy_version",
     "query_id",
     "document_id",
     "document_sha256",
@@ -151,6 +153,12 @@
       "items": {
         "type": "object"
       }
+    },
+    "policy_id": {
+      "const": "USG-STRUCTURED-QUERY"
+    },
+    "policy_version": {
+      "const": "1.0.0"
     }
   }
 }
