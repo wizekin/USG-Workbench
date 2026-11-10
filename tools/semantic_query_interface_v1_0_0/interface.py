@@ -146,6 +146,8 @@ class QueryInterface:
             goal_status = "DERIVED_NOT_VERIFIED"
         elif "UNKNOWN" in statuses:
             goal_status = "UNKNOWN"
+        elif completion == "UNSUPPORTED":
+            goal_status = "UNSUPPORTED"
         else:
             goal_status = "NOT_ESTABLISHED"
 
@@ -202,7 +204,7 @@ class QueryInterface:
             "document_sha256":snapshot,"completion_status":completion,"goal_status":goal_status,
             "goal":query["goal"],"source_assertions":[],"scope_assertions":[],
             "inference_candidates":[],"derivations":[],"evidence_assessment":None,
-            "conflicts":[],"relation_claims":[],"unresolved_questions":details,
+            "conflicts":[],"relation_claims":[],"unresolved_questions":[{"code":"GOAL_RESOLUTION_DETAIL","detail":item} for item in details],
             "unsupported_portions":[],"explanation":[{"step":1,"code":"GOAL_RESOLUTION","status":completion,"input_refs":[query["goal"]["expression_ref"]],"output_refs":[]}],
             "diagnostics":sorted(set(diagnostics)),
             "safety":{"truth_promotion":False,"absence_means_false":False,"free_text_inference":False,
