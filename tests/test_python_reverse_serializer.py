@@ -89,6 +89,30 @@ class PythonReverseSerializerTests(unittest.TestCase):
         self.assertIn("test:expr:unsupported-predicate", result["mapping"]["unmappedRefs"])
         self.assertIn("test:expr:unsupported-root", result["mapping"]["unmappedRefs"])
 
+    def test_shared_dag_identity_and_multiple_roots_are_preserved(self):
+        document = DocumentAdapterTests().make_document()
+        document["expressions"].append({
+            "id": "test:expr:not",
+            "op": "NOT",
+            "sort": "PROP",
+            "operandRefs": ["test:expr:needs"],
+            "params": {},
+        })
+        document["rootExpressionRefs"].append("test:expr:not")
+        imported = document_to_python(document)
+        self.assertIs(
+            imported.expression_roots["test:expr:not"].args[0],
+            imported.expression_roots["test:expr:needs"],
+        )
+        result = python_to_contract_document(imported)
+        self.assertEqual(result["rootExpressionRefs"], ["test:expr:needs", "test:expr:not"])
+        not_record = next(x for x in result["expressions"] if x["id"] == "test:expr:not")
+        self.assertEqual(not_record["operandRefs"], ["test:expr:needs"])
+        self.assertEqual(
+            sum(x["id"] == "test:expr:needs" for x in result["expressions"]),
+            1,
+        )
+
     def test_stale_canonical_snapshot_is_refused(self):
         imported = self.imported_fixture()
         imported.document["extensions"]["changed"] = True
