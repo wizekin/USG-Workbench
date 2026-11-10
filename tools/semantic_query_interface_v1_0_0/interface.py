@@ -14,6 +14,8 @@ from tools.semantic_evidence_assessment_v1_0_0.assessor import EvidenceAssessmen
 
 ROOT = Path(__file__).resolve().parents[2]
 QUERY_DIR = ROOT / "rules" / "semantic-reasoning" / "query" / "v1.0.0"
+POLICY_PATH = QUERY_DIR / "policy.json"
+POLICY_SCHEMA_PATH = QUERY_DIR / "policy.schema.json"
 
 
 class QueryInterfaceError(ValueError):
@@ -30,7 +32,14 @@ def _hash(value: Any) -> str:
 
 
 class QueryInterface:
-    def __init__(self, query_schema=None, result_schema=None, inference_executor=None, evidence_assessor=None):
+    def __init__(self, query_schema=None, result_schema=None, inference_executor=None, evidence_assessor=None, policy=None, policy_schema=None):
+        self.policy = policy if policy is not None else _load(POLICY_PATH)
+        self.policy_schema = policy_schema if policy_schema is not None else _load(POLICY_SCHEMA_PATH)
+        policy_errors = list(Draft202012Validator(self.policy_schema).iter_errors(self.policy))
+        if policy_errors:
+            raise QueryInterfaceError("query policy schema invalid: " + "; ".join(e.message for e in policy_errors))
+        if any(value is not False for value in self.policy["invariants"].values()):
+            raise QueryInterfaceError("query policy safety invariants must remain false")
         self.query_schema = query_schema if query_schema is not None else _load(QUERY_DIR / "query.schema.json")
         self.result_schema = result_schema if result_schema is not None else _load(QUERY_DIR / "result.schema.json")
         self.inference_executor = inference_executor if inference_executor is not None else InferenceExecutor()
@@ -199,7 +208,7 @@ class QueryInterface:
             {"step":5,"code":"QUERY_CONCLUSION","status":goal_status,"input_refs":sorted(goal_ids | premise_ids),"output_refs":sorted(matching_candidates)},
         ]
         result = {
-            "profile_id":"USG-QUERY/1.0.0","query_id":query["query_id"],
+            "profile_id":"USG-QUERY/1.0.0","policy_id":self.policy["policy_id"],"policy_version":self.policy["policy_version"],"query_id":query["query_id"],
             "document_id":document.get("documentId"),"document_sha256":snapshot,
             "completion_status":completion,"goal_status":goal_status,
             "assumptions":[
@@ -227,7 +236,7 @@ class QueryInterface:
 
     def _early(self, query, document, snapshot, completion, goal_status, diagnostics, details):
         result = {
-            "profile_id":"USG-QUERY/1.0.0","query_id":query["query_id"],
+            "profile_id":"USG-QUERY/1.0.0","policy_id":self.policy["policy_id"],"policy_version":self.policy["policy_version"],"query_id":query["query_id"],
             "document_id":document.get("documentId") if isinstance(document,dict) else None,
             "document_sha256":snapshot,"completion_status":completion,"goal_status":goal_status,
             "assumptions":[
