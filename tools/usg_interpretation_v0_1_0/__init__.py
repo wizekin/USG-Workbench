@@ -29,6 +29,11 @@ from .discourse import (
     DiscourseLink, DiscourseAnalysis, DiscourseAnalyzer, initial_discourse_registry,
 )
 
+from .assertion_evidence import (
+    ASSERTION_EVIDENCE_ADAPTER_VERSION, AssertionEvidenceProjection,
+    project_assertions_and_evidence,
+)
+
 __all__ = [
     "LANGUAGE_PROFILES", "SourceSnapshot", "TextSegment", "SegmentedSource",
     "ingest_source", "segment_source", "LEXICAL_ANALYSIS_VERSION", "Token",
@@ -41,4 +46,6 @@ __all__ = [
     "ReferentCandidate", "MentionAnalysis", "MentionAnalyzer", "DISCOURSE_ANALYSIS_VERSION",
     "DiscourseMarker", "DiscourseRegistry", "DiscourseLink", "DiscourseAnalysis",
     "DiscourseAnalyzer", "initial_discourse_registry",
+    "ASSERTION_EVIDENCE_ADAPTER_VERSION", "AssertionEvidenceProjection",
+    "project_assertions_and_evidence",
 ]
