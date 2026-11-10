@@ -74,6 +74,8 @@ class KernelLabPersistentIntegrationTests(unittest.TestCase):
         self.assertEqual(status, 200)
         self.assertIn(b"persistentDocumentId", html)
         self.assertIn(b"queryPersistentBtn", html)
+        self.assertIn(b"rawTextInput", html)
+        self.assertIn(b"interpretTextBtn", html)
         status, health = self.request("GET", "/health")
         self.assertEqual(status, 200)
         self.assertEqual(health["documentStore"], "SQLite")
@@ -119,6 +121,18 @@ class KernelLabPersistentIntegrationTests(unittest.TestCase):
         self.assertEqual(status, 200)
         self.assertEqual(conflicts["document_sha256"], query["document_sha256"])
         self.assertEqual(conflicts["conflicts"], [])
+
+    def test_raw_text_interpretation_is_available_in_kernel_lab_and_persists(self):
+        status, result = self.request("POST", "/v1/interpret", {
+            "text": "Ada writes code", "language": "en", "persist": True
+        })
+        self.assertEqual(status, 200)
+        self.assertEqual(result["completion_status"], "COMPLETE")
+        self.assertEqual(result["persistence"]["status"], "STORED")
+        document_id = result["persistence"]["document_id"]
+        status, loaded = self.request("GET", f"/v1/documents/{document_id}")
+        self.assertEqual(status, 200)
+        self.assertEqual(loaded["document"]["sources"][0]["text"], "Ada writes code")
 
     def test_ui_server_rejects_non_loopback_bind(self):
         with self.assertRaises(ValueError):

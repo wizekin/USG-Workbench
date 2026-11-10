@@ -16,7 +16,7 @@ The API validates and stores every returned canonical document through the exist
 
 ## Kernel Lab integration
 
-The existing Kernel Lab already talks to the Phase 3 local API. The same API endpoint is now the integration seam; no separate front-end parser or alternate storage engine is introduced. A subsequent UI-specific change is not required for the backend API to be callable.
+The Kernel Lab exposes the same API endpoint through a raw-text input panel, language selector, persistence toggle, and stage-diagnostics view. A persisted result is loaded into the canonical document editor, allowing the user to inspect and continue with the same shared SQLite document and reasoning workflows. No separate front-end parser or alternate storage engine is introduced.
 
 ## Limits
 
