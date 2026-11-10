@@ -97,3 +97,10 @@ unreachable-expression retention, and invalid-document rejection. It does not
 claim native v0.5.0 document records for sources, referents, mentions,
 assertions, evidence, contexts, definitions, relations, unresolved items, or
 derivations.
+
+
+Step 5E adds exact native Source record coverage to the Python kernel 0.5.0
+document adapter suite. It verifies typed source identity, exact round-trip,
+native text edits with SHA-256 recomputation, and canonical-only preservation
+for unsupported or absent source enum values. The same suite retains the Step
+5D full-document, graph-edit, and stale-snapshot checks.
