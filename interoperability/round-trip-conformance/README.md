@@ -132,6 +132,10 @@ USG-SEM schema validation, and the immutable-baseline check. Step 4D is complete
 as a conformance suite; the explicitly reported PARTIAL mappings remain known
 runtime compatibility gaps for a future kernel/contract extension.
 
+## Next stage — Phase 1 Step 5
+
+Step 4 is complete. The next stage is the versioned Python-kernel compatibility extension. **Step 5A contract drafted** in [`interoperability/python-kernel-extension/STEP-5A-CONTRACT.md`](../python-kernel-extension/STEP-5A-CONTRACT.md). It formalizes the native semantics and test obligations for `PREDICATE_APP`, `CONNECTIVE`, and `QUANTIFIER`. Step 5A does not change kernel code; Step 5B may begin only after the contract passes automated consistency checks. The Python 0.4.0 package remains immutable.
+
 ## Status vocabulary
 
 - `LOSSLESS`: every meaning-bearing field in the declared source scope has an exact target representation and passes round-trip invariant checks.
