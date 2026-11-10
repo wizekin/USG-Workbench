@@ -1,6 +1,6 @@
 # Phase 1 Step 4 — Round-trip conformance
 
-**Status:** Active implementation work  
+**Status:** 4A completed; 4B–4D active implementation work  
 **Contract:** USG-SEM/1.0  
 **Baseline pair:** Semantic Workbench 0.5.4 / Python reference kernel 0.4.0  
 **Branch:** `phase1/round-trip-conformance`
@@ -29,7 +29,11 @@ This is not satisfied by importing a canonical document and returning an unchang
 
 ## Implementation sequence
 
-### 4A — Workbench source adapter
+### 4A — Workbench source adapter — completed
+
+Implemented in `interoperability/workbench_adapter/` with a documented API, source-model mapping, native snapshot integrity digests, explicit partial statuses, Unicode offset conversion, Node tests, and JSON Schema validation in CI. See the adapter README for exact conversion behavior and known boundaries.
+
+### 4B — Python projection and reverse serializer
 
 Implement a versioned adapter from the actual Workbench semantic model into USG-SEM/1.0.
 
