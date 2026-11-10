@@ -270,9 +270,17 @@ def evaluate(
         if fixture.get("determinism_required", False):
             determinism_total += 1
             repeat_outputs = actual.get("repeat_outputs", [])
+            snapshot_fields = (
+                "completion_status", "conclusions", "diagnostics", "scope_bindings",
+                "evidence_assessments", "derivations", "preserved_item_ids", "resource",
+            )
+            actual_snapshot = {
+                field: actual[field] for field in snapshot_fields if field in actual
+            }
             if (
                 isinstance(repeat_outputs, list)
                 and len(repeat_outputs) >= 2
+                and _same_json(repeat_outputs[0], actual_snapshot, excluded)
                 and all(_same_json(repeat_outputs[0], item, excluded) for item in repeat_outputs[1:])
             ):
                 determinism_correct += 1
