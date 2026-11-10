@@ -1,6 +1,6 @@
 # Phase 1 Step 4 — Round-trip conformance
 
-**Status:** 4A completed; 4B–4D active implementation work  
+**Status:** 4A completed; 4B reverse serializer implemented and under conformance testing; 4C–4D pending  
 **Contract:** USG-SEM/1.0  
 **Baseline pair:** Semantic Workbench 0.5.4 / Python reference kernel 0.4.0  
 **Branch:** `phase1/round-trip-conformance`
@@ -17,8 +17,8 @@ This is not satisfied by importing a canonical document and returning an unchang
 
 1. The Step 1 predicate/frame registry and Step 2 operator/scope registry describe approved and conditional mappings. They are registries, not runtime adapters.
 2. Step 3 provides a document-level USG-SEM → Python projection. It preserves the canonical document as an authoritative snapshot and refuses to export that snapshot after mutation.
-3. The Python adapter currently has no general serializer that reconstructs a new USG-SEM document from changed Python `Source`, `Node`, and `Assertion` projections.
-4. No executable Workbench 0.5.4 → USG-SEM adapter is present in the repository.
+3. Step 4B now provides `python_to_contract_document()`, which serializes current Python `Source`, `Node`, and `Assertion` projections into a new USG-SEM document. It retains unsupported canonical-only records and reports them as partial/unmapped.
+4. Step 4A now provides an executable Workbench 0.5.4 → USG-SEM adapter.
 5. Workbench's native semantic core emits `PREDICATION`, `OPERATOR`, and `CONNECTIVE` expression records with explicit references and scope metadata. These are the source structures to adapt; display text is not a substitute.
 6. The Workbench baseline stores evidence offsets as JavaScript string offsets (UTF-16 code units), whereas USG-SEM requires zero-based, end-exclusive Unicode code-point offsets. The adapter must convert offsets and reject any span that splits a surrogate pair.
 7. Workbench v0.5.4 includes a native `acceptanceBoundary.requiresHumanReview` field. This is legacy application workflow metadata, not a USG-SEM semantic validity rule. It may be retained only as inert, namespaced native payload for exact archival round-trip; it must not become a required human gate in the canonical contract or Python projection.
@@ -33,26 +33,36 @@ This is not satisfied by importing a canonical document and returning an unchang
 
 Implemented in `interoperability/workbench_adapter/` with a documented API, source-model mapping, native snapshot integrity digests, explicit partial statuses, Unicode offset conversion, Node tests, and JSON Schema validation in CI. See the adapter README for exact conversion behavior and known boundaries.
 
-### 4B — Python projection and reverse serializer
+### 4A — Workbench source adapter — completed
 
-Implement a versioned adapter from the actual Workbench semantic model into USG-SEM/1.0.
+Implemented in `interoperability/workbench_adapter/`. It maps Workbench v0.5.4
+semantic models into USG-SEM/1.0, preserving argument/role order, operator
+scope, directed connective roles, unresolved mentions, evidence, provenance,
+and native payload integrity. It converts UTF-16 offsets to Unicode code-point
+offsets and reports incomplete mappings as PARTIAL. See the adapter README.
 
-- Map entities to document-local referents; mentions remain separate records and retain antecedent/resolution state.
-- Map PREDICATION nodes to PREDICATE_APP unless an approved predicate/frame mapping is applicable with all required evidence and role constraints.
-- Map OPERATOR nodes without changing operator type, polarity, modal force, quantifier binding, or scope target.
-- Map CONNECTIVE nodes with directed antecedent/consequent roles and exact marker/status metadata; never flatten EXCEPTION, WHEN, CONCESSIVE, or CONTRAST into AND/OR.
-- Map evidence, unresolved items, relations, roots, source spans, and provenance.
-- Convert UTF-16 offsets to Unicode code-point offsets using the exact source string.
-- Preserve the complete native Workbench payload under a versioned namespace, while keeping it non-authoritative.
-- Report every omitted or non-representable item and its exact native reference. A source warning about discarded information cannot be reported as LOSSLESS.
+### 4B — Python projection and reverse serializer — implementation added
 
-### 4B — Python projection and reverse serializer
+Implemented in `interoperability/python_adapter/reverse.py` and exported as
+`python_to_contract_document()`.
 
-- Retain Step 3's strict partial projection behavior.
-- Add a serializer from actual Python 0.4.0 records and SemIR nodes to a newly constructed USG-SEM document.
-- Preserve node operator, sort, ordered operands, parameters, supported annotations, DAG sharing, source references, and assertion fields.
-- Never use the original canonical snapshot as a substitute for serializing modified Python projections.
-- Return explicit mapping diagnostics for fields/records with no exact Python representation.
+- Serializes current Python `Source`, `Node`, and `Assertion` projections;
+  it does not return the original snapshot as a substitute.
+- Traverses SemIR as a graph, preserving shared DAG identity, multiple roots,
+  operator identity, sort, parameters, ordered operands, and supported annotations.
+- Retains canonical-only records and unsupported original records/roots rather
+  than dropping them.
+- Restores annotation span source references only when offsets exactly match
+  the imported canonical annotation. Changed spans without source identity are
+  preserved in a namespaced extension and reported PARTIAL.
+- Rejects a modified canonical envelope to prevent stale canonical-only data
+  from being merged into the output.
+- Reports unsupported records and fields; no guessed source association or
+  constructor coercion is used.
+
+Tests are in `tests/test_python_reverse_serializer.py` and are added to the
+interoperability CI workflow. Step 4B is not complete until CI and the semantic
+invariant review pass.
 
 ### 4C — Workbench reconstruction adapter
 
