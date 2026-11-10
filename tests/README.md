@@ -152,3 +152,17 @@ python -m unittest discover -s tests -p "test_phase2_grounding.py" -v
 The grounding service is `tools/semantic_grounding_v1_0_0/grounding.py`. It resolves typed records, exact definition versions/catalogue releases, explicit Mention-to-Referent links, assertion contexts, context parent paths, and exact ordered expression scope paths. It returns distinct resolution states and never resolves identity by label. The compact Step 2.2 fixture preflight preserves payloads and reports missing canonical fields without defaulting assertion status.
 
 See [Phase 2 Step 2.5 documentation](../documentation/PHASE-2-STEP-2.5-DETERMINISTIC-GROUNDING-SERVICES.md).
+
+
+## Phase 2 Step 2.10 — Final exit acceptance
+
+Run the complete integrated Phase 2 and Phase 1 compatibility gate:
+
+```bash
+python -m pip install "jsonschema>=4.18,<5"
+python -m tools.phase2_exit_acceptance.run --report phase2-exit-acceptance-report.json
+```
+
+The runner compiles all Phase 2 packages, validates the declarative rule registry and semantics contract, reruns the frozen Step 2.2 evaluator tests, all Phase 2 step regressions, the Kernel Lab integration tests, and the Phase 1 exit/adapter/interoperability suites. It emits a schema-validated JSON report. The overall status is ACCEPTED only if every required check passes. GitHub Actions uploads the report as an artifact; a failed or missing check blocks Phase 2 completion.
+
+See [Phase 2 Step 2.10 documentation](../documentation/PHASE-2-STEP-2.10-EXIT-ACCEPTANCE.md).
