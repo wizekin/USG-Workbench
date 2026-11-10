@@ -20,9 +20,23 @@ class KernelV121UnresolvedAdapterTests(unittest.TestCase):
             "profileId": "USG-SEM/1.0", "documentId": "test:doc",
             "sources": [{"id": "s:1", "text": "Alice.", "language": "en", "offsetUnit": "unicode_code_point"}], "primarySourceRef": "s:1",
             "definitions": {"concepts": [], "frames": [], "roles": [], "relations": []},
-            "referents": [], "mentions": [],
-            "expressions": [{"id": "x:1", "op": "LIT", "sort": "VAL", "operandRefs": [], "params": {"value": "Alice", "vtype": "STRING"}}],
-            "rootExpressionRefs": ["x:1"], "assertions": [],
+            "referents": [
+                {"id": "r:1", "label": "Alice", "semanticKind": "ENTITY",
+                 "aliases": [], "conceptRefs": [], "number": "SINGULAR",
+                 "genericity": "SPECIFIC", "introducedIn": {"kind": "WORLD"}},
+                {"id": "r:2", "label": "tool", "semanticKind": "ENTITY",
+                 "aliases": [], "conceptRefs": [], "number": "SINGULAR",
+                 "genericity": "SPECIFIC", "introducedIn": {"kind": "WORLD"}},
+            ], "mentions": [],
+            "expressions": [
+                {"id": "x:1", "op": "REF", "sort": "TERM", "operandRefs": [], "params": {"ref": "r:1"}},
+                {"id": "x:2", "op": "REF", "sort": "TERM", "operandRefs": [], "params": {"ref": "r:2"}},
+                {"id": "x:3", "op": "PREDICATE_APP", "sort": "SIT",
+                 "operandRefs": ["x:1", "x:2"], "params": {"predicate": "NEEDS", "roles": ["AGENT", "THEME"]},
+                 "semanticKind": "STATE", "interpretationStatus": "RESOLVED"},
+                {"id": "x:4", "op": "HOLDS", "sort": "PROP", "operandRefs": ["x:3"], "params": {}},
+            ],
+            "rootExpressionRefs": ["x:4"], "assertions": [],
             "evidence": [{"id": "e:1", "sourceRef": "s:1",
                 "span": {"sourceRef": "s:1", "start": 0, "end": 5, "offsetUnit": "unicode_code_point"},
                 "quote": "Alice", "alignmentStatus": "EXACT",
@@ -30,7 +44,7 @@ class KernelV121UnresolvedAdapterTests(unittest.TestCase):
             "contexts": [], "expressionRelations": [],
             "unresolvedItems": [{
                 "id": "u:1", "status": "AMBIGUOUS", "reason": "Two readings",
-                "scopeRef": "x:1", "evidenceRefs": ["e:1", "e:1"],
+                "scopeRef": "x:4", "evidenceRefs": ["e:1", "e:1"],
                 "candidateRefs": ["opaque:candidate"],
             }],
             "derivations": [],
@@ -42,7 +56,7 @@ class KernelV121UnresolvedAdapterTests(unittest.TestCase):
 
     def test_scope_and_evidence_references_project_with_explicit_types(self):
         item = document_to_kernel_v121(self.make_document(), validate=True).unresolved_items["u:1"]
-        self.assertEqual(item.scope_ref, TypedReference(ReferenceSpace.EXPRESSION, "x:1"))
+        self.assertEqual(item.scope_ref, TypedReference(ReferenceSpace.EXPRESSION, "x:4"))
         self.assertEqual(item.evidence_refs, (
             TypedReference(ReferenceSpace.EVIDENCE, "e:1"),
             TypedReference(ReferenceSpace.EVIDENCE, "e:1"),
