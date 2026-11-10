@@ -6,7 +6,7 @@ Mappings must be exact and documented. Unsupported or lossy mappings must be rep
 
 ## Current Phase 1 work
 
-<badge>Phase 1 complete</badge> The normative USG-SEM/1.0 contract, registries, Workbench boundary, Python native families, adapters, composed document round-trip, and exit acceptance gate have passed the recorded CI checks.
+**Phase 1 status: COMPLETE.** The normative USG-SEM/1.0 contract, registries, Workbench boundary, Python native families, adapters, composed document round-trip, and exit acceptance gate have passed the recorded CI checks.
 
 ### Step 1 — predicate-to-frame registry
 
