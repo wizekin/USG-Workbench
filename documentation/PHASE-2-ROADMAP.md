@@ -1,7 +1,7 @@
 # USG Phase 2 — Semantic Reasoning Roadmap
 
 **Phase:** 2 — Evidence-grounded, rule-governed semantic reasoning  
-**Status:** Steps 2.1–2.6 complete; deterministic inference executor implemented for the explicitly activated Modus Ponens and left-conjunction-elimination subset; evidence assessment and query/interface layers remain pending  
+**Status:** Steps 2.1–2.7 complete; deterministic inference and conservative evidence/conflict assessment layers implemented; query/explanation and interactive Kernel Lab layers remain pending  
 **Prerequisite:** Phase 1 exit accepted (USG-SEM/1.0 and composed adapter v1.5.1)  
 **Normative Phase 1 record:** [Phase 1 exit acceptance](../interoperability/PHASE-1-EXIT-ACCEPTANCE.md)
 
@@ -222,6 +222,6 @@ These may be considered in later phases only after Phase 2 produces a measurable
 
 Steps 2.1–2.5 established the definitions, benchmark/evaluator, versioned rule model, formal rule semantics, and deterministic grounding services. Step 2.6 is merged and implements the first narrow deterministic execution subset: exact Modus Ponens and left conjunction elimination. A separate activation manifest enables only those handlers; the declarative registry and semantics contract remain unchanged, with registry-level execution disabled and rules still marked `SPECIFIED_NOT_EXECUTABLE`.
 
-The executor accepts complete, schema-valid USG-SEM/1.0 documents and explicit tasks. It uses SOURCE_ASSERTED-only premises, exact typed references, ordered operands, context and attribution bindings, and deterministic derivation provenance. Candidate conclusions remain outside canonical assertions and are marked DERIVED_NOT_VERIFIED. Inferred-premise chaining, evidence assessment, verification, implicit closed-world assumptions, and automatic truth promotion remain disabled. Resource interruption is explicit and preserves all input records without semantic truncation.
+Step 2.7 is merged and adds the separate `USG-EVIDENCE-ASSESSMENT/1.0.0` ledger. It computes exact source-span alignment, detects only direct opposite-polarity conflicts under exact context/commitment/attribution scope, and preserves semantic-support and relation labels as declarations rather than proof. Multiple source records do not imply independence; corroboration remains NOT_ESTABLISHED without proven independence; external verification declarations remain DECLARED_UNVERIFIED unless a trusted verifier and procedure are actually bound and run. No truth promotion or conflict winner selection occurs.
 
-**Next implementation step:** Phase 2 Step 2.7 — evidence support and conflict assessment. This step must separately model source-span alignment, semantic support, contradiction, corroboration and source independence, and external verification. It must not treat successful rule derivation as evidence support or objective truth.
+**Next implementation step:** Phase 2 Step 2.8 — query and explanation interface. It must accept explicit structured goals, return grounded candidates with complete derivation and evidence/conflict projections, distinguish established results from declared/unverified information, and expose unresolved, unsupported, ambiguous, and incomplete outcomes without generating unlicensed conclusions.
