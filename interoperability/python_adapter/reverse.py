@@ -96,7 +96,7 @@ def _pair_original_nodes(imported: Any) -> tuple[dict[int, str], dict[str, dict[
 
 
 def _annotation_to_contract(node: Any, original: Mapping[str, Any] | None,
-                            node_id: str, archival: dict[str, Any]) -> dict[str, Any] | None:
+                            node_id: str, archival: dict[str, Any], unmapped: list[str]) -> dict[str, Any] | None:
     ann = node.ann
     if ann is None:
         return None
@@ -115,6 +115,7 @@ def _annotation_to_contract(node: Any, original: Mapping[str, Any] | None,
     else:
         # Ann has no sourceRef. Never guess that a changed span belongs to the
         # document's primary source. Keep the native annotation in an extension.
+        unmapped.append(node_id)
         archival[node_id] = {
             "nativeAnnotation": {
                 "spans": [list(span) for span in ann.spans],
@@ -179,7 +180,7 @@ def _serialize_graph(imported: Any, used_ids: set[str], archival: dict[str, Any]
         object_to_id[identity] = node_id
         original = original_records.get(old_id) if old_id else None
         params = _json_value(node.params_dict())
-        annotation = _annotation_to_contract(node, original, node_id, archival)
+        annotation = _annotation_to_contract(node, original, node_id, archival, unmapped)
         record = {
             "id": node_id,
             "op": node.op,
@@ -298,10 +299,26 @@ def python_to_contract_document(imported: Any, *, validate: bool = True,
             unmapped.append(opaque_id)
             archival[opaque_id] = {"reason": str(exc)}
 
-    document["sources"] = source_records
-    document["expressions"] = graph_records
-    document["rootExpressionRefs"] = roots
-    document["assertions"] = assertion_records
+    # Keep canonical records that did not receive a native projection. A
+    # failed/unsupported root must remain present and reachable as a root.
+    def merge_by_id(original_records: list[dict[str, Any]], current_records: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        current_by_id = {item["id"]: item for item in current_records}
+        merged = [current_by_id.pop(item["id"], item) for item in original_records]
+        merged.extend(current_by_id.values())
+        return merged
+
+    original_sources = copy.deepcopy(document.get("sources", []))
+    original_expressions = copy.deepcopy(document.get("expressions", []))
+    original_assertions = copy.deepcopy(document.get("assertions", []))
+    document["sources"] = merge_by_id(original_sources, source_records)
+    document["expressions"] = merge_by_id(original_expressions, graph_records)
+    document["assertions"] = merge_by_id(original_assertions, assertion_records)
+    mapped_root_ids = set(imported.expression_roots)
+    preserved_roots = [root for root in document.get("rootExpressionRefs", []) if root not in mapped_root_ids]
+    document["rootExpressionRefs"] = roots + preserved_roots
+    unmapped.extend(item["id"] for item in original_sources if item["id"] not in {x["id"] for x in source_records})
+    unmapped.extend(item["id"] for item in original_expressions if item["id"] not in {x["id"] for x in graph_records})
+    unmapped.extend(item["id"] for item in original_assertions if item["id"] not in {x["id"] for x in assertion_records})
     if source_records:
         original_primary = document.get("primarySourceRef")
         if original_primary not in {item["id"] for item in source_records}:
@@ -324,6 +341,8 @@ def python_to_contract_document(imported: Any, *, validate: bool = True,
     for collection in ("referents", "mentions", "evidence", "contexts",
                       "expressionRelations", "unresolvedItems", "derivations"):
         unmapped.extend(item["id"] for item in document.get(collection, []))
+    for collection in ("sources", "expressions", "assertions"):
+        unmapped.extend(imported.record_mapping.get(collection, {}).get("unmappedRefs", []))
     for collection in ("concepts", "frames", "roles", "relations"):
         unmapped.extend(item["id"] for item in document["definitions"].get(collection, []))
 
