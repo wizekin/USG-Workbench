@@ -33,8 +33,14 @@ def timed(fn):
     return time.perf_counter() - start, value
 
 
-def directory_bytes(path: Path) -> int:
-    return sum(item.stat().st_size for item in path.rglob("*") if item.is_file())
+def storage_sizes(path: Path) -> tuple[int, int]:
+    files = [path] if path.is_file() else [item for item in path.rglob("*") if item.is_file()]
+    logical = sum(item.stat().st_size for item in files)
+    allocated = sum(
+        getattr(item.stat(), "st_blocks", 0) * 512 or item.stat().st_size
+        for item in files
+    )
+    return logical, allocated
 
 
 def run_once(backend: str, document: dict, root: Path) -> dict:
@@ -67,7 +73,11 @@ def run_once(backend: str, document: dict, root: Path) -> dict:
             raise RuntimeError(f"{backend}: revision history mismatch")
         if not rebuilt or any(count < 0 for count in rebuilt.values()):
             raise RuntimeError(f"{backend}: index rebuild returned invalid counts")
+        store.close()
+        logical_bytes, allocated_bytes = storage_sizes(path)
         return {
+            "storage_logical_bytes": logical_bytes,
+            "storage_allocated_bytes": allocated_bytes,
             "write_seconds": write_s,
             "read_seconds_median_7": statistics.median(read_samples),
             "read_seconds_all_7": read_samples,
@@ -114,7 +124,7 @@ def main():
         metric_names = [
             "write_seconds", "read_seconds_median_7", "idempotent_write_seconds",
             "revision_update_seconds", "list_revisions_seconds", "integrity_seconds",
-            "index_rebuild_seconds",
+            "index_rebuild_seconds", "storage_logical_bytes", "storage_allocated_bytes",
         ]
         results["backends"][backend] = {
             "samples": samples,
