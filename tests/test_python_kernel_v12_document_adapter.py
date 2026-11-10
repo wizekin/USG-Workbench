@@ -21,7 +21,7 @@ class KernelV12UnresolvedItemDocumentAdapterTests(unittest.TestCase):
             "profileId": "USG-SEM/1.0", "documentId": "test:doc",
             "sources": [{"id": "s:1", "text": "source"}], "primarySourceRef": "s:1",
             "definitions": {"concepts": [], "frames": [], "roles": [], "relations": []},
-            "referents": [], "mentions", "expressions": [], "rootExpressionRefs": [],
+            "referents": [], "mentions": [], "expressions": [], "rootExpressionRefs": [],
             "assertions": [],
             "evidence": [{"id": "e:1", "sourceRef": "s:1",
                 "span": {"sourceRef": "s:1", "start": 0, "end": 1, "offsetUnit": "unicode_code_point"},
