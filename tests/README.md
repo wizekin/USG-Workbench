@@ -73,3 +73,12 @@ canonical constructors, source-builder warnings, stale native snapshots, and a
 512-root graph. A PARTIAL result is expected where Python 0.4.0 lacks an exact
 constructor; the canonical graph must survive unchanged and be reported rather
 than coerced.
+
+
+Python kernel 0.5.0 USG-SEM graph adapter (Phase 1 Step 5C):
+
+```bash
+python -m unittest discover -s tests -p "test_python_kernel_v05_adapter.py" -v
+```
+
+This suite exercises native `PREDICATE_APP`, `CONNECTIVE`, and `QUANTIFIER` projections, reverse graph serialization, binder identity, OPAQUE/UNRESOLVED_REF distinctions, unknown and malformed operators, and shared DAG identity. It runs in an isolated Python process with the v0.5.0 package path; the existing v0.4.0 adapter remains unchanged.

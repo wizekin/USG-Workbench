@@ -16,3 +16,19 @@ __all__ = [
     "contract_graph_roots_to_semir_partial", "contract_graph_to_semir",
     "mapping_report_for_python",
 ]
+
+# Python kernel 0.5.0 expression-graph adapter. Kept separate from the
+# legacy document-level v0.4.0 projection above.
+from .kernel_v05 import (
+    KernelV05Graph,
+    contract_graph_roots_to_kernel_v05,
+    contract_graph_roots_to_kernel_v05_partial,
+    kernel_v05_graph_to_contract,
+)
+
+__all__ += [
+    "KernelV05Graph",
+    "contract_graph_roots_to_kernel_v05",
+    "contract_graph_roots_to_kernel_v05_partial",
+    "kernel_v05_graph_to_contract",
+]
