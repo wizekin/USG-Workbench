@@ -22,6 +22,88 @@ from usg_discourse_v07 import (  # noqa: E402
     ReferenceSpace,
     TypedReference,
 )
+from tools.semantic_query_interface_v1_0_0.interface import QueryInterface  # noqa: E402
+
+QUERY_BENCHMARK_PATH = ROOT / "benchmarks" / "semantic-reasoning" / "query-v1.0.0" / "fixtures.json"
+EXECUTOR_BENCHMARK_PATH = ROOT / "benchmarks" / "semantic-reasoning" / "executor-v1.0.0" / "fixtures.json"
+EVIDENCE_BENCHMARK_PATH = ROOT / "benchmarks" / "semantic-reasoning" / "evidence-v1.0.0" / "fixtures.json"
+
+
+def _load_json(path):
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _query_benchmark():
+    return _load_json(QUERY_BENCHMARK_PATH)
+
+
+def _resolve_query_document(document_ref):
+    if document_ref.get("benchmark_id") == "USG-INFERENCE-EXECUTOR-BENCHMARK":
+        bundle = _load_json(EXECUTOR_BENCHMARK_PATH)
+    elif document_ref.get("benchmark_id") == "USG-EVIDENCE-ASSESSMENT-BENCHMARK":
+        bundle = _load_json(EVIDENCE_BENCHMARK_PATH)
+    else:
+        raise ValueError("Unregistered canonical benchmark reference")
+    matches = [item for item in bundle["fixtures"] if item["id"] == document_ref.get("fixture_id")]
+    if len(matches) != 1:
+        raise ValueError("Benchmark fixture reference must resolve exactly once")
+    return matches[0]["document"]
+
+
+def _compare_query_expected(result, expected):
+    actual = {
+        "completion_status": result["completion_status"],
+        "goal_status": result["goal_status"],
+        "candidate_count": len(result["inference_candidates"]),
+        "derivation_count": len(result["derivations"]),
+        "source_assertion_count": len(result["source_assertions"]),
+        "conflict_count": len(result["conflicts"]),
+    }
+    mismatches = {
+        key: {"expected": value, "actual": actual.get(key)}
+        for key, value in expected.items()
+        if key in actual and actual[key] != value
+    }
+    return {"passed": not mismatches, "actual": actual, "mismatches": mismatches}
+
+
+def load_query_fixture(fixture_id):
+    bundle = _query_benchmark()
+    matches = [item for item in bundle["fixtures"] if item["id"] == fixture_id]
+    if len(matches) != 1:
+        raise ValueError("Query fixture ID must resolve exactly once")
+    fixture = matches[0]
+    return {
+        "fixture_id": fixture["id"], "document": _resolve_query_document(fixture["document_ref"]),
+        "query": fixture["query"], "expected": fixture["expected"],
+        "benchmark_id": bundle["benchmark_id"], "benchmark_version": bundle["benchmark_version"],
+    }
+
+
+def run_query_payload(document, query, expected=None):
+    result = QueryInterface().run(document, query)
+    comparison = _compare_query_expected(result, expected) if isinstance(expected, dict) else None
+    return {"result": result, "comparison": comparison}
+
+
+def run_query_benchmark():
+    bundle = _query_benchmark()
+    interface = QueryInterface()
+    rows = []
+    for fixture in bundle["fixtures"]:
+        document = _resolve_query_document(fixture["document_ref"])
+        result = interface.run(document, fixture["query"])
+        comparison = _compare_query_expected(result, fixture["expected"])
+        rows.append({
+            "fixture_id": fixture["id"], "expected": fixture["expected"],
+            "comparison": comparison, "result": result,
+        })
+    passed = sum(1 for row in rows if row["comparison"]["passed"])
+    return {
+        "benchmark_id": bundle["benchmark_id"], "benchmark_version": bundle["benchmark_version"],
+        "total": len(rows), "passed": passed, "failed": len(rows) - passed,
+        "accepted": passed == len(rows), "results": rows,
+    }
 
 WEB_ROOT = Path(__file__).resolve().parent
 HOST = "127.0.0.1"
@@ -112,13 +194,26 @@ class Handler(BaseHTTPRequestHandler):
         elif path == "/health":
             self._send(200, {
                 "ok": True, "app": "USG Kernel Lab", "mentionModel": "0.7.0",
-                "adapter": "USG-SEM/1.0",
+                "adapter": "USG-SEM/1.0", "queryInterface": "USG-QUERY/1.0.0",
+                "evidenceAssessment": "USG-EVIDENCE-ASSESSMENT/1.0.0",
+            })
+        elif path == "/api/fixtures":
+            bundle = _query_benchmark()
+            self._send(200, {
+                "ok": True, "benchmarkId": bundle["benchmark_id"],
+                "benchmarkVersion": bundle["benchmark_version"],
+                "fixtures": [{
+                    "id": item["id"], "goal": item["query"]["goal"],
+                    "ruleIds": item["query"]["inference_task"]["rule_ids"],
+                    "expected": item["expected"],
+                } for item in bundle["fixtures"]],
             })
         else:
             self._send(404, {"error": "Not found"})
 
     def do_POST(self):
-        if urlparse(self.path).path not in ("/api/inspect", "/api/export"):
+        path = urlparse(self.path).path
+        if path not in ("/api/inspect", "/api/export", "/api/query", "/api/fixture", "/api/benchmark"):
             self._send(404, {"error": "Not found"})
             return
         try:
@@ -126,12 +221,26 @@ class Handler(BaseHTTPRequestHandler):
             if length <= 0 or length > 8_000_000:
                 raise ValueError("Request body must be between 1 byte and 8 MB")
             request = json.loads(self.rfile.read(length).decode("utf-8"))
+            if path == "/api/fixture":
+                fixture = load_query_fixture(request.get("fixture_id"))
+                self._send(200, {"ok": True, **fixture})
+                return
+            if path == "/api/benchmark":
+                self._send(200, {"ok": True, **run_query_benchmark()})
+                return
             document = request.get("document")
             if not isinstance(document, dict):
                 raise ValueError("document must be a JSON object")
+            if path == "/api/query":
+                query = request.get("query")
+                if not isinstance(query, dict):
+                    raise ValueError("query must be a JSON object")
+                payload = run_query_payload(document, query, request.get("expected"))
+                self._send(200, {"ok": True, **payload})
+                return
 
             imported = document_to_kernel_v07(document, validate=True)
-            if self.path == "/api/inspect":
+            if path == "/api/inspect":
                 self._send(200, {
                     "ok": True,
                     "modelVersion": "0.7.0",
