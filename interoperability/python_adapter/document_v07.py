@@ -95,7 +95,8 @@ class KernelV07Document:
             _merge_mention_edit(records[external_id], self.mention_snapshots[external_id], native)
         if validate:
             problems = validate_contract_document(result, schema_path)
-            problems.extend(_validate_mention_source_spans(result))
+            if not problems:
+                problems.extend(_validate_mention_source_spans(result))
             if problems:
                 raise ContractMappingError(
                     "Serialized kernel v0.7.0 document is invalid: " + "; ".join(problems[:20])
