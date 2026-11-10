@@ -84,7 +84,7 @@ function makeModel({ warnings = false, opaque = false } = {}) {
     { id: 'exists-root', type: 'OPERATOR', operatorType: 'QUANTIFIER', operator: 'EXISTS',
       variable: 'x', restrictor: { entityId: 'person-class', predicate: 'INSTANCE_OF' },
       variableBinding: { variable: 'x', role: 'subject', restrictorEntityId: 'person-class' },
-      scope: { targetId: 'not-needs', scopeKind: 'quantifier_body' }, evidenceRefs: ['needs-evidence'] },
+      scope: { targetId: 'needs', scopeKind: 'quantifier_body' }, evidenceRefs: ['needs-evidence'] },
     { id: 'no-root', type: 'OPERATOR', operatorType: 'NEGATION', operator: 'NOT',
       scope: { targetId: 'exists-root', scopeKind: 'whole_expression' }, evidenceRefs: ['needs-evidence'] },
     { id: 'if-root', type: 'CONNECTIVE', connective: 'CONDITIONAL',
