@@ -135,7 +135,7 @@ function makeModel({ warnings = false, opaque = false } = {}) {
       evidenceRefs: ['needs-evidence', 'helps-evidence']
     }],
     rootExpressionIds: ['might-not-needs', 'not-forall-root', 'no-root',
-      'if-root', 'unless-root', 'when-root', 'concessive-root'],
+      'if-root', 'unless-root', 'when-root', 'concessive-root', ...(opaque ? ['opaque-root'] : [])],
     unresolvedItems: [{
       id: 'unresolved-it', status: 'unresolved', reason: 'Pronoun antecedent not established.',
       surfaceText: 'it', scope: 'needs', evidenceRef: 'needs-evidence'
