@@ -1,6 +1,7 @@
 # USG Phase 4 — Definitions and Roadmap
 
-**Status:** Phase 4 v0.1.0 bounded demonstrator — exit acceptance implemented; pending exact-main CI merge.
+**Status:** COMPLETE — Phase 4 v0.1.0 bounded demonstrator accepted.
+**Acceptance commit:** `c0e9d330d67448bcefc7cee91be2a76f48f67472` ([integrated exit workflow](https://github.com/wizekin/USG-Workbench/actions/runs/42878901701)).
 **Implementation record:** Steps 4.1–4.13 have versioned definitions, implementation, benchmark, and acceptance artifacts.
 **Step 4.1 contract:** [Interpretation definitions and acceptance contract](PHASE-4-STEP-4.1-INTERPRETATION-CONTRACT.md).  
 **Prerequisites:** Phase 1, Phase 2, and Phase 3 exit acceptance records.  
@@ -292,7 +293,7 @@ Each capability must be separately specified, benchmarked, and accepted before b
 
 ## 11. Phase 4 implementation and acceptance status
 
-The v0.1.0 bounded demonstrator implements Steps 4.1–4.13. Its accepted behavior is intentionally narrow: exact source ingestion and spans; Unicode tokenization; a tiny injected English/Arabic lexicon; explicit English SVO and MSA Arabic SVO/VSO patterns; registered `write` / `كتب` predicate frames; mention extraction with unresolved repeat-surface candidates; explicit discourse-marker detection; conservative assertion/evidence projections; versioned in-memory resource and association registries; optional source-span-validated model proposals; a raw-text API and Kernel Lab UI backed by the existing SQLite store; and a six-case frozen benchmark.
+The v0.1.0 bounded demonstrator has passed integrated exit acceptance on the merged main commit. Steps 4.1–4.13 are merged and accepted for the bounded scope. Its accepted behavior is intentionally narrow: exact source ingestion and spans; Unicode tokenization; a tiny injected English/Arabic lexicon; explicit English SVO and MSA Arabic SVO/VSO patterns; registered `write` / `كتب` predicate frames; mention extraction with unresolved repeat-surface candidates; explicit discourse-marker detection; conservative assertion/evidence projections; versioned in-memory resource and association registries; optional source-span-validated model proposals; a raw-text API and Kernel Lab UI backed by the existing SQLite store; and a six-case frozen benchmark.
 
 The Phase 4 exit gate accepts only this bounded demonstrator profile. It does **not** accept the broader construction families listed as future scope in Step 4.1. Multi-sentence composition, nested syntax, negation/modality/tense/aspect scope, coordination, broad lexical coverage, general coreference, implicit discourse inference, and semantic-support inference remain disabled or unresolved. The benchmark measures the bounded fixture set only; it is not evidence of unrestricted English/Arabic understanding.
 
