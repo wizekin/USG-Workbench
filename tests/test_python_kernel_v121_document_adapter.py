@@ -21,7 +21,7 @@ class KernelV121UnresolvedAdapterTests(unittest.TestCase):
             "sources": [{"id": "s:1", "text": "Alice.", "language": "en", "offsetUnit": "unicode_code_point"}], "primarySourceRef": "s:1",
             "definitions": {"concepts": [], "frames": [], "roles": [], "relations": []},
             "referents": [], "mentions": [],
-            "expressions": [{"id": "x:1", "op": "LIT", "sort": "PROP", "operandRefs": [], "params": {}}],
+            "expressions": [{"id": "x:1", "op": "LIT", "sort": "VAL", "operandRefs": [], "params": {"value": "Alice", "vtype": "STRING"}}],
             "rootExpressionRefs": ["x:1"], "assertions": [],
             "evidence": [{"id": "e:1", "sourceRef": "s:1",
                 "span": {"sourceRef": "s:1", "start": 0, "end": 5, "offsetUnit": "unicode_code_point"},
