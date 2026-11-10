@@ -145,8 +145,10 @@ class KernelV09DocumentAdapterTests(unittest.TestCase):
     def test_changed_source_must_resolve(self):
         imported = document_to_kernel_v09(self.make_document(), validate=False)
         old = imported.evidence["e:1"]
+        missing = TypedReference(ReferenceSpace.SOURCE, "missing:source")
         imported.evidence["e:1"] = replace(
-            old, source_ref=TypedReference(ReferenceSpace.SOURCE, "missing:source"))
+            old, source_ref=missing,
+            span=EvidenceSpan(missing, old.span.start, old.span.end))
         with self.assertRaises(ContractMappingError):
             kernel_v09_document_to_contract(imported, validate=False)
 
@@ -155,10 +157,8 @@ class KernelV09DocumentAdapterTests(unittest.TestCase):
         doc["sources"].append({"id": "s:2", "text": "other"})
         imported = document_to_kernel_v09(doc, validate=False)
         old = imported.evidence["e:1"]
-        imported.evidence["e:1"] = replace(
-            old, source_ref=TypedReference(ReferenceSpace.SOURCE, "s:2"))
-        with self.assertRaises(ContractMappingError):
-            kernel_v09_document_to_contract(imported, validate=False)
+        with self.assertRaises(ValueError):
+            replace(old, source_ref=TypedReference(ReferenceSpace.SOURCE, "s:2"))
 
     def test_changed_span_must_match_source_reference(self):
         imported = document_to_kernel_v09(self.make_document(), validate=False)
@@ -172,10 +172,8 @@ class KernelV09DocumentAdapterTests(unittest.TestCase):
     def test_wrong_reference_space_is_rejected(self):
         imported = document_to_kernel_v09(self.make_document(), validate=False)
         old = imported.evidence["e:1"]
-        imported.evidence["e:1"] = replace(
-            old, source_ref=TypedReference(ReferenceSpace.EVIDENCE, "e:1"))
-        with self.assertRaises(ContractMappingError):
-            kernel_v09_document_to_contract(imported, validate=False)
+        with self.assertRaises(ValueError):
+            replace(old, source_ref=TypedReference(ReferenceSpace.EVIDENCE, "e:1"))
 
     def test_stale_snapshot_is_rejected(self):
         imported = document_to_kernel_v09(self.make_document(), validate=False)
