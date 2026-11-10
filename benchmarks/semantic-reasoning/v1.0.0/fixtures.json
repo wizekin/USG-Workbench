@@ -1,0 +1,2838 @@
+{
+  "benchmark_id": "USG-SEMANTIC-REASONING",
+  "benchmark_version": "1.0.0",
+  "usg_profile": "USG-SEM/1.0",
+  "description": "Synthetic versioned benchmark cases for Phase 2. Fixtures are reference expectations, not executable rules or claims that an inference engine already exists.",
+  "fixture_count": 35,
+  "fixtures": [
+    {
+      "id": "USG-BENCH-IDENTITY-001",
+      "category": "identity",
+      "case_types": [
+        "positive",
+        "boundary"
+      ],
+      "title": "Two mentions explicitly share one referent",
+      "versions": {
+        "usg_sem_profile": "1.0",
+        "workbench": "0.5.4",
+        "python_document_adapter": "1.5.1",
+        "benchmark_format": "1.0.0",
+        "reference_policy": "benchmark-reference-policy/1.0.0"
+      },
+      "input_snapshot": {
+        "profile_id": "USG-SEM/1.0",
+        "document_id": "DOC-USG-BENCH-IDENTITY-001",
+        "source_records": [],
+        "semantic_records": {
+          "referents": [
+            {
+              "id": "ref-alex",
+              "kind": "PERSON"
+            }
+          ],
+          "mentions": [
+            {
+              "id": "m1",
+              "surface": "Alex",
+              "referent_ref": "ref-alex"
+            },
+            {
+              "id": "m2",
+              "surface": "Alex",
+              "referent_ref": "ref-alex"
+            }
+          ]
+        }
+      },
+      "task": {
+        "goal": "Determine whether m1 and m2 identify the same referent.",
+        "assumptions": [],
+        "reference_policy": {
+          "id": "benchmark-reference-policy/1.0.0",
+          "rules": [],
+          "world_assumption": "OPEN"
+        }
+      },
+      "expected": {
+        "completion_status": "complete",
+        "conclusions": [
+          "COREF:m1:m2"
+        ],
+        "prohibited_conclusions": [],
+        "diagnostics": [],
+        "scope_checks": [],
+        "evidence_checks": [],
+        "required_derivations": [
+          {
+            "conclusion_id": "COREF:m1:m2",
+            "derivation_id": "D-IDENTITY-001",
+            "required_fields": [
+              "derivation_id",
+              "conclusion_id",
+              "method",
+              "input_refs",
+              "output_refs",
+              "status"
+            ],
+            "expected_fields": {
+              "derivation_id": "D-IDENTITY-001",
+              "conclusion_id": "COREF:m1:m2",
+              "method": "REFERENCE_RESOLUTION",
+              "input_refs": [
+                "m1",
+                "m2",
+                "ref-alex"
+              ],
+              "output_refs": [
+                "COREF:m1:m2"
+              ],
+              "status": "VALIDATED"
+            }
+          }
+        ],
+        "preserved_item_ids": []
+      },
+      "determinism_required": true
+    },
+    {
+      "id": "USG-BENCH-IDENTITY-002",
+      "category": "identity",
+      "case_types": [
+        "negative",
+        "adversarial"
+      ],
+      "title": "Identical labels do not establish identity",
+      "versions": {
+        "usg_sem_profile": "1.0",
+        "workbench": "0.5.4",
+        "python_document_adapter": "1.5.1",
+        "benchmark_format": "1.0.0",
+        "reference_policy": "benchmark-reference-policy/1.0.0"
+      },
+      "input_snapshot": {
+        "profile_id": "USG-SEM/1.0",
+        "document_id": "DOC-USG-BENCH-IDENTITY-002",
+        "source_records": [],
+        "semantic_records": {
+          "referents": [
+            {
+              "id": "ref-a",
+              "kind": "PERSON"
+            },
+            {
+              "id": "ref-b",
+              "kind": "PERSON"
+            }
+          ],
+          "mentions": [
+            {
+              "id": "m-a",
+              "surface": "Jordan",
+              "referent_ref": "ref-a"
+            },
+            {
+              "id": "m-b",
+              "surface": "Jordan",
+              "referent_ref": "ref-b"
+            }
+          ]
+        }
+      },
+      "task": {
+        "goal": "Determine whether matching labels alone license coreference.",
+        "assumptions": [],
+        "reference_policy": {
+          "id": "benchmark-reference-policy/1.0.0",
+          "rules": [],
+          "world_assumption": "OPEN"
+        }
+      },
+      "expected": {
+        "completion_status": "complete",
+        "conclusions": [],
+        "prohibited_conclusions": [
+          "COREF:m-a:m-b"
+        ],
+        "diagnostics": [
+          "IDENTITY_NOT_ESTABLISHED"
+        ],
+        "scope_checks": [],
+        "evidence_checks": [],
+        "required_derivations": [],
+        "preserved_item_ids": [
+          "ref-a",
+          "ref-b",
+          "m-a",
+          "m-b"
+        ]
+      },
+      "determinism_required": true
+    },
+    {
+      "id": "USG-BENCH-TYPED-REF-001",
+      "category": "typed-references",
+      "case_types": [
+        "unsupported",
+        "negative"
+      ],
+      "title": "A Referent ID cannot be used as a Source reference",
+      "versions": {
+        "usg_sem_profile": "1.0",
+        "workbench": "0.5.4",
+        "python_document_adapter": "1.5.1",
+        "benchmark_format": "1.0.0",
+        "reference_policy": "benchmark-reference-policy/1.0.0"
+      },
+      "input_snapshot": {
+        "profile_id": "USG-SEM/1.0",
+        "document_id": "DOC-USG-BENCH-TYPED-REF-001",
+        "source_records": [],
+        "semantic_records": {
+          "sources": [
+            {
+              "id": "source-1",
+              "text": "Alex arrived."
+            }
+          ],
+          "referents": [
+            {
+              "id": "ref-1",
+              "kind": "PERSON"
+            }
+          ],
+          "evidence": [
+            {
+              "id": "evidence-1",
+              "source_ref": "ref-1",
+              "span": {
+                "start": 0,
+                "end": 4,
+                "offset_unit": "unicode_code_point"
+              }
+            }
+          ]
+        }
+      },
+      "task": {
+        "goal": "Validate evidence.source_ref using typed-reference spaces.",
+        "assumptions": [],
+        "reference_policy": {
+          "id": "benchmark-reference-policy/1.0.0",
+          "rules": [],
+          "world_assumption": "OPEN"
+        }
+      },
+      "expected": {
+        "completion_status": "unsupported",
+        "conclusions": [],
+        "prohibited_conclusions": [],
+        "diagnostics": [
+          "TYPED_REFERENCE_MISMATCH"
+        ],
+        "scope_checks": [],
+        "evidence_checks": [],
+        "required_derivations": [],
+        "preserved_item_ids": [
+          "source-1",
+          "ref-1",
+          "evidence-1"
+        ]
+      },
+      "determinism_required": true
+    },
+    {
+      "id": "USG-BENCH-SCOPE-NEGATION-001",
+      "category": "operator-scope",
+      "case_types": [
+        "positive",
+        "boundary"
+      ],
+      "title": "NOT scopes over the existential quantifier",
+      "versions": {
+        "usg_sem_profile": "1.0",
+        "workbench": "0.5.4",
+        "python_document_adapter": "1.5.1",
+        "benchmark_format": "1.0.0",
+        "reference_policy": "benchmark-reference-policy/1.0.0"
+      },
+      "input_snapshot": {
+        "profile_id": "USG-SEM/1.0",
+        "document_id": "DOC-USG-BENCH-SCOPE-NEGATION-001",
+        "source_records": [],
+        "semantic_records": {
+          "expressions": [
+            {
+              "id": "human-x",
+              "op": "PREDICATE_APP",
+              "predicate": "HUMAN",
+              "args": [
+                "x"
+              ]
+            },
+            {
+              "id": "exists-x",
+              "op": "QUANTIFIER",
+              "quantifier": "EXISTS",
+              "variable": "x",
+              "body_ref": "human-x"
+            },
+            {
+              "id": "not-exists-x",
+              "op": "NOT",
+              "operand_ref": "exists-x"
+            }
+          ]
+        }
+      },
+      "task": {
+        "goal": "Preserve NOT(EXISTS x HUMAN(x)) without changing quantifier scope.",
+        "assumptions": [],
+        "reference_policy": {
+          "id": "benchmark-reference-policy/1.0.0",
+          "rules": [],
+          "world_assumption": "OPEN"
+        }
+      },
+      "expected": {
+        "completion_status": "complete",
+        "conclusions": [
+          "NOT(EXISTS(HUMAN(x)))"
+        ],
+        "prohibited_conclusions": [],
+        "diagnostics": [],
+        "scope_checks": [
+          {
+            "check_id": "SCOPE-001",
+            "expected_binding": {
+              "operator": "NOT",
+              "scope_ref": "exists-x",
+              "quantifier": "EXISTS",
+              "body_ref": "human-x"
+            }
+          }
+        ],
+        "evidence_checks": [],
+        "required_derivations": [],
+        "preserved_item_ids": []
+      },
+      "determinism_required": true
+    },
+    {
+      "id": "USG-BENCH-SCOPE-QUANTIFIER-002",
+      "category": "operator-scope",
+      "case_types": [
+        "negative",
+        "adversarial"
+      ],
+      "title": "EXISTS NOT is not NOT EXISTS",
+      "versions": {
+        "usg_sem_profile": "1.0",
+        "workbench": "0.5.4",
+        "python_document_adapter": "1.5.1",
+        "benchmark_format": "1.0.0",
+        "reference_policy": "benchmark-reference-policy/1.0.0"
+      },
+      "input_snapshot": {
+        "profile_id": "USG-SEM/1.0",
+        "document_id": "DOC-USG-BENCH-SCOPE-QUANTIFIER-002",
+        "source_records": [],
+        "semantic_records": {
+          "expressions": [
+            {
+              "id": "human-y",
+              "op": "PREDICATE_APP",
+              "predicate": "HUMAN",
+              "args": [
+                "y"
+              ]
+            },
+            {
+              "id": "not-human-y",
+              "op": "NOT",
+              "operand_ref": "human-y"
+            },
+            {
+              "id": "exists-not-human",
+              "op": "QUANTIFIER",
+              "quantifier": "EXISTS",
+              "variable": "y",
+              "body_ref": "not-human-y"
+            }
+          ]
+        }
+      },
+      "task": {
+        "goal": "Distinguish EXISTS y NOT HUMAN(y) from NOT EXISTS y HUMAN(y).",
+        "assumptions": [],
+        "reference_policy": {
+          "id": "benchmark-reference-policy/1.0.0",
+          "rules": [],
+          "world_assumption": "OPEN"
+        }
+      },
+      "expected": {
+        "completion_status": "complete",
+        "conclusions": [
+          "EXISTS(NOT(HUMAN(y)))"
+        ],
+        "prohibited_conclusions": [
+          "NOT(EXISTS(HUMAN(y)))"
+        ],
+        "diagnostics": [
+          "QUANTIFIER_SCOPE_DISTINCT"
+        ],
+        "scope_checks": [
+          {
+            "check_id": "SCOPE-002",
+            "expected_binding": {
+              "outer_operator": "EXISTS",
+              "variable": "y",
+              "body_ref": "not-human-y",
+              "inner_operator": "NOT"
+            }
+          }
+        ],
+        "evidence_checks": [],
+        "required_derivations": [],
+        "preserved_item_ids": []
+      },
+      "determinism_required": true
+    },
+    {
+      "id": "USG-BENCH-CONDITIONAL-MP-001",
+      "category": "conditionals-connectives",
+      "case_types": [
+        "positive"
+      ],
+      "title": "Modus ponens is licensed by the explicit reference rule",
+      "versions": {
+        "usg_sem_profile": "1.0",
+        "workbench": "0.5.4",
+        "python_document_adapter": "1.5.1",
+        "benchmark_format": "1.0.0",
+        "reference_policy": "benchmark-reference-policy/1.0.0"
+      },
+      "input_snapshot": {
+        "profile_id": "USG-SEM/1.0",
+        "document_id": "DOC-USG-BENCH-CONDITIONAL-MP-001",
+        "source_records": [],
+        "semantic_records": {
+          "assertions": [
+            {
+              "id": "assert-rain",
+              "expression_ref": "rain",
+              "context_ref": "world"
+            },
+            {
+              "id": "assert-if",
+              "expression_ref": "rain-implies-wet",
+              "context_ref": "world"
+            }
+          ],
+          "expressions": [
+            {
+              "id": "rain",
+              "op": "PREDICATE_APP",
+              "predicate": "RAIN"
+            },
+            {
+              "id": "wet",
+              "op": "PREDICATE_APP",
+              "predicate": "GROUND_WET"
+            },
+            {
+              "id": "rain-implies-wet",
+              "op": "IMPLIES",
+              "antecedent_ref": "rain",
+              "consequent_ref": "wet"
+            }
+          ],
+          "contexts": [
+            {
+              "id": "world",
+              "kind": "WORLD"
+            }
+          ]
+        }
+      },
+      "task": {
+        "goal": "Apply the explicit benchmark modus-ponens rule to derive GROUND_WET in world.",
+        "assumptions": [],
+        "reference_policy": {
+          "id": "benchmark-reference-policy/1.0.0",
+          "rules": [
+            {
+              "id": "benchmark-rule:modus-ponens",
+              "version": "1.0.0",
+              "description": "From asserted A and asserted A implies B, derive B in the same context.",
+              "premises": [
+                "ASSERTED(A)",
+                "ASSERTED(IMPLIES(A,B))"
+              ],
+              "conclusion": "ASSERTED(B)"
+            }
+          ],
+          "world_assumption": "OPEN"
+        }
+      },
+      "expected": {
+        "completion_status": "complete",
+        "conclusions": [
+          "ASSERTED:GROUND_WET@world"
+        ],
+        "prohibited_conclusions": [],
+        "diagnostics": [],
+        "scope_checks": [],
+        "evidence_checks": [],
+        "required_derivations": [
+          {
+            "conclusion_id": "ASSERTED:GROUND_WET@world",
+            "derivation_id": "D-MP-001",
+            "required_fields": [
+              "derivation_id",
+              "conclusion_id",
+              "method",
+              "input_refs",
+              "output_refs",
+              "status",
+              "rule_id",
+              "rule_version"
+            ],
+            "expected_fields": {
+              "derivation_id": "D-MP-001",
+              "conclusion_id": "ASSERTED:GROUND_WET@world",
+              "method": "DETERMINISTIC_RULE",
+              "input_refs": [
+                "assert-rain",
+                "assert-if"
+              ],
+              "output_refs": [
+                "ASSERTED:GROUND_WET@world"
+              ],
+              "status": "VALIDATED",
+              "rule_id": "benchmark-rule:modus-ponens",
+              "rule_version": "1.0.0"
+            }
+          }
+        ],
+        "preserved_item_ids": []
+      },
+      "determinism_required": true
+    },
+    {
+      "id": "USG-BENCH-CONDITIONAL-CONVERSE-002",
+      "category": "conditionals-connectives",
+      "case_types": [
+        "negative",
+        "adversarial"
+      ],
+      "title": "An implication does not license its converse",
+      "versions": {
+        "usg_sem_profile": "1.0",
+        "workbench": "0.5.4",
+        "python_document_adapter": "1.5.1",
+        "benchmark_format": "1.0.0",
+        "reference_policy": "benchmark-reference-policy/1.0.0"
+      },
+      "input_snapshot": {
+        "profile_id": "USG-SEM/1.0",
+        "document_id": "DOC-USG-BENCH-CONDITIONAL-CONVERSE-002",
+        "source_records": [],
+        "semantic_records": {
+          "assertions": [
+            {
+              "id": "assert-a",
+              "expression_ref": "a"
+            }
+          ],
+          "expressions": [
+            {
+              "id": "a",
+              "op": "PREDICATE_APP",
+              "predicate": "A"
+            },
+            {
+              "id": "b",
+              "op": "PREDICATE_APP",
+              "predicate": "B"
+            },
+            {
+              "id": "a-if-b",
+              "op": "IMPLIES",
+              "antecedent_ref": "a",
+              "consequent_ref": "b"
+            }
+          ]
+        }
+      },
+      "task": {
+        "goal": "Given A and A implies B, determine whether B implies A follows.",
+        "assumptions": [],
+        "reference_policy": {
+          "id": "benchmark-reference-policy/1.0.0",
+          "rules": [
+            {
+              "id": "benchmark-rule:modus-ponens",
+              "version": "1.0.0",
+              "description": "From asserted A and asserted A implies B, derive B in the same context.",
+              "premises": [
+                "ASSERTED(A)",
+                "ASSERTED(IMPLIES(A,B))"
+              ],
+              "conclusion": "ASSERTED(B)"
+            }
+          ],
+          "world_assumption": "OPEN"
+        }
+      },
+      "expected": {
+        "completion_status": "complete",
+        "conclusions": [],
+        "prohibited_conclusions": [
+          "IMPLIES:B:A"
+        ],
+        "diagnostics": [
+          "CONVERSE_NOT_LICENSED"
+        ],
+        "scope_checks": [],
+        "evidence_checks": [],
+        "required_derivations": [],
+        "preserved_item_ids": []
+      },
+      "determinism_required": true
+    },
+    {
+      "id": "USG-BENCH-ROLE-ORDER-001",
+      "category": "roles-semantic-kinds",
+      "case_types": [
+        "negative",
+        "adversarial"
+      ],
+      "title": "Agent and patient role bindings remain ordered",
+      "versions": {
+        "usg_sem_profile": "1.0",
+        "workbench": "0.5.4",
+        "python_document_adapter": "1.5.1",
+        "benchmark_format": "1.0.0",
+        "reference_policy": "benchmark-reference-policy/1.0.0"
+      },
+      "input_snapshot": {
+        "profile_id": "USG-SEM/1.0",
+        "document_id": "DOC-USG-BENCH-ROLE-ORDER-001",
+        "source_records": [],
+        "semantic_records": {
+          "frames": [
+            {
+              "id": "transfer-v1",
+              "version": 1,
+              "roles": [
+                "AGENT",
+                "PATIENT"
+              ]
+            }
+          ],
+          "expressions": [
+            {
+              "id": "transfer",
+              "op": "APPLY",
+              "frame_ref": "transfer-v1",
+              "role_fillers": [
+                {
+                  "role": "AGENT",
+                  "ref": "person-a"
+                },
+                {
+                  "role": "PATIENT",
+                  "ref": "object-b"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "task": {
+        "goal": "Determine whether object-b is also the AGENT.",
+        "assumptions": [],
+        "reference_policy": {
+          "id": "benchmark-reference-policy/1.0.0",
+          "rules": [],
+          "world_assumption": "OPEN"
+        }
+      },
+      "expected": {
+        "completion_status": "complete",
+        "conclusions": [],
+        "prohibited_conclusions": [
+          "AGENT:object-b",
+          "PATIENT:person-a"
+        ],
+        "diagnostics": [
+          "ROLE_BINDING_ORDER_PRESERVED"
+        ],
+        "scope_checks": [
+          {
+            "check_id": "ROLE-001",
+            "expected_binding": {
+              "AGENT": "person-a",
+              "PATIENT": "object-b"
+            }
+          }
+        ],
+        "evidence_checks": [],
+        "required_derivations": [],
+        "preserved_item_ids": []
+      },
+      "determinism_required": true
+    },
+    {
+      "id": "USG-BENCH-SEMANTIC-KIND-001",
+      "category": "roles-semantic-kinds",
+      "case_types": [
+        "unsupported",
+        "negative"
+      ],
+      "title": "STATE and PROCESS kinds are not coerced",
+      "versions": {
+        "usg_sem_profile": "1.0",
+        "workbench": "0.5.4",
+        "python_document_adapter": "1.5.1",
+        "benchmark_format": "1.0.0",
+        "reference_policy": "benchmark-reference-policy/1.0.0"
+      },
+      "input_snapshot": {
+        "profile_id": "USG-SEM/1.0",
+        "document_id": "DOC-USG-BENCH-SEMANTIC-KIND-001",
+        "source_records": [],
+        "semantic_records": {
+          "definitions": [
+            {
+              "id": "concept-running",
+              "semantic_kind": "PROCESS"
+            },
+            {
+              "id": "concept-tired",
+              "semantic_kind": "STATE"
+            }
+          ],
+          "expressions": [
+            {
+              "id": "running",
+              "op": "KIND",
+              "definition_ref": "concept-running",
+              "semantic_kind": "PROCESS"
+            },
+            {
+              "id": "tired",
+              "op": "KIND",
+              "definition_ref": "concept-tired",
+              "semantic_kind": "STATE"
+            }
+          ]
+        }
+      },
+      "task": {
+        "goal": "Use a rule requiring PROCESS on an expression grounded as STATE.",
+        "assumptions": [],
+        "reference_policy": {
+          "id": "benchmark-reference-policy/1.0.0",
+          "rules": [],
+          "world_assumption": "OPEN"
+        }
+      },
+      "expected": {
+        "completion_status": "unsupported",
+        "conclusions": [],
+        "prohibited_conclusions": [
+          "KIND_MATCH:tired:PROCESS"
+        ],
+        "diagnostics": [
+          "SEMANTIC_KIND_MISMATCH"
+        ],
+        "scope_checks": [],
+        "evidence_checks": [],
+        "required_derivations": [],
+        "preserved_item_ids": []
+      },
+      "determinism_required": true
+    },
+    {
+      "id": "USG-BENCH-MODALITY-001",
+      "category": "modality-attribution-temporal",
+      "case_types": [
+        "negative",
+        "adversarial"
+      ],
+      "title": "Possibility does not assert actuality",
+      "versions": {
+        "usg_sem_profile": "1.0",
+        "workbench": "0.5.4",
+        "python_document_adapter": "1.5.1",
+        "benchmark_format": "1.0.0",
+        "reference_policy": "benchmark-reference-policy/1.0.0"
+      },
+      "input_snapshot": {
+        "profile_id": "USG-SEM/1.0",
+        "document_id": "DOC-USG-BENCH-MODALITY-001",
+        "source_records": [],
+        "semantic_records": {
+          "assertions": [
+            {
+              "id": "possible-rain-assertion",
+              "expression_ref": "possible-rain",
+              "epistemic_status": "SOURCE_ASSERTED"
+            }
+          ],
+          "expressions": [
+            {
+              "id": "rain",
+              "op": "PREDICATE_APP",
+              "predicate": "RAIN"
+            },
+            {
+              "id": "possible-rain",
+              "op": "MODAL",
+              "flavor": "POSSIBILITY",
+              "operand_ref": "rain"
+            }
+          ]
+        }
+      },
+      "task": {
+        "goal": "Determine whether POSSIBLE(RAIN) licenses actual-world RAIN.",
+        "assumptions": [],
+        "reference_policy": {
+          "id": "benchmark-reference-policy/1.0.0",
+          "rules": [],
+          "world_assumption": "OPEN"
+        }
+      },
+      "expected": {
+        "completion_status": "complete",
+        "conclusions": [],
+        "prohibited_conclusions": [
+          "ACTUAL:RAIN"
+        ],
+        "diagnostics": [
+          "MODAL_FORCE_PRESERVED"
+        ],
+        "scope_checks": [],
+        "evidence_checks": [],
+        "required_derivations": [],
+        "preserved_item_ids": []
+      },
+      "determinism_required": true
+    },
+    {
+      "id": "USG-BENCH-ATTRIBUTION-001",
+      "category": "modality-attribution-temporal",
+      "case_types": [
+        "negative",
+        "adversarial"
+      ],
+      "title": "An attributed belief is not the narrator's assertion",
+      "versions": {
+        "usg_sem_profile": "1.0",
+        "workbench": "0.5.4",
+        "python_document_adapter": "1.5.1",
+        "benchmark_format": "1.0.0",
+        "reference_policy": "benchmark-reference-policy/1.0.0"
+      },
+      "input_snapshot": {
+        "profile_id": "USG-SEM/1.0",
+        "document_id": "DOC-USG-BENCH-ATTRIBUTION-001",
+        "source_records": [],
+        "semantic_records": {
+          "contexts": [
+            {
+              "id": "belief-context",
+              "kind": "ATTITUDE"
+            }
+          ],
+          "assertions": [
+            {
+              "id": "belief-claim",
+              "expression_ref": "bob-left",
+              "commitment": "ATTRIBUTED",
+              "attributed_referent_ref": "bob",
+              "context_ref": "belief-context"
+            }
+          ],
+          "expressions": [
+            {
+              "id": "bob-left",
+              "op": "PREDICATE_APP",
+              "predicate": "LEFT",
+              "args": [
+                "bob"
+              ]
+            }
+          ]
+        }
+      },
+      "task": {
+        "goal": "Determine whether the attributed belief is an unqualified actual-world source assertion.",
+        "assumptions": [],
+        "reference_policy": {
+          "id": "benchmark-reference-policy/1.0.0",
+          "rules": [],
+          "world_assumption": "OPEN"
+        }
+      },
+      "expected": {
+        "completion_status": "complete",
+        "conclusions": [],
+        "prohibited_conclusions": [
+          "SOURCE_ASSERTED:ACTUAL:LEFT(bob)"
+        ],
+        "diagnostics": [
+          "ATTRIBUTION_BOUNDARY_PRESERVED"
+        ],
+        "scope_checks": [],
+        "evidence_checks": [],
+        "required_derivations": [],
+        "preserved_item_ids": []
+      },
+      "determinism_required": true
+    },
+    {
+      "id": "USG-BENCH-TEMPORAL-DIRECTION-001",
+      "category": "modality-attribution-temporal",
+      "case_types": [
+        "positive",
+        "boundary"
+      ],
+      "title": "BEFORE remains directed",
+      "versions": {
+        "usg_sem_profile": "1.0",
+        "workbench": "0.5.4",
+        "python_document_adapter": "1.5.1",
+        "benchmark_format": "1.0.0",
+        "reference_policy": "benchmark-reference-policy/1.0.0"
+      },
+      "input_snapshot": {
+        "profile_id": "USG-SEM/1.0",
+        "document_id": "DOC-USG-BENCH-TEMPORAL-DIRECTION-001",
+        "source_records": [],
+        "semantic_records": {
+          "expressions": [
+            {
+              "id": "before",
+              "op": "TEMPORAL",
+              "relation": "BEFORE",
+              "source_ref": "departure",
+              "target_ref": "arrival"
+            }
+          ],
+          "assertions": [
+            {
+              "id": "before-assertion",
+              "expression_ref": "before"
+            }
+          ]
+        }
+      },
+      "task": {
+        "goal": "Return the represented temporal order without reversing its operands.",
+        "assumptions": [],
+        "reference_policy": {
+          "id": "benchmark-reference-policy/1.0.0",
+          "rules": [
+            {
+              "id": "benchmark-rule:preserve-before",
+              "version": "1.0.0",
+              "premises": [
+                "BEFORE(A,B)"
+              ],
+              "conclusion": "BEFORE(A,B)"
+            }
+          ],
+          "world_assumption": "OPEN"
+        }
+      },
+      "expected": {
+        "completion_status": "complete",
+        "conclusions": [
+          "BEFORE:departure:arrival"
+        ],
+        "prohibited_conclusions": [
+          "BEFORE:arrival:departure"
+        ],
+        "diagnostics": [],
+        "scope_checks": [
+          {
+            "check_id": "TEMPORAL-001",
+            "expected_binding": {
+              "relation": "BEFORE",
+              "source_ref": "departure",
+              "target_ref": "arrival"
+            }
+          }
+        ],
+        "evidence_checks": [],
+        "required_derivations": [
+          {
+            "conclusion_id": "BEFORE:departure:arrival",
+            "derivation_id": "D-TEMPORAL-001",
+            "required_fields": [
+              "derivation_id",
+              "conclusion_id",
+              "method",
+              "input_refs",
+              "output_refs",
+              "status",
+              "rule_id",
+              "rule_version"
+            ],
+            "expected_fields": {
+              "derivation_id": "D-TEMPORAL-001",
+              "conclusion_id": "BEFORE:departure:arrival",
+              "method": "DETERMINISTIC_RULE",
+              "input_refs": [
+                "before-assertion"
+              ],
+              "output_refs": [
+                "BEFORE:departure:arrival"
+              ],
+              "status": "VALIDATED",
+              "rule_id": "benchmark-rule:preserve-before",
+              "rule_version": "1.0.0"
+            }
+          }
+        ],
+        "preserved_item_ids": []
+      },
+      "determinism_required": true
+    },
+    {
+      "id": "USG-BENCH-CONTEXT-FICTION-001",
+      "category": "contexts",
+      "case_types": [
+        "negative",
+        "adversarial"
+      ],
+      "title": "Fictional context does not transfer into WORLD",
+      "versions": {
+        "usg_sem_profile": "1.0",
+        "workbench": "0.5.4",
+        "python_document_adapter": "1.5.1",
+        "benchmark_format": "1.0.0",
+        "reference_policy": "benchmark-reference-policy/1.0.0"
+      },
+      "input_snapshot": {
+        "profile_id": "USG-SEM/1.0",
+        "document_id": "DOC-USG-BENCH-CONTEXT-FICTION-001",
+        "source_records": [],
+        "semantic_records": {
+          "contexts": [
+            {
+              "id": "fiction",
+              "kind": "FICTION"
+            },
+            {
+              "id": "world",
+              "kind": "WORLD"
+            }
+          ],
+          "assertions": [
+            {
+              "id": "dragon-assertion",
+              "expression_ref": "dragon-exists",
+              "context_ref": "fiction",
+              "epistemic_status": "SOURCE_ASSERTED"
+            }
+          ],
+          "expressions": [
+            {
+              "id": "dragon-exists",
+              "op": "PREDICATE_APP",
+              "predicate": "DRAGON_EXISTS"
+            }
+          ]
+        }
+      },
+      "task": {
+        "goal": "Determine whether DRAGON_EXISTS is asserted in world.",
+        "assumptions": [],
+        "reference_policy": {
+          "id": "benchmark-reference-policy/1.0.0",
+          "rules": [],
+          "world_assumption": "OPEN"
+        }
+      },
+      "expected": {
+        "completion_status": "complete",
+        "conclusions": [],
+        "prohibited_conclusions": [
+          "ASSERTED:DRAGON_EXISTS@world"
+        ],
+        "diagnostics": [
+          "CONTEXT_BOUNDARY_BLOCKED"
+        ],
+        "scope_checks": [],
+        "evidence_checks": [],
+        "required_derivations": [],
+        "preserved_item_ids": []
+      },
+      "determinism_required": true
+    },
+    {
+      "id": "USG-BENCH-EVIDENCE-ALIGN-001",
+      "category": "evidence",
+      "case_types": [
+        "boundary",
+        "negative"
+      ],
+      "title": "Exact quote alignment does not establish semantic support",
+      "versions": {
+        "usg_sem_profile": "1.0",
+        "workbench": "0.5.4",
+        "python_document_adapter": "1.5.1",
+        "benchmark_format": "1.0.0",
+        "reference_policy": "benchmark-reference-policy/1.0.0"
+      },
+      "input_snapshot": {
+        "profile_id": "USG-SEM/1.0",
+        "document_id": "DOC-USG-BENCH-EVIDENCE-ALIGN-001",
+        "source_records": [],
+        "semantic_records": {
+          "sources": [
+            {
+              "id": "source-1",
+              "text": "The lights are on."
+            }
+          ],
+          "evidence": [
+            {
+              "id": "evidence-1",
+              "source_ref": "source-1",
+              "span": {
+                "start": 4,
+                "end": 10,
+                "offset_unit": "unicode_code_point"
+              },
+              "quote": "lights",
+              "alignment_status": "EXACT",
+              "semantic_support_status": "NOT_ESTABLISHED",
+              "expression_ref": "power-supplied"
+            }
+          ]
+        }
+      },
+      "task": {
+        "goal": "Assess alignment and support as independent axes.",
+        "assumptions": [],
+        "reference_policy": {
+          "id": "benchmark-reference-policy/1.0.0",
+          "rules": [],
+          "world_assumption": "OPEN"
+        }
+      },
+      "expected": {
+        "completion_status": "complete",
+        "conclusions": [],
+        "prohibited_conclusions": [
+          "ENTAILS:evidence-1:power-supplied"
+        ],
+        "diagnostics": [],
+        "scope_checks": [],
+        "evidence_checks": [
+          {
+            "check_id": "EVID-001",
+            "expected_assessment": {
+              "alignment_status": "EXACT",
+              "semantic_support_status": "NOT_ESTABLISHED"
+            }
+          }
+        ],
+        "required_derivations": [],
+        "preserved_item_ids": []
+      },
+      "determinism_required": true
+    },
+    {
+      "id": "USG-BENCH-EVIDENCE-UNICODE-001",
+      "category": "evidence",
+      "case_types": [
+        "positive",
+        "boundary"
+      ],
+      "title": "Unicode code-point spans remain correct after emoji",
+      "versions": {
+        "usg_sem_profile": "1.0",
+        "workbench": "0.5.4",
+        "python_document_adapter": "1.5.1",
+        "benchmark_format": "1.0.0",
+        "reference_policy": "benchmark-reference-policy/1.0.0"
+      },
+      "input_snapshot": {
+        "profile_id": "USG-SEM/1.0",
+        "document_id": "DOC-USG-BENCH-EVIDENCE-UNICODE-001",
+        "source_records": [],
+        "semantic_records": {
+          "sources": [
+            {
+              "id": "source-unicode",
+              "text": "😀Alex arrived."
+            }
+          ],
+          "evidence": [
+            {
+              "id": "evidence-alex",
+              "source_ref": "source-unicode",
+              "span": {
+                "start": 1,
+                "end": 5,
+                "offset_unit": "unicode_code_point"
+              },
+              "quote": "Alex"
+            }
+          ]
+        }
+      },
+      "task": {
+        "goal": "Validate the exact source span for Alex using code-point offsets.",
+        "assumptions": [],
+        "reference_policy": {
+          "id": "benchmark-reference-policy/1.0.0",
+          "rules": [],
+          "world_assumption": "OPEN"
+        }
+      },
+      "expected": {
+        "completion_status": "complete",
+        "conclusions": [],
+        "prohibited_conclusions": [],
+        "diagnostics": [],
+        "scope_checks": [],
+        "evidence_checks": [
+          {
+            "check_id": "EVID-UNICODE-001",
+            "expected_assessment": {
+              "alignment_status": "EXACT",
+              "semantic_support_status": "NOT_ESTABLISHED",
+              "start": 1,
+              "end": 5,
+              "offset_unit": "unicode_code_point"
+            }
+          }
+        ],
+        "required_derivations": [],
+        "preserved_item_ids": []
+      },
+      "determinism_required": true
+    },
+    {
+      "id": "USG-BENCH-EVIDENCE-IRRELEVANT-001",
+      "category": "evidence",
+      "case_types": [
+        "negative",
+        "adversarial"
+      ],
+      "title": "An aligned but irrelevant quote is not support",
+      "versions": {
+        "usg_sem_profile": "1.0",
+        "workbench": "0.5.4",
+        "python_document_adapter": "1.5.1",
+        "benchmark_format": "1.0.0",
+        "reference_policy": "benchmark-reference-policy/1.0.0"
+      },
+      "input_snapshot": {
+        "profile_id": "USG-SEM/1.0",
+        "document_id": "DOC-USG-BENCH-EVIDENCE-IRRELEVANT-001",
+        "source_records": [],
+        "semantic_records": {
+          "sources": [
+            {
+              "id": "source-1",
+              "text": "The garden has three chairs."
+            }
+          ],
+          "evidence": [
+            {
+              "id": "evidence-1",
+              "source_ref": "source-1",
+              "span": {
+                "start": 16,
+                "end": 21,
+                "offset_unit": "unicode_code_point"
+              },
+              "quote": "three",
+              "alignment_status": "EXACT",
+              "semantic_support_status": "NOT_ESTABLISHED",
+              "expression_ref": "raining"
+            }
+          ],
+          "expressions": [
+            {
+              "id": "raining",
+              "op": "PREDICATE_APP",
+              "predicate": "IT_IS_RAINING"
+            }
+          ]
+        }
+      },
+      "task": {
+        "goal": "Assess exact alignment separately from relevance/support.",
+        "assumptions": [],
+        "reference_policy": {
+          "id": "benchmark-reference-policy/1.0.0",
+          "rules": [],
+          "world_assumption": "OPEN"
+        }
+      },
+      "expected": {
+        "completion_status": "complete",
+        "conclusions": [],
+        "prohibited_conclusions": [
+          "SUPPORTS:evidence-1:raining"
+        ],
+        "diagnostics": [],
+        "scope_checks": [],
+        "evidence_checks": [
+          {
+            "check_id": "EVID-IRRELEVANT-001",
+            "expected_assessment": {
+              "alignment_status": "EXACT",
+              "semantic_support_status": "NOT_ESTABLISHED"
+            }
+          }
+        ],
+        "required_derivations": [],
+        "preserved_item_ids": []
+      },
+      "determinism_required": true
+    },
+    {
+      "id": "USG-BENCH-INFERENCE-AND-ELIMINATION-001",
+      "category": "inference",
+      "case_types": [
+        "positive"
+      ],
+      "title": "Conjunction elimination requires its declared rule",
+      "versions": {
+        "usg_sem_profile": "1.0",
+        "workbench": "0.5.4",
+        "python_document_adapter": "1.5.1",
+        "benchmark_format": "1.0.0",
+        "reference_policy": "benchmark-reference-policy/1.0.0"
+      },
+      "input_snapshot": {
+        "profile_id": "USG-SEM/1.0",
+        "document_id": "DOC-USG-BENCH-INFERENCE-AND-ELIMINATION-001",
+        "source_records": [],
+        "semantic_records": {
+          "assertions": [
+            {
+              "id": "assert-and",
+              "expression_ref": "a-and-b",
+              "context_ref": "world"
+            }
+          ],
+          "expressions": [
+            {
+              "id": "a",
+              "op": "PREDICATE_APP",
+              "predicate": "A"
+            },
+            {
+              "id": "b",
+              "op": "PREDICATE_APP",
+              "predicate": "B"
+            },
+            {
+              "id": "a-and-b",
+              "op": "AND",
+              "operand_refs": [
+                "a",
+                "b"
+              ]
+            }
+          ],
+          "contexts": [
+            {
+              "id": "world",
+              "kind": "WORLD"
+            }
+          ]
+        }
+      },
+      "task": {
+        "goal": "Apply the benchmark's explicit left-conjunction-elimination rule.",
+        "assumptions": [],
+        "reference_policy": {
+          "id": "benchmark-reference-policy/1.0.0",
+          "rules": [
+            {
+              "id": "benchmark-rule:and-elimination-left",
+              "version": "1.0.0",
+              "premises": [
+                "ASSERTED(AND(A,B))"
+              ],
+              "conclusion": "ASSERTED(A)"
+            }
+          ],
+          "world_assumption": "OPEN"
+        }
+      },
+      "expected": {
+        "completion_status": "complete",
+        "conclusions": [
+          "ASSERTED:A@world"
+        ],
+        "prohibited_conclusions": [],
+        "diagnostics": [],
+        "scope_checks": [],
+        "evidence_checks": [],
+        "required_derivations": [
+          {
+            "conclusion_id": "ASSERTED:A@world",
+            "derivation_id": "D-AND-001",
+            "required_fields": [
+              "derivation_id",
+              "conclusion_id",
+              "method",
+              "input_refs",
+              "output_refs",
+              "status",
+              "rule_id",
+              "rule_version"
+            ],
+            "expected_fields": {
+              "derivation_id": "D-AND-001",
+              "conclusion_id": "ASSERTED:A@world",
+              "method": "DETERMINISTIC_RULE",
+              "input_refs": [
+                "assert-and"
+              ],
+              "output_refs": [
+                "ASSERTED:A@world"
+              ],
+              "status": "VALIDATED",
+              "rule_id": "benchmark-rule:and-elimination-left",
+              "rule_version": "1.0.0"
+            }
+          }
+        ],
+        "preserved_item_ids": []
+      },
+      "determinism_required": true
+    },
+    {
+      "id": "USG-BENCH-UNLICENSED-TRANSITIVITY-001",
+      "category": "inference",
+      "case_types": [
+        "negative",
+        "adversarial"
+      ],
+      "title": "CAUSE labels do not imply transitivity",
+      "versions": {
+        "usg_sem_profile": "1.0",
+        "workbench": "0.5.4",
+        "python_document_adapter": "1.5.1",
+        "benchmark_format": "1.0.0",
+        "reference_policy": "benchmark-reference-policy/1.0.0"
+      },
+      "input_snapshot": {
+        "profile_id": "USG-SEM/1.0",
+        "document_id": "DOC-USG-BENCH-UNLICENSED-TRANSITIVITY-001",
+        "source_records": [],
+        "semantic_records": {
+          "expression_relations": [
+            {
+              "id": "cause-ab",
+              "type": "CAUSE",
+              "source_ref": "a",
+              "target_ref": "b"
+            },
+            {
+              "id": "cause-bc",
+              "type": "CAUSE",
+              "source_ref": "b",
+              "target_ref": "c"
+            }
+          ]
+        }
+      },
+      "task": {
+        "goal": "Determine whether CAUSE(a,c) follows without a transitivity rule.",
+        "assumptions": [],
+        "reference_policy": {
+          "id": "benchmark-reference-policy/1.0.0",
+          "rules": [],
+          "world_assumption": "OPEN"
+        }
+      },
+      "expected": {
+        "completion_status": "complete",
+        "conclusions": [],
+        "prohibited_conclusions": [
+          "CAUSE:a:c"
+        ],
+        "diagnostics": [
+          "NO_REGISTERED_TRANSITIVITY"
+        ],
+        "scope_checks": [],
+        "evidence_checks": [],
+        "required_derivations": [],
+        "preserved_item_ids": []
+      },
+      "determinism_required": true
+    },
+    {
+      "id": "USG-BENCH-OPEN-WORLD-001",
+      "category": "world-assumptions",
+      "case_types": [
+        "negative",
+        "boundary"
+      ],
+      "title": "Missing records in an open world do not imply negation",
+      "versions": {
+        "usg_sem_profile": "1.0",
+        "workbench": "0.5.4",
+        "python_document_adapter": "1.5.1",
+        "benchmark_format": "1.0.0",
+        "reference_policy": "benchmark-reference-policy/1.0.0"
+      },
+      "input_snapshot": {
+        "profile_id": "USG-SEM/1.0",
+        "document_id": "DOC-USG-BENCH-OPEN-WORLD-001",
+        "source_records": [],
+        "semantic_records": {
+          "assertions": [
+            {
+              "id": "assert-license-a",
+              "expression_ref": "license-a"
+            }
+          ],
+          "expressions": [
+            {
+              "id": "license-a",
+              "op": "PREDICATE_APP",
+              "predicate": "HAS_LICENSE",
+              "args": [
+                "person-a"
+              ]
+            }
+          ]
+        }
+      },
+      "task": {
+        "goal": "Determine whether absent HAS_LICENSE(person-b) means NOT HAS_LICENSE(person-b).",
+        "assumptions": [
+          "world_assumption=OPEN"
+        ],
+        "reference_policy": {
+          "id": "benchmark-reference-policy/1.0.0",
+          "rules": [],
+          "world_assumption": "OPEN"
+        }
+      },
+      "expected": {
+        "completion_status": "complete",
+        "conclusions": [],
+        "prohibited_conclusions": [
+          "NOT:HAS_LICENSE(person-b)"
+        ],
+        "diagnostics": [
+          "OPEN_WORLD_ABSENCE_NOT_NEGATION"
+        ],
+        "scope_checks": [],
+        "evidence_checks": [],
+        "required_derivations": [],
+        "preserved_item_ids": []
+      },
+      "determinism_required": true
+    },
+    {
+      "id": "USG-BENCH-CLOSED-WORLD-001",
+      "category": "world-assumptions",
+      "case_types": [
+        "positive",
+        "boundary"
+      ],
+      "title": "Complete closed-domain policy permits declared negation by absence",
+      "versions": {
+        "usg_sem_profile": "1.0",
+        "workbench": "0.5.4",
+        "python_document_adapter": "1.5.1",
+        "benchmark_format": "1.0.0",
+        "reference_policy": "benchmark-reference-policy/1.0.0"
+      },
+      "input_snapshot": {
+        "profile_id": "USG-SEM/1.0",
+        "document_id": "DOC-USG-BENCH-CLOSED-WORLD-001",
+        "source_records": [],
+        "semantic_records": {
+          "domain": {
+            "id": "license-registry",
+            "world_assumption": "CLOSED",
+            "completeness": "COMPLETE",
+            "members": [
+              "person-a"
+            ],
+            "predicate": "HAS_LICENSE"
+          },
+          "assertions": [
+            {
+              "id": "assert-license-a",
+              "expression_ref": "license-a"
+            }
+          ],
+          "expressions": [
+            {
+              "id": "license-a",
+              "op": "PREDICATE_APP",
+              "predicate": "HAS_LICENSE",
+              "args": [
+                "person-a"
+              ]
+            }
+          ]
+        }
+      },
+      "task": {
+        "goal": "Evaluate HAS_LICENSE(person-b) under the explicitly complete closed-domain rule.",
+        "assumptions": [
+          "Only this named domain is closed and complete."
+        ],
+        "reference_policy": {
+          "id": "benchmark-reference-policy/1.0.0",
+          "rules": [
+            {
+              "id": "benchmark-rule:closed-domain-negation",
+              "version": "1.0.0",
+              "premises": [
+                "CLOSED(domain)",
+                "COMPLETE(domain)",
+                "ABSENT(predicate,entity,domain)"
+              ],
+              "conclusion": "NOT(predicate(entity))"
+            }
+          ],
+          "world_assumption": "CLOSED"
+        }
+      },
+      "expected": {
+        "completion_status": "complete",
+        "conclusions": [
+          "NOT:HAS_LICENSE(person-b)"
+        ],
+        "prohibited_conclusions": [],
+        "diagnostics": [],
+        "scope_checks": [],
+        "evidence_checks": [],
+        "required_derivations": [
+          {
+            "conclusion_id": "NOT:HAS_LICENSE(person-b)",
+            "derivation_id": "D-CWA-001",
+            "required_fields": [
+              "derivation_id",
+              "conclusion_id",
+              "method",
+              "input_refs",
+              "output_refs",
+              "status",
+              "rule_id",
+              "rule_version"
+            ],
+            "expected_fields": {
+              "derivation_id": "D-CWA-001",
+              "conclusion_id": "NOT:HAS_LICENSE(person-b)",
+              "method": "DETERMINISTIC_RULE",
+              "input_refs": [
+                "license-registry",
+                "assert-license-a"
+              ],
+              "output_refs": [
+                "NOT:HAS_LICENSE(person-b)"
+              ],
+              "status": "VALIDATED",
+              "rule_id": "benchmark-rule:closed-domain-negation",
+              "rule_version": "1.0.0"
+            }
+          }
+        ],
+        "preserved_item_ids": []
+      },
+      "determinism_required": true
+    },
+    {
+      "id": "USG-BENCH-CLOSED-WORLD-INCOMPLETE-002",
+      "category": "world-assumptions",
+      "case_types": [
+        "negative",
+        "adversarial"
+      ],
+      "title": "An incomplete closed domain does not license absence-as-negation",
+      "versions": {
+        "usg_sem_profile": "1.0",
+        "workbench": "0.5.4",
+        "python_document_adapter": "1.5.1",
+        "benchmark_format": "1.0.0",
+        "reference_policy": "benchmark-reference-policy/1.0.0"
+      },
+      "input_snapshot": {
+        "profile_id": "USG-SEM/1.0",
+        "document_id": "DOC-USG-BENCH-CLOSED-WORLD-INCOMPLETE-002",
+        "source_records": [],
+        "semantic_records": {
+          "domain": {
+            "id": "partial-registry",
+            "world_assumption": "CLOSED",
+            "completeness": "INCOMPLETE",
+            "members": [
+              "person-a"
+            ]
+          }
+        }
+      },
+      "task": {
+        "goal": "Evaluate missing HAS_LICENSE(person-b) against a domain marked incomplete.",
+        "assumptions": [],
+        "reference_policy": {
+          "id": "benchmark-reference-policy/1.0.0",
+          "rules": [],
+          "world_assumption": "OPEN"
+        }
+      },
+      "expected": {
+        "completion_status": "complete",
+        "conclusions": [],
+        "prohibited_conclusions": [
+          "NOT:HAS_LICENSE(person-b)"
+        ],
+        "diagnostics": [
+          "DOMAIN_COMPLETENESS_REQUIRED"
+        ],
+        "scope_checks": [],
+        "evidence_checks": [],
+        "required_derivations": [],
+        "preserved_item_ids": []
+      },
+      "determinism_required": true
+    },
+    {
+      "id": "USG-BENCH-CORROBORATION-001",
+      "category": "corroboration",
+      "case_types": [
+        "negative",
+        "adversarial"
+      ],
+      "title": "Two quotations from one source are not independent corroboration",
+      "versions": {
+        "usg_sem_profile": "1.0",
+        "workbench": "0.5.4",
+        "python_document_adapter": "1.5.1",
+        "benchmark_format": "1.0.0",
+        "reference_policy": "benchmark-reference-policy/1.0.0"
+      },
+      "input_snapshot": {
+        "profile_id": "USG-SEM/1.0",
+        "document_id": "DOC-USG-BENCH-CORROBORATION-001",
+        "source_records": [],
+        "semantic_records": {
+          "sources": [
+            {
+              "id": "source-single",
+              "text": "The sensor reports 10."
+            }
+          ],
+          "evidence": [
+            {
+              "id": "e1",
+              "source_ref": "source-single",
+              "quote": "10",
+              "alignment_status": "EXACT"
+            },
+            {
+              "id": "e2",
+              "source_ref": "source-single",
+              "quote": "10",
+              "alignment_status": "EXACT"
+            }
+          ]
+        }
+      },
+      "task": {
+        "goal": "Determine whether the two evidence records establish independent corroboration.",
+        "assumptions": [],
+        "reference_policy": {
+          "id": "benchmark-reference-policy/1.0.0",
+          "rules": [],
+          "world_assumption": "OPEN"
+        }
+      },
+      "expected": {
+        "completion_status": "complete",
+        "conclusions": [],
+        "prohibited_conclusions": [
+          "CORROBORATED:claim-10"
+        ],
+        "diagnostics": [],
+        "scope_checks": [],
+        "evidence_checks": [
+          {
+            "check_id": "CORROBORATION-001",
+            "expected_assessment": {
+              "independence_status": "NOT_INDEPENDENT",
+              "corroboration_status": "NOT_ESTABLISHED"
+            }
+          }
+        ],
+        "required_derivations": [],
+        "preserved_item_ids": []
+      },
+      "determinism_required": true
+    },
+    {
+      "id": "USG-BENCH-AMBIGUOUS-DEFINITION-001",
+      "category": "ambiguity",
+      "case_types": [
+        "ambiguous",
+        "boundary"
+      ],
+      "title": "Duplicate definition labels remain ambiguous without exact identity",
+      "versions": {
+        "usg_sem_profile": "1.0",
+        "workbench": "0.5.4",
+        "python_document_adapter": "1.5.1",
+        "benchmark_format": "1.0.0",
+        "reference_policy": "benchmark-reference-policy/1.0.0"
+      },
+      "input_snapshot": {
+        "profile_id": "USG-SEM/1.0",
+        "document_id": "DOC-USG-BENCH-AMBIGUOUS-DEFINITION-001",
+        "source_records": [],
+        "semantic_records": {
+          "definitions": [
+            {
+              "id": "frame-open-1",
+              "label": "open",
+              "version": 1,
+              "roles": [
+                "AGENT",
+                "OBJECT"
+              ]
+            },
+            {
+              "id": "frame-open-2",
+              "label": "open",
+              "version": 2,
+              "roles": [
+                "AGENT",
+                "CONTAINER"
+              ]
+            }
+          ],
+          "expressions": [
+            {
+              "id": "open-expression",
+              "op": "PREDICATE_APP",
+              "predicate_label": "open",
+              "args": [
+                "person-a",
+                "object-a"
+              ]
+            }
+          ]
+        }
+      },
+      "task": {
+        "goal": "Resolve the label open without a unique definition ID/version.",
+        "assumptions": [],
+        "reference_policy": {
+          "id": "benchmark-reference-policy/1.0.0",
+          "rules": [],
+          "world_assumption": "OPEN"
+        }
+      },
+      "expected": {
+        "completion_status": "ambiguous",
+        "conclusions": [],
+        "prohibited_conclusions": [],
+        "diagnostics": [
+          "AMBIGUOUS_DEFINITION"
+        ],
+        "scope_checks": [],
+        "evidence_checks": [],
+        "required_derivations": [],
+        "preserved_item_ids": [
+          "frame-open-1",
+          "frame-open-2",
+          "open-expression"
+        ]
+      },
+      "determinism_required": true
+    },
+    {
+      "id": "USG-BENCH-UNRESOLVED-REFERENCE-001",
+      "category": "unresolved",
+      "case_types": [
+        "unresolved",
+        "boundary"
+      ],
+      "title": "An unresolved antecedent does not create a Referent",
+      "versions": {
+        "usg_sem_profile": "1.0",
+        "workbench": "0.5.4",
+        "python_document_adapter": "1.5.1",
+        "benchmark_format": "1.0.0",
+        "reference_policy": "benchmark-reference-policy/1.0.0"
+      },
+      "input_snapshot": {
+        "profile_id": "USG-SEM/1.0",
+        "document_id": "DOC-USG-BENCH-UNRESOLVED-REFERENCE-001",
+        "source_records": [],
+        "semantic_records": {
+          "unresolved_items": [
+            {
+              "id": "unresolved-agent",
+              "status": "UNRESOLVED",
+              "reason": "No antecedent established.",
+              "surface": "he"
+            }
+          ],
+          "expressions": [
+            {
+              "id": "arrival",
+              "op": "PREDICATE_APP",
+              "predicate": "ARRIVED",
+              "args": [
+                {
+                  "type": "UNRESOLVED_REF",
+                  "id": "unresolved-agent"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "task": {
+        "goal": "Resolve the agent only if an explicit antecedent identity link exists.",
+        "assumptions": [],
+        "reference_policy": {
+          "id": "benchmark-reference-policy/1.0.0",
+          "rules": [],
+          "world_assumption": "OPEN"
+        }
+      },
+      "expected": {
+        "completion_status": "unresolved",
+        "conclusions": [],
+        "prohibited_conclusions": [],
+        "diagnostics": [
+          "ANTECEDENT_UNRESOLVED"
+        ],
+        "scope_checks": [],
+        "evidence_checks": [],
+        "required_derivations": [],
+        "preserved_item_ids": [
+          "unresolved-agent",
+          "arrival"
+        ]
+      },
+      "determinism_required": true
+    },
+    {
+      "id": "USG-BENCH-CONFLICT-ASSERTIONS-001",
+      "category": "conflict",
+      "case_types": [
+        "conflicting",
+        "boundary"
+      ],
+      "title": "Conflicting assertions remain visible without arbitrary winner selection",
+      "versions": {
+        "usg_sem_profile": "1.0",
+        "workbench": "0.5.4",
+        "python_document_adapter": "1.5.1",
+        "benchmark_format": "1.0.0",
+        "reference_policy": "benchmark-reference-policy/1.0.0"
+      },
+      "input_snapshot": {
+        "profile_id": "USG-SEM/1.0",
+        "document_id": "DOC-USG-BENCH-CONFLICT-ASSERTIONS-001",
+        "source_records": [],
+        "semantic_records": {
+          "assertions": [
+            {
+              "id": "assert-open",
+              "expression_ref": "door-open",
+              "source_ref": "source-a"
+            },
+            {
+              "id": "assert-closed",
+              "expression_ref": "door-closed",
+              "source_ref": "source-b"
+            }
+          ],
+          "expressions": [
+            {
+              "id": "door-open",
+              "op": "PREDICATE_APP",
+              "predicate": "DOOR_OPEN"
+            },
+            {
+              "id": "door-closed",
+              "op": "PREDICATE_APP",
+              "predicate": "DOOR_CLOSED"
+            }
+          ]
+        }
+      },
+      "task": {
+        "goal": "Report conflict and preserve both assertions without choosing by recency or count.",
+        "assumptions": [],
+        "reference_policy": {
+          "id": "benchmark-reference-policy/1.0.0",
+          "rules": [],
+          "world_assumption": "OPEN"
+        }
+      },
+      "expected": {
+        "completion_status": "conflicting",
+        "conclusions": [],
+        "prohibited_conclusions": [],
+        "diagnostics": [
+          "CONFLICTING_ASSERTIONS"
+        ],
+        "scope_checks": [],
+        "evidence_checks": [],
+        "required_derivations": [],
+        "preserved_item_ids": [
+          "assert-open",
+          "assert-closed"
+        ]
+      },
+      "determinism_required": true
+    },
+    {
+      "id": "USG-BENCH-OPAQUE-PREMISE-001",
+      "category": "unsupported",
+      "case_types": [
+        "unsupported",
+        "negative"
+      ],
+      "title": "OPAQUE expressions are not inference-eligible",
+      "versions": {
+        "usg_sem_profile": "1.0",
+        "workbench": "0.5.4",
+        "python_document_adapter": "1.5.1",
+        "benchmark_format": "1.0.0",
+        "reference_policy": "benchmark-reference-policy/1.0.0"
+      },
+      "input_snapshot": {
+        "profile_id": "USG-SEM/1.0",
+        "document_id": "DOC-USG-BENCH-OPAQUE-PREMISE-001",
+        "source_records": [],
+        "semantic_records": {
+          "expressions": [
+            {
+              "id": "opaque",
+              "op": "OPAQUE",
+              "original_type": "UNREGISTERED",
+              "interpretation_status": "UNRESOLVED"
+            }
+          ],
+          "assertions": [
+            {
+              "id": "opaque-assertion",
+              "expression_ref": "opaque"
+            }
+          ]
+        }
+      },
+      "task": {
+        "goal": "Determine whether an opaque expression can be a premise for an enabled rule.",
+        "assumptions": [],
+        "reference_policy": {
+          "id": "benchmark-reference-policy/1.0.0",
+          "rules": [],
+          "world_assumption": "OPEN"
+        }
+      },
+      "expected": {
+        "completion_status": "unsupported",
+        "conclusions": [],
+        "prohibited_conclusions": [
+          "RESULT_FROM_OPAQUE"
+        ],
+        "diagnostics": [
+          "OPAQUE_PREMISE"
+        ],
+        "scope_checks": [],
+        "evidence_checks": [],
+        "required_derivations": [],
+        "preserved_item_ids": [
+          "opaque",
+          "opaque-assertion"
+        ]
+      },
+      "determinism_required": true
+    },
+    {
+      "id": "USG-BENCH-MISSING-PREMISE-001",
+      "category": "inference",
+      "case_types": [
+        "negative",
+        "boundary"
+      ],
+      "title": "A conditional alone does not supply its antecedent",
+      "versions": {
+        "usg_sem_profile": "1.0",
+        "workbench": "0.5.4",
+        "python_document_adapter": "1.5.1",
+        "benchmark_format": "1.0.0",
+        "reference_policy": "benchmark-reference-policy/1.0.0"
+      },
+      "input_snapshot": {
+        "profile_id": "USG-SEM/1.0",
+        "document_id": "DOC-USG-BENCH-MISSING-PREMISE-001",
+        "source_records": [],
+        "semantic_records": {
+          "expressions": [
+            {
+              "id": "a",
+              "op": "PREDICATE_APP",
+              "predicate": "A"
+            },
+            {
+              "id": "b",
+              "op": "PREDICATE_APP",
+              "predicate": "B"
+            },
+            {
+              "id": "a-implies-b",
+              "op": "IMPLIES",
+              "antecedent_ref": "a",
+              "consequent_ref": "b"
+            }
+          ],
+          "assertions": [
+            {
+              "id": "conditional-assertion",
+              "expression_ref": "a-implies-b"
+            }
+          ]
+        }
+      },
+      "task": {
+        "goal": "Use modus ponens only if both antecedent and conditional premises are asserted.",
+        "assumptions": [],
+        "reference_policy": {
+          "id": "benchmark-reference-policy/1.0.0",
+          "rules": [
+            {
+              "id": "benchmark-rule:modus-ponens",
+              "version": "1.0.0",
+              "description": "From asserted A and asserted A implies B, derive B in the same context.",
+              "premises": [
+                "ASSERTED(A)",
+                "ASSERTED(IMPLIES(A,B))"
+              ],
+              "conclusion": "ASSERTED(B)"
+            }
+          ],
+          "world_assumption": "OPEN"
+        }
+      },
+      "expected": {
+        "completion_status": "complete",
+        "conclusions": [],
+        "prohibited_conclusions": [
+          "ASSERTED:B"
+        ],
+        "diagnostics": [
+          "REQUIRED_PREMISE_MISSING"
+        ],
+        "scope_checks": [],
+        "evidence_checks": [],
+        "required_derivations": [],
+        "preserved_item_ids": []
+      },
+      "determinism_required": true
+    },
+    {
+      "id": "USG-BENCH-PROVENANCE-001",
+      "category": "provenance",
+      "case_types": [
+        "positive",
+        "boundary"
+      ],
+      "title": "A conclusion has complete rule and input provenance",
+      "versions": {
+        "usg_sem_profile": "1.0",
+        "workbench": "0.5.4",
+        "python_document_adapter": "1.5.1",
+        "benchmark_format": "1.0.0",
+        "reference_policy": "benchmark-reference-policy/1.0.0"
+      },
+      "input_snapshot": {
+        "profile_id": "USG-SEM/1.0",
+        "document_id": "DOC-USG-BENCH-PROVENANCE-001",
+        "source_records": [],
+        "semantic_records": {
+          "assertions": [
+            {
+              "id": "assert-a",
+              "expression_ref": "a"
+            },
+            {
+              "id": "assert-if",
+              "expression_ref": "a-implies-b"
+            }
+          ],
+          "expressions": [
+            {
+              "id": "a",
+              "op": "PREDICATE_APP",
+              "predicate": "A"
+            },
+            {
+              "id": "b",
+              "op": "PREDICATE_APP",
+              "predicate": "B"
+            },
+            {
+              "id": "a-implies-b",
+              "op": "IMPLIES",
+              "antecedent_ref": "a",
+              "consequent_ref": "b"
+            }
+          ]
+        }
+      },
+      "task": {
+        "goal": "Derive B and retain the exact rule version plus ordered premise references.",
+        "assumptions": [],
+        "reference_policy": {
+          "id": "benchmark-reference-policy/1.0.0",
+          "rules": [
+            {
+              "id": "benchmark-rule:modus-ponens",
+              "version": "1.0.0",
+              "description": "From asserted A and asserted A implies B, derive B in the same context.",
+              "premises": [
+                "ASSERTED(A)",
+                "ASSERTED(IMPLIES(A,B))"
+              ],
+              "conclusion": "ASSERTED(B)"
+            }
+          ],
+          "world_assumption": "OPEN"
+        }
+      },
+      "expected": {
+        "completion_status": "complete",
+        "conclusions": [
+          "ASSERTED:B"
+        ],
+        "prohibited_conclusions": [],
+        "diagnostics": [],
+        "scope_checks": [],
+        "evidence_checks": [],
+        "required_derivations": [
+          {
+            "conclusion_id": "ASSERTED:B",
+            "derivation_id": "D-PROV-001",
+            "required_fields": [
+              "derivation_id",
+              "conclusion_id",
+              "method",
+              "input_refs",
+              "output_refs",
+              "status",
+              "rule_id",
+              "rule_version"
+            ],
+            "expected_fields": {
+              "derivation_id": "D-PROV-001",
+              "conclusion_id": "ASSERTED:B",
+              "method": "DETERMINISTIC_RULE",
+              "input_refs": [
+                "assert-a",
+                "assert-if"
+              ],
+              "output_refs": [
+                "ASSERTED:B"
+              ],
+              "status": "VALIDATED",
+              "rule_id": "benchmark-rule:modus-ponens",
+              "rule_version": "1.0.0"
+            }
+          }
+        ],
+        "preserved_item_ids": []
+      },
+      "determinism_required": true
+    },
+    {
+      "id": "USG-BENCH-DETERMINISM-001",
+      "category": "determinism",
+      "case_types": [
+        "positive",
+        "boundary"
+      ],
+      "title": "Repeated runs retain deterministic output and order",
+      "versions": {
+        "usg_sem_profile": "1.0",
+        "workbench": "0.5.4",
+        "python_document_adapter": "1.5.1",
+        "benchmark_format": "1.0.0",
+        "reference_policy": "benchmark-reference-policy/1.0.0"
+      },
+      "input_snapshot": {
+        "profile_id": "USG-SEM/1.0",
+        "document_id": "DOC-USG-BENCH-DETERMINISM-001",
+        "source_records": [],
+        "semantic_records": {
+          "assertions": [
+            {
+              "id": "assert-a",
+              "expression_ref": "a"
+            },
+            {
+              "id": "assert-b",
+              "expression_ref": "b"
+            }
+          ],
+          "expressions": [
+            {
+              "id": "a",
+              "op": "PREDICATE_APP",
+              "predicate": "A"
+            },
+            {
+              "id": "b",
+              "op": "PREDICATE_APP",
+              "predicate": "B"
+            }
+          ]
+        }
+      },
+      "task": {
+        "goal": "Run the identical task twice and compare normalized semantic output.",
+        "assumptions": [],
+        "reference_policy": {
+          "id": "benchmark-reference-policy/1.0.0",
+          "rules": [],
+          "world_assumption": "OPEN"
+        },
+        "repeat_count": 2,
+        "determinism_policy": "Compare structured semantic output and preserve meaningful array order; exclude runtime IDs and timing fields only."
+      },
+      "expected": {
+        "completion_status": "complete",
+        "conclusions": [
+          "ASSERTED:A",
+          "ASSERTED:B"
+        ],
+        "prohibited_conclusions": [],
+        "diagnostics": [],
+        "scope_checks": [],
+        "evidence_checks": [],
+        "required_derivations": [],
+        "preserved_item_ids": []
+      },
+      "determinism_required": true
+    },
+    {
+      "id": "USG-BENCH-RESOURCE-INTERRUPTION-001",
+      "category": "resource",
+      "case_types": [
+        "incomplete",
+        "boundary"
+      ],
+      "title": "Interruption is incomplete, explicit, and loss-preserving",
+      "versions": {
+        "usg_sem_profile": "1.0",
+        "workbench": "0.5.4",
+        "python_document_adapter": "1.5.1",
+        "benchmark_format": "1.0.0",
+        "reference_policy": "benchmark-reference-policy/1.0.0"
+      },
+      "input_snapshot": {
+        "profile_id": "USG-SEM/1.0",
+        "document_id": "DOC-USG-BENCH-RESOURCE-INTERRUPTION-001",
+        "source_records": [],
+        "semantic_records": {
+          "expressions": [
+            {
+              "id": "expr-1",
+              "op": "PREDICATE_APP",
+              "predicate": "P1"
+            },
+            {
+              "id": "expr-2",
+              "op": "PREDICATE_APP",
+              "predicate": "P2"
+            },
+            {
+              "id": "expr-3",
+              "op": "PREDICATE_APP",
+              "predicate": "P3"
+            },
+            {
+              "id": "expr-4",
+              "op": "PREDICATE_APP",
+              "predicate": "P4"
+            },
+            {
+              "id": "expr-5",
+              "op": "PREDICATE_APP",
+              "predicate": "P5"
+            },
+            {
+              "id": "expr-6",
+              "op": "PREDICATE_APP",
+              "predicate": "P6"
+            },
+            {
+              "id": "expr-7",
+              "op": "PREDICATE_APP",
+              "predicate": "P7"
+            },
+            {
+              "id": "expr-8",
+              "op": "PREDICATE_APP",
+              "predicate": "P8"
+            },
+            {
+              "id": "expr-9",
+              "op": "PREDICATE_APP",
+              "predicate": "P9"
+            },
+            {
+              "id": "expr-10",
+              "op": "PREDICATE_APP",
+              "predicate": "P10"
+            },
+            {
+              "id": "expr-11",
+              "op": "PREDICATE_APP",
+              "predicate": "P11"
+            },
+            {
+              "id": "expr-12",
+              "op": "PREDICATE_APP",
+              "predicate": "P12"
+            }
+          ],
+          "assertions": [
+            {
+              "id": "batch-assertion",
+              "expression_refs": [
+                "expr-1",
+                "expr-2",
+                "expr-3",
+                "expr-4",
+                "expr-5",
+                "expr-6",
+                "expr-7",
+                "expr-8",
+                "expr-9",
+                "expr-10",
+                "expr-11",
+                "expr-12"
+              ]
+            }
+          ]
+        }
+      },
+      "task": {
+        "goal": "Interrupt after a small operation budget and preserve every input expression without truncation.",
+        "assumptions": [],
+        "reference_policy": {
+          "id": "benchmark-reference-policy/1.0.0",
+          "rules": [],
+          "world_assumption": "OPEN"
+        },
+        "execution_budget": {
+          "kind": "operation_budget",
+          "maximum_operations": 2,
+          "interrupt_after_operations": 2
+        },
+        "resource_policy": "Budget controls execution only; it is not a semantic item or operand cap."
+      },
+      "expected": {
+        "completion_status": "incomplete",
+        "conclusions": [],
+        "prohibited_conclusions": [],
+        "diagnostics": [
+          "RESOURCE_INTERRUPTED"
+        ],
+        "scope_checks": [],
+        "evidence_checks": [],
+        "required_derivations": [],
+        "preserved_item_ids": [
+          "expr-1",
+          "expr-2",
+          "expr-3",
+          "expr-4",
+          "expr-5",
+          "expr-6",
+          "expr-7",
+          "expr-8",
+          "expr-9",
+          "expr-10",
+          "expr-11",
+          "expr-12"
+        ],
+        "resource_expectations": {
+          "expected_interrupted": true,
+          "expected_truncated": false,
+          "expected_input_item_count": 12,
+          "minimum_preserved_items": 12
+        }
+      },
+      "determinism_required": true
+    },
+    {
+      "id": "USG-BENCH-LEXICAL-SIMILARITY-001",
+      "category": "identity",
+      "case_types": [
+        "negative",
+        "adversarial"
+      ],
+      "title": "Lexical similarity does not establish concept identity",
+      "versions": {
+        "usg_sem_profile": "1.0",
+        "workbench": "0.5.4",
+        "python_document_adapter": "1.5.1",
+        "benchmark_format": "1.0.0",
+        "reference_policy": "benchmark-reference-policy/1.0.0"
+      },
+      "input_snapshot": {
+        "profile_id": "USG-SEM/1.0",
+        "document_id": "DOC-USG-BENCH-LEXICAL-SIMILARITY-001",
+        "source_records": [],
+        "semantic_records": {
+          "concepts": [
+            {
+              "id": "bank-river",
+              "label": "bank",
+              "definition": "river bank"
+            },
+            {
+              "id": "bank-finance",
+              "label": "bank",
+              "definition": "financial institution"
+            }
+          ]
+        }
+      },
+      "task": {
+        "goal": "Determine whether matching labels or similarity alone prove identity/equivalence.",
+        "assumptions": [],
+        "reference_policy": {
+          "id": "benchmark-reference-policy/1.0.0",
+          "rules": [],
+          "world_assumption": "OPEN"
+        }
+      },
+      "expected": {
+        "completion_status": "complete",
+        "conclusions": [],
+        "prohibited_conclusions": [
+          "SAME_CONCEPT:bank-river:bank-finance"
+        ],
+        "diagnostics": [
+          "IDENTITY_REQUIRES_EXPLICIT_LINK"
+        ],
+        "scope_checks": [],
+        "evidence_checks": [],
+        "required_derivations": [],
+        "preserved_item_ids": []
+      },
+      "determinism_required": true
+    },
+    {
+      "id": "USG-BENCH-EVIDENCE-CONFLICT-001",
+      "category": "evidence",
+      "case_types": [
+        "conflicting",
+        "boundary"
+      ],
+      "title": "Conflicting evidence assessments do not become VERIFIED",
+      "versions": {
+        "usg_sem_profile": "1.0",
+        "workbench": "0.5.4",
+        "python_document_adapter": "1.5.1",
+        "benchmark_format": "1.0.0",
+        "reference_policy": "benchmark-reference-policy/1.0.0"
+      },
+      "input_snapshot": {
+        "profile_id": "USG-SEM/1.0",
+        "document_id": "DOC-USG-BENCH-EVIDENCE-CONFLICT-001",
+        "source_records": [],
+        "semantic_records": {
+          "evidence": [
+            {
+              "id": "e-support",
+              "source_ref": "source-a",
+              "expression_ref": "claim-x",
+              "semantic_support_status": "RULE_SUPPORTED"
+            },
+            {
+              "id": "e-dispute",
+              "source_ref": "source-b",
+              "expression_ref": "claim-x",
+              "semantic_support_status": "DISPUTED"
+            }
+          ]
+        }
+      },
+      "task": {
+        "goal": "Represent support and dispute together without automatic epistemic promotion.",
+        "assumptions": [],
+        "reference_policy": {
+          "id": "benchmark-reference-policy/1.0.0",
+          "rules": [],
+          "world_assumption": "OPEN"
+        }
+      },
+      "expected": {
+        "completion_status": "conflicting",
+        "conclusions": [],
+        "prohibited_conclusions": [],
+        "diagnostics": [
+          "EVIDENCE_ASSESSMENT_CONFLICT"
+        ],
+        "scope_checks": [],
+        "evidence_checks": [
+          {
+            "check_id": "EVID-CONFLICT-001",
+            "expected_assessment": {
+              "support_statuses": [
+                "RULE_SUPPORTED",
+                "DISPUTED"
+              ],
+              "overall_status": "CONFLICTING",
+              "epistemic_promotion": "NONE"
+            }
+          }
+        ],
+        "required_derivations": [],
+        "preserved_item_ids": [
+          "e-support",
+          "e-dispute"
+        ]
+      },
+      "determinism_required": true
+    },
+    {
+      "id": "USG-BENCH-PROPOSAL-NOT-RULE-001",
+      "category": "unsupported",
+      "case_types": [
+        "unsupported",
+        "adversarial"
+      ],
+      "title": "A model proposal is not an executable rule",
+      "versions": {
+        "usg_sem_profile": "1.0",
+        "workbench": "0.5.4",
+        "python_document_adapter": "1.5.1",
+        "benchmark_format": "1.0.0",
+        "reference_policy": "benchmark-reference-policy/1.0.0"
+      },
+      "input_snapshot": {
+        "profile_id": "USG-SEM/1.0",
+        "document_id": "DOC-USG-BENCH-PROPOSAL-NOT-RULE-001",
+        "source_records": [],
+        "semantic_records": {
+          "model_proposals": [
+            {
+              "id": "proposal-c",
+              "conclusion_ref": "expr-c",
+              "status": "PROPOSED",
+              "model": "example-model"
+            }
+          ],
+          "expressions": [
+            {
+              "id": "a",
+              "op": "PREDICATE_APP",
+              "predicate": "A"
+            },
+            {
+              "id": "expr-c",
+              "op": "PREDICATE_APP",
+              "predicate": "C"
+            }
+          ],
+          "assertions": [
+            {
+              "id": "assert-a",
+              "expression_ref": "a"
+            }
+          ]
+        }
+      },
+      "task": {
+        "goal": "Do not emit C solely because a model proposed it when no enabled matching rule exists.",
+        "assumptions": [],
+        "reference_policy": {
+          "id": "benchmark-reference-policy/1.0.0",
+          "rules": [],
+          "world_assumption": "OPEN"
+        }
+      },
+      "expected": {
+        "completion_status": "unsupported",
+        "conclusions": [],
+        "prohibited_conclusions": [
+          "ASSERTED:C"
+        ],
+        "diagnostics": [
+          "PROPOSAL_NOT_EXECUTABLE"
+        ],
+        "scope_checks": [],
+        "evidence_checks": [],
+        "required_derivations": [],
+        "preserved_item_ids": [
+          "proposal-c",
+          "expr-c"
+        ]
+      },
+      "determinism_required": true
+    },
+    {
+      "id": "USG-BENCH-PAST-PRESENT-001",
+      "category": "modality-attribution-temporal",
+      "case_types": [
+        "negative",
+        "adversarial"
+      ],
+      "title": "Past tense does not silently become present tense",
+      "versions": {
+        "usg_sem_profile": "1.0",
+        "workbench": "0.5.4",
+        "python_document_adapter": "1.5.1",
+        "benchmark_format": "1.0.0",
+        "reference_policy": "benchmark-reference-policy/1.0.0"
+      },
+      "input_snapshot": {
+        "profile_id": "USG-SEM/1.0",
+        "document_id": "DOC-USG-BENCH-PAST-PRESENT-001",
+        "source_records": [],
+        "semantic_records": {
+          "expressions": [
+            {
+              "id": "arrived-past",
+              "op": "TENSE",
+              "tense": "PAST",
+              "operand_ref": "arrived"
+            },
+            {
+              "id": "arrived",
+              "op": "PREDICATE_APP",
+              "predicate": "ARRIVED",
+              "args": [
+                "person-a"
+              ]
+            }
+          ],
+          "assertions": [
+            {
+              "id": "past-assertion",
+              "expression_ref": "arrived-past"
+            }
+          ]
+        }
+      },
+      "task": {
+        "goal": "Determine whether a past-tense assertion establishes the proposition in the present interval.",
+        "assumptions": [],
+        "reference_policy": {
+          "id": "benchmark-reference-policy/1.0.0",
+          "rules": [],
+          "world_assumption": "OPEN"
+        }
+      },
+      "expected": {
+        "completion_status": "complete",
+        "conclusions": [],
+        "prohibited_conclusions": [
+          "PRESENT:ARRIVED(person-a)"
+        ],
+        "diagnostics": [
+          "TENSE_SCOPE_PRESERVED"
+        ],
+        "scope_checks": [
+          {
+            "check_id": "TENSE-001",
+            "expected_binding": {
+              "tense": "PAST",
+              "operand_ref": "arrived"
+            }
+          }
+        ],
+        "evidence_checks": [],
+        "required_derivations": [],
+        "preserved_item_ids": []
+      },
+      "determinism_required": true
+    },
+    {
+      "id": "USG-BENCH-STATUS-DISTINCTION-001",
+      "category": "unresolved",
+      "case_types": [
+        "unresolved",
+        "boundary"
+      ],
+      "title": "UNKNOWN, UNRESOLVED, and AMBIGUOUS remain distinct",
+      "versions": {
+        "usg_sem_profile": "1.0",
+        "workbench": "0.5.4",
+        "python_document_adapter": "1.5.1",
+        "benchmark_format": "1.0.0",
+        "reference_policy": "benchmark-reference-policy/1.0.0"
+      },
+      "input_snapshot": {
+        "profile_id": "USG-SEM/1.0",
+        "document_id": "DOC-USG-BENCH-STATUS-DISTINCTION-001",
+        "source_records": [],
+        "semantic_records": {
+          "unresolved_items": [
+            {
+              "id": "unknown-item",
+              "status": "UNKNOWN"
+            },
+            {
+              "id": "unresolved-item",
+              "status": "UNRESOLVED"
+            },
+            {
+              "id": "ambiguous-item",
+              "status": "AMBIGUOUS"
+            }
+          ]
+        }
+      },
+      "task": {
+        "goal": "Preserve all distinct statuses without normalizing them to one generic unresolved state.",
+        "assumptions": [],
+        "reference_policy": {
+          "id": "benchmark-reference-policy/1.0.0",
+          "rules": [],
+          "world_assumption": "OPEN"
+        }
+      },
+      "expected": {
+        "completion_status": "partial",
+        "conclusions": [],
+        "prohibited_conclusions": [],
+        "diagnostics": [],
+        "scope_checks": [],
+        "evidence_checks": [],
+        "required_derivations": [],
+        "preserved_item_ids": [
+          "unknown-item",
+          "unresolved-item",
+          "ambiguous-item"
+        ]
+      },
+      "determinism_required": true
+    }
+  ]
+}
