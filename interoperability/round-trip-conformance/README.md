@@ -95,7 +95,9 @@ Node bridge `tests/round_trip_conformance_bridge.js` executing both Workbench
 adapter boundaries. The suite drives the canonical document through the Python
 0.4.0 document projection and reverse serializer between those boundaries.
 
-The first executable suite covers the following semantic invariants:
+The first executable suite covers the following semantic invariants. It also
+exercises the typed `SIT → HOLDS → PROP` boundary and exact modal force/flavor
+mapping required for schema-valid operator operands:
 
 - positive and negative predication;
 - nested negation and modality scope;
