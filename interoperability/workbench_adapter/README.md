@@ -10,14 +10,18 @@
 Browser global:
 
 ```js
+const { model, validation } = USGSemanticCore.buildSemanticModel(sourceRecord);
+if (!validation.valid) throw new Error('Workbench semantic model is structurally invalid');
 const { document, report } =
-  await USGWorkbenchSemAdapter.workbenchToContract(workbenchSemanticModel);
+  await USGWorkbenchSemAdapter.workbenchToContract(model);
 ```
 
 CommonJS:
 
 ```js
 const adapter = require('./interoperability/workbench_adapter');
+const { model, validation } = semanticCore.buildSemanticModel(sourceRecord);
+if (!validation.valid) throw new Error('Workbench semantic model is structurally invalid');
 const result = await adapter.workbenchToContract(model);
 ```
 
