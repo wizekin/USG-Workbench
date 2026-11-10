@@ -1,7 +1,7 @@
 # USG Phase 2 — Semantic Reasoning Roadmap
 
 **Phase:** 2 — Evidence-grounded, rule-governed semantic reasoning  
-**Status:** ROADMAP ESTABLISHED; Steps 2.1–2.4 reasoning contracts complete; production reasoning execution not started  
+**Status:** ROADMAP ESTABLISHED; Steps 2.1–2.5 definitions, contracts, and grounding complete; inference execution not started  
 **Prerequisite:** Phase 1 exit accepted (USG-SEM/1.0 and composed adapter v1.5.1)  
 **Normative Phase 1 record:** [Phase 1 exit acceptance](../interoperability/PHASE-1-EXIT-ACCEPTANCE.md)
 
@@ -220,6 +220,6 @@ These may be considered in later phases only after Phase 2 produces a measurable
 
 ## 11. Current status
 
-This roadmap establishes the Phase 2 sequence and boundaries. Steps 2.1–2.4 have produced the definitions, 35-fixture benchmark/evaluator, frozen thresholds, versioned declarative rule model/registry, and formal applicability/safety semantics. The four reference rules remain disabled; no production grounding service, rule matcher, inference executor, truth evaluator, or ontology learner is implemented.
+This roadmap establishes the Phase 2 sequence and boundaries. Steps 2.1–2.5 have produced the definitions, benchmark/evaluator, versioned rule model, formal rule semantics, and deterministic grounding services. The four reference rules remain disabled; no production rule matcher, inference executor, evidence assessor, or reasoning interface is enabled.
 
-**Next implementation step:** Phase 2 Step 2.5 — definition, reference, scope, and context grounding. It must implement exact identity/version resolution and preserve ambiguity, missing references, and scope mismatch. It must also define an explicit adapter from the compact Step 2.2 fixture snapshots to complete profile-valid inputs; missing assertion fields must never be defaulted.
+**Next implementation step:** Phase 2 Step 2.6 — deterministic inference executor. It must consume exact grounding outcomes, execute only explicitly enabled rules, preserve full derivations, and introduce a separately versioned benchmark extension with complete canonical documents and explicit assertion fields. The frozen compact Step 2.2 v1.0.0 fixtures must never be silently coerced into executor inputs.
