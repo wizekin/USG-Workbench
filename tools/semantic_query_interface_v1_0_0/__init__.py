@@ -1,4 +1,10 @@
-"""Structured query and explanation interface for USG-SEM/1.0."""
+"""Structured and persistent query interfaces for USG-SEM/1.0."""
 from .interface import QueryInterface, run_query
+from .persistent import PersistentQueryService, run_persistent_query
 
-__all__ = ["QueryInterface", "run_query"]
+__all__ = [
+    "QueryInterface",
+    "run_query",
+    "PersistentQueryService",
+    "run_persistent_query",
+]
