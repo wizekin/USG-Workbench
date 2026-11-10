@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wizekin.github.io/USG-Workbench/evidence-assessment-result-1.0.0.schema.json",
+  "title": "USG Evidence Assessment Result 1.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "profile_id",
+    "completion_status",
+    "document_id",
+    "document_sha256",
+    "policy_id",
+    "policy_version",
+    "alignment_assessments",
+    "semantic_support_assessments",
+    "relation_claims",
+    "conflicts",
+    "corroboration_assessments",
+    "external_verification",
+    "diagnostics",
+    "preserved_input_refs",
+    "safety"
+  ],
+  "properties": {
+    "profile_id": {
+      "const": "USG-EVIDENCE-ASSESSMENT/1.0.0"
+    },
+    "completion_status": {
+      "enum": [
+        "COMPLETE",
+        "INVALID_INPUT"
+      ]
+    },
+    "document_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "document_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "policy_id": {
+      "const": "USG-EVIDENCE-ASSESSMENT"
+    },
+    "policy_version": {
+      "const": "1.0.0"
+    },
+    "alignment_assessments": {
+      "type": "array"
+    },
+    "semantic_support_assessments": {
+      "type": "array"
+    },
+    "relation_claims": {
+      "type": "array"
+    },
+    "conflicts": {
+      "type": "array"
+    },
+    "corroboration_assessments": {
+      "type": "array"
+    },
+    "external_verification": {
+      "type": "array"
+    },
+    "diagnostics": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "preserved_input_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "safety": {
+      "type": "object",
+      "required": [
+        "truth_promotion",
+        "semantic_support_from_alignment",
+        "corroboration_without_independence",
+        "conflict_winner_selection",
+        "canonical_document_mutated"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "truth_promotion": {
+          "const": false
+        },
+        "semantic_support_from_alignment": {
+          "const": false
+        },
+        "corroboration_without_independence": {
+          "const": false
+        },
+        "conflict_winner_selection": {
+          "const": false
+        },
+        "canonical_document_mutated": {
+          "const": false
+        }
+      }
+    }
+  }
+}
