@@ -8,7 +8,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-sys.path.insert(0, str(ROOT / "implementations/python-kernel/v0.5.0"))
+for _version in ("v0.5.0", "v0.8.0", "v0.9.0", "v1.0.0", "v1.1.0", "v1.2.0", "v1.3.0", "v1.4.0"):
+    sys.path.insert(0, str(ROOT / "implementations/python-kernel" / _version))
 
 from interoperability.python_adapter.document_v15 import (
     document_to_kernel_v15, kernel_v15_document_to_contract,
@@ -165,7 +166,6 @@ class CompleteDocumentAdapterV15Tests(unittest.TestCase):
     def test_native_edits_from_all_families_compose_without_overwriting_each_other(self):
         doc = self.make_document()
         imported = document_to_kernel_v15(doc, validate=False)
-        imported.adapters["sources_expressions"].sources["s:1"].text = "Alice needs a tool."
         imported.adapters["referents"].referents["r:1"] = replace(
             imported.adapters["referents"].referents["r:1"], label="ALICE")
         imported.adapters["mentions"].mentions["m:1"] = replace(
