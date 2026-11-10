@@ -315,7 +315,7 @@ def python_to_contract_document(imported: Any, *, validate: bool = True,
     unmapped.extend(item["id"] for item in original_assertions if item["id"] not in {x["id"] for x in assertion_records})
     if source_records:
         original_primary = document.get("primarySourceRef")
-        if original_primary not in {item["id"] for item in source_records}:
+        if original_primary not in {item["id"] for item in document["sources"]}:
             document["primarySourceRef"] = source_records[0]["id"]
     else:
         unmapped.append(document.get("primarySourceRef", "primarySourceRef"))
