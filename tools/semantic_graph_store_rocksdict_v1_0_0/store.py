@@ -308,12 +308,23 @@ class CanonicalDocumentStore:
                 created_at = now
             else:
                 current_revision = int(current["revision"])
-                existing = self.get_document(document_id, current_revision)
-                if existing.digest == digest:
+                current_meta_raw = self._get(
+                    self._db, self._revision_key(document_id, current_revision)
+                )
+                current_snapshot = self._get(
+                    self._db, self._snapshot_key(document_id, current_revision)
+                )
+                if current_meta_raw is None or current_snapshot is None:
+                    raise IntegrityError("current revision metadata or snapshot is missing")
+                current_meta = _decode_json(current_meta_raw)
+                if sha256(current_snapshot).hexdigest() != current_meta["sha256"]:
+                    raise IntegrityError("current canonical snapshot SHA-256 mismatch")
+                if current_meta["sha256"] == digest:
+                    unchanged_document = parse_canonical(current_snapshot)
                     return StoredDocument(
-                        document_id, existing.revision, existing.predecessor_revision,
-                        digest, existing.canonicalization_profile, existing.created_at,
-                        existing.document, "UNCHANGED",
+                        document_id, current_revision, current_meta["predecessor_revision"],
+                        digest, current_meta["canonicalization_profile"],
+                        current_meta["created_at"], unchanged_document, "UNCHANGED",
                     )
                 if expected_revision is None or expected_revision != current_revision:
                     raise RevisionConflictError(document_id, current_revision, expected_revision)
