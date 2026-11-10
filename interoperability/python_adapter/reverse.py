@@ -70,32 +70,15 @@ def _source_to_contract(source: Any, opaque_id: str, expected_ref: Any) -> tuple
 
 
 def _pair_original_nodes(imported: Any) -> tuple[dict[int, str], dict[str, dict[str, Any]]]:
-    """Pair imported immutable Node identities with their original contract IDs."""
+    """Use the identity map captured during import, never infer IDs by similarity."""
     records = {item["id"]: item for item in imported.document.get("expressions", [])}
-    by_object: dict[int, str] = {}
-    by_contract_id: dict[str, dict[str, Any]] = {}
-    pending = [(root_id, node) for root_id, node in imported.expression_roots.items()]
-    seen_pairs: set[tuple[str, int]] = set()
-    while pending:
-        contract_id, node = pending.pop()
-        pair = (contract_id, id(node))
-        if pair in seen_pairs:
-            continue
-        seen_pairs.add(pair)
-        record = records.get(contract_id)
-        if record is None:
-            raise ContractMappingError(f"Imported root/operand {contract_id} is absent from its canonical snapshot")
-        previous = by_object.get(id(node))
-        if previous is not None and previous != contract_id:
-            raise ContractMappingError("One native Node identity maps to multiple canonical expression IDs")
-        by_object[id(node)] = contract_id
-        by_contract_id[contract_id] = record
-        child_refs = record.get("operandRefs", [])
-        if len(child_refs) != len(node.args):
-            raise ContractMappingError(f"Imported node {contract_id} no longer matches its original operand arity")
-        pending.extend(zip(child_refs, node.args))
-    return by_object, by_contract_id
-
+    identity_refs = dict(imported.node_identity_refs)
+    by_contract_id = {
+        contract_id: records[contract_id]
+        for contract_id in identity_refs.values()
+        if contract_id in records
+    }
+    return identity_refs, by_contract_id
 
 def _annotation_to_contract(node: Any, original: Mapping[str, Any] | None,
                             node_id: str, archival: dict[str, Any], unmapped: list[str]) -> dict[str, Any] | None:
