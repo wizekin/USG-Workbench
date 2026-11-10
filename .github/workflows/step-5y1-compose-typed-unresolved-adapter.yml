@@ -1,0 +1,35 @@
+name: Step 5Y1 Compose Typed UnresolvedItem Adapter
+on:
+  pull_request:
+    paths:
+      - "interoperability/python_adapter/document_v15.py"
+      - "tests/test_python_kernel_v15_document_adapter.py"
+      - "interoperability/python-kernel-extension/STEP-5Y-COMPLETE-DOCUMENT-ADAPTER.md"
+      - "interoperability/python-kernel-extension/STEP-5Y1-COMPOSE-TYPED-UNRESOLVED-ADAPTER.md"
+      - "interoperability/python_adapter/README.md"
+      - ".github/workflows/step-5y1-compose-typed-unresolved-adapter.yml"
+  push:
+    branches: [main]
+    paths:
+      - "interoperability/python_adapter/document_v15.py"
+      - "tests/test_python_kernel_v15_document_adapter.py"
+      - "interoperability/python-kernel-extension/STEP-5Y-COMPLETE-DOCUMENT-ADAPTER.md"
+      - "interoperability/python-kernel-extension/STEP-5Y1-COMPOSE-TYPED-UNRESOLVED-ADAPTER.md"
+      - "interoperability/python_adapter/README.md"
+      - ".github/workflows/step-5y1-compose-typed-unresolved-adapter.yml"
+permissions:
+  contents: read
+jobs:
+  composed-adapter-v151:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install schema validator
+        run: python -m pip install "jsonschema>=4.18,<5"
+      - name: Run composed adapter conformance
+        env:
+          PYTHONPATH: implementations/python-kernel/v0.5.0
+        run: python -m unittest discover -s tests -p "test_python_kernel_v15_document_adapter.py" -v
