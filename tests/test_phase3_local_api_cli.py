@@ -104,10 +104,14 @@ class LocalAPITests(unittest.TestCase):
         self.assertEqual(status, 200)
         self.assertEqual(conflicts["conflicts"], [])
 
-    def test_raw_text_interpretation_is_explicitly_unsupported(self):
-        status, result = self.call("POST", "/v1/interpret", {"text": "If A then B"})
-        self.assertEqual(status, 501)
-        self.assertEqual(result["completion_status"], "UNSUPPORTED")
+    def test_raw_text_interpretation_uses_phase4_pipeline(self):
+        status, result = self.call("POST", "/v1/interpret", {
+            "text": "Ada writes code", "language": "en", "persist": True
+        })
+        self.assertEqual(status, 200)
+        self.assertEqual(result["completion_status"], "COMPLETE")
+        self.assertEqual(result["document"]["profileId"], "USG-SEM/1.0")
+        self.assertEqual(result["persistence"]["status"], "STORED")
 
     def test_unknown_routes_and_missing_documents(self):
         self.assertEqual(self.call("GET", "/unknown")[0], 404)
