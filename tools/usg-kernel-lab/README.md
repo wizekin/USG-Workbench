@@ -1,6 +1,6 @@
 # USG Kernel Lab
 
-A small, local-only browser interface for exercising the current Python Mention model (v0.7.0) and the USG-SEM/1.0 ↔ v0.7.0 document adapter (Step 5J).
+A local-only browser interface for exercising the Python Mention model (v0.7.0), the USG-SEM/1.0 ↔ v0.7.0 document adapter, and the Phase 2 structured query/reasoning pipeline (Steps 2.6–2.8).
 
 ## What it can test
 
@@ -13,7 +13,7 @@ A small, local-only browser interface for exercising the current Python Mention 
 
 ## What it does not do
 
-This is an adapter/model test bench, not a natural-language semantic parser or an integrated runtime for all USG modules. It does not generate Mentions from raw sentences, infer coreference, infer Referents, or test all v0.5/v0.6/v0.7 components in one pipeline. The existing JavaScript Semantic Workbench v0.5.4 remains a separate application for model-assisted sentence interpretation.
+The adapter panel remains an adapter/model test bench, not a natural-language semantic parser. The Phase 2 panel runs explicit typed-reference goals through the deterministic inference executor, evidence assessor, and query interface. It does not generate semantic structures from raw sentences, perform free-text inference, or claim objective truth. The existing JavaScript Semantic Workbench v0.5.4 remains a separate application for model-assisted sentence interpretation.
 
 ## Requirements
 
@@ -52,7 +52,7 @@ Try changing the first Mention's surface text without updating its source span: 
 ## API
 
 - `GET /` — browser interface
-- `GET /health` — local server health and model/contract versions
+- `GET /health` — local server health and model/contract versions\n- `GET /api/fixtures` — versioned query fixture catalog\n- `POST /api/fixture` — load a canonical query fixture\n- `POST /api/query` — run an explicit structured query\n- `POST /api/benchmark` — run the complete query benchmark
 - `POST /api/inspect` — `{"document": <USG-SEM/1.0 document>}`
 - `POST /api/export` — `{"document": <document>, "nativeMentions": [<edited native Mention records>]}`
 
