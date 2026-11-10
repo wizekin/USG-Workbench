@@ -10,13 +10,17 @@ from copy import deepcopy
 import json
 from pathlib import Path
 import statistics
+import sys
 import tempfile
 import time
+
+ROOT = Path(__file__).resolve().parents[2]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 from tools.semantic_graph_store_v1_0_0 import CanonicalDocumentStore as SQLiteStore
 from tools.semantic_graph_store_lmdb_v1_0_0 import CanonicalDocumentStore as LMDBStore
 
-ROOT = Path(__file__).resolve().parents[2]
 FIXTURES = json.loads(
     (ROOT / "benchmarks/semantic-reasoning/executor-v1.0.0/fixtures.json").read_text(encoding="utf-8")
 )
