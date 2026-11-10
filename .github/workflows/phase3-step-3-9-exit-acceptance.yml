@@ -111,17 +111,38 @@ jobs:
         run: |
           CLEAN="$RUNNER_TEMP/usg-phase3-clean/bin"
           DB="$RUNNER_TEMP/usg-phase3-final.sqlite3"
-          "$CLEAN/usg-workbench" serve --db "$DB" --port 18766 > "$RUNNER_TEMP/usg-api.log" 2>&1 &
+          API_LOG="$RUNNER_TEMP/usg-api.log"
+          LAB_LOG="$RUNNER_TEMP/usg-lab.log"
+          "$CLEAN/usg-workbench" serve --db "$DB" --port 18766 > "$API_LOG" 2>&1 &
           API_PID=$!
-          "$CLEAN/usg-workbench" lab --db "$DB" --port 18765 > "$RUNNER_TEMP/usg-lab.log" 2>&1 &
+          LAB_PID=""
+          trap 'kill "${LAB_PID:-}" "$API_PID" 2>/dev/null || true' EXIT
+          wait_for_health() {
+            url="$1"
+            label="$2"
+            logfile="$3"
+            for attempt in $(seq 1 30); do
+              if curl --fail --silent "$url" > /dev/null; then
+                return 0
+              fi
+              if ! kill -0 "$API_PID" 2>/dev/null && [ "$label" = "API" ]; then
+                break
+              fi
+              if [ "$label" = "Kernel Lab" ] && [ -n "$LAB_PID" ] && ! kill -0 "$LAB_PID" 2>/dev/null; then
+                break
+              fi
+              sleep 1
+            done
+            echo "$label failed health check at $url"
+            cat "$logfile" || true
+            return 1
+          }
+          wait_for_health "http://127.0.0.1:18766/health" "API" "$API_LOG"
+          # Start the second application only after the first has completed its
+          # SQLite initialization, avoiding simultaneous first-open migrations.
+          "$CLEAN/usg-workbench" lab --db "$DB" --port 18765 > "$LAB_LOG" 2>&1 &
           LAB_PID=$!
-          trap 'kill "$API_PID" "$LAB_PID" 2>/dev/null || true' EXIT
-          for attempt in $(seq 1 30); do
-            if curl --fail --silent http://127.0.0.1:18766/health > /dev/null && curl --fail --silent http://127.0.0.1:18765/health > /dev/null; then
-              break
-            fi
-            sleep 1
-          done
+          wait_for_health "http://127.0.0.1:18765/health" "Kernel Lab" "$LAB_LOG"
           "$CLEAN/python" - <<'PY'
           import json, pathlib, urllib.request
           import examples
@@ -137,6 +158,13 @@ jobs:
           api = "http://127.0.0.1:18766"
           lab = "http://127.0.0.1:18765"
           saved = request(api + "/v1/documents", "POST", {"document": document})
+          interpretation = request(api + "/v1/interpret", "POST", {
+              "text": "Ada writes code", "language": "en", "persist": True
+          })
+          assert interpretation["completion_status"] == "COMPLETE"
+          interpreted_id = interpretation["persistence"]["document_id"]
+          interpreted_from_lab = request(lab + "/v1/documents/" + interpreted_id)
+          assert interpreted_from_lab["document"]["sources"][0]["text"] == "Ada writes code"
           loaded = request(lab + "/v1/documents/" + document["documentId"])
           assert loaded["document"] == document
           assert loaded["revision"] == saved["revision"] == 1
