@@ -158,6 +158,12 @@ class InferenceExecutor:
         validate_semantics(self.semantics, self.registry)
         if self.activation.get("execution_enabled") is not True:
             raise InferenceExecutionError("separate activation manifest must explicitly enable execution")
+        if self.activation.get("registry_id") != self.registry["registry_id"] or self.activation.get("registry_version") != self.registry["registry_version"]:
+            raise InferenceExecutionError("activation registry identity/version does not match the declarative registry")
+        if self.activation.get("semantics_id") != self.semantics["semantics_id"] or self.activation.get("semantics_version") != self.semantics["semantics_version"]:
+            raise InferenceExecutionError("activation semantics identity/version does not match the semantics contract")
+        if self.activation.get("rule_model_version") != self.registry["rule_model_version"] or self.activation.get("usg_profile") != self.registry["usg_profile"]:
+            raise InferenceExecutionError("activation profile or rule-model version does not match the registry")
         active = {
             item["rule_id"] for item in self.activation["rules"]
             if item["enabled"] is True and item["handler_status"] == "IMPLEMENTED"
@@ -261,9 +267,14 @@ class InferenceExecutor:
                     if antecedent["id"] == conditional["id"]:
                         continue
                     a_status, a_data, a_diags = eligible[antecedent["id"]]
-                    if a_status != "RESOLVED" or antecedent.get("expressionRef") != antecedent_ref:
+                    if a_status != "RESOLVED":
+                        if antecedent.get("expressionRef") == antecedent_ref and a_status in {"CONFLICTING", "UNKNOWN", "AMBIGUOUS", "UNRESOLVED", "INVALID_INPUT"}:
+                            diagnostics.extend(a_diags)
+                        continue
+                    if antecedent.get("expressionRef") != antecedent_ref:
                         continue
                     if not _same_binding(a_data, c_data):
+                        diagnostics.append("RULE_CONTEXT_OR_ATTRIBUTION_MISMATCH")
                         consider(RULE_MP, [antecedent["id"], conditional["id"]], None, None, "RULE_CONTEXT_OR_ATTRIBUTION_MISMATCH")
                         continue
                     consider(RULE_MP, [antecedent["id"], conditional["id"], c_expr["id"]], consequent_ref, c_data["binding"]["context_ref"])
