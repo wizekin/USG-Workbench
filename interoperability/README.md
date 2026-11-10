@@ -38,5 +38,6 @@ Mappings must be exact and documented. Unsupported or lossy mappings must be rep
 - **5A–5J completed and merged:** native expression constructors and separately versioned Source, Referent identity, and Mention models/adapters.
 - **5K completed and merged:** native Assertion model v0.8.0. [Step 5K contract](python-kernel-extension/STEP-5K-NATIVE-ASSERTION-MODEL.md).
 - **5L completed and merged:** Assertion document adapter v0.8.0. [Step 5L contract](python-kernel-extension/STEP-5L-ASSERTION-DOCUMENT-ADAPTER.md).
-- **5M implementation in progress:** native Evidence model v0.9.0. [Step 5M contract](python-kernel-extension/STEP-5M-NATIVE-EVIDENCE-MODEL.md). It keeps source-span alignment separate from semantic support, preserves ordered/repeated supporting-rule references, and does not claim entailment or truth evaluation.
-- Existing v0.4.0–v0.8.0 models, Workbench v0.5.4, USG-SEM/1.0, archives, and immutable baselines remain unchanged.
+- **5M completed and merged:** native Evidence model v0.9.0. [Step 5M contract](python-kernel-extension/STEP-5M-NATIVE-EVIDENCE-MODEL.md). It keeps source-span alignment separate from semantic support, preserves ordered/repeated supporting-rule references, and does not claim entailment or truth evaluation.
+- **5N implementation in progress:** Evidence document adapter v0.9.0. [Step 5N contract](python-kernel-extension/STEP-5N-EVIDENCE-DOCUMENT-ADAPTER.md). It projects exact/resolvable Evidence records, retains unknown or dangling data in the canonical envelope, and merges native edits only into Evidence records.
+- Existing v0.4.0–v0.9.0 models, Workbench v0.5.4, USG-SEM/1.0, archives, and immutable baselines remain unchanged.
