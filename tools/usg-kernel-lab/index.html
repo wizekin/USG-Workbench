@@ -44,9 +44,9 @@ details{border:1px solid var(--line);border-radius:10px;background:#0d1626}summa
 </style>
 </head>
 <body>
-<header><div class="brand"><div class="mark">U</div><div><h1>USG Kernel Lab</h1><p>Interactive semantic contract & native Mention adapter tester</p></div></div><div class="version">LOCAL LAB · KERNEL 0.7.0</div></header>
+<header><div class="brand"><div class="mark">U</div><div><h1>USG Kernel Lab</h1><p>Interactive semantic contract, persistent graph, and reasoning lab</p></div></div><div class="version">LOCAL LAB · SQLITE · PHASE 3</div></header>
 <main>
-<div class="notice"><strong>Scope:</strong> This lab tests the Python v0.7.0 Mention model and its USG-SEM/1.0 document adapter. It does not generate semantic structures from free text, and it does not yet integrate every USG module into one runtime.</div>
+<div class="notice"><strong>Scope:</strong> This local lab combines the v0.7.0 Mention adapter with the Phase 3 SQLite canonical store, revision-pinned query API, condition/exception maps, and exact-scope contradiction inspection. It accepts complete USG-SEM/1.0 documents; raw-text interpretation is not implemented.</div>
 <div class="toolbar">
 <button class="subtle" id="sampleBtn">Load sample document</button>
 <button class="primary" id="inspectBtn">Import & inspect</button>
@@ -88,6 +88,27 @@ details{border:1px solid var(--line);border-radius:10px;background:#0d1626}summa
 </div>
 <div class="query-summary" id="querySummary"><div class="empty" style="grid-column:1/-1">No query has been run yet.</div></div>
 <details open><summary>Grounding, derivation, evidence, conflict & explanation trace</summary><pre class="query-trace" id="queryOutput">Select a fixture and run a query to inspect the complete structured result.</pre></details>
+</div>
+</section>
+
+<section class="panel" style="margin-top:16px">
+<div class="panel-head"><div><div class="eyebrow">04 / persistent semantic workspace</div><h2>SQLite documents · conditions · conflicts</h2></div><span class="eyebrow">USG-LOCAL-API/1.0.0</span></div>
+<div class="panel-body">
+<p class="hint">Save complete canonical documents to the local SQLite store. Load immutable revisions, verify integrity, inspect conditions and exact-scope conflicts, run queries against stored snapshots, and export the complete canonical graph.</p>
+<div class="query-grid">
+ <div class="field"><label>Document ID</label><input id="persistentDocumentId" placeholder="document id"></div>
+ <div class="field"><label>Expected / selected revision</label><input id="persistentRevision" type="number" min="1" placeholder="current revision / blank for latest"></div>
+</div>
+<div class="query-actions">
+ <button class="primary" id="savePersistentBtn">Save current document</button>
+ <button class="subtle" id="loadPersistentBtn">Load stored document</button>
+ <button class="subtle" id="checkPersistentBtn">Verify integrity</button>
+ <button class="subtle" id="conditionsPersistentBtn">Inspect conditions</button>
+ <button class="subtle" id="conflictsPersistentBtn">Inspect contradictions</button>
+ <button class="subtle" id="exportPersistentBtn">Export canonical JSON</button>
+ <button class="subtle" id="queryPersistentBtn">Run query on stored revision</button>
+</div>
+<details open><summary>Persistent store response</summary><pre id="persistentOutput" class="query-trace">No document has been saved or loaded yet.</pre></details>
 </div>
 </section>
 <div class="footer">Runs locally on this computer · no cloud upload · canonical document remains the preservation envelope</div>
@@ -165,7 +186,7 @@ async function post(path,payload){
  if(!response.ok||!data.ok) throw new Error(data.error||"Request failed");
  return data;
 }
-$("sampleBtn").onclick=()=>{$("documentInput").value=JSON.stringify(sample,null,2);latestExport=null;imported=false;$("exportBtn").disabled=true;$("downloadBtn").disabled=true;$("output").innerHTML='<div class="empty">Sample loaded. Choose <b>Import & inspect</b> to run the native adapter.</div>';setStatus("Sample document loaded","ok")};
+$("sampleBtn").onclick=()=>{$("documentInput").value=JSON.stringify(sample,null,2);$("persistentDocumentId").value=sample.documentId;$("persistentRevision").value="";persistentRevision=null;latestExport=null;imported=false;$("exportBtn").disabled=true;$("downloadBtn").disabled=true;$("output").innerHTML='<div class="empty">Sample loaded. Choose <b>Import & inspect</b> to run the native adapter.</div>';setStatus("Sample document loaded","ok")};
 $("inspectBtn").onclick=async()=>{
  try{$("inspectBtn").disabled=true;setStatus("Validating and projecting...");const doc=JSON.parse($("documentInput").value);const data=await post("/api/inspect",{document:doc});renderReport(data);latestExport=null;$("downloadBtn").disabled=true;setStatus("Import and inspection passed","ok")}
  catch(e){setStatus(e.message,"err");$("output").innerHTML='<div class="empty" style="color:#ffaaaa">'+esc(e.message)+'</div>';imported=false;$("exportBtn").disabled=true}
@@ -207,7 +228,7 @@ $("loadQueryFixtureBtn").onclick=async()=>{
   const fixtureId=$("queryFixtureSelect").value;if(!fixtureId)throw new Error("Select a query fixture first");
   $("loadQueryFixtureBtn").disabled=true;
   const data=await post("/api/fixture",{fixture_id:fixtureId});
-  $("documentInput").value=JSON.stringify(data.document,null,2);
+  $("documentInput").value=JSON.stringify(data.document,null,2);$("persistentDocumentId").value=data.document.documentId;$("persistentRevision").value="";persistentRevision=null;
   const q=data.query,g=q.goal,t=q.inference_task;
   $("queryExpression").value=g.expression_ref;$("queryContext").value=g.context_ref;$("queryContextKind").value=g.context_kind;
   $("queryCommitment").value=g.commitment;$("queryAttribution").value=g.attributed_to_ref||"";
@@ -248,6 +269,88 @@ $("downloadQueryBtn").onclick=()=>{
  const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="usg-kernel-lab-query-trace.json";a.click();URL.revokeObjectURL(url)
 };
 
+
+let persistentRevision = null;
+async function apiRequest(method,path,payload){
+ const response=await fetch(path,{method,headers:payload?{"Content-Type":"application/json"}:{},body:payload?JSON.stringify(payload):undefined});
+ const data=await response.json();
+ if(!response.ok) throw new Error(data.message||data.error||"Persistent API request failed (HTTP "+response.status+")");
+ return data;
+}
+function persistentTarget(suffix=""){
+ const id=$("persistentDocumentId").value.trim();
+ if(!id) throw new Error("Enter a document ID first");
+ const revision=$("persistentRevision").value.trim();
+ return "/v1/documents/"+encodeURIComponent(id)+suffix+(revision?"?revision="+encodeURIComponent(revision):"");
+}
+function showPersistent(data){$("persistentOutput").textContent=JSON.stringify(data,null,2)}
+$("savePersistentBtn").onclick=async()=>{
+ try{
+  const document=JSON.parse($("documentInput").value);
+  $("persistentDocumentId").value=document.documentId;
+  const rawRevision=$("persistentRevision").value.trim();
+  const expected=rawRevision===""?undefined:Number(rawRevision);
+  const payload={document,...(expected!==undefined?{expected_revision:expected}:{})};
+  const result=await apiRequest("POST","/v1/documents",payload);
+  persistentRevision=result.revision;
+  $("persistentRevision").value=String(result.revision);
+  showPersistent(result);setStatus("Saved canonical SQLite revision "+result.revision,"ok");
+ }catch(e){showPersistent({error:e.message});setStatus(e.message,"err")}
+};
+$("loadPersistentBtn").onclick=async()=>{
+ try{
+  const result=await apiRequest("GET",persistentTarget());
+  $("documentInput").value=JSON.stringify(result.document,null,2);
+  persistentRevision=result.revision;
+  $("persistentRevision").value=String(result.revision);
+  $("persistentDocumentId").value=result.document_id;
+  showPersistent(result);setStatus("Loaded and verified SQLite revision "+result.revision,"ok");
+ }catch(e){showPersistent({error:e.message});setStatus(e.message,"err")}
+};
+$("checkPersistentBtn").onclick=async()=>{
+ try{const result=await apiRequest("GET",persistentTarget("/check"));showPersistent(result);setStatus("Integrity report: "+result.status,result.status==="PASS"?"ok":"err")}
+ catch(e){showPersistent({error:e.message});setStatus(e.message,"err")}
+};
+$("conditionsPersistentBtn").onclick=async()=>{
+ try{const result=await apiRequest("GET",persistentTarget("/conditions"));showPersistent(result);setStatus("Condition and exception inspection completed","ok")}
+ catch(e){showPersistent({error:e.message});setStatus(e.message,"err")}
+};
+$("conflictsPersistentBtn").onclick=async()=>{
+ try{const result=await apiRequest("GET",persistentTarget("/contradictions"));showPersistent(result);setStatus("Exact-scope contradiction inspection completed","ok")}
+ catch(e){showPersistent({error:e.message});setStatus(e.message,"err")}
+};
+$("exportPersistentBtn").onclick=async()=>{
+ try{
+  const result=await apiRequest("GET",persistentTarget("/export"));
+  const blob=new Blob([JSON.stringify(result,null,2)],{type:"application/json"});
+  const url=URL.createObjectURL(blob),a=document.createElement("a");
+  a.href=url;a.download=($("persistentDocumentId").value||"usg-document")+".json";a.click();URL.revokeObjectURL(url);
+  showPersistent({exported:true,document_id:result.documentId,record_families:Object.keys(result)});
+  setStatus("Complete canonical document exported","ok");
+ }catch(e){showPersistent({error:e.message});setStatus(e.message,"err")}
+};
+$("queryPersistentBtn").onclick=async()=>{
+ try{
+  const id=$("persistentDocumentId").value.trim();if(!id)throw new Error("Save or load a document first");
+  const revision=$("persistentRevision").value.trim();
+  const commitment=$("queryCommitment").value;
+  const query={query_id:"kernel-lab-persistent-query",goal:{
+   expression_ref:$("queryExpression").value.trim(),context_ref:$("queryContext").value.trim(),
+   context_kind:$("queryContextKind").value.trim(),commitment,
+   ...(commitment==="ATTRIBUTED"?{attributed_to_ref:$("queryAttribution").value.trim()}:{}),
+  },inference_task:{
+   task_id:"kernel-lab-persistent-query:inference",
+   rule_ids:$("queryRules").value.split(",").map(x=>x.trim()).filter(Boolean),
+   world_assumption:"OPEN",allow_inferred_premises:false,evidence_assessment:false,
+  }};
+  const budget=$("queryBudget").value.trim();if(budget!=="")query.inference_task.max_rule_applications=Number(budget);
+  const payload={document_id:id,query,...(revision?{revision:Number(revision)}:{})};
+  const result=await apiRequest("POST","/v1/query",payload);
+  setQuerySummary({result:result.query_result});setQueryOutput(result);
+  showPersistent({query_completed:true,document_revision:result.document_revision,document_sha256:result.document_sha256});
+  setStatus("Stored-revision query completed: "+result.query_result.goal_status,"ok");
+ }catch(e){showPersistent({error:e.message});setStatus(e.message,"err")}
+};
 $("sampleBtn").click();
 loadQueryFixtureList();
 </script>
