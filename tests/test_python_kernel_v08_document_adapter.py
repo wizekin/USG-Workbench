@@ -62,7 +62,7 @@ class KernelV08DocumentAdapterTests(unittest.TestCase):
   x.assertions["a:1"]=replace(old,source_ref=TypedReference(ReferenceSpace.SOURCE,"not:there"))
   with self.assertRaises(ContractMappingError): kernel_v08_document_to_contract(x,validate=False)
   x=document_to_kernel_v08(self.make_document(),validate=False); old=x.assertions["a:1"]
-  x.assertions["a:1"]=replace(old,expression_ref=TypedReference(ReferenceSpace.CONTEXT,"c:1"))
+  x.assertions["a:1"]=replace(old,expression_ref=TypedReference(ReferenceSpace.EXPRESSION,"missing:x"))
   with self.assertRaises(ContractMappingError): kernel_v08_document_to_contract(x,validate=False)
  def test_stale_snapshot_is_rejected(self):
   x=document_to_kernel_v08(self.make_document(),validate=False); x.document["assertions"][0]["commitment"]="NONE"
