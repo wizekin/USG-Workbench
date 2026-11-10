@@ -205,6 +205,19 @@ class SemanticReasoningBenchmarkTests(unittest.TestCase):
         self.assertFalse(evidence_report["accepted"])
         self.assertLess(evidence_report["metrics"]["evidence_assessment_accuracy"], 1.0)
 
+    def test_completion_status_and_diagnostic_codes_are_exact(self):
+        bundle = copy.deepcopy(self.bundle)
+        result = next(
+            item for item in bundle["results"]
+            if item["fixture_id"] == "USG-BENCH-CONFLICT-ASSERTIONS-001"
+        )
+        result["completion_status"] = "complete"
+        result["diagnostics"].append("ARBITRARY_WARNING")
+        report = evaluate(self.fixtures, self.thresholds, bundle)
+        self.assertFalse(report["accepted"])
+        self.assertLess(report["metrics"]["completion_status_accuracy"], 1.0)
+        self.assertLess(report["metrics"]["diagnostic_accuracy"], 1.0)
+
     def test_missing_rule_version_fails_provenance_gate(self):
         bundle = copy.deepcopy(self.bundle)
         result = next(item for item in bundle["results"] if item["fixture_id"] == "USG-BENCH-PROVENANCE-001")
