@@ -1,9 +1,8 @@
-"""Document-level USG-SEM/1.0 boundary for Python kernel 0.5.0.
+"""Loss-preserving USG-SEM/1.0 document boundary for Python kernel 0.5.0.
 
-Only the expression graph is projected into native v0.5.0 Nodes. The complete
-document envelope and every non-expression record family remain canonical and
-are carried through export. No source/assertion/document-record equivalence is
-inferred from the graph adapter.
+Expression roots and exact supported Source records receive native projections.
+All other record families remain in the canonical envelope until exact native
+contracts are implemented; unsupported content is never coerced or discarded.
 """
 from __future__ import annotations
 
@@ -16,7 +15,7 @@ from usg.core.ids import IdSpace, Ref
 from usg.core.records import Anchor, Source
 from usg.core.values import Sensitivity, SourceType, TrustTier
 
-from .document import _canonical_bytes, _digest, validate_contract_document
+from .document import _digest, validate_contract_document
 from .usg_sem_1 import ContractMappingError
 from .kernel_v05 import (
     KernelV05Graph,
@@ -73,6 +72,29 @@ class KernelV05Document:
                 raise ContractMappingError(f"Non-Source native record for {source_id}")
             if source.ref is None or source.ref.space is not IdSpace.SOURCE:
                 raise ContractMappingError(f"Native Source {source_id} has no valid SOURCE identity")
+            original = source_by_id.get(source_id)
+            if original is not None:
+                original_anchor = original.get("anchor")
+                anchor_matches = (
+                    source.anchor is None and original_anchor is None
+                ) or (
+                    source.anchor is not None and original_anchor is not None
+                    and source.anchor.document_date == original_anchor.get("documentDate")
+                    and source.anchor.time_zone == original_anchor.get("timeZone")
+                    and source.anchor.calendar == original_anchor.get("calendar", "gregorian")
+                    and source.anchor.speech_time == original_anchor.get("speechTime")
+                )
+                if (
+                    source.text == original.get("text")
+                    and source.language == original.get("language")
+                    and source.type.value == original.get("sourceType")
+                    and source.trust_tier.value == original.get("trustTier")
+                    and source.sensitivity.value == original.get("sensitivity")
+                    and source.uri == original.get("uri")
+                    and source.text_hash == original.get("textHash")
+                    and anchor_matches
+                ):
+                    continue
             record = {
                 "id": source_id, "text": source.text, "language": source.language,
                 "sourceType": source.type.value, "trustTier": source.trust_tier.value,
