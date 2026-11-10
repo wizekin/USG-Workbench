@@ -11,6 +11,7 @@ from urllib.parse import parse_qs, unquote, urlsplit
 from jsonschema import Draft202012Validator, FormatChecker
 
 from tools.document_analysis_services_v1_0_0 import DocumentAnalysisService
+from tools.usg_interpretation_v0_1_0 import InterpretationService
 from tools.semantic_graph_store_v1_0_0 import (
     CanonicalDocumentStore, DocumentNotFoundError, GraphStoreError,
     InvalidDocumentError, RevisionConflictError,
@@ -35,6 +36,7 @@ class USGApplication:
         self.store = CanonicalDocumentStore(database_path)
         self.query_service = PersistentQueryService(self.store)
         self.analysis_service = DocumentAnalysisService()
+        self.interpretation_service = InterpretationService()
         self.schema = json.loads(DOCUMENT_SCHEMA_PATH.read_text(encoding="utf-8"))
         self.validator = Draft202012Validator(self.schema, format_checker=FormatChecker())
 
@@ -118,11 +120,22 @@ class USGApplication:
                 return 200, self.query_service.run(body["document_id"], body["query"], revision=revision)
 
             if method == "POST" and path == "/v1/interpret":
-                return 501, {
-                    "completion_status": "UNSUPPORTED",
-                    "diagnostics": ["RAW_TEXT_INTERPRETATION_NOT_IMPLEMENTED"],
-                    "message": "This release accepts canonical USG-SEM/1.0 documents; it does not parse raw text.",
-                }
+                if not isinstance(body, dict) or not isinstance(body.get("text"), str) or not isinstance(body.get("language"), str):
+                    raise APIRequestError(400, "INTERPRET_REQUEST_INVALID", "body requires text and language strings")
+                persist = body.get("persist", True)
+                if not isinstance(persist, bool):
+                    raise APIRequestError(400, "INTERPRET_REQUEST_INVALID", "persist must be a boolean")
+                try:
+                    result = self.interpretation_service.interpret(body["text"], body["language"])
+                except (TypeError, ValueError) as exc:
+                    raise APIRequestError(400, "INTERPRET_REQUEST_INVALID", str(exc)) from exc
+                if persist:
+                    stored = self.store.put_document(result["document"])
+                    result["persistence"] = {
+                        **stored.metadata(),
+                        "idempotent": stored.status == "UNCHANGED",
+                    }
+                return 200, result
 
             parts = [unquote(part) for part in path.split("/") if part]
             if len(parts) >= 3 and parts[0:2] == ["v1", "documents"]:
