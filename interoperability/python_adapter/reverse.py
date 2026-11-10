@@ -242,11 +242,11 @@ def _assertion_to_contract(assertion: Any, opaque_id: str, refs: Mapping[Any, st
         if source_id is None:
             raise ContractMappingError("Assertion source Ref has no canonical source identity")
         result["sourceRef"] = source_id
+    archival.setdefault(opaque_id, {})["pythonVersionMetadata"] = {
+        "grammarVersion": assertion.grammar_version,
+        "ontologyRelease": assertion.ontology_release,
+    }
     unsupported = {}
-    if assertion.grammar_version:
-        unsupported["grammarVersion"] = assertion.grammar_version
-    if assertion.ontology_release:
-        unsupported["ontologyRelease"] = assertion.ontology_release
     if assertion.attributed_to is not None:
         unsupported["attributedTo"] = str(assertion.attributed_to)
     if assertion.evidence is not None:
@@ -256,10 +256,10 @@ def _assertion_to_contract(assertion: Any, opaque_id: str, refs: Mapping[Any, st
     if assertion.alt_group is not None:
         unsupported["altGroup"] = assertion.alt_group
     if unsupported:
-        archival[opaque_id] = {
+        archival.setdefault(opaque_id, {}).update({
             "nativeAssertionMetadata": unsupported,
             "reason": "The current ImportedDocument has no proven canonical identity mapping for these native references",
-        }
+        })
         raise ContractMappingError("Assertion has native metadata without an exact canonical ID mapping")
     return result
 
