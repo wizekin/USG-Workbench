@@ -107,6 +107,45 @@ class GroundingServiceTests(unittest.TestCase):
         result = self.index.resolve_reference("unknown-family", "x")
         self.assertEqual(result.status, "UNSUPPORTED")
 
+    def test_concept_definition_without_version_is_unresolved(self):
+        result = self.index.resolve_definition("concept", "concept-person")
+        self.assertEqual(result.status, "UNRESOLVED")
+        self.assertIn("DEFINITION_VERSION_REQUIRED", result.diagnostics)
+
+    def test_role_record_cannot_be_given_an_invented_record_version(self):
+        result = self.index.resolve_definition("role", "role-agent", version=1)
+        self.assertEqual(result.status, "UNSUPPORTED")
+        self.assertIn("DEFINITION_RECORD_HAS_NO_VERSION_FIELD", result.diagnostics)
+
+    def test_same_surface_text_does_not_override_explicit_referent_identity(self):
+        document = copy.deepcopy(self.document)
+        document["mentions"].append({
+            "id": "mention-alice-label-collision",
+            "surfaceText": "Alice",
+            "referentRef": "ref-bob",
+            "resolutionStatus": "RESOLVED",
+        })
+        index = GroundingIndex(document, SCHEMA)
+        result = index.resolve_mention_referent("mention-alice-label-collision")
+        self.assertEqual(result.status, "RESOLVED")
+        self.assertEqual(result.target_id, "ref-bob")
+
+    def test_missing_expression_operand_is_unresolved_even_when_target_path_is_known(self):
+        document = copy.deepcopy(self.document)
+        root = next(item for item in document["expressions"] if item["id"] == "expr-root")
+        root["operandRefs"].append("missing-expression")
+        index = GroundingIndex(document, SCHEMA)
+        result = index.resolve_scope("expr-root", "expr-direct")
+        self.assertEqual(result.status, "UNRESOLVED")
+        self.assertIn("EXPRESSION_OPERAND_REFERENCE_UNRESOLVED", result.diagnostics)
+
+    def test_unknown_context_kind_remains_unknown(self):
+        document = copy.deepcopy(self.document)
+        document["contexts"].append({"id": "ctx-unknown", "kind": "UNKNOWN"})
+        index = GroundingIndex(document, SCHEMA)
+        result = index.resolve_context_path("ctx-unknown")
+        self.assertEqual(result.status, "UNKNOWN")
+
     def test_concept_definition_requires_exact_record_version(self):
         result = self.index.resolve_definition("concept", "concept-person", version=1)
         self.assertEqual(result.status, "RESOLVED")
