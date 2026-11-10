@@ -150,6 +150,16 @@ class KernelV09DocumentAdapterTests(unittest.TestCase):
         with self.assertRaises(ContractMappingError):
             kernel_v09_document_to_contract(imported, validate=False)
 
+    def test_changed_source_without_matching_span_is_rejected(self):
+        doc = self.make_document()
+        doc["sources"].append({"id": "s:2", "text": "other"})
+        imported = document_to_kernel_v09(doc, validate=False)
+        old = imported.evidence["e:1"]
+        imported.evidence["e:1"] = replace(
+            old, source_ref=TypedReference(ReferenceSpace.SOURCE, "s:2"))
+        with self.assertRaises(ContractMappingError):
+            kernel_v09_document_to_contract(imported, validate=False)
+
     def test_changed_span_must_match_source_reference(self):
         imported = document_to_kernel_v09(self.make_document(), validate=False)
         old = imported.evidence["e:1"]
