@@ -14,12 +14,11 @@ from interoperability.python_adapter.document_v15 import (
 )
 from interoperability.python_adapter.usg_sem_1 import ContractMappingError
 from test_python_kernel_v15_document_adapter import CompleteDocumentAdapterV15Tests
-from test_python_kernel_v15_document_adapter import CompleteDocumentAdapterV15Tests
 
 
 class Phase1ExitAcceptanceTests(unittest.TestCase):
     def make_document(self):
-        return CompleteDocumentAdapterV15().make_document()
+        return CompleteDocumentAdapterV15Tests().make_document()
 
     def test_complete_canonical_document_passes_schema_and_cross_family_validation(self):
         document = self.make_document()
