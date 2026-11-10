@@ -72,6 +72,22 @@ class Phase2QueryInterfaceTests(unittest.TestCase):
         self.assertEqual(result["goal_status"], "CONFLICTING")
         self.assertEqual(result["conflicts"][0]["winner_selection"], "FORBIDDEN")
 
+    def test_conflicted_premise_blocks_derived_query_candidate(self):
+        fixture = next(x for x in EXECUTOR_FIXTURES["fixtures"] if x["id"] == "EXEC-MP-POSITIVE-001")
+        document = json.loads(json.dumps(fixture["document"]))
+        document["expressions"].append({"id":"expr-not-a","op":"NOT","sort":"PROP","operandRefs":["expr-a"],"params":{},"interpretationStatus":"RESOLVED"})
+        document["rootExpressionRefs"].append("expr-not-a")
+        document["assertions"].append({"id":"assert-not-a","expressionRef":"expr-not-a","origin":"SOURCE_TEXT","epistemicStatus":"SOURCE_ASSERTED","commitment":"AUTHOR","evaluationContext":{"kind":"WORLD","contextRef":"ctx-world"},"lifecycleStage":"STRUCTURED"})
+        query = {
+            "query_id":"q-conflicted-premise",
+            "goal":{"expression_ref":"expr-b","context_ref":"ctx-world","context_kind":"WORLD","commitment":"AUTHOR"},
+            "inference_task":{"task_id":"q-conflicted-premise:inference","rule_ids":["benchmark-rule:modus-ponens"],"world_assumption":"OPEN","allow_inferred_premises":False,"evidence_assessment":False}
+        }
+        result = self.interface.run(document, query)
+        self.assertEqual(result["goal_status"], "CONFLICTING")
+        self.assertEqual(result["inference_candidates"], [])
+        self.assertIn("DERIVATION_PREMISE_CONFLICTED", [item["code"] for item in result["unsupported_portions"]])
+
     def test_query_is_exact_and_deterministic(self):
         fixture = FIXTURES["fixtures"][0]
         document = resolve_document(fixture["document_ref"])
@@ -79,6 +95,7 @@ class Phase2QueryInterfaceTests(unittest.TestCase):
         second = self.interface.run(document, fixture["query"])
         self.assertEqual(first, second)
         self.assertEqual(first["goal"]["expression_ref"], "expr-b")
+        self.assertTrue(first["assumptions"])
 
 
 if __name__ == "__main__":
