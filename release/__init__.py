@@ -1,0 +1,1 @@
+"""Generated USG release manifests."""
