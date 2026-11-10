@@ -191,6 +191,8 @@ class CanonicalDocumentStore:
             raise InvalidDocumentError(["REFERENCE:" + str(x) for x in grounding.validation_errors])
 
     def _rows_for_document(self, document_id: str) -> list[dict[str, Any]]:
+        # Refresh the table handle to observe commits made by another adapter instance.
+        self._table = self._db.open_table(CANONICAL_TABLE)
         filter_expr = f"document_id = '{_quote(document_id)}'"
         return self._table.search().where(filter_expr).to_arrow().to_pylist()
 
