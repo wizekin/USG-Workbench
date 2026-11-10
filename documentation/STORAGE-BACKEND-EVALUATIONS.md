@@ -105,3 +105,23 @@ This artifact was produced before adding the local cross-instance writer lock, s
 The initial implementation revealed that a table append is atomic, but LanceDB does not expose a per-document unique conditional append. The adapter now adds an OS-level local writer lock around read/check/append and refreshes the table manifest after acquiring the lock. This can serialize compare-and-swap updates made through this adapter by separate local instances. Direct writes that bypass the adapter are outside this guarantee; object-store deployments need a separate conditional coordination design.
 
 The retrieval test confirms exact nearest-neighbor mechanics with synthetic known-answer vectors and full-text search with a Lance FTS index. This validates the retrieval engine mechanics, not semantic quality of real embeddings; no model-generated embedding quality claim is made.
+
+### Candidate 3 final measured result: LanceDB after local CAS locking
+
+Final benchmark artifact: GitHub Actions run 42821729870, artifact `phase3-lancedb-benchmark`. Three runs, each using the same 1,204-expression canonical USG document:
+
+| Operation | SQLite median | LanceDB median | LanceDB / SQLite |
+|---|---:|---:|---:|
+| Initial write | 250.0 ms | 248.2 ms | 0.993× |
+| Warm read (7-read median) | 246.9 ms | 244.3 ms | 0.989× |
+| Idempotent write | 243.7 ms | 244.8 ms | 1.005× |
+| Revision update | 279.7 ms | 248.1 ms | 0.887× |
+| Revision history | 0.116 ms | 5.099 ms | 44.1× |
+| Integrity verification | 250.0 ms | 242.6 ms | 0.970× |
+| Canonical table disk footprint | 958,464 B | 373,007 B | 0.389× |
+
+The final run includes the local writer lock and table-handle refresh. All LanceDB adapter tests passed, including competing writes through two separate store instances: exactly one writer created revision 2 and the stale competing writer received a revision conflict. Duplicate revision rows are detected, table time-travel works, and vector/FTS retrieval tests pass. The full SQLite, Phase 1, Phase 2, RocksDB, and DuckDB regression gates also passed.
+
+**Decision:** LanceDB is a promising candidate for local canonical storage and a strong complementary retrieval layer. It provides near-SQLite latency for the tested operations and a 61.1% smaller canonical-table footprint, with slower revision-history listing (about 5 ms absolute). The adapter's OS file lock supplies local compare-and-swap serialization for writers that use the adapter; direct table writes bypass that guarantee. The retrieval sidecar remains independently rebuildable. Actual embedding generation and semantic retrieval quality have not yet been tested.
+
+Do not promote it as the default until Qdrant is evaluated and the final cross-candidate decision is made. SQLite remains the active backend for now.
