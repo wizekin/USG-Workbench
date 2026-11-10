@@ -10,7 +10,7 @@ Mappings must be exact and documented. Unsupported or lossy mappings must be rep
 
 - [Predicate-to-frame registry 1.0.0](predicate-frame-registry/README.md)
 - Registry data: [v1.0.0.json](predicate-frame-registry/v1.0.0.json)
-- Initial result: one conditional exact mapping (`CLOSES/CLOSED` → `CLOSE@1`); other reviewed predicates are explicitly non-mapped.
+- Initial result: one conditional exact mapping (CLOSES/CLOSED → CLOSE@1); other reviewed predicates are explicitly non-mapped.
 
 ### Step 2 — operator and scope registry
 
@@ -24,19 +24,18 @@ Mappings must be exact and documented. Unsupported or lossy mappings must be rep
 - [Python adapter package](python_adapter/README.md)
 - Canonical contract: [USG-SEM/1.0](../specifications/USG-SEM-1.0.md)
 - JSON Schema: [usg-sem-1.0.schema.json](../specifications/usg-sem-1.0.schema.json)
-- Preserves the entire canonical document for exact export while projecting only source records, supported SemIR roots and assertions that have exact Python kernel 0.4.0 equivalents.
-- Referents, mentions, evidence assessments, contexts, definitions, expression relations, unresolved items, derivations, validation metadata and extensions remain canonical-only and are explicitly reported as partial/unmapped where no exact native model exists.
-- No SQLite migration, Workbench runtime integration, or changes to either immutable implementation baseline are included.
+- Preserves the entire canonical document for exact export while projecting only records with exact Python kernel equivalents.
+- Unsupported record families and fields remain canonical-only and are reported as partial/unmapped.
 
 ### Step 4 — round-trip conformance (completed)
 
 - [Round-trip conformance design and verified gap inventory](round-trip-conformance/README.md)
-- **4A completed:** [Workbench v0.5.4 → USG-SEM/1.0 source adapter](workbench_adapter/README.md), including exact native snapshot retention, partial-mapping diagnostics, and UTF-16 → Unicode code-point offset conversion.
-- Node adapter tests and Python JSON Schema validation are included in CI.
-- **4B implementation and CI passed (PR #5 merged):** `python_to_contract_document()` serializes current Python projections into USG-SEM/1.0 and preserves unsupported canonical-only records. **4C completed and merged (PR #6):** `contractToWorkbench()` reconstructs Workbench v0.5.4 from USG-SEM/1.0. **4D completed and merged (PR #7):** executable four-boundary semantic invariant suite passed. Step 3's unchanged-snapshot export is not treated as a reverse serializer.
+- **4A completed:** Workbench v0.5.4 → USG-SEM/1.0 source adapter, including Unicode offset conversion.
+- **4B–4D completed and merged:** reverse serialization, contract-to-Workbench reconstruction, and executable four-boundary semantic invariant suite.
 
-### Step 5 — Python kernel compatibility extension (active)
+### Step 5 — Python kernel compatibility extension
 
-- **5A–5J completed and merged:** the extension adds native expression constructors and separately versioned record models/adapters for Sources, Referent identity, and Mentions. The individual contracts below document exact scope and compatibility limits.
-- **5K — native Assertion model v0.8.0 (implementation in progress):** [Step 5K contract](python-kernel-extension/STEP-5K-NATIVE-ASSERTION-MODEL.md). Adds an independent native claim record with typed links to expression, source, referent attribution, evidence, context, definition, and alternative group. It preserves epistemic status, origin, commitment, evaluation context, and lifecycle as independent axes. This is a model-only step; document adapter integration is not claimed.
-- The original v0.4.0 package, v0.5.0 expression kernel, v0.6.0 identity model, and v0.7.0 Mention model remain unchanged.
+- **5A–5J completed and merged:** native expression constructors and separately versioned Source, Referent identity, and Mention models/adapters.
+- **5K completed and merged:** native Assertion model v0.8.0. [Step 5K contract](python-kernel-extension/STEP-5K-NATIVE-ASSERTION-MODEL.md).
+- **5L implementation in progress:** [Assertion document adapter v0.8.0](python-kernel-extension/STEP-5L-ASSERTION-DOCUMENT-ADAPTER.md). Projects exact, resolvable Assertion fields; keeps unsupported/dangling fields and Alternative Group references canonical-only; merges native edits only into Assertion records.
+- Existing v0.4.0–v0.7.0 models, Workbench v0.5.4, USG-SEM/1.0, archives, and immutable baselines remain unchanged.
