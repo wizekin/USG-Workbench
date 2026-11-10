@@ -1,6 +1,6 @@
 # USG Phase 3 — Persistent Semantic Graph and Bounded Product Core
 
-**Status:** IN PROGRESS — Steps 3.1–3.3 are merged; Step 3.4 is next.
+**Status:** IN PROGRESS — Steps 3.1–3.6 are merged; Step 3.7 integrates the browser Kernel Lab with the SQLite-backed local API.
 **Prerequisite:** Phase 2 exit acceptance passed on merged main commit da0760ac13029892f40a08a412e139c34a8e48d3.
 **Normative semantic contract:** USG-SEM/1.0.
 **Implementation boundary:** additive tools and packages; do not mutate archived releases or the completed Phase 1/2 contracts.
