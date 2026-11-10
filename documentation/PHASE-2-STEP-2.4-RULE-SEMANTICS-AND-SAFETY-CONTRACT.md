@@ -56,6 +56,8 @@ The Step 2.3 token `RULE_ELIGIBLE_ASSERTION` resolves to `source-asserted-premis
 
 USG-SEM/1.0 keeps origin, epistemic status, commitment, interpretation status, evaluation context, and lifecycle stage as separate axes. A lifecycle stage such as AUTOMATICALLY_EVALUATED or PROMOTED is not a substitute for an epistemic status or a truth certificate.
 
+**Benchmark input compatibility note:** Step 2.2 v1.0.0 fixtures are compact evaluator task snapshots, not all complete USG-SEM/1.0 document envelopes. For example, some assertion snapshots omit required canonical fields such as `epistemicStatus`, `origin`, `commitment`, and `lifecycleStage`. The Step 2.2 evaluator compares structured candidate outputs; it does not claim those snapshots pass the canonical document schema or directly qualify as executor premises. A future executor must use an explicit, tested fixture adapter or a separately versioned benchmark extension that supplies those fields. It must never default an omitted status to `SOURCE_ASSERTED`; under this policy, missing required status is UNRESOLVED.
+
 This initial policy is deliberately narrow. Expanding eligible statuses or allowing inferred-premise chaining requires a new explicit policy version and new benchmark cases; it must not happen by default.
 
 ## 5. Scope and context semantics
