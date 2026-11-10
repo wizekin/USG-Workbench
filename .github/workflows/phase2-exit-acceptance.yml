@@ -24,6 +24,29 @@ on:
       - "documentation/README.md"
       - ".github/workflows/phase2-exit-acceptance.yml"
       - "tools/phase2_exit_acceptance/**"
+  push:
+    branches: [main]
+    paths:
+      - "benchmarks/semantic-reasoning/**"
+      - "rules/semantic-reasoning/**"
+      - "tools/semantic_reasoning_benchmark_v1_0_0/**"
+      - "tools/semantic_rule_registry_v1_0_0/**"
+      - "tools/semantic_rule_semantics_v1_0_0/**"
+      - "tools/semantic_grounding_v1_0_0/**"
+      - "tools/semantic_inference_v1_0_0/**"
+      - "tools/semantic_evidence_assessment_v1_0_0/**"
+      - "tools/semantic_query_interface_v1_0_0/**"
+      - "tools/usg-kernel-lab/**"
+      - "tests/test_phase2_*.py"
+      - "tests/test_semantic_reasoning_benchmark.py"
+      - "tests/test_phase1_exit_acceptance.py"
+      - "tests/test_usg_kernel_lab.py"
+      - "specifications/usg-sem-1.0.schema.json"
+      - "interoperability/**"
+      - "documentation/PHASE-2-*.md"
+      - "documentation/README.md"
+      - ".github/workflows/phase2-exit-acceptance.yml"
+      - "tools/phase2_exit_acceptance/**"
   workflow_dispatch:
 
 permissions:
@@ -47,7 +70,7 @@ jobs:
       - name: Verify Phase 1 immutable baselines
         run: |
           git fetch origin main --depth=1
-          git diff --exit-code origin/main...HEAD -- archives implementations
+          git diff --exit-code FETCH_HEAD...HEAD -- archives implementations
       - name: Run complete Phase 2 and Phase 1 exit acceptance
         env:
           GITHUB_REPOSITORY: ${{ github.repository }}
