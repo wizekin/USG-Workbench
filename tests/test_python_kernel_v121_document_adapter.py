@@ -5,6 +5,7 @@ from dataclasses import replace
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "implementations/python-kernel/v1.2.1"))
 from interoperability.python_adapter.document_v121 import (
     document_to_kernel_v121, kernel_v121_document_to_contract,
@@ -17,7 +18,7 @@ class KernelV121UnresolvedAdapterTests(unittest.TestCase):
     def make_document(self):
         return {
             "profileId": "USG-SEM/1.0", "documentId": "test:doc",
-            "sources": [{"id": "s:1", "text": "Alice."}], "primarySourceRef": "s:1",
+            "sources": [{"id": "s:1", "text": "Alice.", "language": "en", "offsetUnit": "unicode_code_point"}], "primarySourceRef": "s:1",
             "definitions": {"concepts": [], "frames": [], "roles": [], "relations": []},
             "referents": [], "mentions": [],
             "expressions": [{"id": "x:1", "op": "LIT", "sort": "PROP", "operandRefs": [], "params": {}}],
