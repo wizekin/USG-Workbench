@@ -1,0 +1,232 @@
+{
+  "benchmark_id": "USG-INFERENCE-EXECUTOR-BENCHMARK",
+  "benchmark_version": "1.0.0",
+  "usg_profile": "USG-SEM/1.0",
+  "fixtures": [
+    {
+      "id": "EXEC-MP-POSITIVE-001",
+      "category": "positive",
+      "document": {
+        "fixture_factory": "make_modus_ponens_document"
+      },
+      "task": {
+        "task_id": "task-mp",
+        "rule_ids": [
+          "benchmark-rule:modus-ponens"
+        ],
+        "world_assumption": "OPEN",
+        "allow_inferred_premises": false,
+        "evidence_assessment": false
+      },
+      "expected": {
+        "completion_status": "COMPLETE",
+        "candidate_count": 1,
+        "diagnostics": []
+      }
+    },
+    {
+      "id": "EXEC-AND-LEFT-POSITIVE-001",
+      "category": "positive",
+      "document": {
+        "fixture_factory": "make_and_document"
+      },
+      "task": {
+        "task_id": "task-and-left",
+        "rule_ids": [
+          "benchmark-rule:and-elimination-left"
+        ],
+        "world_assumption": "OPEN",
+        "allow_inferred_premises": false,
+        "evidence_assessment": false
+      },
+      "expected": {
+        "completion_status": "COMPLETE",
+        "candidate_count": 1,
+        "diagnostics": []
+      }
+    },
+    {
+      "id": "EXEC-MP-CONVERSE-NEGATIVE-001",
+      "category": "adversarial",
+      "document": {
+        "fixture_factory": "make_converse_document"
+      },
+      "task": {
+        "task_id": "task-converse",
+        "rule_ids": [
+          "benchmark-rule:modus-ponens"
+        ],
+        "world_assumption": "OPEN",
+        "allow_inferred_premises": false,
+        "evidence_assessment": false
+      },
+      "expected": {
+        "completion_status": "COMPLETE",
+        "candidate_count": 0,
+        "diagnostics": []
+      }
+    },
+    {
+      "id": "EXEC-CONTEXT-MISMATCH-BOUNDARY-001",
+      "category": "boundary",
+      "document": {
+        "fixture_factory": "make_context_mismatch_document"
+      },
+      "task": {
+        "task_id": "task-context",
+        "rule_ids": [
+          "benchmark-rule:modus-ponens"
+        ],
+        "world_assumption": "OPEN",
+        "allow_inferred_premises": false,
+        "evidence_assessment": false
+      },
+      "expected": {
+        "completion_status": "COMPLETE",
+        "candidate_count": 0,
+        "diagnostics": [
+          "RULE_CONTEXT_OR_ATTRIBUTION_MISMATCH"
+        ]
+      }
+    },
+    {
+      "id": "EXEC-DISPUTED-PREMISE-001",
+      "category": "conflict",
+      "document": {
+        "fixture_factory": "make_disputed_document"
+      },
+      "task": {
+        "task_id": "task-disputed",
+        "rule_ids": [
+          "benchmark-rule:modus-ponens"
+        ],
+        "world_assumption": "OPEN",
+        "allow_inferred_premises": false,
+        "evidence_assessment": false
+      },
+      "expected": {
+        "completion_status": "COMPLETE",
+        "candidate_count": 0,
+        "diagnostics": [
+          "RULE_PREMISE_DISPUTED"
+        ]
+      }
+    },
+    {
+      "id": "EXEC-AMBIGUOUS-EXPRESSION-001",
+      "category": "ambiguous",
+      "document": {
+        "fixture_factory": "make_ambiguous_document"
+      },
+      "task": {
+        "task_id": "task-ambiguous",
+        "rule_ids": [
+          "benchmark-rule:modus-ponens"
+        ],
+        "world_assumption": "OPEN",
+        "allow_inferred_premises": false,
+        "evidence_assessment": false
+      },
+      "expected": {
+        "completion_status": "COMPLETE",
+        "candidate_count": 0,
+        "diagnostics": [
+          "RULE_EXPRESSION_AMBIGUOUS"
+        ]
+      }
+    },
+    {
+      "id": "EXEC-UNRESOLVED-EXPRESSION-001",
+      "category": "unresolved",
+      "document": {
+        "fixture_factory": "make_unresolved_document"
+      },
+      "task": {
+        "task_id": "task-unresolved",
+        "rule_ids": [
+          "benchmark-rule:modus-ponens"
+        ],
+        "world_assumption": "OPEN",
+        "allow_inferred_premises": false,
+        "evidence_assessment": false
+      },
+      "expected": {
+        "completion_status": "COMPLETE",
+        "candidate_count": 0,
+        "diagnostics": [
+          "RULE_EXPRESSION_NOT_RESOLVED"
+        ]
+      }
+    },
+    {
+      "id": "EXEC-UNKNOWN-PREMISE-001",
+      "category": "unknown",
+      "document": {
+        "fixture_factory": "make_unknown_document"
+      },
+      "task": {
+        "task_id": "task-unknown",
+        "rule_ids": [
+          "benchmark-rule:modus-ponens"
+        ],
+        "world_assumption": "OPEN",
+        "allow_inferred_premises": false,
+        "evidence_assessment": false
+      },
+      "expected": {
+        "completion_status": "COMPLETE",
+        "candidate_count": 0,
+        "diagnostics": [
+          "RULE_PREMISE_STATUS_UNKNOWN"
+        ]
+      }
+    },
+    {
+      "id": "EXEC-DISABLED-RULE-001",
+      "category": "unsupported",
+      "document": {
+        "fixture_factory": "make_modus_ponens_document"
+      },
+      "task": {
+        "task_id": "task-disabled",
+        "rule_ids": [
+          "benchmark-rule:unregistered-rule"
+        ],
+        "world_assumption": "OPEN",
+        "allow_inferred_premises": false,
+        "evidence_assessment": false
+      },
+      "expected": {
+        "completion_status": "UNSUPPORTED",
+        "candidate_count": 0,
+        "diagnostics": [
+          "RULE_NOT_ENABLED"
+        ]
+      }
+    },
+    {
+      "id": "EXEC-RESOURCE-INTERRUPTION-001",
+      "category": "incomplete",
+      "document": {
+        "fixture_factory": "make_modus_ponens_document"
+      },
+      "task": {
+        "task_id": "task-resource",
+        "rule_ids": [
+          "benchmark-rule:modus-ponens"
+        ],
+        "world_assumption": "OPEN",
+        "max_rule_applications": 0,
+        "allow_inferred_premises": false,
+        "evidence_assessment": false
+      },
+      "expected": {
+        "completion_status": "INCOMPLETE",
+        "candidate_count": 0,
+        "diagnostics": [
+          "RESOURCE_BUDGET_EXHAUSTED"
+        ]
+      }
+    }
+  ]
+}
