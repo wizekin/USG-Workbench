@@ -23,11 +23,11 @@ The archive inventory records fresh tests and limitations for the original packa
 
 ## Interactive testing interface
 
-- [USG Kernel Lab](tools/usg-kernel-lab/README.md) is a local browser interface for testing the Python v0.7.0 Mention model and its USG-SEM/1.0 adapter.
+- [USG Kernel Lab](tools/usg-kernel-lab/README.md) is a local browser interface for testing the Python v0.7.0 Mention model, its USG-SEM/1.0 adapter, and the Phase 2 structured query/reasoning pipeline (Steps 2.6–2.8).
 - It is intentionally separate from the JavaScript Semantic Workbench v0.5.4. It does not yet provide natural-language generation or a unified runtime for every USG module.
-- Native Assertion model v0.8.0 and its document adapter are available as Python APIs; Native Evidence model v0.9.0 is available as a model-only Python API. The current Kernel Lab interface does not yet expose these models.
+- Native Assertion model v0.8.0 and its document adapter are available as Python APIs; Native Evidence model v0.9.0 is available as a model-only Python API.
 
 ## Current phase
 
 - **Phase 1:** COMPLETE. See [Phase 1 exit acceptance](interoperability/PHASE-1-EXIT-ACCEPTANCE.md).
-- **Phase 2:** DETERMINISTIC GROUNDING COMPLETE THROUGH STEP 2.5. The [Phase 2 roadmap](documentation/PHASE-2-ROADMAP.md), [Step 2.1 definitions](documentation/PHASE-2-STEP-2.1-SEMANTIC-REASONING-DEFINITIONS.md), [Step 2.2 benchmark/evaluator](documentation/PHASE-2-STEP-2.2-BENCHMARK-CORPUS-AND-EVALUATOR.md), [Step 2.3 rule model/registry](documentation/PHASE-2-STEP-2.3-RULE-MODEL-AND-REGISTRY.md), [Step 2.4 rule semantics/safety contract](documentation/PHASE-2-STEP-2.4-RULE-SEMANTICS-AND-SAFETY-CONTRACT.md), and [Step 2.5 grounding services](documentation/PHASE-2-STEP-2.5-DETERMINISTIC-GROUNDING-SERVICES.md) establish the benchmark, rule contracts, and exact typed resolution. The four reference rules remain disabled; no inference executor is implemented yet.
+- **Phase 2:** Steps 2.1–2.9 COMPLETE. The deterministic executor, independent evidence/conflict assessment, structured query interface, and local Kernel Lab integration are implemented and merged. See the [Phase 2 roadmap](documentation/PHASE-2-ROADMAP.md) and [Step 2.10 final exit acceptance](documentation/PHASE-2-STEP-2.10-EXIT-ACCEPTANCE.md). The final integrated acceptance gate remains pending; Phase 2 is not declared complete until it passes.
