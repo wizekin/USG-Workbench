@@ -313,7 +313,34 @@
           }
         ],
         "evidence_checks": [],
-        "required_derivations": [],
+        "required_derivations": [
+          {
+            "conclusion_id": "NOT(EXISTS(HUMAN(x)))",
+            "derivation_id": "D-SCOPE-001",
+            "required_fields": [
+              "derivation_id",
+              "conclusion_id",
+              "method",
+              "input_refs",
+              "output_refs",
+              "status"
+            ],
+            "expected_fields": {
+              "derivation_id": "D-SCOPE-001",
+              "conclusion_id": "NOT(EXISTS(HUMAN(x)))",
+              "method": "COMPOSITION",
+              "input_refs": [
+                "not-exists-x",
+                "exists-x",
+                "human-x"
+              ],
+              "output_refs": [
+                "NOT(EXISTS(HUMAN(x)))"
+              ],
+              "status": "VALIDATED"
+            }
+          }
+        ],
         "preserved_item_ids": []
       },
       "determinism_required": true
@@ -394,7 +421,34 @@
           }
         ],
         "evidence_checks": [],
-        "required_derivations": [],
+        "required_derivations": [
+          {
+            "conclusion_id": "EXISTS(NOT(HUMAN(y)))",
+            "derivation_id": "D-SCOPE-002",
+            "required_fields": [
+              "derivation_id",
+              "conclusion_id",
+              "method",
+              "input_refs",
+              "output_refs",
+              "status"
+            ],
+            "expected_fields": {
+              "derivation_id": "D-SCOPE-002",
+              "conclusion_id": "EXISTS(NOT(HUMAN(y)))",
+              "method": "COMPOSITION",
+              "input_refs": [
+                "exists-not-human",
+                "not-human-y",
+                "human-y"
+              ],
+              "output_refs": [
+                "EXISTS(NOT(HUMAN(y)))"
+              ],
+              "status": "VALIDATED"
+            }
+          }
+        ],
         "preserved_item_ids": []
       },
       "determinism_required": true
