@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wizekin.github.io/USG-Workbench/structured-query-policy-1.0.0.schema.json",
+  "title": "USG Structured Query Policy 1.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "policy_id",
+    "policy_version",
+    "usg_profile",
+    "input_mode",
+    "goal_matching",
+    "inference",
+    "evidence",
+    "explanation",
+    "no_match_semantics",
+    "candidate_status",
+    "invariants"
+  ],
+  "properties": {
+    "policy_id": {
+      "const": "USG-STRUCTURED-QUERY"
+    },
+    "policy_version": {
+      "const": "1.0.0"
+    },
+    "usg_profile": {
+      "const": "USG-SEM/1.0"
+    },
+    "input_mode": {
+      "const": "EXPLICIT_TYPED_REFERENCES_ONLY"
+    },
+    "goal_matching": {
+      "const": "EXACT_EXPRESSION_CONTEXT_COMMITMENT_ATTRIBUTION"
+    },
+    "inference": {
+      "const": "EXPLICIT_TASK_RULE_ALLOWLIST_ONLY"
+    },
+    "evidence": {
+      "const": "SEPARATE_EVIDENCE_ASSESSMENT_LEDGER"
+    },
+    "explanation": {
+      "const": "DETERMINISTIC_STRUCTURED_TRACE"
+    },
+    "no_match_semantics": {
+      "const": "NOT_ESTABLISHED_OPEN_WORLD"
+    },
+    "candidate_status": {
+      "const": "DERIVED_NOT_VERIFIED"
+    },
+    "invariants": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "truth_promotion",
+        "absence_means_false",
+        "free_text_inference",
+        "inferred_premise_chaining",
+        "conflict_winner_selection",
+        "canonical_document_mutation",
+        "semantic_truncation",
+        "human_review_gate"
+      ],
+      "properties": {
+        "truth_promotion": {
+          "const": false
+        },
+        "absence_means_false": {
+          "const": false
+        },
+        "free_text_inference": {
+          "const": false
+        },
+        "inferred_premise_chaining": {
+          "const": false
+        },
+        "conflict_winner_selection": {
+          "const": false
+        },
+        "canonical_document_mutation": {
+          "const": false
+        },
+        "semantic_truncation": {
+          "const": false
+        },
+        "human_review_gate": {
+          "const": false
+        }
+      }
+    }
+  }
+}
