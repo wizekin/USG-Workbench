@@ -1,4 +1,4 @@
-# Phase 1 Step 5Y — Complete USG-SEM/1.0 document adapter v1.5.0
+# Phase 1 Step 5Y — Complete USG-SEM/1.0 document adapter v1.5.1
 
 **Canonical contract:** USG-SEM/1.0  
 **Composed adapter:** Python kernel interoperability v1.5.0  
@@ -30,7 +30,7 @@ The composed adapter delegates to the existing, separately versioned family adap
 | Evidence | Evidence model v0.9.0 |
 | Contexts | Context model v1.0.0 |
 | Expression relations | Relation model v1.1.0 |
-| Unresolved items | Unresolved model v1.2.0 |
+| Unresolved items | Typed UnresolvedItem model v1.2.1 |
 | Derivations | Derivation model v1.3.0 |
 | Definitions (Concepts, Frames, Roles, Relations) | Definitions model v1.4.0 |
 

@@ -8,7 +8,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-for _version in ("v0.8.0", "v0.9.0", "v1.0.0", "v1.1.0", "v1.2.0", "v1.3.0", "v1.4.0"):
+for _version in ("v0.8.0", "v0.9.0", "v1.0.0", "v1.1.0", "v1.2.0", "v1.2.1", "v1.3.0", "v1.4.0"):
     sys.path.insert(0, str(ROOT / "implementations/python-kernel" / _version))
 sys.path.insert(0, str(ROOT / "implementations/python-kernel/v0.5.0"))
 
@@ -18,7 +18,7 @@ from interoperability.python_adapter.document_v15 import (
 from interoperability.python_adapter.usg_sem_1 import ContractMappingError
 from usg_context_v10 import ContextKind
 from usg_expression_relation_v11 import RelationType, VerificationStatus
-from usg_unresolved_v12 import UnresolvedStatus
+from usg_unresolved_v121 import UnresolvedStatus
 from usg_derivation_v13 import DerivationStatus
 from usg_definitions_v14 import SemanticKind
 from usg_assertion_v08 import EpistemicStatus
@@ -116,7 +116,7 @@ class CompleteDocumentAdapterV15Tests(unittest.TestCase):
             }],
             "unresolvedItems": [{
                 "id": "u:1", "status": "UNRESOLVED", "reason": "Tool referent not resolved",
-                "surfaceText": "the tool", "scopeRef": "opaque:scope",
+                "surfaceText": "the tool", "scopeRef": "x:root",
                 "scopeLabel": "local clause", "evidenceRefs": ["e:1"],
                 "candidateRefs": ["candidate:1"],
             }],
@@ -243,7 +243,7 @@ class CompleteDocumentAdapterV15Tests(unittest.TestCase):
         self.assertIn("expressions", imported.record_mapping)
         self.assertIn("concepts", imported.record_mapping)
         self.assertIn("frames", imported.record_mapping)
-        self.assertEqual(imported.mapping_report["targetVersion"], "1.5.0")
+        self.assertEqual(imported.mapping_report["targetVersion"], "1.5.1")
         self.assertIn("familyReports", imported.mapping_report)
 
     def test_wrong_profile_and_non_mapping_input_are_rejected(self):
