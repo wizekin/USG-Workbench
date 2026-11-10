@@ -88,6 +88,7 @@ test('preserves quantifier binding and restrictor identity', async () => {
   model.expressions[0].arguments[0].bindingEntityId = 'person-class';
   model.expressions[0].eventFrame.participants[0].variableId = 'x';
   model.expressions[0].eventFrame.participants[0].bindingEntityId = 'person-class';
+  model.expressions = [model.expressions[0]];
   model.expressions.push({
     id: 'forall-root', type: 'OPERATOR', operatorType: 'QUANTIFIER', operator: 'FORALL',
     variable: 'x', restrictor: { entityId: 'person-class', predicate: 'INSTANCE_OF' },
