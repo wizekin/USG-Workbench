@@ -8,6 +8,11 @@ from .lexical import (
     LexicalCandidate, TokenAnalysis, LexicalAnalysis, tokenize, LexicalAnalyzer,
 )
 
+from .syntax import (
+    SYNTAX_ANALYSIS_VERSION, GrammarPattern, GrammarRegistry,
+    SyntaxCandidate, SyntaxAnalysis, GrammarAnalyzer, initial_grammar_registry,
+)
+
 __all__ = [
     "LANGUAGE_PROFILES", "SourceSnapshot", "TextSegment", "SegmentedSource",
     "ingest_source", "segment_source", "LEXICAL_ANALYSIS_VERSION", "Token",
