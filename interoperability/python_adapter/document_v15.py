@@ -9,7 +9,7 @@ from typing import Any, Mapping
 from .document import _digest, validate_contract_document
 from .usg_sem_1 import ContractMappingError
 
-MODEL_VERSION = "1.5.0"
+MODEL_VERSION = "1.5.1"
 SCHEMA_PATH = Path(__file__).resolve().parents[2] / "specifications" / "usg-sem-1.0.schema.json"
 
 _ADAPTERS = {
@@ -44,7 +44,7 @@ _ADAPTERS = {
         "collections": ("expressionRelations",), "groups": ("expressionRelations",),
     },
     "unresolvedItems": {
-        "module": ".document_v12", "import_name": "document_to_kernel_v12",
+        "module": ".document_v121", "import_name": "document_to_kernel_v121",
         "collections": ("unresolvedItems",), "groups": ("unresolvedItems",),
     },
     "derivations": {
@@ -198,7 +198,7 @@ def document_to_kernel_v15(document: Mapping[str, Any], *, validate: bool = True
         "familyReports": family_reports,
         "notes": [
             "Each canonical record family is projected by its independently versioned exact adapter.",
-            "Sources and expression graphs use the v0.5.0 adapter; later record families use their own versioned adapters.",
+            "Sources and expression graphs use the v0.5.0 adapter; later record families use their own versioned adapters, including typed UnresolvedItem v1.2.1.",
             "Every sub-adapter shares the same immutable canonical snapshot.",
             "Export merges only the record collections owned by each sub-adapter.",
             "Unknown, unsupported, and dangling fields remain in the canonical envelope.",
