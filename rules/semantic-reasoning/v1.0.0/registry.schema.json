@@ -1,0 +1,595 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wizekin.github.io/usg-workbench/semantic-rules/v1.0.0/registry.schema.json",
+  "title": "USG Semantic Rule Registry v1.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "registry_id",
+    "registry_version",
+    "rule_model_version",
+    "usg_profile",
+    "execution_enabled",
+    "activation_policy",
+    "governance",
+    "rules"
+  ],
+  "properties": {
+    "registry_id": {
+      "const": "USG-SEMANTIC-RULE-REGISTRY"
+    },
+    "registry_version": {
+      "const": "1.0.0"
+    },
+    "rule_model_version": {
+      "const": "USG-RULE/1.0.0"
+    },
+    "usg_profile": {
+      "const": "USG-SEM/1.0"
+    },
+    "execution_enabled": {
+      "const": false
+    },
+    "activation_policy": {
+      "const": "SPECIFIED_NOT_EXECUTABLE_BEFORE_PHASE_2_STEP_2_6"
+    },
+    "governance": {
+      "$ref": "#/$defs/governance"
+    },
+    "rules": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/rule"
+      }
+    }
+  },
+  "$defs": {
+    "governance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "deterministic_semantics_required",
+        "implicit_closed_world_forbidden",
+        "automatic_truth_promotion_forbidden",
+        "semantic_truncation_forbidden",
+        "human_review_gate_required"
+      ],
+      "properties": {
+        "deterministic_semantics_required": {
+          "const": true
+        },
+        "implicit_closed_world_forbidden": {
+          "const": true
+        },
+        "automatic_truth_promotion_forbidden": {
+          "const": true
+        },
+        "semantic_truncation_forbidden": {
+          "const": true
+        },
+        "human_review_gate_required": {
+          "const": false
+        }
+      }
+    },
+    "variable": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "value_type",
+        "required"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[A-Z][A-Za-z0-9_]*$"
+        },
+        "value_type": {
+          "enum": [
+            "expression_ref",
+            "assertion_ref",
+            "definition_ref",
+            "context_ref",
+            "referent_ref",
+            "domain_ref",
+            "predicate_id",
+            "entity_ref",
+            "assumption_ref",
+            "temporal_ref",
+            "literal"
+          ]
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "premise": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "premise_id",
+        "order",
+        "required",
+        "match"
+      ],
+      "properties": {
+        "premise_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]*$"
+        },
+        "order": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "match": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "record_type",
+            "field_bindings",
+            "fixed_fields"
+          ],
+          "properties": {
+            "record_type": {
+              "enum": [
+                "assertion",
+                "expression",
+                "referent",
+                "mention",
+                "definition",
+                "context",
+                "evidence",
+                "expression_relation",
+                "task_assumption",
+                "domain_snapshot"
+              ]
+            },
+            "field_bindings": {
+              "type": "object",
+              "additionalProperties": {
+                "oneOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^[A-Z][A-Za-z0-9_]*$"
+                  },
+                  {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "type": "string",
+                      "pattern": "^[A-Z][A-Za-z0-9_]*$"
+                    }
+                  }
+                ]
+              }
+            },
+            "fixed_fields": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    "constraint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "constraint_id",
+        "kind",
+        "parameters",
+        "failure_diagnostic"
+      ],
+      "properties": {
+        "constraint_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]*$"
+        },
+        "kind": {
+          "enum": [
+            "same_binding",
+            "typed_reference",
+            "constructor_is",
+            "operator_direction",
+            "status_eligible",
+            "context_equal",
+            "context_preserved",
+            "attribution_preserved",
+            "polarity_preserved",
+            "modality_preserved",
+            "quantifier_scope_preserved",
+            "temporal_order_preserved",
+            "role_order_preserved",
+            "definition_version_exact",
+            "domain_closed",
+            "domain_complete",
+            "absence_within_domain",
+            "explicit_assumption_present",
+            "premise_available"
+          ]
+        },
+        "parameters": {
+          "type": "object"
+        },
+        "failure_diagnostic": {
+          "type": "string",
+          "pattern": "^[A-Z][A-Z0-9_]+$"
+        }
+      }
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "context",
+        "attribution",
+        "polarity",
+        "modality",
+        "quantifier_scope",
+        "temporal_scope",
+        "role_binding",
+        "world_assumption"
+      ],
+      "properties": {
+        "context": {
+          "enum": [
+            "same_exact_reference",
+            "preserve_exact",
+            "explicit_mapping_required",
+            "not_applicable"
+          ]
+        },
+        "attribution": {
+          "enum": [
+            "preserve_exact",
+            "no_crossing",
+            "explicit_mapping_required",
+            "not_applicable"
+          ]
+        },
+        "polarity": {
+          "enum": [
+            "preserve_exact",
+            "positive_antecedent_only",
+            "not_applicable"
+          ]
+        },
+        "modality": {
+          "enum": [
+            "preserve_exact",
+            "not_applicable"
+          ]
+        },
+        "quantifier_scope": {
+          "enum": [
+            "preserve_exact",
+            "not_applicable"
+          ]
+        },
+        "temporal_scope": {
+          "enum": [
+            "preserve_exact",
+            "not_applicable"
+          ]
+        },
+        "role_binding": {
+          "enum": [
+            "preserve_order",
+            "not_applicable"
+          ]
+        },
+        "world_assumption": {
+          "enum": [
+            "OPEN_ONLY",
+            "EXPLICIT_CLOSED_COMPLETE_ONLY"
+          ]
+        }
+      }
+    },
+    "conclusion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "template_id",
+        "output_kind",
+        "template",
+        "epistemic_effect",
+        "truth_promotion"
+      ],
+      "properties": {
+        "template_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]*$"
+        },
+        "output_kind": {
+          "const": "conclusion_candidate"
+        },
+        "template": {
+          "type": "object",
+          "minProperties": 1
+        },
+        "epistemic_effect": {
+          "const": "DERIVED_NOT_VERIFIED"
+        },
+        "truth_promotion": {
+          "const": false
+        }
+      }
+    },
+    "assumptions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "world_assumption",
+        "required_task_assumptions",
+        "closed_domain_policy_required",
+        "closed_domain_policy_ref",
+        "independence_policy_required"
+      ],
+      "properties": {
+        "world_assumption": {
+          "enum": [
+            "OPEN",
+            "EXPLICIT_CLOSED_COMPLETE_ONLY"
+          ]
+        },
+        "required_task_assumptions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "closed_domain_policy_required": {
+          "type": "boolean"
+        },
+        "closed_domain_policy_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "independence_policy_required": {
+          "type": "boolean"
+        }
+      }
+    },
+    "non_applicability": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "condition",
+          "diagnostic"
+        ],
+        "properties": {
+          "condition": {
+            "type": "string",
+            "minLength": 1
+          },
+          "diagnostic": {
+            "type": "string",
+            "pattern": "^[A-Z][A-Z0-9_]+$"
+          }
+        }
+      }
+    },
+    "test_coverage": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "fixture_id",
+          "expectation"
+        ],
+        "properties": {
+          "fixture_id": {
+            "type": "string",
+            "pattern": "^USG-BENCH-[A-Z0-9-]+$"
+          },
+          "expectation": {
+            "enum": [
+              "positive",
+              "negative",
+              "boundary",
+              "adversarial",
+              "ambiguous",
+              "unresolved",
+              "conflicting",
+              "unsupported",
+              "incomplete"
+            ]
+          }
+        }
+      }
+    },
+    "execution_semantics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "deterministic",
+        "premise_order",
+        "matching",
+        "duplicate_conclusion_policy",
+        "cycle_policy",
+        "resource_interruption",
+        "semantic_truncation"
+      ],
+      "properties": {
+        "deterministic": {
+          "const": true
+        },
+        "premise_order": {
+          "const": "DECLARED_ORDER"
+        },
+        "matching": {
+          "const": "EXACT_TYPED_MATCH_NO_COERCION"
+        },
+        "duplicate_conclusion_policy": {
+          "const": "PRESERVE_DERIVATIONS_DEDUPLICATE_CONCLUSION_IDENTITY"
+        },
+        "cycle_policy": {
+          "enum": [
+            "NO_RECURSION_IN_V1",
+            "DETECT_AND_REPORT_NO_SILENT_CUTOFF"
+          ]
+        },
+        "resource_interruption": {
+          "const": "RETURN_INCOMPLETE_PRESERVE_ALL_INPUT_ITEMS"
+        },
+        "semantic_truncation": {
+          "const": false
+        }
+      }
+    },
+    "compatibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "input_profile",
+        "rule_model_version",
+        "registry_version",
+        "minimum_benchmark_version",
+        "adapter_contract"
+      ],
+      "properties": {
+        "input_profile": {
+          "const": "USG-SEM/1.0"
+        },
+        "rule_model_version": {
+          "const": "USG-RULE/1.0.0"
+        },
+        "registry_version": {
+          "const": "1.0.0"
+        },
+        "minimum_benchmark_version": {
+          "const": "1.0.0"
+        },
+        "adapter_contract": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "rule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rule_id",
+        "version",
+        "title",
+        "category",
+        "description",
+        "activation_state",
+        "variables",
+        "premises",
+        "constraints",
+        "scope_context_requirements",
+        "conclusion_templates",
+        "assumptions",
+        "non_applicability",
+        "diagnostics",
+        "test_coverage",
+        "execution_semantics",
+        "compatibility"
+      ],
+      "properties": {
+        "rule_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9._:-]+$"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "category": {
+          "enum": [
+            "propositional",
+            "identity",
+            "temporal",
+            "world-assumption",
+            "structural-preservation"
+          ]
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "activation_state": {
+          "const": "SPECIFIED_NOT_EXECUTABLE"
+        },
+        "variables": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/variable"
+          }
+        },
+        "premises": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/premise"
+          }
+        },
+        "constraints": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/constraint"
+          }
+        },
+        "scope_context_requirements": {
+          "$ref": "#/$defs/scope"
+        },
+        "conclusion_templates": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/conclusion"
+          }
+        },
+        "assumptions": {
+          "$ref": "#/$defs/assumptions"
+        },
+        "non_applicability": {
+          "$ref": "#/$defs/non_applicability"
+        },
+        "diagnostics": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Z][A-Z0-9_]+$"
+          }
+        },
+        "test_coverage": {
+          "$ref": "#/$defs/test_coverage"
+        },
+        "execution_semantics": {
+          "$ref": "#/$defs/execution_semantics"
+        },
+        "compatibility": {
+          "$ref": "#/$defs/compatibility"
+        }
+      }
+    }
+  }
+}
