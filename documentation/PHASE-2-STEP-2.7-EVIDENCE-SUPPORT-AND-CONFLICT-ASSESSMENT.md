@@ -1,6 +1,6 @@
 # Phase 2 Step 2.7 — Evidence Support and Conflict Assessment
 
-**Status:** Implementation under test; acceptance requires all PR-head checks and merge verification.
+**Status:** COMPLETE — merged as PR #46. The integrated implementation and regression scope are recorded in the Phase 2 roadmap.
 
 ## Purpose
 
