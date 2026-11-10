@@ -160,6 +160,7 @@
       nativeId: entity.id, nativeType: entity.type || 'unknown'
     }));
 
+    const partialRefs = [];
     const canonicalMentions = mentions.map(mention => {
       const item = {
         id: opaqueId('mention', mention.id),
@@ -172,8 +173,10 @@
       else item.referentRef = null;
       if (mention.antecedentEntityId) item.antecedentReferentRef = referentRef(mention.antecedentEntityId);
       if (mention.sourceSpan) {
-        item.sourceSpan = spanFromNative(sourceText, sourceRef, mention.sourceSpan.start, mention.sourceSpan.end,
-          'mention ' + mention.id, mention.surfaceText);
+        const nativeSpan = spanFromNative(sourceText, sourceRef, mention.sourceSpan.start, mention.sourceSpan.end,
+          'mention ' + mention.id);
+        if (sourceText.slice(mention.sourceSpan.start, mention.sourceSpan.end) === mention.surfaceText) item.sourceSpan = nativeSpan;
+        else partialRefs.push(opaqueId('mention', mention.id));
       }
       return item;
     });
@@ -194,7 +197,6 @@
 
     const canonicalExpressions = [];
     const argumentNodes = [];
-    const partialRefs = [];
     const usedExpressionIds = new Set(expressions.map(x => opaqueId('expr', x.id)));
     function addArgumentNode(nativeExpression, argument, index) {
       const id = opaqueId('argument', nativeExpression.id + ':' + index + ':' + argument.role);
@@ -223,7 +225,7 @@
           argumentRequirements: clone(node.argumentRequirements || {}),
           grammaticalTense: node.grammaticalTense || 'unknown', aspect: node.aspect || 'unknown',
           temporalFrame: clone(node.temporalFrame || {}),
-          eventFrame: { id: node.eventFrame?.id || null, kind: node.eventFrame?.kind || 'unknown',
+          eventFrame: { nativeFrameId: node.eventFrame?.id || null, kind: node.eventFrame?.kind || 'unknown',
             predicate: node.eventFrame?.predicate || node.predicate,
             participants: arr(node.eventFrame?.participants).map(p => ({ role: p.role,
               referentRef: p.entityId ? referentRef(p.entityId) : null,
@@ -245,8 +247,10 @@
         const params = { operatorType: node.operatorType, operator: node.operator,
           scopeKind: node.scope?.scopeKind || 'unknown', force: node.force || null,
           variable: node.variable || null,
-          restrictor: node.restrictor ? { ...clone(node.restrictor), referentRef: node.restrictor.entityId ? referentRef(node.restrictor.entityId) : null } : null,
-          variableBinding: node.variableBinding ? { ...clone(node.variableBinding),
+          restrictor: node.restrictor ? { predicate: node.restrictor.predicate || null,
+            referentRef: node.restrictor.entityId ? referentRef(node.restrictor.entityId) : null } : null,
+          variableBinding: node.variableBinding ? { variable: node.variableBinding.variable || null,
+            role: node.variableBinding.role || null,
             restrictorReferentRef: node.variableBinding.restrictorEntityId ? referentRef(node.variableBinding.restrictorEntityId) : null } : null,
           surfaceText: node.surfaceText || null, evidenceRefs: arr(node.evidenceRefs).map(evidenceRef) };
         if (op === 'OPAQUE') { params.preservationReason = 'Workbench operator kind/polarity has no exact registered USG-SEM constructor mapping.'; partialRefs.push(id); }
