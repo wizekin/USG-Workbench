@@ -37,5 +37,18 @@ jobs:
         run: python -m compileall -q tools/semantic_graph_store_rocksdict_v1_0_0
       - name: Run SQLite baseline tests
         run: python -m unittest discover -s tests -p "test_phase3_graph_store.py" -v
+      - name: Run Phase 1 and Phase 2 regression tests
+        run: |
+          python -m unittest discover -s tests -p "test_phase1_exit_acceptance.py" -v
+          python -m unittest discover -s tests -p "test_phase2_grounding.py" -v
+          python -m unittest discover -s tests -p "test_phase2_inference_executor.py" -v
+          python -m unittest discover -s tests -p "test_phase2_evidence_assessment.py" -v
       - name: Run RocksDB adapter tests
         run: python -m unittest discover -s tests -p "test_phase3_rocksdict_store.py" -v
+      - name: Run SQLite/RocksDB workload benchmark
+        run: python benchmarks/phase3-storage/compare_sqlite_rocksdb.py --repeats 3 --extra-expressions 1200
+      - name: Upload benchmark report
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase3-rocksdb-benchmark
+          path: phase3-rocksdb-benchmark.json
