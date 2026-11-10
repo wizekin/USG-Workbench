@@ -155,6 +155,28 @@ test('reports builder warnings and opaque operator meanings as PARTIAL', async (
   assert.ok(report.unmappedRefs.some(x => x.startsWith('wb:warning:')));
 });
 
+
+test('preserves relation metadata and reports non-exact verification states as PARTIAL', async () => {
+  const model = fixture();
+  model.relations = [{
+    id: 'relation-candidate',
+    type: 'CAUSE',
+    sourceExpressionId: 'neg-needs',
+    targetExpressionId: 'modal-needs',
+    verification: 'candidate_not_proof',
+    status: 'candidate',
+    note: 'Candidate relation; not a proof.',
+    attribution: { kind: 'source_asserted', holder: null },
+    evidenceRefs: ['evidence-needs']
+  }];
+  const { document, report } = await adapter.workbenchToContract(model);
+  assert.equal(report.status, 'PARTIAL');
+  assert.equal(document.expressionRelations[0].verificationStatus, 'UNKNOWN');
+  assert.equal(document.expressionRelations[0].nativeVerification, 'candidate_not_proof');
+  assert.equal(document.expressionRelations[0].nativeStatus, 'candidate');
+  assert.equal(document.expressionRelations[0].note, 'Candidate relation; not a proof.');
+});
+
 test('native snapshot verification detects canonical document edits', async () => {
   const { document } = await adapter.workbenchToContract(fixture());
   const valid = await adapter.verifyNativeSnapshot(document);
