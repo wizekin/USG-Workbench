@@ -38,6 +38,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
@@ -93,3 +94,16 @@ jobs:
             esac
           done)
           test -z "$changed" || { echo "Immutable baseline files were modified:"; echo "$changed"; exit 1; }
+      - name: Run integrated Phase 2 exit acceptance
+        env:
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          PYTHONPATH: implementations/python-kernel/v0.5.0:tests
+        run: python -m tools.phase2_exit_acceptance.run --report phase2-exit-acceptance-report.json
+      - name: Upload Phase 2 acceptance report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase2-exit-acceptance-report
+          path: phase2-exit-acceptance-report.json
+          if-no-files-found: warn
