@@ -2,6 +2,7 @@ include README.md
 include pyproject.toml
 include setup.py
 include requirements-phase3.lock
+include requirements-build.lock
 include MANIFEST.in
 recursive-include specifications *.json
 recursive-include rules *.json
