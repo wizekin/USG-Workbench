@@ -22,6 +22,7 @@ Record evidence and version scope explicitly. Distinguish verified behavior from
 ## Phase 3 — Persistent semantic graph and bounded product core
 
 - [Phase 3 roadmap](PHASE-3-ROADMAP.md) — ordered steps 3.1–3.9, invariants, architecture, first product scope, exclusions, and exit criteria.
-- [Phase 3 Step 3.1 — Canonical graph-store contract](PHASE-3-STEP-3.1-CANONICAL-GRAPH-STORE-CONTRACT.md) — canonical snapshot authority, immutable revisions, canonical JSON/hash, SQLite indexing, atomic writes, integrity checks, and required Step 3.2 tests.
+- [Phase 3 Step 3.1 — Canonical graph-store contract](PHASE-3-STEP-3.1-CANONICAL-GRAPH-STORE-CONTRACT.md) — canonical snapshot authority, immutable revisions, canonical JSON/hash, SQLite indexing, atomic writes, and integrity checks.
+- [Phase 3 Step 3.2 — SQLite canonical document store](PHASE-3-STEP-3.2-SQLITE-CANONICAL-STORE.md) — versioned SQLite implementation, immutable snapshots, CAS revisions, derived indexes, and integrity verification.
 
-**Current step:** 3.1 contract defined; Step 3.2 is the SQLite canonical document store implementation. Phase 3 remains in progress until its integrated exit gate passes.
+**Current step:** Step 3.2 implementation is awaiting its dedicated CI gate and PR merge. Phase 3 remains in progress until its integrated exit gate passes.
