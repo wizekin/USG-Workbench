@@ -82,3 +82,46 @@ Benchmark artifact: GitHub Actions run 42820307739, artifact `phase3-duckdb-benc
 The adapter passed exact canonical round-trip, schema/grounding and source-hash validation, idempotent writes, revision history, stale-writer rejection within the connection, index drift/rebuild, snapshot tampering detection, large-graph preservation, multiple in-process connections writing separate documents, and read-only reopen. SQLite baseline and Phase 1/2 regression suites also passed.
 
 **Decision:** DuckDB is not a good replacement for SQLite for the current canonical persistence workload. Reads and integrity checks are similar, but write/revision/index-rebuild paths are about 4.2–4.4 times slower and the database footprint is about 4.4 times larger at this scale. Its analytical SQL and columnar execution remain potentially useful as a separate reporting/analytics layer over exported or replicated USG data, but that complementary use needs its own workload test and must not become the canonical source of truth.
+
+## Candidate 3: LanceDB
+
+LanceDB is evaluated both as a potential canonical snapshot store and as a complementary retrieval system. Its embedded local mode supports versioned Lance tables, vector similarity, and full-text search. The prototype stores one complete canonical USG snapshot per revision in an append-only table and keeps semantic/vector retrieval in a separate rebuildable sidecar.
+
+The key contract question is whether LanceDB's table-level MVCC and append commits can meet USG's per-document compare-and-swap revision guarantees. The adapter deliberately reports duplicate revision rows as integrity failures; the append/read/CAS sequence is not a database-enforced unique conditional transaction. A sidecar retrieval index is rebuildable and must never become authoritative semantic truth.
+
+### Candidate 3 initial measured result: LanceDB
+
+The corrected three-run benchmark on the 1,204-expression USG document showed:
+- Initial write: 2.5% faster than SQLite (114.0 ms vs 117.0 ms)
+- Warm read: 2.5% slower (112.8 ms vs 110.1 ms)
+- Idempotent write: effectively equal (109.4 ms vs 108.9 ms)
+- Revision update: 5.9% faster (110.4 ms vs 117.2 ms)
+- Revision listing: 2.23 ms vs 0.075 ms (about 29.7× slower, but still a low absolute latency)
+- Integrity verification: 7.5% faster (107.1 ms vs 115.8 ms)
+- Canonical table disk footprint: 373,007 B vs 958,464 B (61.1% smaller)
+
+This artifact was produced before adding the local cross-instance writer lock, so the final benchmark is rerun after that addition. The retrieval sidecar's vector/FTS index storage is not included in the canonical-table size.
+
+The initial implementation revealed that a table append is atomic, but LanceDB does not expose a per-document unique conditional append. The adapter now adds an OS-level local writer lock around read/check/append and refreshes the table manifest after acquiring the lock. This can serialize compare-and-swap updates made through this adapter by separate local instances. Direct writes that bypass the adapter are outside this guarantee; object-store deployments need a separate conditional coordination design.
+
+The retrieval test confirms exact nearest-neighbor mechanics with synthetic known-answer vectors and full-text search with a Lance FTS index. This validates the retrieval engine mechanics, not semantic quality of real embeddings; no model-generated embedding quality claim is made.
+
+### Candidate 3 final measured result: LanceDB after local CAS locking
+
+Final benchmark artifact: GitHub Actions run 42821729870, artifact `phase3-lancedb-benchmark`. Three runs, each using the same 1,204-expression canonical USG document:
+
+| Operation | SQLite median | LanceDB median | LanceDB / SQLite |
+|---|---:|---:|---:|
+| Initial write | 250.0 ms | 248.2 ms | 0.993× |
+| Warm read (7-read median) | 246.9 ms | 244.3 ms | 0.989× |
+| Idempotent write | 243.7 ms | 244.8 ms | 1.005× |
+| Revision update | 279.7 ms | 248.1 ms | 0.887× |
+| Revision history | 0.116 ms | 5.099 ms | 44.1× |
+| Integrity verification | 250.0 ms | 242.6 ms | 0.970× |
+| Canonical table disk footprint | 958,464 B | 373,007 B | 0.389× |
+
+The final run includes the local writer lock and table-handle refresh. All LanceDB adapter tests passed, including competing writes through two separate store instances: exactly one writer created revision 2 and the stale competing writer received a revision conflict. Duplicate revision rows are detected, table time-travel works, and vector/FTS retrieval tests pass. The full SQLite, Phase 1, Phase 2, RocksDB, and DuckDB regression gates also passed.
+
+**Decision:** LanceDB is a promising candidate for local canonical storage and a strong complementary retrieval layer. It provides near-SQLite latency for the tested operations and a 61.1% smaller canonical-table footprint, with slower revision-history listing (about 5 ms absolute). The adapter's OS file lock supplies local compare-and-swap serialization for writers that use the adapter; direct table writes bypass that guarantee. The retrieval sidecar remains independently rebuildable. Actual embedding generation and semantic retrieval quality have not yet been tested.
+
+Do not promote it as the default until Qdrant is evaluated and the final cross-candidate decision is made. SQLite remains the active backend for now.

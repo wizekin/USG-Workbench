@@ -6,9 +6,11 @@ on:
       - "tools/semantic_graph_store_v1_0_0/**"
       - "tools/semantic_graph_store_rocksdict_v1_0_0/**"
       - "tools/semantic_graph_store_duckdb_v1_0_0/**"
+      - "tools/semantic_graph_store_lancedb_v1_0_0/**"
       - "tests/test_phase3_graph_store.py"
       - "tests/test_phase3_rocksdict_store.py"
       - "tests/test_phase3_duckdb_store.py"
+      - "tests/test_phase3_lancedb_store.py"
       - "benchmarks/phase3-storage/**"
       - "documentation/PHASE-3-*.md"
       - ".github/workflows/phase3-graph-store.yml"
@@ -39,7 +41,7 @@ jobs:
         with:
           python-version: "3.11"
       - name: Install store dependencies
-        run: python -m pip install "jsonschema>=4.18,<5" "rocksdict>=0.3.28,<0.4" "duckdb>=2.0,<2.1"
+        run: python -m pip install "jsonschema>=4.18,<5" "rocksdict>=0.3.28,<0.4" "duckdb>=2.0,<2.1" "lancedb>=0.20,<1"
       - name: Compile canonical store package
         run: python -m compileall -q tools/semantic_graph_store_v1_0_0
       - name: Run canonical graph-store tests
@@ -60,12 +62,21 @@ jobs:
         run: python -m unittest discover -s tests -p "test_phase3_duckdb_store.py" -v
       - name: Run SQLite/RocksDB workload benchmark
         run: python benchmarks/phase3-storage/compare_sqlite_rocksdb.py --repeats 3 --extra-expressions 1200
+      - name: Compile LanceDB adapter
+        run: python -m compileall -q tools/semantic_graph_store_lancedb_v1_0_0
+      - name: Run LanceDB adapter tests
+        run: python -m unittest discover -s tests -p "test_phase3_lancedb_store.py" -v
+      - name: Run SQLite/RocksDB workload benchmark
+        run: python benchmarks/phase3-storage/compare_sqlite_rocksdb.py --repeats 3 --extra-expressions 1200
       - name: Run SQLite/DuckDB workload benchmark
         run: python benchmarks/phase3-storage/compare_sqlite_duckdb.py --repeats 3 --extra-expressions 1200
+      - name: Run SQLite/LanceDB workload benchmark
+        run: python benchmarks/phase3-storage/compare_sqlite_lancedb.py --repeats 3 --extra-expressions 1200
       - name: Upload benchmark reports
         uses: actions/upload-artifact@v4
         with:
-          name: phase3-duckdb-benchmark
+          name: phase3-lancedb-benchmark
           path: |
+            phase3-lancedb-benchmark.json
             phase3-duckdb-benchmark.json
             phase3-rocksdb-benchmark.json
