@@ -50,6 +50,8 @@ on:
       - "tests/test_round_trip_conformance.py"
       - "tests/test_workbench_source_adapter.py"
       - "tests/test_workbench_source_adapter.js"
+      - "tests/test_workbench_reconstruction_adapter.js"
+      - "tests/round_trip_conformance_bridge.js"
       - "tests/README.md"
       - ".github/workflows/predicate-frame-registry.yml"
       - "implementations/semantic-workbench-js/v0.5.4/semantic-core.js"
