@@ -55,7 +55,7 @@ RocksDB is promising for this workload: approximately 69.4% less disk space, com
 
 The RocksDB adapter uses one embedded primary process per database directory. A sidecar OS lock serializes writer critical sections but cannot make RocksDB's exclusive database-open lock support multiple independent primary processes. The added concurrency regression checks concurrent readers and serialized writers within one process. If USG requires multiple independent processes to open the same database concurrently, this candidate does not meet that topology without a separate single-owner service.
 
-**Current status:** promising candidate, not yet promoted. Await the latest concurrency regression workflow on commit `db64ae4630572c1812e6494a3259a63c31a9c939`. Even if accepted as a canonical-store candidate, continue the separately requested DuckDB, LanceDB, and Qdrant evaluations. No default backend change is made by this evaluation.
+**Decision:** RocksDB is the strongest tested key/value-store alternative in this sequence, but it is not a drop-in replacement for SQLite's multi-process access topology. Its current adapter is suitable only if USG routes all database access through one owning process. It remains a conditional candidate, not the default.
 
 ## Candidate 2: DuckDB
 
@@ -107,7 +107,7 @@ The final run includes the local writer lock and table-handle refresh. All Lance
 
 **Decision:** LanceDB is a promising candidate for local canonical storage and a strong complementary retrieval layer. It provides near-SQLite latency for the tested operations and a 61.1% smaller canonical-table footprint, with slower revision-history listing (about 5 ms absolute). The adapter's OS file lock supplies local compare-and-swap serialization for writers that use the adapter; direct table writes bypass that guarantee. The retrieval sidecar remains independently rebuildable. Actual embedding generation and semantic retrieval quality have not yet been tested.
 
-Do not promote it as the default until Qdrant is evaluated and the final cross-candidate decision is made. SQLite remains the active backend for now.\n\n
+The final cross-candidate decision is recorded below. SQLite remains the active backend for now.\n\n
 ## Candidate 4: Qdrant
 
 Qdrant is a vector database and semantic-search engine. Its Python client supports persistent local mode without a server and a server mode for multi-client use. Qdrant points consist of a vector and optional payload, making it possible to attach canonical USG snapshot bytes as payload while keeping vector retrieval records in a separate collection. See the [Qdrant client local-mode documentation](https://github.com/qdrant/qdrant-client) and [point/payload model](https://qdrant.tech/documentation/manage-data/points/).
@@ -125,7 +125,7 @@ The persistent local Python client locks its storage directory to a single clien
 The Qdrant adapter is evaluation-only. It does not alter the active SQLite store or USG-SEM/1.0 contracts. Its benchmark compares the same snapshot operations against SQLite; vector search is tested separately with deterministic known-answer vectors. The results will decide whether Qdrant belongs as an optional retrieval sidecar, not whether it should replace the canonical store.\n\n
 ### Candidate 4 preliminary measured result: Qdrant local mode
 
-Benchmark artifact: GitHub Actions run 42822528134, artifact `phase3-qdrant-benchmark`. Three repetitions used the same 1,204-expression USG document.
+Final benchmark artifact: GitHub Actions run 42822760157, artifact `phase3-qdrant-benchmark`. Three repetitions used the same 1,204-expression USG document.
 
 | Operation | SQLite median | Qdrant local median | Qdrant / SQLite |
 |---|---:|---:|---:|
@@ -144,3 +144,26 @@ Qdrant's initial snapshot write/read and integrity-check timings are close to SQ
 The adapter passed all dedicated tests, including local persistence/reopen, canonical Unicode round-trip, large graph preservation, tampering detection, stale-writer rejection, same-process competing threads, and the expected failure to open the same local storage directory from a second client. The Qdrant, SQLite baseline, and Phase 1/2 test gates passed.
 
 **Decision:** Qdrant is not a suitable direct replacement for the canonical USG graph store in this design. It is designed for vector similarity and payload filtering, not relational revision/index management. Its local mode is single-process exclusive; server mode is required for multiple concurrent clients, and a server deployment would still need a separately designed single-writer/coordination layer for USG's revision CAS contract. Qdrant remains a strong optional vector-retrieval sidecar candidate, with canonical snapshots retained in a transactional document store.
+
+## Final cross-candidate decision
+
+All four candidates explicitly requested for this sequence have been evaluated individually. The dedicated candidate workflows and integrated Phase 3 regression workflow passed on the final Qdrant evaluation branch. Each candidate was tested against the same USG-SEM/1.0 snapshot workload shape (1,204 expressions) for its dedicated benchmark. Benchmark figures are runner-specific and should be treated as comparative evidence for this workload, not universal speed guarantees.
+
+| Candidate | Main result | Contract/topology issue | Decision |
+|---|---|---|---|
+| RocksDB | About 69.4% smaller footprint than SQLite; similar read/write latency; faster index rebuild and revision-history operations | Embedded DB directory is owned by one process; no independent multi-process opens | Best tested key/value candidate, conditional on a single-owner store process |
+| DuckDB | Similar reads, but initial write/update/index rebuild about 4.2–4.4× slower; footprint about 4.4× larger | Analytical database workload does not fit the canonical transactional write path | Do not use as canonical store; consider separate analytics/reporting |
+| LanceDB | Near-SQLite timings for most tested operations; about 61.1% smaller canonical table; revision listing about 5 ms vs 0.116 ms | Adapter-level local writer lock; slower revision history; no normalized semantic graph index equivalence; retrieval sidecar separately rebuildable | Promising local snapshot/retrieval candidate, but not yet a justified canonical replacement |
+| Qdrant | Snapshot-payload read/write near SQLite; idempotent/update about 1.9× slower; vector retrieval mechanics passed | Local mode is single-process exclusive; benchmark omits SQLite-equivalent normalized semantic indexes and excludes retrieval collection storage | Do not use as canonical store; strong optional vector-retrieval sidecar candidate |
+
+### Recommendation
+
+**Keep SQLite as the canonical USG store at this stage.** None of these four candidates has demonstrated a sufficiently complete, material advantage while preserving all the current canonical-store requirements, especially transactional updates across the complete snapshot/revision/derived-index state and the required concurrency topology.
+
+RocksDB is the most interesting alternative if USG adopts a dedicated single-owner storage process and accepts that topology explicitly. LanceDB and Qdrant are better treated as optional retrieval layers, never as authoritative semantic truth. DuckDB may be useful for offline analytics, not canonical persistence.
+
+Do not change the production backend, migrate existing databases, or remove the SQLite implementation based on these evaluations. Keep the storage abstraction and benchmark harness so a future candidate can be assessed without changing USG semantic contracts.
+
+### Scope note: LMDB
+
+The four-candidate sequence explicitly requested after the initial storage discussion was RocksDB, DuckDB, LanceDB, and Qdrant. **LMDB has not been evaluated in this sequence.** The original LMDB replacement request therefore remains a separate open candidate; it must pass the same canonical-store, concurrency, recovery, and benchmark gates before any final replacement decision.
