@@ -1,7 +1,7 @@
 # USG Phase 1 — Exit acceptance and completion record
 
 **Phase:** 1 — Normative semantic contract `USG-SEM/1.0`  
-**Status:** Pending successful CI and merge of this acceptance step.  
+**Status:** COMPLETE. Step 5Z was merged as PR #38 (merge commit `482e183e941f018f858c9c4701e7948229d00d2d`) after the full exit CI gate passed on both the PR head and merged main commit.  
 **Canonical contract and schema:** unchanged.
 
 ## Exit criteria
@@ -37,6 +37,6 @@ Phase 1 does not establish open-domain semantic accuracy, truth evaluation, enta
 3. Run predicate/frame and operator/scope registry conformance.
 4. Run canonical adapter, Workbench source/reconstruction, and end-to-end semantic invariant tests.
 5. Verify immutable implementation baselines.
-6. Confirm every required check is successful on the exact PR head before merge.
+6. Confirm every required check is successful on the exact PR head before merge. This was satisfied for PR #38; the post-merge Phase 1 Exit Acceptance workflow also completed successfully.
 
 Completion means all these checks pass on the merged commit; a numbered-step count alone is insufficient.
