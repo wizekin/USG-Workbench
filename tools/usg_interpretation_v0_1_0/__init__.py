@@ -39,6 +39,12 @@ from .resources import (
     SemanticResourceRegistry,
 )
 
+from .model_adapter import (
+    MODEL_ADAPTER_VERSION, ModelCandidate, ModelProposalBatch,
+    ValidatedModelCandidate, ModelValidationResult, CandidateGenerator,
+    validate_model_proposals, ModelAssistedAnalyzer,
+)
+
 __all__ = [
     "LANGUAGE_PROFILES", "SourceSnapshot", "TextSegment", "SegmentedSource",
     "ingest_source", "segment_source", "LEXICAL_ANALYSIS_VERSION", "Token",
@@ -53,5 +59,7 @@ __all__ = [
     "DiscourseAnalyzer", "initial_discourse_registry",
     "ASSERTION_EVIDENCE_ADAPTER_VERSION", "AssertionEvidenceProjection",
     "project_assertions_and_evidence", "RESOURCE_REGISTRY_VERSION",
-    "ResourceDescriptor", "SemanticAssociation", "SemanticResourceRegistry",
+    "ResourceDescriptor", "SemanticAssociation", "SemanticResourceRegistry", "MODEL_ADAPTER_VERSION", "ModelCandidate",
+    "ModelProposalBatch", "ValidatedModelCandidate", "ModelValidationResult",
+    "CandidateGenerator", "validate_model_proposals", "ModelAssistedAnalyzer",
 ]
