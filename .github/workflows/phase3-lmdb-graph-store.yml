@@ -39,6 +39,14 @@ jobs:
         run: python -m pip install "jsonschema>=4.18,<5" "lmdb>=2.2,<4"
       - name: Compile LMDB store
         run: python -m compileall -q tools/semantic_graph_store_lmdb_v1_0_0
+      - name: Run existing SQLite baseline tests
+        run: python -m unittest discover -s tests -p "test_phase3_graph_store.py" -v
+      - name: Run Phase 1 and Phase 2 acceptance regressions
+        run: |
+          python -m unittest tests.test_phase1_exit_acceptance -v
+          python -m unittest tests.test_phase2_grounding -v
+          python -m unittest tests.test_phase2_inference_executor -v
+          python -m unittest tests.test_phase2_evidence_assessment -v
       - name: Run LMDB graph-store tests
         run: python -m unittest discover -s tests -p "test_phase3_lmdb_graph_store.py" -v
       - name: Run SQLite/LMDB comparison benchmark
