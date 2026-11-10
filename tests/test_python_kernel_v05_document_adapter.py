@@ -16,6 +16,7 @@ from interoperability.python_adapter.document_v05 import (
     kernel_v05_document_to_contract,
 )
 from interoperability.python_adapter.usg_sem_1 import ContractMappingError
+from usg.grammar.node import metadata_value, predicate_app
 
 
 class KernelV05DocumentAdapterTests(unittest.TestCase):
@@ -105,7 +106,10 @@ class KernelV05DocumentAdapterTests(unittest.TestCase):
         imported = document_to_kernel_v05(self.make_document())
         root = imported.expression_roots["test:root"]
         predicate = root.args[0]
-        changed = predicate.with_param("predicate", "REQUIRES")
+        changed = predicate_app(
+            "REQUIRES", predicate.get("roles"), predicate.args,
+            temporalFrame=metadata_value(predicate, "temporalFrame"),
+        )
         imported.expression_roots["test:root"] = root.with_args((changed,))
         exported = kernel_v05_document_to_contract(imported)
         by_id = {item["id"]: item for item in exported["expressions"]}
