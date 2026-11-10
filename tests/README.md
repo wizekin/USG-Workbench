@@ -140,3 +140,15 @@ python -m unittest discover -s tests -p "test_phase2_rule_semantics.py" -v
 The formal contract is in `rules/semantic-reasoning/semantics/v1.0.0/`; the static cross-validator is `tools/semantic_rule_semantics_v1_0_0/validator.py`. It defines nine distinct applicability outcomes, all 19 rule constraint kinds, the initial SOURCE_ASSERTED-only premise policy, conflict and open-world behavior, deterministic ordering, and interruption without semantic truncation. No rule is executable in Step 2.4.
 
 See [Phase 2 Step 2.4 documentation](../documentation/PHASE-2-STEP-2.4-RULE-SEMANTICS-AND-SAFETY-CONTRACT.md).
+
+
+## Phase 2 Step 2.5 — Deterministic grounding services
+
+```bash
+python -m pip install "jsonschema>=4.18,<5"
+python -m unittest discover -s tests -p "test_phase2_grounding.py" -v
+```
+
+The grounding service is `tools/semantic_grounding_v1_0_0/grounding.py`. It resolves typed records, exact definition versions/catalogue releases, explicit Mention-to-Referent links, assertion contexts, context parent paths, and exact ordered expression scope paths. It returns distinct resolution states and never resolves identity by label. The compact Step 2.2 fixture preflight preserves payloads and reports missing canonical fields without defaulting assertion status.
+
+See [Phase 2 Step 2.5 documentation](../documentation/PHASE-2-STEP-2.5-DETERMINISTIC-GROUNDING-SERVICES.md).
