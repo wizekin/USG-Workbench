@@ -1,6 +1,6 @@
 # Phase 1 Step 4 — Round-trip conformance
 
-**Status:** 4A, 4B, and 4C merged; 4D implementation and CI validation in progress  
+**Status:** Step 4A–4D implemented, CI-validated, and merged (PRs #5–#7)  
 **Contract:** USG-SEM/1.0  
 **Baseline pair:** Semantic Workbench 0.5.4 / Python reference kernel 0.4.0  
 **Branch:** `phase1/semantic-invariant-conformance`
@@ -88,7 +88,7 @@ The implementation has a dedicated Node test suite wired into interoperability
 CI. The PR #6 CI run passed, including the new reconstruction tests and the
 immutable-baseline check. PR #6 is merged into `main`.
 
-### 4D — semantic invariant suite — implementation in progress
+### 4D — semantic invariant suite — completed (PR #7 merged)
 
 Implemented initially in `tests/test_round_trip_conformance.py`, with the
 Node bridge `tests/round_trip_conformance_bridge.js` executing both Workbench
@@ -125,10 +125,12 @@ control case proves that native `RELATE` and `Assertion` projections are
 actually imported and freshly serialized. This is not a LOSSLESS claim for the
 entire Workbench model.
 
-The first suite also exercises a 512-root graph without semantic count caps.
+The merged suite also exercises a 512-root graph without semantic count caps.
 It compares semantic invariants, not generated opaque IDs or incidental JSON
-ordering. Full acceptance remains conditional on all CI tests passing and the
-remaining semantic gaps being explicitly documented.
+ordering. CI passed all 16 Python conformance tests, all Workbench adapter tests,
+USG-SEM schema validation, and the immutable-baseline check. Step 4D is complete
+as a conformance suite; the explicitly reported PARTIAL mappings remain known
+runtime compatibility gaps for a future kernel/contract extension.
 
 ## Status vocabulary
 
