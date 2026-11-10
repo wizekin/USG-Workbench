@@ -10,7 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 RELEASE_VERSION = "0.1.0"
 MANIFEST_PATH = Path("release/phase3-release-manifest.json")
 TOP_LEVEL = [
-    "README.md", "pyproject.toml", "setup.py", "requirements-phase3.lock", "MANIFEST.in", "scripts/build_release_manifest.py",
+    "README.md", "pyproject.toml", "setup.py", "requirements-phase3.lock", "requirements-build.lock", "MANIFEST.in", "scripts/build_release_manifest.py",
 ]
 ROOTS = [
     "tools", "specifications", "rules", "benchmarks", "interoperability",
