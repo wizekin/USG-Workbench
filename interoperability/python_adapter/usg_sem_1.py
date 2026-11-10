@@ -162,6 +162,10 @@ def contract_graph_roots_to_semir_partial(
         "roots": imported_roots,
         "failedRoots": failed_roots,
         "mappedNodeRefs": sorted(reachable),
+        # Preserve object identity while the native projections are alive.
+        # Reverse serialization uses this map to distinguish edited/new Nodes
+        # from original nodes without guessing by structural similarity.
+        "nodes": dict(built),
     }
 
 

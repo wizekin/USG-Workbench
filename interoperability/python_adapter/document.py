@@ -73,6 +73,7 @@ class ImportedDocument:
     document: dict[str, Any]
     original_digest: str
     id_map: dict[str, dict[str, Any]]
+    node_identity_refs: dict[int, str]
     sources: dict[str, Any]
     expression_roots: dict[str, Any]
     assertions: dict[str, Any]
@@ -584,6 +585,7 @@ def document_to_python(
         document=payload,
         original_digest=_digest(payload),
         id_map=id_map,
+        node_identity_refs={id(node): node_id for node_id, node in expression_import["nodes"].items()},
         sources=sources,
         expression_roots=expression_roots,
         assertions=assertions,

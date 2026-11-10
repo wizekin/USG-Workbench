@@ -31,6 +31,19 @@ The predicate/frame test checks registry coverage against the Workbench predicat
 
 The operator/scope test checks registry dispositions against Workbench operator declarations and verifies the Python kernel operator signatures, quantifier distinctions, conditional/unless scope semantics, and loss-prevention policy against both immutable source baselines.
 
+
+Python reverse serializer (Phase 1 Step 4B):
+
+```bash
+python -m unittest discover -s tests -p "test_python_reverse_serializer.py" -v
+```
+
+The reverse serializer tests cover fresh serialization of current Python Source,
+SemIR Node and Assertion projections; operand order; modified roots; annotation
+source-reference safety; preservation of unsupported original roots; canonical
+snapshot integrity; and JSON Schema validation. Canonical-only record classes
+remain in the output and are explicitly listed as unmapped to kernel 0.4.0.
+
 Workbench source adapter (Phase 1 Step 4A):
 
 ```bash
@@ -40,4 +53,4 @@ python -m unittest discover -s tests -p "test_workbench_source_adapter.py" -v
 
 The source adapter tests exercise Workbench v0.5.4 semantic-model conversion, operator/connective scope, argument-role ordering, unresolved mentions, native snapshot digests, partial mapping, dangling references, and UTF-16 → Unicode code-point offset conversion. The Python test validates the actual generated document against the USG-SEM/1.0 JSON Schema.
 
-The complete four-boundary round trip is not yet implemented. Step 3's unchanged-snapshot export is not a reverse serializer; Python projection serialization and Workbench reconstruction remain required before end-to-end conformance can pass.
+The complete four-boundary round trip is not yet implemented. Step 4B now serializes Python projections back to USG-SEM/1.0; Workbench reconstruction and end-to-end semantic invariant tests remain required before full conformance can pass.
