@@ -116,7 +116,7 @@ class CompleteDocumentAdapterV15Tests(unittest.TestCase):
             }],
             "unresolvedItems": [{
                 "id": "u:1", "status": "UNRESOLVED", "reason": "Tool referent not resolved",
-                "surfaceText": "the tool", "scopeRef": "opaque:scope",
+                "surfaceText": "the tool", "scopeRef": "x:root",
                 "scopeLabel": "local clause", "evidenceRefs": ["e:1"],
                 "candidateRefs": ["candidate:1"],
             }],
