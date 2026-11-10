@@ -114,11 +114,14 @@ class KernelV05DocumentAdapterTests(unittest.TestCase):
         exported = kernel_v05_document_to_contract(imported)
         by_id = {item["id"]: item for item in exported["expressions"]}
         self.assertEqual(by_id["test:predicate"]["params"]["predicate"], "NEEDS")
-        root_record = by_id["test:root"]
+        new_root_ref = exported["rootExpressionRefs"][0]
+        self.assertNotEqual(new_root_ref, "test:root")
+        root_record = by_id[new_root_ref]
         new_child_ref = root_record["operandRefs"][0]
         self.assertNotEqual(new_child_ref, "test:predicate")
         self.assertEqual(by_id[new_child_ref]["params"]["predicate"], "REQUIRES")
         self.assertEqual(by_id[new_child_ref]["sort"], "SIT")
+        self.assertEqual(root_record["sort"], "PROP")
 
     def test_canonical_snapshot_mutation_is_rejected(self):
         imported = document_to_kernel_v05(self.make_document())
