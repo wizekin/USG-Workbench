@@ -29,15 +29,13 @@
       "const": "USG-RULE/1.0.0"
     },
     "registry_id": {
-      "type": "string",
-      "minLength": 1
+      "const": "USG-SEMANTIC-RULE-REGISTRY"
     },
     "registry_version": {
       "const": "1.0.0"
     },
     "semantics_id": {
-      "type": "string",
-      "minLength": 1
+      "const": "USG-RULE-SEMANTICS"
     },
     "semantics_version": {
       "const": "1.0.0"
