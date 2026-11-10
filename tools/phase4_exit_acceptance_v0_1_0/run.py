@@ -12,12 +12,6 @@ if str(ROOT) not in sys.path:
 
 from tools.phase4_interpretation_benchmark_v0_1_0 import evaluate as evaluate_benchmark
 
-REQUIRED_STEP_DOCS = tuple(
-    ROOT / "documentation" / f"PHASE-4-STEP-4.{step}-" + suffix
-    for step, suffix in []
-)
-
-
 def evaluate() -> dict:
     docs = [
         f"PHASE-4-STEP-4.{step}-{name}.md"
