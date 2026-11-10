@@ -12,6 +12,7 @@ Additive semantic record models:
 - v1.1.0/: ExpressionRelation model.
 - v1.2.0/: UnresolvedItem model.
 - v1.3.0/: Derivation model.
+- v1.4.0/: Definitions catalogue model.
 
 These versioned extensions are separate packages; they do not mutate the frozen v0.4.0 baseline. See the corresponding Step 5 contracts under interoperability/python-kernel-extension/. Model-only releases do not imply document-adapter integration.
 
