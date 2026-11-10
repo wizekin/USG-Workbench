@@ -18,4 +18,4 @@ Record evidence and version scope explicitly. Distinguish verified behavior from
 - [Phase 2 Step 2.8 — Query and explanation interface](PHASE-2-STEP-2.8-QUERY-EXPLANATION-INTERFACE.md) — exact-reference query contract, conflict-aware derivation projection, and structured explanations.
 - [Phase 2 Step 2.10 — Final exit acceptance](PHASE-2-STEP-2.10-EXIT-ACCEPTANCE.md) — integrated regression gate and machine-readable acceptance report.
 
-Steps 2.1–2.9 are complete and merged. Step 2.10 is the remaining gate; Phase 2 must remain pending until its complete acceptance workflow passes on the exact PR head and merged commit.
+**Phase 2 is COMPLETE.** Steps 2.1–2.10 are implemented, merged, and accepted for their documented scope. The [final merged-main acceptance run](https://github.com/wizekin/USG-Workbench/actions/runs/42811673922) passed and uploaded its machine-readable report. Deferred capabilities remain out of scope.
