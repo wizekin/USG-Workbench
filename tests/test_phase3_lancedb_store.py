@@ -71,7 +71,7 @@ class LanceDBStoreTests(unittest.TestCase):
         self.store.put_document(self.document)
         self.store._table.update(
             where=f"document_id = '{self.document['documentId']}' AND revision = 1",
-            values={"canonical_json": "'{}'"},
+            values_sql={"canonical_json": "'{}'"},
         )
         with self.assertRaises(IntegrityError):
             self.store.get_document(self.document["documentId"])
