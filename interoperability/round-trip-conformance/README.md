@@ -64,13 +64,28 @@ Tests are in `tests/test_python_reverse_serializer.py` and are added to the
 interoperability CI workflow. Step 4B is not complete until CI and the semantic
 invariant review pass.
 
-### 4C — Workbench reconstruction adapter
+### 4C — Workbench reconstruction adapter — implementation in progress
 
-- Reconstruct a Workbench semantic model from the returned canonical document.
-- Restore supported Workbench-native distinctions from canonical fields.
-- Restore archival native-only fields only from the namespaced native payload, after verifying its source version and integrity digest.
-- Do not use native payload to overwrite changed canonical meaning.
-- If a canonical change invalidates the native snapshot, refuse stale restoration and return PARTIAL/UNSUPPORTED diagnostics rather than silently reverting it.
+Implemented on `phase1/workbench-reconstruction` in
+`interoperability/workbench_adapter/reconstruct.js`, exposed as
+`contractToWorkbench()`.
+
+- Reconstructs Workbench predications, operators and connectives from canonical
+  graph fields, preserving argument/role order, bindings, nested scope and
+  directed connective operands.
+- Converts Unicode code-point spans back to UTF-16 offsets.
+- Verifies both native and canonical-projection digests before restoring
+  archival-only metadata.
+- Never uses the native snapshot to overwrite canonical semantic fields.
+- Reconstructs from changed canonical content while returning PARTIAL and
+  refusing stale native restoration.
+- Reports OPAQUE/unsupported constructors and canonical-only document records;
+  it does not coerce or silently discard them.
+- Keeps the legacy human-review field outside the reconstructed semantic model;
+  if verified, it is exposed only as inert archival metadata.
+
+The implementation has a dedicated Node test suite wired into interoperability
+CI. Step 4C remains pending until that suite and CI pass.
 
 ### 4D — semantic invariant suite
 
