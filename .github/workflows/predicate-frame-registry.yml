@@ -30,6 +30,7 @@ on:
       - "implementations/python-kernel/v0.4.0/usg/foundation/frames.py"
       - "implementations/python-kernel/v0.4.0/usg/model/frames.py"
       - "implementations/python-kernel/v0.4.0/usg/grammar/node.py"
+      - "implementations/python-kernel/v0.5.0/**"
   pull_request:
     branches:
       - main
@@ -59,6 +60,7 @@ on:
       - "implementations/python-kernel/v0.4.0/usg/foundation/frames.py"
       - "implementations/python-kernel/v0.4.0/usg/model/frames.py"
       - "implementations/python-kernel/v0.4.0/usg/grammar/node.py"
+      - "implementations/python-kernel/v0.5.0/**"
   workflow_dispatch:
 
 permissions:
@@ -155,12 +157,22 @@ jobs:
           test_status=${PIPESTATUS[0]}
           echo "test_status=${test_status}" >> "$GITHUB_OUTPUT"
           exit "${test_status}"
+      - name: Run Python kernel 0.5.0 extension tests
+        id: python-kernel-extension-tests
+        shell: bash
+        run: |
+          set +e
+          python -m unittest discover -s implementations/python-kernel/v0.5.0/tests -p "test_kernel_extension.py" -v 2>&1 | tee kernel-extension-ci.log
+          test_status=${PIPESTATUS[0]}
+          echo "test_status=${test_status}" >> "$GITHUB_OUTPUT"
+          exit "${test_status}"
       - name: Verify immutable implementation baselines
         if: success()
         shell: bash
         run: |
           git fetch origin main --depth=1
-          git diff --exit-code FETCH_HEAD...HEAD -- archives implementations
+          changed=$(git diff --name-only FETCH_HEAD...HEAD -- archives implementations | grep -v '^implementations/python-kernel/v0.5.0/' || true)
+          test -z "$changed" || { echo "$changed"; exit 1; }
       - name: Upload diagnostic logs
         if: always()
         uses: actions/upload-artifact@v4

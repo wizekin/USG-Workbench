@@ -1,0 +1,2 @@
+[console_scripts]
+usg = usg.cli:main

@@ -1,0 +1,6 @@
+# text = An apple John ate.
+1	An	an	DET	_	_	2	det	_	_
+2	apple	apple	NOUN	_	_	4	obj	_	_
+3	John	John	PROPN	_	_	4	nsubj	_	_
+4	ate	eat	VERB	_	Tense=Past	0	root	_	_
+5	.	.	PUNCT	_	_	4	punct	_	_
