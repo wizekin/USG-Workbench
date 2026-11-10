@@ -182,6 +182,8 @@ def _require_source(ref, source_ids):
 def _merge_evidence_edit(record, snapshot, current, source_ids):
     if current.external_id != snapshot.external_id:
         raise ContractMappingError("Evidence identity is immutable")
+    if not isinstance(current.span, EvidenceSpan) or current.span.source_ref != current.source_ref:
+        raise ContractMappingError("Evidence span Source must match Evidence source_ref")
 
     if current.source_ref != snapshot.source_ref:
         _require_source(current.source_ref, source_ids)
