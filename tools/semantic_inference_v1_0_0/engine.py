@@ -56,6 +56,31 @@ def _stable_id(prefix: str, value: Any) -> str:
     return prefix + _canonical_hash(value)[:24]
 
 
+def _preserved_input_refs(document: dict[str, Any]) -> list[str]:
+    refs: set[str] = set()
+    collections = (
+        "sources", "referents", "mentions", "expressions", "assertions",
+        "evidence", "contexts", "expressionRelations", "unresolvedItems", "derivations",
+    )
+    for collection in collections:
+        records = document.get(collection, [])
+        if isinstance(records, list):
+            refs.update(
+                item["id"] for item in records
+                if isinstance(item, dict) and isinstance(item.get("id"), str)
+            )
+    definitions = document.get("definitions", {})
+    if isinstance(definitions, dict):
+        for collection in ("concepts", "frames", "roles", "relations"):
+            records = definitions.get(collection, [])
+            if isinstance(records, list):
+                refs.update(
+                    item["id"] for item in records
+                    if isinstance(item, dict) and isinstance(item.get("id"), str)
+                )
+    return sorted(refs)
+
+
 def _expression(index: GroundingIndex, expression_id: str) -> tuple[str, dict[str, Any] | None, tuple[str, ...]]:
     result = index.resolve_record("expression", expression_id)
     if result.status != "RESOLVED":
@@ -307,13 +332,7 @@ class InferenceExecutor:
             "derivations": sorted(derivations, key=lambda item: item["id"]),
             "pending_work": pending,
             "diagnostics": sorted(set(diagnostics)),
-            "preserved_input_refs": sorted(
-                record["id"] for collection in (
-                    "sources", "definitions", "referents", "mentions", "expressions",
-                    "assertions", "evidence", "contexts", "expressionRelations",
-                    "unresolvedItems", "derivations",
-                ) for record in document.get(collection, []) if isinstance(record, dict) and isinstance(record.get("id"), str)
-            ),
+            "preserved_input_refs": _preserved_input_refs(document),
             "resource": {"applications_used": used, "budget": budget, "semantic_truncation": False},
             "safety": {"truth_promotion": False, "inferred_premise_chaining": False, "canonical_document_mutated": False},
         }
