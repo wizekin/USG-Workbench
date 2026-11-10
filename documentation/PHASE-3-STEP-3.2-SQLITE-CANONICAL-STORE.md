@@ -1,6 +1,6 @@
 # Phase 3 Step 3.2 — SQLite Canonical Document Store
 
-**Status:** IMPLEMENTED — awaiting exact-PR-head CI and merge.
+**Status:** COMPLETE — merged in [PR #55](https://github.com/wizekin/USG-Workbench/pull/55).
 **Package:** tools/semantic_graph_store_v1_0_0
 **Canonical profile:** USG-SEM/1.0
 **Canonicalization profile:** USG-CANONICAL-JSON/1.0.0
