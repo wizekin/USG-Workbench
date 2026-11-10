@@ -156,3 +156,8 @@ A whole-document result cannot be marked LOSSLESS merely because supported roots
 ## Acceptance criteria
 
 Step 4 is complete only when an executable end-to-end conversion test exercises all four boundaries and verifies the listed semantic invariants. Unsupported cases must pass by being explicitly and correctly reported as partial/unmapped, not by pretending they round-trip losslessly.
+
+
+## Step 5C — Python kernel v0.5.0 adapter
+
+Step 5C adds a separately versioned graph adapter between USG-SEM/1.0 and the native Python kernel v0.5.0 package. It does not replace the v0.4.0 document adapter or change the four-boundary v0.4.0 baseline. The new tests verify native constructor projection, reverse serialization, ordered roles, explicit HOLDS boundaries, quantifier binding identity, opaque/unresolved preservation, unsupported operators, and shared DAG identity.

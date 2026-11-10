@@ -1,6 +1,6 @@
 # Phase 1 Step 5B — Python kernel 0.5.0 implementation
 
-**Status:** implementation candidate; awaiting automated CI  
+**Status:** completed and merged (PR #10; post-merge CI passed)  
 **Contract:** [Step 5A semantic contract](STEP-5A-CONTRACT.md)  
 **Release:** Python kernel 0.5.0  
 **Baseline:** Python kernel 0.4.0 remains unchanged
