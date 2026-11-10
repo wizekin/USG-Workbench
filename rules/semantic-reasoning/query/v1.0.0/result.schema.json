@@ -62,7 +62,8 @@
         "NOT_ESTABLISHED",
         "AMBIGUOUS",
         "UNRESOLVED",
-        "UNSUPPORTED"
+        "UNSUPPORTED",
+        "INVALID_INPUT"
       ]
     },
     "goal": {
