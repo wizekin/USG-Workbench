@@ -200,7 +200,9 @@
       }
     }
     for (const x of expressions.values()) {
-      if (!supported.has(x.id)) { partial.push(x.id); diagnostics.push('Expression ' + x.id + ' has no exact Workbench-native constructor mapping.'); }
+      if (!supported.has(x.id) && !['REF','UNRESOLVED_REF'].includes(x.op)) {
+        partial.push(x.id); diagnostics.push('Expression ' + x.id + ' has no exact Workbench-native constructor mapping.');
+      }
     }
 
     // Resolve expression IDs before assembling records; preserve native IDs only
