@@ -1,6 +1,6 @@
 # Phase 3 Step 3.3 — Persistent Query Integration
 
-**Status:** IMPLEMENTED — awaiting exact-PR-head CI and merge.
+**Status:** COMPLETE — merged in [PR #62](https://github.com/wizekin/USG-Workbench/pull/62).
 **Storage backend:** SQLite canonical document store from Step 3.2.
 **Query contract:** USG-QUERY/1.0.0; existing Phase 2 query behavior is unchanged.
 
