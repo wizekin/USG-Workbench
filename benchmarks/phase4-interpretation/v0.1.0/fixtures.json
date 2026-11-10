@@ -1,0 +1,49 @@
+{
+  "benchmark_id": "usg-interpretation-v0.1.0",
+  "version": "0.1.0",
+  "contract": "USG-INTERPRET/0.1.0",
+  "cases": [
+    {
+      "id": "en.svo.complete",
+      "language": "en",
+      "text": "Ada writes code.",
+      "expected_completion_status": "COMPLETE",
+      "expected_expression_count": 3
+    },
+    {
+      "id": "ar.vso.complete",
+      "language": "ar",
+      "text": "كتب الطالب الدرس",
+      "expected_completion_status": "COMPLETE",
+      "expected_expression_count": 3
+    },
+    {
+      "id": "en.unknown.partial",
+      "language": "en",
+      "text": "Ada invents code",
+      "expected_completion_status": "PARTIAL",
+      "expected_expression_count": 0
+    },
+    {
+      "id": "en.multi_sentence.unsupported",
+      "language": "en",
+      "text": "Ada writes code. Ada writes code.",
+      "expected_completion_status": "UNSUPPORTED",
+      "expected_expression_count": 0
+    },
+    {
+      "id": "en.known_but_unregistered.unsupported",
+      "language": "en",
+      "text": "Ada code writes",
+      "expected_completion_status": "UNSUPPORTED",
+      "expected_expression_count": 0
+    },
+    {
+      "id": "en.empty.unsupported",
+      "language": "en",
+      "text": "",
+      "expected_completion_status": "UNSUPPORTED",
+      "expected_expression_count": 0
+    }
+  ]
+}
