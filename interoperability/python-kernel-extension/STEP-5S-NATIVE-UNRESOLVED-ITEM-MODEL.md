@@ -32,3 +32,6 @@ Python v0.4.0–v1.1.0, USG-SEM/1.0, Workbench v0.5.4, archives, and existing No
 ```bash
 PYTHONPATH=implementations/python-kernel/v1.2.0 python -m unittest discover -s implementations/python-kernel/v1.2.0/tests -v
 ```
+
+
+> **Contract-alignment note:** The initial v1.2.0 model/adapter is retained as historical. Step 5T1 introduces v1.2.1, where `scopeRef` is a typed Expression reference and `evidenceRefs` are typed Evidence references, matching the canonical document validator. Use v1.2.1 for current composed interoperability.
