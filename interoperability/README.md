@@ -113,3 +113,13 @@ The registries and adapter target the immutable baseline pair: Workbench v0.5.4 
 - Native edits are merged only into Referent records. Unchanged canonical fields, omitted fields, unknown sidecars, Mentions, and all other record families are retained.
 - Export rejects stale canonical snapshots and validates the complete document, including source-span bounds.
 - The v0.5.0 adapter, USG-SEM/1.0, Workbench v0.5.4, archives, immutable baselines, and existing Node.js action versions remain unchanged.
+
+
+### Step 5I — native Mention model v0.7.0
+
+- [Step 5I model contract](python-kernel-extension/STEP-5I-NATIVE-MENTION-MODEL.md).
+- Adds the independent `usg_discourse_v07` package under `implementations/python-kernel/v0.7.0/`; it does not modify the v0.6.0 Referent identity model or frozen v0.5.0 kernel.
+- Represents a Mention as a textual occurrence with its own opaque ID, exact surface text, resolution status, optional mention type, explicit typed Referent/antecedent links, and source grounding.
+- Distinguishes MENTION, REFERENT, and SOURCE reference spaces. Surface equality, aliases, or shared Referent links never merge Mention identities.
+- Does not infer antecedents, coreference, or referent assignments. Resolution status is not used to invent a link-presence rule.
+- This is a model-only step; USG-SEM document adapter integration and full round-trip remain for the following step.
