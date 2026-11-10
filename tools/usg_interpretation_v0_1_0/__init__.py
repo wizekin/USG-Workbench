@@ -34,6 +34,11 @@ from .assertion_evidence import (
     project_assertions_and_evidence,
 )
 
+from .resources import (
+    RESOURCE_REGISTRY_VERSION, ResourceDescriptor, SemanticAssociation,
+    SemanticResourceRegistry,
+)
+
 __all__ = [
     "LANGUAGE_PROFILES", "SourceSnapshot", "TextSegment", "SegmentedSource",
     "ingest_source", "segment_source", "LEXICAL_ANALYSIS_VERSION", "Token",
@@ -47,5 +52,6 @@ __all__ = [
     "DiscourseMarker", "DiscourseRegistry", "DiscourseLink", "DiscourseAnalysis",
     "DiscourseAnalyzer", "initial_discourse_registry",
     "ASSERTION_EVIDENCE_ADAPTER_VERSION", "AssertionEvidenceProjection",
-    "project_assertions_and_evidence",
+    "project_assertions_and_evidence", "RESOURCE_REGISTRY_VERSION",
+    "ResourceDescriptor", "SemanticAssociation", "SemanticResourceRegistry",
 ]
