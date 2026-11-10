@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wizekin.github.io/USG-Workbench/evidence-assessment-task-1.0.0.schema.json",
+  "title": "USG Evidence Assessment Task 1.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "task_id",
+    "source_independence_policy",
+    "conflict_policy"
+  ],
+  "properties": {
+    "task_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "assertion_refs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "evidence_refs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "relation_refs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "source_independence_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "policy_id",
+        "version"
+      ],
+      "properties": {
+        "policy_id": {
+          "const": "USG-EVIDENCE-ASSESSMENT"
+        },
+        "version": {
+          "const": "1.0.0"
+        }
+      }
+    },
+    "conflict_policy": {
+      "const": "EXACT_COMPLEMENT_SAME_SCOPE"
+    },
+    "external_verification_declarations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "subject_ref",
+          "verifier_id",
+          "procedure_id",
+          "procedure_version",
+          "declared_result",
+          "record_ref"
+        ],
+        "properties": {
+          "subject_ref": {
+            "type": "string"
+          },
+          "verifier_id": {
+            "type": "string"
+          },
+          "procedure_id": {
+            "type": "string"
+          },
+          "procedure_version": {
+            "type": "string"
+          },
+          "declared_result": {
+            "enum": [
+              "VERIFIED",
+              "NOT_VERIFIED",
+              "INCONCLUSIVE"
+            ]
+          },
+          "record_ref": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
