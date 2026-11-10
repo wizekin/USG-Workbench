@@ -7,8 +7,14 @@
  */
 (function (root, factory) {
   const api = factory();
-  if (typeof module === 'object' && module.exports) module.exports = api;
-  if (root) root.USGWorkbenchSemAdapter = api;
+  if (typeof module === 'object' && module.exports) {
+    Object.assign(api, require('./reconstruct'));
+    module.exports = api;
+  }
+  if (root) {
+    if (root.USGWorkbenchReconstructionAdapter) Object.assign(api, root.USGWorkbenchReconstructionAdapter);
+    root.USGWorkbenchSemAdapter = api;
+  }
 })(typeof globalThis !== 'undefined' ? globalThis : this, function () {
   'use strict';
 
