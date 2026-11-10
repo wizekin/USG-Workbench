@@ -1,6 +1,6 @@
 # Phase 4 — Step 4.10: Optional Model-Assisted Candidate Generation
 
-**Status:** IMPLEMENTED — pending exact-PR CI and merge acceptance  
+**Status:** ACCEPTED — included in bounded v0.1.0 demonstrator  
 **Adapter:** `model-candidate-adapter/0.1.0`
 
 The optional `CandidateGenerator` protocol accepts local or external model implementations without making any model a required dependency. Proposal batches carry source digest, language, model ID/version, configuration digest, prompt digest, and ordered candidate records.
