@@ -31,4 +31,13 @@ The predicate/frame test checks registry coverage against the Workbench predicat
 
 The operator/scope test checks registry dispositions against Workbench operator declarations and verifies the Python kernel operator signatures, quantifier distinctions, conditional/unless scope semantics, and loss-prevention policy against both immutable source baselines.
 
-Phase 1 Step 4 round-trip tests are being developed under the verified four-boundary plan in `interoperability/round-trip-conformance/README.md`. Do not label snapshot-only export as an executable round trip; the source adapter and Python reverse serializer must exist before end-to-end conformance can pass.
+Workbench source adapter (Phase 1 Step 4A):
+
+```bash
+node --test tests/test_workbench_source_adapter.js
+python -m unittest discover -s tests -p "test_workbench_source_adapter.py" -v
+```
+
+The source adapter tests exercise Workbench v0.5.4 semantic-model conversion, operator/connective scope, argument-role ordering, unresolved mentions, native snapshot digests, partial mapping, dangling references, and UTF-16 → Unicode code-point offset conversion. The Python test validates the actual generated document against the USG-SEM/1.0 JSON Schema.
+
+The complete four-boundary round trip is not yet implemented. Step 3's unchanged-snapshot export is not a reverse serializer; Python projection serialization and Workbench reconstruction remain required before end-to-end conformance can pass.
