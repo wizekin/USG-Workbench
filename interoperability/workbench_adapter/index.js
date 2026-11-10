@@ -295,15 +295,18 @@
     canonicalExpressions.push(...argumentNodes);
 
     const rootExpressionRefs = roots.map(expressionRef);
-    const canonicalRelations = relations.map(relation => ({
-      id: opaqueId('relation', relation.id), type: relation.type,
-      sourceExpressionRef: expressionRef(relation.sourceExpressionId),
-      targetExpressionRef: expressionRef(relation.targetExpressionId),
-      verificationStatus: relation.verification === 'not_independently_verified' ? 'NOT_INDEPENDENTLY_VERIFIED' :
-        (relation.verification === 'candidate_not_proof' ? 'UNKNOWN' : 'UNKNOWN'),
-      evidenceRefs: arr(relation.evidenceRefs).map(evidenceRef),
-      attribution: clone(relation.attribution || {})
-    }));
+    const canonicalRelations = relations.map(relation => {
+      const id = opaqueId('relation', relation.id);
+      const exactVerification = relation.verification === 'not_independently_verified';
+      if (!exactVerification) partialRefs.push(id);
+      return { id, type: relation.type,
+        sourceExpressionRef: expressionRef(relation.sourceExpressionId),
+        targetExpressionRef: expressionRef(relation.targetExpressionId),
+        verificationStatus: exactVerification ? 'NOT_INDEPENDENTLY_VERIFIED' : 'UNKNOWN',
+        nativeVerification: relation.verification || 'unknown',
+        evidenceRefs: arr(relation.evidenceRefs).map(evidenceRef),
+        attribution: clone(relation.attribution || {}) };
+    });
 
     const canonicalUnresolved = unresolved.map(item => {
       const out = { id: opaqueId('unresolved', item.id), status: unresolvedStatus(item.status),
