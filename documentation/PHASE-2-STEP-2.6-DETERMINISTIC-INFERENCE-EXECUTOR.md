@@ -1,6 +1,6 @@
 # Phase 2 Step 2.6 — Deterministic Inference Executor
 
-**Status:** Implementation proposal under test; not accepted until its PR checks pass and it is merged.
+**Status:** COMPLETE — merged as PR #44. The integrated implementation and regression scope are recorded in the Phase 2 roadmap.
 
 ## Scope
 
