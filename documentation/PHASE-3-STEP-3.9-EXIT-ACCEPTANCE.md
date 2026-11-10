@@ -1,6 +1,6 @@
 # Phase 3 Step 3.9 — Integrated exit acceptance
 
-**Status:** IMPLEMENTED — awaiting exact-PR-head acceptance and merge.
+**Status:** COMPLETE — merged in [PR #69](https://github.com/wizekin/USG-Workbench/pull/69).
 **Acceptance profile:** `USG-PHASE3-EXIT-ACCEPTANCE/1.0.0`.
 **Canonical storage:** SQLite.
 
