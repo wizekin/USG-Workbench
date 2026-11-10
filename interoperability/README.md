@@ -28,4 +28,11 @@ Mappings must be exact and documented. Unsupported or lossy mappings must be rep
 - Referents, mentions, evidence assessments, contexts, definitions, expression relations, unresolved items, derivations, validation metadata and extensions remain canonical-only and are explicitly reported as partial/unmapped where no exact native model exists.
 - No SQLite migration, Workbench runtime integration, or changes to either immutable implementation baseline are included.
 
+### Step 4 — round-trip conformance (active)
+
+- [Round-trip conformance design and verified gap inventory](round-trip-conformance/README.md)
+- Establishes the required four-boundary conversion cycle and semantic invariants.
+- Initial audit confirms that a Workbench-to-contract adapter and a Python-projection-to-contract serializer are still missing. Step 3's unchanged-snapshot export is not treated as a reverse serializer.
+- The Workbench baseline uses UTF-16 string offsets; USG-SEM requires Unicode code-point offsets. This conversion must be explicit and tested.
+
 The registries and adapter target the immutable baseline pair: Workbench v0.5.4 and Python reference kernel 0.4.0. They do not yet establish complete runtime interoperability.
