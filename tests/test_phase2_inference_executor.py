@@ -130,7 +130,7 @@ class Phase2InferenceExecutorTests(unittest.TestCase):
         result = self.executor.execute(document, task(RULE_MP, max_rule_applications=0))
         self.assertEqual(result["completion_status"], "INCOMPLETE")
         self.assertTrue(result["pending_work"])
-        self.assertEqual(set(result["preserved_input_refs"]), {item["id"] for item in document["expressions"] + document["assertions"] + document["contexts"]})
+        self.assertEqual(set(result["preserved_input_refs"]), {item["id"] for item in document["sources"] + document["expressions"] + document["assertions"] + document["contexts"]})
         self.assertFalse(result["resource"]["semantic_truncation"])
 
     def test_inferred_candidates_are_never_chained(self):
