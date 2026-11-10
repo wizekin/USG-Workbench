@@ -104,6 +104,12 @@
           "const": false
         }
       }
+    },
+    "details": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
     }
   }
 }
