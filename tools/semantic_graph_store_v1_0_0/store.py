@@ -270,6 +270,14 @@ class CanonicalDocumentStore:
         ]
         if diagnostics:
             raise InvalidDocumentError(diagnostics)
+        for source in document.get("sources", []):
+            declared_hash = source.get("textHash")
+            if declared_hash is not None:
+                actual_hash = sha256(source["text"].encode("utf-8")).hexdigest()
+                if declared_hash.lower() != actual_hash:
+                    diagnostics.append(f"SOURCE_HASH_MISMATCH:{source['id']}")
+        if diagnostics:
+            raise InvalidDocumentError(diagnostics)
         try:
             grounding = GroundingIndex(document, self.schema)
         except Exception as exc:
