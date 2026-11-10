@@ -116,3 +116,15 @@ python -m unittest discover -s tests -p "test_semantic_reasoning_benchmark.py" -
 The versioned corpus is in `benchmarks/semantic-reasoning/v1.0.0/`. It includes fixture and candidate-result JSON Schemas plus frozen pre-inference thresholds. The evaluator is `tools/semantic_reasoning_benchmark_v1_0_0/evaluator.py`; it scores structured candidate results and does not execute inference. Tests validate the 35 fixtures and inject prohibited conclusions, scope/evidence errors, missing provenance, dropped items, resource truncation, nondeterminism, and per-category coverage failures.
 
 See [Phase 2 Step 2.2 documentation](../documentation/PHASE-2-STEP-2.2-BENCHMARK-CORPUS-AND-EVALUATOR.md).
+
+
+## Phase 2 Step 2.3 — Declarative rule model and registry
+
+```bash
+python -m pip install "jsonschema>=4.18,<5"
+python -m unittest discover -s tests -p "test_phase2_rule_registry.py" -v
+```
+
+The rule-model package is in `rules/semantic-reasoning/v1.0.0/`. The static validator is `tools/semantic_rule_registry_v1_0_0/validator.py`. The registry contains four disabled reference rules and cross-links to positive and negative/boundary/adversarial/unsupported fixtures in the frozen Step 2.2 corpus. No rule is executable in Step 2.3.
+
+See [Phase 2 Step 2.3 documentation](../documentation/PHASE-2-STEP-2.3-RULE-MODEL-AND-REGISTRY.md).
