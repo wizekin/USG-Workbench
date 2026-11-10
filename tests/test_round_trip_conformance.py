@@ -48,6 +48,15 @@ class RoundTripSemanticInvariantTests(unittest.TestCase):
         self.assertEqual(original["sources"][0]["text"], original_model["source"]["text"])
         self.assertEqual(source_report["status"], "PARTIAL",
                          "candidate relation verification must remain explicitly partial")
+        by_native = {item.get("nativeId"): item for item in original["expressions"] if item.get("nativeId")}
+        holds = next(item for item in original["expressions"]
+                     if item["op"] == "HOLDS" and item["operandRefs"] == [by_native["needs"]["id"]])
+        self.assertEqual(holds["sort"], "PROP")
+        self.assertEqual(by_native["not-needs"]["operandRefs"], [holds["id"]])
+        modal = by_native["might-not-needs"]
+        self.assertEqual(modal["params"]["force"], "POSSIBILITY")
+        self.assertEqual(modal["params"]["flavor"], "EPISTEMIC")
+        self.assertEqual(modal["params"]["nativeForce"], "epistemic_possibility")
 
         imported = document_to_python(original)
         self.assertEqual(imported.sources[original["primarySourceRef"]].text,
@@ -150,7 +159,7 @@ class RoundTripSemanticInvariantTests(unittest.TestCase):
         self.assertEqual(result["sourceReport"]["status"], "PARTIAL")
         self.assertTrue(any(ref.startswith("wb:warning:")
                             for ref in result["sourceReport"]["unmappedRefs"]))
-        self.assertEqual(result["resultReport"]["status"], "UNMAPPED")
+        self.assertEqual(result["resultReport"]["status"], "PARTIAL")
         self.assertTrue(result["resultReport"]["unmappedRefs"])
 
     def test_canonical_edits_override_stale_native_payload(self):
@@ -170,7 +179,8 @@ class RoundTripSemanticInvariantTests(unittest.TestCase):
     def test_large_multi_root_graph_has_no_semantic_count_cap(self):
         result = run_bridge("large", None, "512")
         self.assertEqual(result["inputCount"], 512)
-        self.assertEqual(result["canonicalCount"], 512)
+        self.assertEqual(result["canonicalCount"], 1536,
+                         "512 predications plus two ordered argument nodes each")
         self.assertEqual(result["outputCount"], 512)
         self.assertEqual(result["rootCount"], 512)
         self.assertTrue(result["validation"]["valid"], result["validation"]["errors"])
