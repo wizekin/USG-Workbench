@@ -1,15 +1,22 @@
 from __future__ import annotations
 
 import hashlib
+import importlib.util
 import sys
 import unittest
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "implementations" / "python-kernel" / "v0.7.0"))
 
-from tools.usg_kernel_lab.server import _apply_native_edits, _native_json
+SERVER_PATH = ROOT / "tools" / "usg-kernel-lab" / "server.py"
+SPEC = importlib.util.spec_from_file_location("usg_kernel_lab_server", SERVER_PATH)
+SERVER = importlib.util.module_from_spec(SPEC)
+sys.modules[SPEC.name] = SERVER
+SPEC.loader.exec_module(SERVER)
+_apply_native_edits = SERVER._apply_native_edits
+_native_json = SERVER._native_json
 from interoperability.python_adapter.document_v07 import (
     document_to_kernel_v07, kernel_v07_document_to_contract,
 )
@@ -68,11 +75,10 @@ class KernelLabTests(unittest.TestCase):
         original = sample_document()
         imported = document_to_kernel_v07(original, validate=True)
         rows = [_native_json(item) for item in imported.mentions.values()]
-        rows[0]["surfaceText"] = "Alexandra"
-        rows[0]["sourceSpan"] = [1, 10]
+        rows[0]["mentionType"] = "PERSON_NAME"
         _apply_native_edits(imported, rows)
         exported = kernel_v07_document_to_contract(imported, validate=True)
-        self.assertEqual(exported["mentions"][0]["surfaceText"], "Alexandra")
+        self.assertEqual(exported["mentions"][0]["mentionType"], "PERSON_NAME")
         self.assertEqual(exported["referents"], original["referents"])
         self.assertEqual(exported["extensions"], original["extensions"])
         self.assertEqual(exported["mentions"][1], original["mentions"][1])
