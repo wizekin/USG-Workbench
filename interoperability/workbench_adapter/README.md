@@ -67,3 +67,52 @@ python -m unittest discover -s tests -p "test_workbench_source_adapter.py" -v
 ```
 
 The Node tests cover predicate/argument structure, nested negation and modality, directed UNLESS/EXCEPTION, unresolved mentions, supplementary Unicode offsets, surrogate-pair rejection, partial mappings, stale-snapshot detection and dangling references. The Python test validates actual adapter output against the normative USG-SEM/1.0 JSON Schema.
+
+
+## Reverse reconstruction — USG-SEM/1.0 → Workbench v0.5.4
+
+The reverse boundary is exposed as `contractToWorkbench(document)` from
+`interoperability/workbench_adapter` (CommonJS). In a browser, load
+`reconstruct.js` before `index.js` so the reconstruction API is attached to
+`USGWorkbenchSemAdapter`.
+
+```js
+const adapter = require('./interoperability/workbench_adapter');
+const { model, report, validation } = await adapter.contractToWorkbench(document);
+```
+
+The adapter reconstructs Workbench `PREDICATION`, `OPERATOR`, and
+`CONNECTIVE` records from canonical graph nodes. It restores argument order,
+referent/mention links, variable bindings, nested operator scope, directed
+antecedent/consequent roles, evidence offsets, temporal data, event-frame
+attributes, attribution, provenance, relations, unresolved items, and roots
+where the canonical fields provide exact equivalents. USG-SEM code-point spans
+are converted back to Workbench UTF-16 offsets.
+
+### Native snapshot policy
+
+The adapter verifies both the Workbench native-model digest and the canonical
+projection digest. A verified native snapshot may supply archival-only
+identifiers and metadata; canonical meaning is always reconstructed from the
+current USG-SEM fields. If either digest fails, stale native restoration is
+blocked. The adapter still attempts a canonical reconstruction, but returns
+`PARTIAL` diagnostics and never substitutes the old native model.
+
+Legacy `acceptanceBoundary` data is returned separately as inert
+`report.archivalNativeFields` when the snapshot is verified. It is not copied
+into the reconstructed semantic model and is not used as a validation gate.
+The reconstruction adapter uses its own structural validator because the
+immutable Workbench validator requires the legacy human-review flag.
+
+Unsupported canonical constructors (including `OPAQUE`), extra sources,
+unsupported document-level records, and canonical-only metadata are listed in
+`report.unmappedRefs`. They are not coerced into Workbench operators or
+silently dropped from the original canonical document. The adapter's
+`PARTIAL` status is document-wide: a successfully reconstructed graph does
+not hide unmapped derivations, assertions, contexts, or other records.
+
+### Reverse adapter test
+
+```bash
+node --test tests/test_workbench_reconstruction_adapter.js
+```
