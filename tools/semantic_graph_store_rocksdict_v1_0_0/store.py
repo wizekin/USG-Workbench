@@ -18,7 +18,7 @@ from typing import Any, Iterator
 from urllib.parse import quote
 
 from jsonschema import Draft202012Validator, FormatChecker
-from rocksdict import Options, Rdict, WriteBatch, WriteOptions
+from rocksdict import Options, Rdict, WriteBatch
 
 from tools.semantic_grounding_v1_0_0.grounding import GroundingIndex
 from tools.semantic_graph_store_v1_0_0.canonical import (
@@ -115,9 +115,6 @@ class CanonicalDocumentStore:
         options = Options(raw_mode=True)
         options.create_if_missing(True)
         self._db = Rdict(str(self.path), options)
-        write_options = WriteOptions()
-        write_options.set_sync(True)
-        self._db.set_write_options(write_options)
         self._lock_path = self.path.with_name(self.path.name + ".usg-writer.lock")
 
     def close(self) -> None:
@@ -344,6 +341,8 @@ class CanonicalDocumentStore:
                     )
             batch.put(self._current_key(document_id), _json_bytes(current_meta))
             self._db.write(batch)
+            # WriteBatch is atomic; synchronously flush its WAL record for durability.
+            self._db.flush_wal(True)
             return StoredDocument(
                 document_id, revision, predecessor, digest, CANONICALIZATION_PROFILE,
                 now, parse_canonical(raw), "STORED",
