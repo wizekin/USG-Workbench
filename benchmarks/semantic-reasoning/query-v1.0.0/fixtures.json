@@ -1,0 +1,392 @@
+{
+  "benchmark_id": "USG-STRUCTURED-QUERY-BENCHMARK",
+  "benchmark_version": "1.0.0",
+  "fixtures": [
+    {
+      "id": "QUERY-DERIVED-MP-001",
+      "document_ref": {
+        "benchmark_id": "USG-INFERENCE-EXECUTOR-BENCHMARK",
+        "fixture_id": "EXEC-MP-POSITIVE-001"
+      },
+      "query": {
+        "query_id": "q-derived",
+        "goal": {
+          "expression_ref": "expr-b",
+          "context_ref": "ctx-world",
+          "context_kind": "WORLD",
+          "commitment": "AUTHOR"
+        },
+        "inference_task": {
+          "task_id": "q-derived:inference",
+          "rule_ids": [
+            "benchmark-rule:modus-ponens"
+          ],
+          "world_assumption": "OPEN",
+          "allow_inferred_premises": false,
+          "evidence_assessment": false
+        }
+      },
+      "expected": {
+        "completion_status": "COMPLETE",
+        "goal_status": "DERIVED_NOT_VERIFIED",
+        "candidate_count": 1,
+        "derivation_count": 1
+      }
+    },
+    {
+      "id": "QUERY-DIRECT-ASSERTION-001",
+      "document_ref": {
+        "benchmark_id": "USG-INFERENCE-EXECUTOR-BENCHMARK",
+        "fixture_id": "EXEC-MP-POSITIVE-001"
+      },
+      "query": {
+        "query_id": "q-direct",
+        "goal": {
+          "expression_ref": "expr-a",
+          "context_ref": "ctx-world",
+          "context_kind": "WORLD",
+          "commitment": "AUTHOR"
+        },
+        "inference_task": {
+          "task_id": "q-direct:inference",
+          "rule_ids": [
+            "benchmark-rule:modus-ponens"
+          ],
+          "world_assumption": "OPEN",
+          "allow_inferred_premises": false,
+          "evidence_assessment": false
+        }
+      },
+      "expected": {
+        "completion_status": "COMPLETE",
+        "goal_status": "SOURCE_ASSERTED_NOT_VERIFIED",
+        "source_assertion_count": 1
+      }
+    },
+    {
+      "id": "QUERY-OPEN-WORLD-NO-MATCH-001",
+      "document_ref": {
+        "benchmark_id": "USG-INFERENCE-EXECUTOR-BENCHMARK",
+        "fixture_id": "EXEC-MP-POSITIVE-001"
+      },
+      "query": {
+        "query_id": "q-no-match",
+        "goal": {
+          "expression_ref": "expr-c",
+          "context_ref": "ctx-world",
+          "context_kind": "WORLD",
+          "commitment": "AUTHOR"
+        },
+        "inference_task": {
+          "task_id": "q-no-match:inference",
+          "rule_ids": [
+            "benchmark-rule:modus-ponens"
+          ],
+          "world_assumption": "OPEN",
+          "allow_inferred_premises": false,
+          "evidence_assessment": false
+        }
+      },
+      "expected": {
+        "completion_status": "COMPLETE",
+        "goal_status": "NOT_ESTABLISHED",
+        "candidate_count": 0
+      }
+    },
+    {
+      "id": "QUERY-EXACT-CONFLICT-001",
+      "document_ref": {
+        "benchmark_id": "USG-EVIDENCE-ASSESSMENT-BENCHMARK",
+        "fixture_id": "EV-EXACT-COMPLEMENT-CONFLICT-001"
+      },
+      "query": {
+        "query_id": "q-conflict",
+        "goal": {
+          "expression_ref": "expr-a",
+          "context_ref": "ctx-world",
+          "context_kind": "WORLD",
+          "commitment": "AUTHOR"
+        },
+        "inference_task": {
+          "task_id": "q-conflict:inference",
+          "rule_ids": [
+            "benchmark-rule:modus-ponens"
+          ],
+          "world_assumption": "OPEN",
+          "allow_inferred_premises": false,
+          "evidence_assessment": false
+        }
+      },
+      "expected": {
+        "completion_status": "COMPLETE",
+        "goal_status": "CONFLICTING",
+        "conflict_count": 1
+      }
+    },
+    {
+      "id": "QUERY-CONTEXT-ISOLATION-001",
+      "document_ref": {
+        "benchmark_id": "USG-EVIDENCE-ASSESSMENT-BENCHMARK",
+        "fixture_id": "EV-CONTEXT-ISOLATED-001"
+      },
+      "query": {
+        "query_id": "q-context",
+        "goal": {
+          "expression_ref": "expr-a",
+          "context_ref": "ctx-world",
+          "context_kind": "WORLD",
+          "commitment": "AUTHOR"
+        },
+        "inference_task": {
+          "task_id": "q-context:inference",
+          "rule_ids": [
+            "benchmark-rule:modus-ponens"
+          ],
+          "world_assumption": "OPEN",
+          "allow_inferred_premises": false,
+          "evidence_assessment": false
+        }
+      },
+      "expected": {
+        "completion_status": "COMPLETE",
+        "goal_status": "SOURCE_ASSERTED_NOT_VERIFIED",
+        "conflict_count": 0
+      }
+    },
+    {
+      "id": "QUERY-ATTRIBUTION-ISOLATION-001",
+      "document_ref": {
+        "benchmark_id": "USG-EVIDENCE-ASSESSMENT-BENCHMARK",
+        "fixture_id": "EV-ATTRIBUTION-ISOLATED-001"
+      },
+      "query": {
+        "query_id": "q-attribution",
+        "goal": {
+          "expression_ref": "expr-a",
+          "context_ref": "ctx-world",
+          "context_kind": "WORLD",
+          "commitment": "ATTRIBUTED",
+          "attributed_to_ref": "ref-a"
+        },
+        "inference_task": {
+          "task_id": "q-attribution:inference",
+          "rule_ids": [
+            "benchmark-rule:modus-ponens"
+          ],
+          "world_assumption": "OPEN",
+          "allow_inferred_premises": false,
+          "evidence_assessment": false
+        }
+      },
+      "expected": {
+        "completion_status": "COMPLETE",
+        "goal_status": "SOURCE_ASSERTED_NOT_VERIFIED",
+        "conflict_count": 0
+      }
+    },
+    {
+      "id": "QUERY-DISPUTED-001",
+      "document_ref": {
+        "benchmark_id": "USG-INFERENCE-EXECUTOR-BENCHMARK",
+        "fixture_id": "EXEC-DISPUTED-PREMISE-001"
+      },
+      "query": {
+        "query_id": "q-disputed",
+        "goal": {
+          "expression_ref": "expr-a",
+          "context_ref": "ctx-world",
+          "context_kind": "WORLD",
+          "commitment": "AUTHOR"
+        },
+        "inference_task": {
+          "task_id": "q-disputed:inference",
+          "rule_ids": [
+            "benchmark-rule:modus-ponens"
+          ],
+          "world_assumption": "OPEN",
+          "allow_inferred_premises": false,
+          "evidence_assessment": false
+        }
+      },
+      "expected": {
+        "completion_status": "COMPLETE",
+        "goal_status": "DISPUTED"
+      }
+    },
+    {
+      "id": "QUERY-AMBIGUOUS-GOAL-001",
+      "document_ref": {
+        "benchmark_id": "USG-INFERENCE-EXECUTOR-BENCHMARK",
+        "fixture_id": "EXEC-AMBIGUOUS-EXPRESSION-001"
+      },
+      "query": {
+        "query_id": "q-ambiguous",
+        "goal": {
+          "expression_ref": "expr-a",
+          "context_ref": "ctx-world",
+          "context_kind": "WORLD",
+          "commitment": "AUTHOR"
+        },
+        "inference_task": {
+          "task_id": "q-ambiguous:inference",
+          "rule_ids": [
+            "benchmark-rule:modus-ponens"
+          ],
+          "world_assumption": "OPEN",
+          "allow_inferred_premises": false,
+          "evidence_assessment": false
+        }
+      },
+      "expected": {
+        "completion_status": "AMBIGUOUS",
+        "goal_status": "AMBIGUOUS"
+      }
+    },
+    {
+      "id": "QUERY-UNRESOLVED-GOAL-001",
+      "document_ref": {
+        "benchmark_id": "USG-INFERENCE-EXECUTOR-BENCHMARK",
+        "fixture_id": "EXEC-UNRESOLVED-EXPRESSION-001"
+      },
+      "query": {
+        "query_id": "q-unresolved",
+        "goal": {
+          "expression_ref": "expr-a",
+          "context_ref": "ctx-world",
+          "context_kind": "WORLD",
+          "commitment": "AUTHOR"
+        },
+        "inference_task": {
+          "task_id": "q-unresolved:inference",
+          "rule_ids": [
+            "benchmark-rule:modus-ponens"
+          ],
+          "world_assumption": "OPEN",
+          "allow_inferred_premises": false,
+          "evidence_assessment": false
+        }
+      },
+      "expected": {
+        "completion_status": "UNRESOLVED",
+        "goal_status": "UNRESOLVED"
+      }
+    },
+    {
+      "id": "QUERY-UNKNOWN-GOAL-001",
+      "document_ref": {
+        "benchmark_id": "USG-INFERENCE-EXECUTOR-BENCHMARK",
+        "fixture_id": "EXEC-UNKNOWN-PREMISE-001"
+      },
+      "query": {
+        "query_id": "q-unknown",
+        "goal": {
+          "expression_ref": "expr-a",
+          "context_ref": "ctx-world",
+          "context_kind": "WORLD",
+          "commitment": "AUTHOR"
+        },
+        "inference_task": {
+          "task_id": "q-unknown:inference",
+          "rule_ids": [
+            "benchmark-rule:modus-ponens"
+          ],
+          "world_assumption": "OPEN",
+          "allow_inferred_premises": false,
+          "evidence_assessment": false
+        }
+      },
+      "expected": {
+        "completion_status": "COMPLETE",
+        "goal_status": "UNKNOWN"
+      }
+    },
+    {
+      "id": "QUERY-INCOMPLETE-001",
+      "document_ref": {
+        "benchmark_id": "USG-INFERENCE-EXECUTOR-BENCHMARK",
+        "fixture_id": "EXEC-MP-POSITIVE-001"
+      },
+      "query": {
+        "query_id": "q-incomplete",
+        "goal": {
+          "expression_ref": "expr-b",
+          "context_ref": "ctx-world",
+          "context_kind": "WORLD",
+          "commitment": "AUTHOR"
+        },
+        "inference_task": {
+          "task_id": "q-incomplete:inference",
+          "rule_ids": [
+            "benchmark-rule:modus-ponens"
+          ],
+          "world_assumption": "OPEN",
+          "allow_inferred_premises": false,
+          "evidence_assessment": false,
+          "max_rule_applications": 0
+        }
+      },
+      "expected": {
+        "completion_status": "INCOMPLETE",
+        "goal_status": "NOT_ESTABLISHED"
+      }
+    },
+    {
+      "id": "QUERY-UNSUPPORTED-RULE-001",
+      "document_ref": {
+        "benchmark_id": "USG-INFERENCE-EXECUTOR-BENCHMARK",
+        "fixture_id": "EXEC-MP-POSITIVE-001"
+      },
+      "query": {
+        "query_id": "q-unsupported",
+        "goal": {
+          "expression_ref": "expr-c",
+          "context_ref": "ctx-world",
+          "context_kind": "WORLD",
+          "commitment": "AUTHOR"
+        },
+        "inference_task": {
+          "task_id": "q-unsupported:inference",
+          "rule_ids": [
+            "benchmark-rule:not-enabled"
+          ],
+          "world_assumption": "OPEN",
+          "allow_inferred_premises": false,
+          "evidence_assessment": false
+        }
+      },
+      "expected": {
+        "completion_status": "UNSUPPORTED",
+        "goal_status": "UNSUPPORTED"
+      }
+    },
+    {
+      "id": "QUERY-UNRESOLVED-REFERENCE-001",
+      "document_ref": {
+        "benchmark_id": "USG-INFERENCE-EXECUTOR-BENCHMARK",
+        "fixture_id": "EXEC-MP-POSITIVE-001"
+      },
+      "query": {
+        "query_id": "q-missing",
+        "goal": {
+          "expression_ref": "expr-missing",
+          "context_ref": "ctx-world",
+          "context_kind": "WORLD",
+          "commitment": "AUTHOR"
+        },
+        "inference_task": {
+          "task_id": "q-missing:inference",
+          "rule_ids": [
+            "benchmark-rule:modus-ponens"
+          ],
+          "world_assumption": "OPEN",
+          "allow_inferred_premises": false,
+          "evidence_assessment": false
+        }
+      },
+      "expected": {
+        "completion_status": "UNRESOLVED",
+        "goal_status": "UNRESOLVED"
+      }
+    }
+  ]
+}
