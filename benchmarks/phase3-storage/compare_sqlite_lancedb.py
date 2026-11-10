@@ -27,7 +27,8 @@ def timed(fn):
 
 
 def storage_size(path: Path):
-    return sum(p.stat().st_size for p in path.rglob("*") if p.is_file())
+    files = [path] if path.is_file() else [p for p in path.rglob("*") if p.is_file()]
+    return sum(p.stat().st_size for p in files)
 
 
 def run_once(backend, document, root):
