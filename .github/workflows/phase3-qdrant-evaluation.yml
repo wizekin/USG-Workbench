@@ -1,4 +1,4 @@
-name: Phase 3 Storage Candidate Evaluation — Qdrant
+name: Phase 3 Storage Candidate Evaluation — Qdrant (scope-qualified snapshot benchmark)
 on:
   pull_request:
     paths:
