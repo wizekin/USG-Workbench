@@ -117,6 +117,7 @@ class SemanticReasoningBenchmarkTests(unittest.TestCase):
                 self.assertEqual(fixture["versions"]["python_document_adapter"], "1.5.1")
                 self.assertEqual(fixture["input_snapshot"]["profile_id"], "USG-SEM/1.0")
                 self.assertTrue(fixture["task"]["goal"])
+                self.assertGreaterEqual(len(fixture["rationale"]), 40)
                 for key in (
                     "completion_status", "conclusions", "prohibited_conclusions",
                     "diagnostics", "scope_checks", "evidence_checks",
