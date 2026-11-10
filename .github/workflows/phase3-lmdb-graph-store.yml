@@ -1,0 +1,50 @@
+name: Phase 3 LMDB Graph Store Evaluation
+
+on:
+  pull_request:
+    paths:
+      - "tools/semantic_graph_store_lmdb_v1_0_0/**"
+      - "tests/test_phase3_lmdb_graph_store.py"
+      - "benchmarks/phase3-storage/**"
+      - "documentation/PHASE-3-LMDB-*.md"
+      - ".github/workflows/phase3-lmdb-graph-store.yml"
+  push:
+    branches: [main]
+    paths:
+      - "tools/semantic_graph_store_lmdb_v1_0_0/**"
+      - "tests/test_phase3_lmdb_graph_store.py"
+      - "benchmarks/phase3-storage/**"
+      - "documentation/PHASE-3-LMDB-*.md"
+      - ".github/workflows/phase3-lmdb-graph-store.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lmdb-store:
+    name: phase3-lmdb-store
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout exact event revision
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: python -m pip install "jsonschema>=4.18,<5" "lmdb>=2.2,<4"
+      - name: Compile LMDB store
+        run: python -m compileall -q tools/semantic_graph_store_lmdb_v1_0_0
+      - name: Run LMDB graph-store tests
+        run: python -m unittest discover -s tests -p "test_phase3_lmdb_graph_store.py" -v
+      - name: Run SQLite/LMDB comparison benchmark
+        run: python benchmarks/phase3-storage/compare_stores.py --repeats 3 --extra-expressions 1200
+      - name: Upload benchmark report
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase3-storage-benchmark
+          path: phase3-storage-benchmark.json
