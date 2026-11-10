@@ -2413,7 +2413,56 @@
         "diagnostics": [],
         "scope_checks": [],
         "evidence_checks": [],
-        "required_derivations": [],
+        "required_derivations": [
+          {
+            "conclusion_id": "ASSERTED:A",
+            "derivation_id": "D-IMPORT-A",
+            "required_fields": [
+              "derivation_id",
+              "conclusion_id",
+              "method",
+              "input_refs",
+              "output_refs",
+              "status"
+            ],
+            "expected_fields": {
+              "derivation_id": "D-IMPORT-A",
+              "conclusion_id": "ASSERTED:A",
+              "method": "IMPORT",
+              "input_refs": [
+                "assert-a"
+              ],
+              "output_refs": [
+                "ASSERTED:A"
+              ],
+              "status": "VALIDATED"
+            }
+          },
+          {
+            "conclusion_id": "ASSERTED:B",
+            "derivation_id": "D-IMPORT-B",
+            "required_fields": [
+              "derivation_id",
+              "conclusion_id",
+              "method",
+              "input_refs",
+              "output_refs",
+              "status"
+            ],
+            "expected_fields": {
+              "derivation_id": "D-IMPORT-B",
+              "conclusion_id": "ASSERTED:B",
+              "method": "IMPORT",
+              "input_refs": [
+                "assert-b"
+              ],
+              "output_refs": [
+                "ASSERTED:B"
+              ],
+              "status": "VALIDATED"
+            }
+          }
+        ],
         "preserved_item_ids": []
       },
       "determinism_required": true,
