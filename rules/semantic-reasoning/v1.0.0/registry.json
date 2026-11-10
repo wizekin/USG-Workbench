@@ -38,6 +38,12 @@
           "value_type": "context_ref",
           "required": true,
           "description": "Exact shared context reference."
+        },
+        {
+          "name": "E",
+          "value_type": "expression_ref",
+          "required": true,
+          "description": "Exact expression referenced by the conditional assertion."
         }
       ],
       "premises": [
@@ -63,7 +69,7 @@
           "match": {
             "record_type": "assertion",
             "field_bindings": {
-              "expression_ref": "conditional-expression",
+              "expression_ref": "E",
               "context_ref": "C"
             },
             "fixed_fields": {
@@ -78,7 +84,7 @@
           "match": {
             "record_type": "expression",
             "field_bindings": {
-              "id": "conditional-expression",
+              "id": "E",
               "antecedent_ref": "A",
               "consequent_ref": "B"
             },
@@ -240,6 +246,12 @@
           "value_type": "context_ref",
           "required": true,
           "description": "Exact source context."
+        },
+        {
+          "name": "E",
+          "value_type": "expression_ref",
+          "required": true,
+          "description": "Exact expression referenced by the conjunction assertion."
         }
       ],
       "premises": [
@@ -250,7 +262,7 @@
           "match": {
             "record_type": "assertion",
             "field_bindings": {
-              "expression_ref": "conjunction-expression",
+              "expression_ref": "E",
               "context_ref": "C"
             },
             "fixed_fields": {
@@ -265,7 +277,7 @@
           "match": {
             "record_type": "expression",
             "field_bindings": {
-              "id": "conjunction-expression",
+              "id": "E",
               "operand_refs": [
                 "$A",
                 "$B"
@@ -607,10 +619,10 @@
           "description": "Later event reference."
         },
         {
-          "name": "C",
-          "value_type": "context_ref",
+          "name": "E",
+          "value_type": "expression_ref",
           "required": true,
-          "description": "Exact source context, when present."
+          "description": "Exact expression referenced by the temporal assertion."
         }
       ],
       "premises": [
@@ -621,8 +633,7 @@
           "match": {
             "record_type": "assertion",
             "field_bindings": {
-              "expression_ref": "before-expression",
-              "context_ref": "C"
+              "expression_ref": "E"
             },
             "fixed_fields": {
               "eligibility": "RULE_ELIGIBLE_ASSERTION"
@@ -636,7 +647,7 @@
           "match": {
             "record_type": "expression",
             "field_bindings": {
-              "id": "before-expression",
+              "id": "E",
               "source_ref": "A",
               "target_ref": "B"
             },
@@ -665,19 +676,10 @@
             "premise": "before-assertion"
           },
           "failure_diagnostic": "RULE_PREMISE_INELIGIBLE"
-        },
-        {
-          "constraint_id": "context-preserved",
-          "kind": "context_preserved",
-          "parameters": {
-            "source": "C",
-            "target": "C"
-          },
-          "failure_diagnostic": "RULE_CONTEXT_TRANSFER_FORBIDDEN"
         }
       ],
       "scope_context_requirements": {
-        "context": "same_exact_reference",
+        "context": "preserve_exact",
         "attribution": "preserve_exact",
         "polarity": "preserve_exact",
         "modality": "preserve_exact",
@@ -695,7 +697,6 @@
             "relation": "BEFORE",
             "source_ref": "$A",
             "target_ref": "$B",
-            "context_ref": "$C",
             "derivation_required": true
           },
           "epistemic_effect": "DERIVED_NOT_VERIFIED",
@@ -721,8 +722,7 @@
       ],
       "diagnostics": [
         "TEMPORAL_DIRECTION_CHANGED",
-        "RULE_PREMISE_INELIGIBLE",
-        "RULE_CONTEXT_TRANSFER_FORBIDDEN"
+        "RULE_PREMISE_INELIGIBLE"
       ],
       "test_coverage": [
         {
