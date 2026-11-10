@@ -199,8 +199,10 @@ and `QUANTIFIER` without changing the 0.4.0 baseline.
   canonical JSON metadata and are not silently converted to legacy `Q`.
 - Structured source metadata can be recovered with `metadata_value(node, field)`.
 - Binder utilities provide free-variable occurrence reporting, alpha-equivalence,
-  and safe substitution of free name-bound variables. Identity-bound variables
-  cannot be captured by a matching display name.
+  and identity-aware substitution. The existing scope API recognizes stable
+  binder identities as well as legacy name-bound `Q` variables.
+- `OPAQUE` and `UNRESOLVED_REF` are distinct preservation-only nodes. Both
+  remain sort `ANY` and are excluded from inference eligibility.
 
 The release intentionally does not infer registered frames or connective
 truth conditions from lexical labels. Exact conversion to legacy `APPLY` or

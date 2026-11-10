@@ -84,6 +84,10 @@ _SIGS: dict[str, Sig] = {
                  "disjunctionSemantics", "attribution", "evidenceRefs")),
     "QUANTIFIER": Sig(PROP, fixed=(PROP,), required=("operatorType", "operator", "binderId", "variable", "scopeKind"),
         allowed=("restrictor", "variableBinding", "count", "surfaceText", "evidenceRefs", "attribution")),
+    "OPAQUE": Sig(ANY, variadic=ANY, min_var=0, required=("sourceOp", "reason", "sourceSort"),
+        allowed=("payload", "evidenceRefs")),
+    "UNRESOLVED_REF": Sig(ANY, required=("referenceId", "reason", "sourceSort"),
+        allowed=("role", "mentionRef", "evidenceRefs")),
     "ASPECT": Sig(SIT, fixed=(SIT,), required=("aspect",)),
     "COMPOSE": Sig(SIT, variadic=SIT, min_var=2, required=("kind",)),
     "HOLDS": Sig(PROP, fixed=(SIT,)),
@@ -232,6 +236,14 @@ class Node:
             count = self.get("count")
             if count is not None and (not isinstance(count, int) or isinstance(count, bool) or count < 0):
                 raise InvariantViolation("QUANTIFIER count must be a non-negative integer", "SG-CON-006")
+        if self.op == "OPAQUE":
+            if not all(isinstance(self.get(k), str) and self.get(k).strip()
+                       for k in ("sourceOp", "reason", "sourceSort")):
+                raise InvariantViolation("OPAQUE requires source operator, source sort, and reason", "SG-CON-006")
+        if self.op == "UNRESOLVED_REF":
+            if not all(isinstance(self.get(k), str) and self.get(k).strip()
+                       for k in ("referenceId", "reason", "sourceSort")):
+                raise InvariantViolation("UNRESOLVED_REF requires reference identity, source sort, and reason", "SG-CON-006")
 
     # -- accessors ---------------------------------------------------------------
     def get(self, key: str, default: Any = None) -> Any:
@@ -266,6 +278,8 @@ def sort_of(node: Node) -> Any:
             s = sort_of(a)
             if s != ANY:
                 return s
+    # Preservation-only nodes deliberately remain ANY even when sourceSort is known.
+    # Source typing is archival metadata, not permission to infer from opaque content.
     return ANY
 
 
@@ -335,6 +349,33 @@ def metadata_value(node: Node, key: str, default: Any = None) -> Any:
         return value
 
 
+def opaque(source_op: str, reason: str, source_sort: str, *, operands: Sequence[Node] = (),
+           payload: Any = None, evidence_refs: Any = None) -> Node:
+    params: dict[str, Any] = {"sourceOp": source_op, "reason": reason, "sourceSort": source_sort}
+    if payload is not None:
+        params["payload"] = _metadata_json(payload)
+    if evidence_refs is not None:
+        params["evidenceRefs"] = _metadata_json(evidence_refs)
+    return Node("OPAQUE", tuple(operands), params)
+
+
+def unresolved_ref(reference_id: str, reason: str, source_sort: str, *, role: str | None = None,
+                   mention_ref: str | None = None, evidence_refs: Any = None) -> Node:
+    params: dict[str, Any] = {"referenceId": reference_id, "reason": reason, "sourceSort": source_sort}
+    if role is not None:
+        params["role"] = role
+    if mention_ref is not None:
+        params["mentionRef"] = mention_ref
+    if evidence_refs is not None:
+        params["evidenceRefs"] = _metadata_json(evidence_refs)
+    return Node("UNRESOLVED_REF", (), params)
+
+
+def inference_eligible(node: Node) -> bool:
+    """Opaque and unresolved preservation nodes are never inference premises."""
+    return all(n.op not in ("OPAQUE", "UNRESOLVED_REF") for _, n in walk(node))
+
+
 def predicate_app(predicate: str, roles: Sequence[str], arguments: Sequence[Node], **metadata: Any) -> Node:
     if not isinstance(predicate, str) or not predicate.strip():
         raise InvariantViolation("PREDICATE_APP predicate must be a non-empty string", "SG-CON-006")
@@ -365,6 +406,13 @@ def quantifier(operator_type: str, operator: str, binder_id: str, variable: str,
     if restrictor is not None:
         params["restrictor"] = _metadata_json(restrictor)
     if variable_binding is not None:
+        if isinstance(variable_binding, Mapping):
+            declared_binder = variable_binding.get("binderId")
+            declared_variable = variable_binding.get("variable")
+            if declared_binder is not None and declared_binder != binder_id:
+                raise InvariantViolation("QUANTIFIER variableBinding binderId conflicts with binderId", "SG-CON-006")
+            if declared_variable is not None and declared_variable != variable:
+                raise InvariantViolation("QUANTIFIER variableBinding variable conflicts with variable", "SG-CON-006")
         params["variableBinding"] = _metadata_json(variable_binding)
     if count is not None:
         params["count"] = count

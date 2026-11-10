@@ -11,9 +11,10 @@
 - Native `CONNECTIVE` constructor with PROP result sort, explicit connective identity, one-to-one operand roles, ordered operands, directed conditional role validation, and preserved source metadata.
 - Native `QUANTIFIER` constructor with PROP result sort, one PROP body, explicit operator family/identity, stable binder identity, display variable, scope kind, optional restrictor/binding metadata, count, surface text, evidence and attribution.
 - Deterministic JSON envelopes for structured source metadata. The AST does not interpret metadata as truth conditions.
-- Binder utilities for free variable occurrence reporting, closed-scope checks, alpha-equivalence by binder identity, and free-variable substitution.
+- Binder utilities for free variable occurrence reporting, closed-scope checks, alpha-equivalence by binder identity (including binder-linked metadata), and identity-aware free-variable substitution.
+- Distinct `OPAQUE` and `UNRESOLVED_REF` preservation nodes; neither is inference-eligible and both retain source sort only as archival metadata.
 - Serialization round-trip and canonicalization tests, including legacy `Q` compatibility.
-- CI coverage for the new constructors and an immutable-baseline guard that explicitly excludes only the new v0.5.0 release directory.
+- CI coverage for the complete copied 0.5.0 kernel test suite, including the new constructor tests and an immutable-baseline guard that explicitly excludes only the new v0.5.0 release directory.
 
 ## Semantic safeguards
 

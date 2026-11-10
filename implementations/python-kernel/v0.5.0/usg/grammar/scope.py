@@ -10,13 +10,15 @@ Q binds one variable. The variable is visible in the restrictor and the scope
 
 from __future__ import annotations
 
+import json
 from .node import Node
 
 
 def _scan(node: Node, env: frozenset[str], free: set[str], issues: list[tuple[str, str]]) -> None:
     if node.op == "VAR":
-        name = node.get("name")
-        if name not in env:
+        name, binder_id = node.get("name"), node.get("binderId")
+        token = "@" + binder_id if binder_id is not None else name
+        if token not in env:
             free.add(name)
         return
     if node.op == "Q":
@@ -26,6 +28,13 @@ def _scan(node: Node, env: frozenset[str], free: set[str], issues: list[tuple[st
         inner = env | {v}
         for i, a in enumerate(node.args):
             _scan(a, inner if i < 2 else env, free, issues)
+        return
+    if node.op == "QUANTIFIER":
+        binder_id = node.get("binderId")
+        token = "@" + binder_id
+        if token in env:
+            issues.append(("VC-S13", f"duplicate active binder identity {binder_id!r}"))
+        _scan(node.args[0], env | {token}, free, issues)
         return
     for a in node.args:
         _scan(a, env, free, issues)
@@ -49,7 +58,10 @@ def check_scope(node: Node, *, closed: bool = True) -> list[tuple[str, str]]:
 def _rename(node: Node, mapping: dict[str, str], counter: list[int], namer=None) -> Node:
     if node.op == "VAR":
         name = node.get("name")
-        return Node("VAR", (), {"name": mapping.get(name, name)}, node.ann)
+        params = {"name": name if node.get("binderId") is not None else mapping.get(name, name)}
+        if node.get("binderId") is not None:
+            params["binderId"] = node.get("binderId")
+        return Node("VAR", (), params, node.ann)
     if node.op == "Q":
         old = node.get("var")
         new = namer(counter[0]) if namer else f"v{counter[0]}"
@@ -146,11 +158,28 @@ def alpha_equivalent(left: Node, right: Node) -> bool:
             return names.get(a.get("name"), a.get("name")) == b.get("name")
         ap, bp = a.params_dict(), b.params_dict()
         if a.op == "QUANTIFIER":
+            aid, bid = a.get("binderId"), b.get("binderId")
+            avar, bvar = a.get("variable"), b.get("variable")
             for key in ("binderId", "variable"):
                 ap.pop(key, None); bp.pop(key, None)
+            # Binding metadata refers to the binder. Normalize only those two
+            # identity/display fields; role and referent constraints stay exact.
+            for params, old_id, old_var in ((ap, aid, avar), (bp, bid, bvar)):
+                raw = params.get("variableBinding")
+                if isinstance(raw, str):
+                    try:
+                        data = json.loads(raw)
+                    except ValueError:
+                        data = None
+                    if isinstance(data, dict):
+                        if data.get("binderId") == old_id:
+                            data["binderId"] = "$BOUND"
+                        if data.get("variable") == old_var:
+                            data["variable"] = "$VARIABLE"
+                        params["variableBinding"] = json.dumps(data, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
             if ap != bp:
                 return False
-            return eq(a.args[0], b.args[0], {**binders, a.get("binderId"): b.get("binderId")}, names)
+            return eq(a.args[0], b.args[0], {**binders, aid: bid}, names)
         if a.op == "Q":
             av, bv = ap.pop("var", None), bp.pop("var", None)
             if ap != bp:

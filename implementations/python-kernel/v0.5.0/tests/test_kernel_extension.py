@@ -10,13 +10,14 @@ sys.path.insert(0, str(ROOT))
 from usg.core.kinds import Sort
 from usg.errors import InvariantViolation
 from usg.grammar.node import (
-    Node, predicate_app, connective, quantifier, var, ref, holds, not_,
-    metadata_value, sort_of,
+    Node, predicate_app, connective, quantifier, var, ref, holds, not_, opaque,
+    unresolved_ref, inference_eligible, metadata_value, sort_of,
 )
 from usg.grammar.serialize import node_to_json, node_from_json, canonical_string
 from usg.grammar.canon import canonicalize
 from usg.grammar.scope import (
     free_variable_occurrences, check_native_scope, alpha_equivalent, substitute_free,
+    free_vars, check_scope, alpha_rename,
 )
 
 
@@ -110,6 +111,13 @@ class QuantifierTests(unittest.TestCase):
         right = quantifier("GENERAL", "FORALL", "b2", "person",
                            Node("RELATE", (var("person", "b2"), ref("doctor")), {"relation": "OWNS"}), "BODY")
         self.assertTrue(alpha_equivalent(left, right))
+        left_with_binding = quantifier("GENERAL", "FORALL", "b1", "x",
+            Node("RELATE", (var("x", "b1"), ref("doctor")), {"relation": "OWNS"}), "BODY",
+            variable_binding={"binderId": "b1", "variable": "x", "role": "agent"})
+        right_with_binding = quantifier("GENERAL", "FORALL", "b2", "person",
+            Node("RELATE", (var("person", "b2"), ref("doctor")), {"relation": "OWNS"}), "BODY",
+            variable_binding={"binderId": "b2", "variable": "person", "role": "agent"})
+        self.assertTrue(alpha_equivalent(left_with_binding, right_with_binding))
         self.assertFalse(alpha_equivalent(left, quantifier("GENERAL", "EXISTS", "b2", "person",
                           Node("RELATE", (var("person", "b2"), ref("doctor")), {"relation": "OWNS"}), "BODY")))
 
@@ -128,12 +136,41 @@ class QuantifierTests(unittest.TestCase):
         with self.assertRaises(InvariantViolation):
             quantifier("COUNT", "EXACTLY", "b1", "x", proposition("body"), "BODY", count=-1)
 
+    def test_variable_binding_metadata_must_match_binder_identity(self):
+        with self.assertRaises(InvariantViolation):
+            quantifier("GENERAL", "FORALL", "b1", "x", proposition("body"), "BODY",
+                       variable_binding={"binderId": "different-binder", "variable": "x"})
+
+    def test_existing_scope_api_recognizes_identity_bound_variables(self):
+        q = quantifier("GENERAL", "FORALL", "b1", "x",
+                       Node("RELATE", (var("x", "b1"), ref("doctor")), {"relation": "OWNS"}), "BODY")
+        self.assertEqual(free_vars(q), set())
+        self.assertEqual(check_scope(q), [])
+        renamed = alpha_rename(q)
+        self.assertEqual(renamed.args[0].args[0].get("binderId"), "b1")
+
     def test_identity_bound_variable_is_not_captured_by_display_name(self):
         q = quantifier("GENERAL", "FORALL", "b1", "x",
                        Node("RELATE", (var("x", "b1"), var("y")), {"relation": "RELATED"}), "BODY")
         result = substitute_free(q, "y", ref("replacement"))
         self.assertEqual(result.args[0].args[0].get("binderId"), "b1")
         self.assertEqual(result.args[0].args[1].get("ref"), "replacement")
+
+
+class PreservationNodeTests(unittest.TestCase):
+    def test_opaque_and_unresolved_reference_are_distinct_and_not_inference_premises(self):
+        op = opaque("NEW_OPERATOR", "no registered semantics", "PROP",
+                    payload={"raw": "preserve"}, evidence_refs=["ev-1"])
+        unresolved = unresolved_ref("ref-9", "referent not resolved", "TERM",
+                                    role="agent", mention_ref="m-9")
+        self.assertEqual(op.op, "OPAQUE")
+        self.assertEqual(unresolved.op, "UNRESOLVED_REF")
+        self.assertNotEqual(op, unresolved)
+        self.assertEqual(sort_of(op), "ANY")
+        self.assertFalse(inference_eligible(op))
+        self.assertFalse(inference_eligible(Node("RELATE", (unresolved, ref("x")), {"relation": "R"})))
+        self.assertTrue(inference_eligible(proposition("ordinary")))
+        self.assertEqual(metadata_value(node_from_json(node_to_json(op)), "payload"), {"raw": "preserve"})
 
 
 class LegacyCompatibilityTests(unittest.TestCase):

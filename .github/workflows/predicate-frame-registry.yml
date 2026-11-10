@@ -157,12 +157,13 @@ jobs:
           test_status=${PIPESTATUS[0]}
           echo "test_status=${test_status}" >> "$GITHUB_OUTPUT"
           exit "${test_status}"
-      - name: Run Python kernel 0.5.0 extension tests
+      - name: Run complete Python kernel 0.5.0 test suite
         id: python-kernel-extension-tests
         shell: bash
         run: |
           set +e
-          python -m unittest discover -s implementations/python-kernel/v0.5.0/tests -p "test_kernel_extension.py" -v 2>&1 | tee kernel-extension-ci.log
+          cd implementations/python-kernel/v0.5.0
+          python -m unittest discover -s tests -t . -v 2>&1 | tee "$GITHUB_WORKSPACE/kernel-0.5.0-ci.log"
           test_status=${PIPESTATUS[0]}
           echo "test_status=${test_status}" >> "$GITHUB_OUTPUT"
           exit "${test_status}"
