@@ -4,7 +4,8 @@ A local-only browser workbench combining:
 - the Python v0.7.0 Mention model and USG-SEM/1.0 adapter;
 - the Phase 2 structured query/reasoning pipeline;
 - the Phase 3 SQLite canonical document store and immutable revisions;
-- persistent query, conditions/exception maps, and exact-scope contradiction inspection.
+- persistent query, conditions/exception maps, and exact-scope contradiction inspection;
+- Phase 4 raw-text interpretation panel for the bounded USG-INTERPRET/0.1.0 English/MSA Arabic demonstrator.
 
 ## What it can test
 
@@ -19,10 +20,11 @@ A local-only browser workbench combining:
 - Inspect IF/UNLESS conditions, exceptions, and nested NOT scopes.
 - Inspect exact-scope contradictions without selecting a winner.
 - Export the complete canonical document as JSON.
+- Submit raw English or Modern Standard Arabic text to the local interpreter, inspect stage statuses/diagnostics, and optionally persist the resulting canonical document to the same SQLite store.
 
 ## What it does not do
 
-The Mention adapter remains an adapter/model test bench, not a natural-language semantic parser. The reasoning interface accepts explicit canonical semantic structures and exact typed references. It does not generate semantic structures from raw sentences, perform free-text inference, infer a UNLESS consequent from an absent exception, or claim objective truth. Raw-text interpretation is explicitly unsupported.
+The raw-text interpreter is a bounded demonstrator, not a general-purpose English or Arabic parser. Its bundled lexicon is tiny; enabled grammar is limited to explicit three-word English SVO and Modern Standard Arabic SVO/VSO patterns. Multi-sentence composition, nested grammar, negation/modality/tense/aspect scope, coordination, broad lexical coverage, and general coreference remain unsupported. Unknown or unsupported input is preserved with diagnostics rather than guessed. The reasoning interface continues to accept explicit canonical semantic structures and exact typed references; no objective truth is claimed.
 
 ## Requirements
 
@@ -84,7 +86,7 @@ The Kernel Lab server exposes the same versioned application dispatcher as the s
 - `GET /v1/documents/{document_id}/contradictions?revision=N`
 - `GET /v1/documents/{document_id}/export?revision=N`
 - `POST /v1/query`
-- `POST /v1/interpret` returns 501 UNSUPPORTED; raw-text parsing is not implemented.
+- `POST /v1/interpret` accepts `text`, `language` (`en` or `ar`), and optional `persist` (defaults to true); returns a USG-SEM/1.0 document, stage diagnostics, and persistence metadata when stored. The enabled language/grammar scope is deliberately small.
 
 The legacy UI endpoints remain available:
 - `GET /`, `GET /health`, `GET /api/fixtures`
