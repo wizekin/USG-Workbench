@@ -49,5 +49,6 @@ Mappings must be exact and documented. Unsupported or lossy mappings must be rep
 - **5U completed and merged:** native Derivation model v1.3.0. [Step 5U contract](python-kernel-extension/STEP-5U-NATIVE-DERIVATION-MODEL.md). It preserves heterogeneous provenance references as opaque IDs and keeps derivation status distinct from truth.
 - **5V completed and merged:** loss-preserving Derivation document adapter v1.3.0. [Step 5V contract](python-kernel-extension/STEP-5V-DERIVATION-DOCUMENT-ADAPTER.md).
 - **5W completed and merged:** native Definitions catalogue model v1.4.0. [Step 5W contract](python-kernel-extension/STEP-5W-NATIVE-DEFINITIONS-MODEL.md). It models Concepts, Frames, Roles, and Relations without inferring ontology or relation semantics.
-- **5X implemented on branch:** loss-preserving Definitions catalogue document adapter v1.4.0. [Step 5X contract](python-kernel-extension/STEP-5X-DEFINITIONS-DOCUMENT-ADAPTER.md).
+- **5X completed and merged:** loss-preserving Definitions catalogue document adapter v1.4.0. [Step 5X contract](python-kernel-extension/STEP-5X-DEFINITIONS-DOCUMENT-ADAPTER.md).
+- **5Y implemented on branch:** composed USG-SEM/1.0 document adapter v1.5.0. [Step 5Y contract](python-kernel-extension/STEP-5Y-COMPLETE-DOCUMENT-ADAPTER.md). It composes the family-specific adapters and merges each family's changes without cross-family overwrites.
 - Existing v0.4.0–v1.0.0 model packages, Workbench v0.5.4, USG-SEM/1.0, archives, and immutable baselines remain unchanged.
