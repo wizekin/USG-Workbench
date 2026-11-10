@@ -10,7 +10,8 @@ Additive semantic record models:
 - v0.9.0/: Evidence model.
 - v1.0.0/: Context model.
 - v1.1.0/: ExpressionRelation model.
-- v1.2.0/: UnresolvedItem model.
+- v1.2.0/: Initial UnresolvedItem model (historical).
+- v1.2.1/: Typed UnresolvedItem model with Expression scope and Evidence references.
 - v1.3.0/: Derivation model.
 - v1.4.0/: Definitions catalogue model.
 

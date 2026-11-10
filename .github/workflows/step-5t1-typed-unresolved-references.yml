@@ -1,0 +1,39 @@
+name: Step 5T1 Typed UnresolvedItem References
+on:
+  pull_request:
+    paths:
+      - "implementations/python-kernel/v1.2.1/**"
+      - "interoperability/python_adapter/document_v121.py"
+      - "interoperability/python_adapter/__init__.py"
+      - "tests/test_python_kernel_v121_document_adapter.py"
+      - "interoperability/python-kernel-extension/STEP-5T1-TYPED-UNRESOLVED-REFERENCES.md"
+      - ".github/workflows/step-5t1-typed-unresolved-references.yml"
+  push:
+    branches: [main]
+    paths:
+      - "implementations/python-kernel/v1.2.1/**"
+      - "interoperability/python_adapter/document_v121.py"
+      - "interoperability/python_adapter/__init__.py"
+      - "tests/test_python_kernel_v121_document_adapter.py"
+      - "interoperability/python-kernel-extension/STEP-5T1-TYPED-UNRESOLVED-REFERENCES.md"
+      - ".github/workflows/step-5t1-typed-unresolved-references.yml"
+permissions:
+  contents: read
+jobs:
+  typed-unresolved-references:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install schema validator
+        run: python -m pip install "jsonschema>=4.18,<5"
+      - name: Run native UnresolvedItem v1.2.1 tests
+        env:
+          PYTHONPATH: implementations/python-kernel/v1.2.1
+        run: python -m unittest discover -s implementations/python-kernel/v1.2.1/tests -v
+      - name: Run UnresolvedItem v1.2.1 document adapter tests
+        env:
+          PYTHONPATH: implementations/python-kernel/v1.2.1
+        run: python -m unittest discover -s tests -p "test_python_kernel_v121_document_adapter.py" -v
