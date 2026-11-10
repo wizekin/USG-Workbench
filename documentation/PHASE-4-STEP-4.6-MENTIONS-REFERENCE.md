@@ -1,6 +1,6 @@
 # Phase 4 — Step 4.6: Mention and Reference Interpretation
 
-**Status:** IMPLEMENTED — pending exact-PR CI and merge acceptance  
+**Status:** ACCEPTED — included in bounded v0.1.0 demonstrator  
 **Analyzer:** `mention-reference/0.1.0`
 
 The analyzer extracts source-grounded nominal, proper-name, and pronoun mentions from resolved lexical candidates. Every mention retains token ID, exact surface, source span, and lexical sense IDs.

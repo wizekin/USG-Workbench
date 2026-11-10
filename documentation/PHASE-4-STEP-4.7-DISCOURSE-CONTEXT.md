@@ -1,6 +1,6 @@
 # Phase 4 — Step 4.7: Discourse, Context, and Temporal Interpretation
 
-**Status:** IMPLEMENTED — pending exact-PR CI and merge acceptance  
+**Status:** ACCEPTED — included in bounded v0.1.0 demonstrator  
 **Analyzer:** `discourse-analysis/0.1.0`
 
 A versioned marker registry detects a bounded set of explicit English and MSA Arabic contrast, condition, cause, temporal, and attribution markers. Each result retains marker identity, exact source span, and sentence references. A marker at the beginning of the first sentence remains unresolved because no prior sentence exists.

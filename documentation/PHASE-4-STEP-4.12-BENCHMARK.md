@@ -1,6 +1,6 @@
 # Phase 4 — Step 4.12: Frozen Benchmark and Adversarial Evaluation
 
-**Status:** IMPLEMENTED — pending exact-PR CI and merge acceptance  
+**Status:** ACCEPTED — included in bounded v0.1.0 demonstrator  
 **Corpus:** `usg-interpretation-v0.1.0`
 
 The frozen corpus contains six cases: English SVO and Arabic VSO supported examples, unknown lexical material, multiple sentences, a known but unregistered word order, and empty input. It measures completion-status accuracy, exact source preservation, evidence span alignment, canonical USG-SEM/1.0 SQLite validation, unresolved items, unsupported inputs, and truth-policy violations.

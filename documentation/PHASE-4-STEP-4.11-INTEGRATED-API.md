@@ -1,6 +1,6 @@
 # Phase 4 — Step 4.11: Integrated Interpretation API and Kernel Lab
 
-**Status:** IMPLEMENTED — pending exact-PR CI and merge acceptance  
+**Status:** ACCEPTED — included in bounded v0.1.0 demonstrator  
 **Pipeline:** `USG-INTERPRET/0.1.0`  
 **Persistence:** existing Phase 3 canonical SQLite store
 

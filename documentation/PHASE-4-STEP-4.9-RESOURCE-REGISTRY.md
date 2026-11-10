@@ -1,6 +1,6 @@
 # Phase 4 — Step 4.9: Semantic Resource and Association Registry
 
-**Status:** IMPLEMENTED — pending exact-PR CI and merge acceptance  
+**Status:** ACCEPTED — included in bounded v0.1.0 demonstrator  
 **Registry contract:** `semantic-resource-registry/0.1.0`
 
 The registry tracks immutable versioned descriptors for lexical, grammar, semantic-frame, discourse, model, and other resources. Descriptors include a content digest and provenance. Registry manifests are deterministic and content-addressed.

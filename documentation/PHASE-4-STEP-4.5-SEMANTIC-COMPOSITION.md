@@ -1,6 +1,6 @@
 # Phase 4 — Step 4.5: Compositional Semantic Construction
 
-**Status:** IMPLEMENTED — pending exact-PR CI and merge acceptance  
+**Status:** ACCEPTED — included in bounded v0.1.0 demonstrator  
 **Composer:** `semantic-composition/0.1.0`
 
 ## Contract

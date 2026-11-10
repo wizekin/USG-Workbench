@@ -1,6 +1,6 @@
 # Phase 4 — Step 4.2: Source Ingestion and Span-Preserving Segmentation
 
-**Status:** IMPLEMENTED — pending exact-PR CI and merge acceptance  
+**Status:** ACCEPTED — included in bounded v0.1.0 demonstrator  
 **Package:** `tools.usg_interpretation_v0_1_0`  
 **Pipeline contract:** `USG-INTERPRET/0.1.0`  
 **Segmentation version:** `source-segmentation/0.1.0`
