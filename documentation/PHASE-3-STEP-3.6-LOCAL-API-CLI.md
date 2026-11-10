@@ -1,6 +1,6 @@
 # Phase 3 Step 3.6 — Local API and CLI
 
-**Status:** IMPLEMENTED — awaiting exact-PR-head CI and merge.
+**Status:** COMPLETE — merged in [PR #66](https://github.com/wizekin/USG-Workbench/pull/66).
 **API profile:** `USG-LOCAL-API/1.0.0`.
 **Storage:** SQLite canonical store; one application process owns the connection and serves concurrent local requests through its thread-safe store.
 

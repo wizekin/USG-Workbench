@@ -1,6 +1,6 @@
 # USG Phase 3 — Persistent Semantic Graph and Bounded Product Core
 
-**Status:** IN PROGRESS — Steps 3.1–3.3 are merged; Step 3.4 is next.
+**Status:** IN PROGRESS — Steps 3.1–3.6 are merged; Step 3.7 integrates the browser Kernel Lab with the SQLite-backed local API.
 **Prerequisite:** Phase 2 exit acceptance passed on merged main commit da0760ac13029892f40a08a412e139c34a8e48d3.
 **Normative semantic contract:** USG-SEM/1.0.
 **Implementation boundary:** additive tools and packages; do not mutate archived releases or the completed Phase 1/2 contracts.
@@ -101,4 +101,4 @@ No aggregate score may conceal a failure in a critical invariant. A failed criti
 
 Phase 1 is complete. Phase 2 Steps 2.1–2.10 are complete for their documented scope. The final Phase 2 merged-main acceptance run [42811673922](https://github.com/wizekin/USG-Workbench/actions/runs/42811673922) passed. The completion record was merged in [PR #53](https://github.com/wizekin/USG-Workbench/pull/53).
 
-Steps 3.1–3.3 are complete and merged. Step 3.2 provides the authoritative SQLite store; Step 3.3 runs the existing query interface against verified, revision-pinned SQLite snapshots. SQLite remains the canonical backend after evaluation of LMDB, RocksDB, DuckDB, LanceDB, and Qdrant. Step 3.4 is the next ordered implementation step.
+Steps 3.1–3.6 are complete and merged. Step 3.2 provides the authoritative SQLite store; Step 3.3 runs queries against verified, revision-pinned snapshots; Step 3.4 adds versioned scope-aware NOT/IF/UNLESS and attribution inspection; Step 3.5 provides conditions/exception maps and exact-scope contradiction reports; Step 3.6 provides the loopback-only local API and CLI. Step 3.7 integrates the existing Kernel Lab browser UI with that same application dispatcher and SQLite database. SQLite remains the only canonical backend after evaluation of LMDB, RocksDB, DuckDB, LanceDB, and Qdrant. Steps 3.8 and 3.9 remain.

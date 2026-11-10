@@ -23,6 +23,7 @@ from usg_discourse_v07 import (  # noqa: E402
     TypedReference,
 )
 from tools.semantic_query_interface_v1_0_0.interface import QueryInterface  # noqa: E402
+from tools.usg_local_api_v1_0_0 import USGApplication  # noqa: E402
 
 QUERY_BENCHMARK_PATH = ROOT / "benchmarks" / "semantic-reasoning" / "query-v1.0.0" / "fixtures.json"
 EXECUTOR_BENCHMARK_PATH = ROOT / "benchmarks" / "semantic-reasoning" / "executor-v1.0.0" / "fixtures.json"
@@ -188,6 +189,10 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         path = urlparse(self.path).path
+        if path.startswith("/v1/"):
+            status, payload = self.server.usg_application.dispatch("GET", self.path)
+            self._send(status, payload)
+            return
         if path in ("/", "/index.html"):
             self._send(200, (WEB_ROOT / "index.html").read_bytes(),
                        "text/html; charset=utf-8")
@@ -196,6 +201,9 @@ class Handler(BaseHTTPRequestHandler):
                 "ok": True, "app": "USG Kernel Lab", "mentionModel": "0.7.0",
                 "adapter": "USG-SEM/1.0", "queryInterface": "USG-QUERY/1.0.0",
                 "evidenceAssessment": "USG-EVIDENCE-ASSESSMENT/1.0.0",
+                "documentStore": "SQLite",
+                "persistentApi": "USG-LOCAL-API/1.0.0",
+                "analysisServices": "USG-DOCUMENT-ANALYSIS/1.0.0",
             })
         elif path == "/api/fixtures":
             bundle = _query_benchmark()
@@ -213,6 +221,17 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         path = urlparse(self.path).path
+        if path.startswith("/v1/"):
+            try:
+                length = int(self.headers.get("Content-Length", "0"))
+                if length <= 0:
+                    raise ValueError("Content-Length must be a positive integer")
+                request = json.loads(self.rfile.read(length).decode("utf-8"))
+                status, payload = self.server.usg_application.dispatch("POST", self.path, request)
+                self._send(status, payload)
+            except Exception as exc:
+                self._send(400, {"error": str(exc), "errorType": type(exc).__name__})
+            return
         if path not in ("/api/inspect", "/api/export", "/api/query", "/api/fixture", "/api/benchmark"):
             self._send(404, {"error": "Not found"})
             return
@@ -277,11 +296,49 @@ class Handler(BaseHTTPRequestHandler):
         print("[USG Kernel Lab] " + fmt % args)
 
 
-if __name__ == "__main__":
+class KernelLabHTTPServer(ThreadingHTTPServer):
+    daemon_threads = True
+    allow_reuse_address = True
+
+    def __init__(self, address, database_path):
+        self.usg_application = USGApplication(database_path)
+        super().__init__(address, Handler)
+
+    def server_close(self):
+        try:
+            super().server_close()
+        finally:
+            self.usg_application.close()
+
+
+def create_lab_server(database_path=None, host=HOST, port=PORT):
+    if host != "127.0.0.1":
+        raise ValueError("USG Kernel Lab is loopback-only and binds only to 127.0.0.1")
+    if database_path is None:
+        database_path = ROOT / "usg-workbench.sqlite3"
+    return KernelLabHTTPServer((host, port), database_path)
+
+
+def main(argv=None):
+    import argparse
+    parser = argparse.ArgumentParser(description="USG Kernel Lab — local-only interface")
+    parser.add_argument("--db", default=str(ROOT / "usg-workbench.sqlite3"), help="SQLite canonical document database path")
+    parser.add_argument("--host", choices=["127.0.0.1"], default=HOST)
+    parser.add_argument("--port", type=int, default=PORT)
+    args = parser.parse_args(argv)
+    server = create_lab_server(args.db, args.host, args.port)
     print("USG Kernel Lab — local-only interface")
-    print(f"Open http://{HOST}:{PORT} in your browser")
-    print("Press Ctrl+C to stop. The server binds to loopback only.")
+    print(f"Open http://{args.host}:{server.server_address[1]} in your browser")
+    print(f"SQLite canonical database: {args.db}")
+    print("Persistent API: /v1/ · Press Ctrl+C to stop.")
     try:
-        ThreadingHTTPServer((HOST, PORT), Handler).serve_forever()
+        server.serve_forever()
     except KeyboardInterrupt:
         print("\nUSG Kernel Lab stopped.")
+    finally:
+        server.server_close()
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

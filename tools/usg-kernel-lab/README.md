@@ -1,26 +1,35 @@
 # USG Kernel Lab
 
-A local-only browser interface for exercising the Python Mention model (v0.7.0), the USG-SEM/1.0 ↔ v0.7.0 document adapter, and the Phase 2 structured query/reasoning pipeline (Steps 2.6–2.8).
+A local-only browser workbench combining:
+- the Python v0.7.0 Mention model and USG-SEM/1.0 adapter;
+- the Phase 2 structured query/reasoning pipeline;
+- the Phase 3 SQLite canonical document store and immutable revisions;
+- persistent query, conditions/exception maps, and exact-scope contradiction inspection.
 
 ## What it can test
 
 - Import and schema-validate a complete USG-SEM/1.0 document.
-- Inspect native v0.7.0 Mention projections and per-record/per-field mapping coverage.
-- Edit native Mention text, resolution status, Mention type, and explicitly typed Referent/antecedent/Source links.
-- Edit Unicode code-point source spans.
-- Export edits into the canonical document and run full document validation plus exact source-span alignment checks.
-- Preserve canonical-only records and unsupported fields through the adapter's canonical envelope.
+- Inspect native v0.7.0 Mention projections and mapping coverage.
+- Edit native Mention text, resolution status, Mention type, and typed links.
+- Export edits while preserving canonical-only records and source spans.
+- Save complete canonical documents into the SQLite store.
+- Load current or historical immutable revisions.
+- Verify snapshot hashes, schema, typed references, and derived indexes.
+- Run structured queries against a selected stored revision.
+- Inspect IF/UNLESS conditions, exceptions, and nested NOT scopes.
+- Inspect exact-scope contradictions without selecting a winner.
+- Export the complete canonical document as JSON.
 
 ## What it does not do
 
-The adapter panel remains an adapter/model test bench, not a natural-language semantic parser. The Phase 2 panel runs explicit typed-reference goals through the deterministic inference executor, evidence assessor, and query interface. It does not generate semantic structures from raw sentences, perform free-text inference, or claim objective truth. The existing JavaScript Semantic Workbench v0.5.4 remains a separate application for model-assisted sentence interpretation.
+The Mention adapter remains an adapter/model test bench, not a natural-language semantic parser. The reasoning interface accepts explicit canonical semantic structures and exact typed references. It does not generate semantic structures from raw sentences, perform free-text inference, infer a UNLESS consequent from an absent exception, or claim objective truth. Raw-text interpretation is explicitly unsupported.
 
 ## Requirements
 
 - Python 3.10 or newer
 - `jsonschema>=4.18,<5`
 
-Install the validator from the repository root:
+Install from the repository root:
 
 ```powershell
 py -m pip install "jsonschema>=4.18,<5"
@@ -28,7 +37,7 @@ py -m pip install "jsonschema>=4.18,<5"
 
 ## Run on Windows
 
-From the repository root, double-click `tools/usg-kernel-lab/launch_windows.bat`, or run:
+From the repository root:
 
 ```powershell
 py tools/usg-kernel-lab/server.py
@@ -36,24 +45,44 @@ py tools/usg-kernel-lab/server.py
 
 Then open [http://127.0.0.1:8765](http://127.0.0.1:8765).
 
-The server binds only to `127.0.0.1`; it is not exposed to the network. Press Ctrl+C in the terminal to stop it.
+The server binds only to `127.0.0.1`. The default canonical database is `usg-workbench.sqlite3` in the repository root. Choose a different file with:
 
-## Quick test
+```powershell
+py tools/usg-kernel-lab/server.py --db D:\USGData\usg-workbench.sqlite3
+```
 
-1. Choose **Load sample document**.
-2. Choose **Import & inspect**.
-3. Inspect the mapping report and three sample Mention records. The two occurrences of “Alex” intentionally share a Referent but have different Mention IDs.
-4. Change a Mention's surface text or resolution status.
-5. Choose **Export native edits**. The export is accepted only if the complete canonical document remains valid.
-6. Choose **Download exported JSON** to save the result.
+Press Ctrl+C to stop. No telemetry, cloud calls, or paid APIs are used.
 
-Try changing the first Mention's surface text without updating its source span: export should be rejected because the span no longer aligns with the source. This is an intentional integrity check, not an arbitrary text-length cap.
+## Quick start
 
-## API
+1. Choose **Load sample document** and **Import & inspect**.
+2. Use the Mention panel to inspect or edit native Mention records.
+3. Choose **Save current document** in the persistent workspace to create SQLite revision 1.
+4. Use **Verify integrity** to check the stored snapshot and rebuildable indexes.
+5. Use **Load stored document** to reload a verified revision.
+6. Select a query fixture, then save the loaded document and choose **Run query on stored revision**.
+7. Inspect **Conditions** and **Contradictions** and export the complete canonical JSON.
 
-- `GET /` — browser interface
-- `GET /health` — local server health and model/contract versions\n- `GET /api/fixtures` — versioned query fixture catalog\n- `POST /api/fixture` — load a canonical query fixture\n- `POST /api/query` — run an explicit structured query\n- `POST /api/benchmark` — run the complete query benchmark
-- `POST /api/inspect` — `{"document": <USG-SEM/1.0 document>}`
-- `POST /api/export` — `{"document": <document>, "nativeMentions": [<edited native Mention records>]}`
+The existing **Run all query fixtures** control remains a frozen in-memory benchmark; the new stored-revision query control exercises the SQLite-backed API.
 
-No telemetry or cloud calls are implemented.
+## Local API
+
+The Kernel Lab server exposes the same versioned application dispatcher as the standalone local API. In addition to the browser/adapter endpoints below, it exposes:
+- `GET /v1/health` is not defined; use `GET /health` for combined Kernel Lab health.
+- `POST /v1/validate`
+- `POST /v1/documents`
+- `GET /v1/documents/{document_id}?revision=N`
+- `GET /v1/documents/{document_id}/check?revision=N`
+- `GET /v1/documents/{document_id}/revisions`
+- `GET /v1/documents/{document_id}/conditions?revision=N`
+- `GET /v1/documents/{document_id}/contradictions?revision=N`
+- `GET /v1/documents/{document_id}/export?revision=N`
+- `POST /v1/query`
+- `POST /v1/interpret` returns 501 UNSUPPORTED; raw-text parsing is not implemented.
+
+The legacy UI endpoints remain available:
+- `GET /`, `GET /health`, `GET /api/fixtures`
+- `POST /api/fixture`, `POST /api/query`, `POST /api/benchmark`
+- `POST /api/inspect`, `POST /api/export`
+
+The canonical SQLite store is the sole persistence authority. The browser does not create a second data store.
