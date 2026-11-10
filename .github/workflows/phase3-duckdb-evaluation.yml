@@ -1,4 +1,4 @@
-name: Phase 3 Storage Candidate Evaluation — DuckDB
+name: Phase 3 Storage Candidate Evaluation — DuckDB (final candidate gate)
 on:
   pull_request:
     paths:
