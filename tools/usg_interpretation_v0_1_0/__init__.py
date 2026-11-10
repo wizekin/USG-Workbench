@@ -19,6 +19,11 @@ from .compose import (
     initial_semantic_frame_registry,
 )
 
+from .mentions import (
+    REFERENCE_ANALYSIS_VERSION, Mention, ReferentCandidate,
+    MentionAnalysis, MentionAnalyzer,
+)
+
 __all__ = [
     "LANGUAGE_PROFILES", "SourceSnapshot", "TextSegment", "SegmentedSource",
     "ingest_source", "segment_source", "LEXICAL_ANALYSIS_VERSION", "Token",
@@ -27,5 +32,6 @@ __all__ = [
     "GrammarPattern", "GrammarRegistry", "SyntaxCandidate", "SyntaxAnalysis",
     "GrammarAnalyzer", "initial_grammar_registry", "SEMANTIC_COMPOSITION_VERSION",
     "PredicateFrame", "SemanticFrameRegistry", "SemanticNode", "SemanticCandidate",
-    "SemanticComposition", "SemanticComposer", "initial_semantic_frame_registry",
+    "SemanticComposition", "SemanticComposer", "initial_semantic_frame_registry", "REFERENCE_ANALYSIS_VERSION", "Mention",
+    "ReferentCandidate", "MentionAnalysis", "MentionAnalyzer",
 ]
