@@ -1,7 +1,7 @@
 # USG Phase 2 — Semantic Reasoning Roadmap
 
 **Phase:** 2 — Evidence-grounded, rule-governed semantic reasoning  
-**Status:** ROADMAP ESTABLISHED; implementation not yet started  
+**Status:** ROADMAP ESTABLISHED; Steps 2.1 and 2.2 benchmark foundation complete; production reasoning implementation not started  
 **Prerequisite:** Phase 1 exit accepted (USG-SEM/1.0 and composed adapter v1.5.1)  
 **Normative Phase 1 record:** [Phase 1 exit acceptance](../interoperability/PHASE-1-EXIT-ACCEPTANCE.md)
 
@@ -220,6 +220,6 @@ These may be considered in later phases only after Phase 2 produces a measurable
 
 ## 11. Current status
 
-This roadmap establishes the Phase 2 sequence and boundaries. It does not implement a rule model, inference engine, truth evaluator, ontology learner, or runtime integration.
+This roadmap establishes the Phase 2 sequence and boundaries. Steps 2.1 and 2.2 have produced the definitions, 35-fixture benchmark corpus, structured evaluator, and frozen pre-inference thresholds. This work does not implement a production rule model, inference engine, truth evaluator, ontology learner, or runtime integration.
 
-**Next implementation step:** Phase 2 Step 2.2 — benchmark corpus and evaluator. It should convert the evaluation categories and measures in this roadmap into versioned fixtures, explicit expected results, scoring rules, and pre-implementation acceptance thresholds.
+**Next implementation step:** Phase 2 Step 2.3 — rule model and registry. Its design and any executable rules must conform to the Step 2.2 benchmark contract; no inference executor should be enabled until the benchmark thresholds and evaluation interface pass.
