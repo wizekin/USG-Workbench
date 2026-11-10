@@ -1,0 +1,1 @@
+"""Normative USG semantic schemas."""
