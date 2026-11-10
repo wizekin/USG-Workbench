@@ -63,8 +63,8 @@ def run_group(name: str, patterns: list[str]) -> dict:
     # leaks sys.path/module state between those frozen suites.
     env = os.environ.copy()
     extra_paths = [
-        str(TESTS),
         str(ROOT / "implementations" / "python-kernel" / "v0.5.0"),
+        str(TESTS),
     ]
     if env.get("PYTHONPATH"):
         extra_paths.append(env["PYTHONPATH"])
