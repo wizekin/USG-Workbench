@@ -17,6 +17,9 @@ sys.modules[SPEC.name] = SERVER
 SPEC.loader.exec_module(SERVER)
 _apply_native_edits = SERVER._apply_native_edits
 _native_json = SERVER._native_json
+load_query_fixture = SERVER.load_query_fixture
+run_query_payload = SERVER.run_query_payload
+run_query_benchmark = SERVER.run_query_benchmark
 from interoperability.python_adapter.document_v07 import (
     document_to_kernel_v07, kernel_v07_document_to_contract,
 )
@@ -87,6 +90,32 @@ class KernelLabTests(unittest.TestCase):
         imported = document_to_kernel_v07(sample_document(), validate=True)
         with self.assertRaises(ValueError):
             _apply_native_edits(imported, [])
+
+    def test_phase2_query_fixture_loads_canonical_document_and_goal(self):
+        fixture = load_query_fixture("QUERY-DERIVED-MP-001")
+        self.assertEqual(fixture["document"]["profileId"], "USG-SEM/1.0")
+        self.assertEqual(fixture["query"]["goal"]["expression_ref"], "expr-b")
+        self.assertEqual(fixture["benchmark_version"], "1.0.0")
+
+    def test_phase2_query_api_returns_expected_structured_trace(self):
+        fixture = load_query_fixture("QUERY-DERIVED-MP-001")
+        response = run_query_payload(fixture["document"], fixture["query"], fixture["expected"])
+        self.assertEqual(response["result"]["goal_status"], "DERIVED_NOT_VERIFIED")
+        self.assertTrue(response["comparison"]["passed"])
+        self.assertTrue(response["result"]["assumptions"])
+        self.assertTrue(response["result"]["derivations"])
+
+    def test_phase2_query_benchmark_runs_all_fixtures(self):
+        result = run_query_benchmark()
+        self.assertEqual(result["total"], 13)
+        self.assertEqual(result["failed"], 0)
+        self.assertTrue(result["accepted"])
+
+    def test_browser_lab_exposes_reasoning_controls_and_local_api(self):
+        html = (ROOT / "tools" / "usg-kernel-lab" / "index.html").read_text(encoding="utf-8")
+        self.assertIn("runQueryBtn", html)
+        self.assertIn("runQueryBenchmarkBtn", html)
+        self.assertIn("/api/query", (ROOT / "tools" / "usg-kernel-lab" / "server.py").read_text(encoding="utf-8"))
 
     def test_invalid_native_source_span_is_rejected_on_export(self):
         imported = document_to_kernel_v07(sample_document(), validate=True)
