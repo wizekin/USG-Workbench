@@ -211,13 +211,14 @@ class CanonicalDocumentStore:
     def get_document(self, document_id: str, revision: int | None = None):
         self._ensure_open()
         rows = self._rows_for_document(document_id)
+        all_revisions = [int(x["revision"]) for x in rows]
+        if len(all_revisions) != len(set(all_revisions)):
+            raise IntegrityError("duplicate document revision rows detected")
         if revision is not None:
             rows = [x for x in rows if int(x["revision"]) == revision]
         if not rows:
             raise DocumentNotFoundError(f"document revision not found: {document_id}")
         rows.sort(key=lambda x: x["revision"])
-        if len(rows) > 1 and revision is not None:
-            raise IntegrityError("duplicate document revision rows detected")
         row = rows[-1]
         raw = row["canonical_json"].encode("utf-8")
         digest = sha256(raw).hexdigest()
