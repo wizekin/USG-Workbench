@@ -1,6 +1,6 @@
 # USG Phase 3 — Persistent Semantic Graph and Bounded Product Core
 
-**Status:** PLANNED — Phase 2 is accepted; Phase 3 begins with the storage contract in Step 3.1.
+**Status:** IN PROGRESS — Steps 3.1–3.3 are merged; Step 3.4 is next.
 **Prerequisite:** Phase 2 exit acceptance passed on merged main commit da0760ac13029892f40a08a412e139c34a8e48d3.
 **Normative semantic contract:** USG-SEM/1.0.
 **Implementation boundary:** additive tools and packages; do not mutate archived releases or the completed Phase 1/2 contracts.
@@ -101,4 +101,4 @@ No aggregate score may conceal a failure in a critical invariant. A failed criti
 
 Phase 1 is complete. Phase 2 Steps 2.1–2.10 are complete for their documented scope. The final Phase 2 merged-main acceptance run [42811673922](https://github.com/wizekin/USG-Workbench/actions/runs/42811673922) passed. The completion record was merged in [PR #53](https://github.com/wizekin/USG-Workbench/pull/53).
 
-Step 3.1 contract is defined. Step 3.2 implementation is in progress in tools/semantic_graph_store_v1_0_0, with its dedicated test suite and workflow. Step 3.2 is not complete until the exact PR-head checks pass and the implementation is merged.
+Steps 3.1–3.3 are complete and merged. Step 3.2 provides the authoritative SQLite store; Step 3.3 runs the existing query interface against verified, revision-pinned SQLite snapshots. SQLite remains the canonical backend after evaluation of LMDB, RocksDB, DuckDB, LanceDB, and Qdrant. Step 3.4 is the next ordered implementation step.
