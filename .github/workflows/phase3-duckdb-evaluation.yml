@@ -1,0 +1,51 @@
+name: Phase 3 Storage Candidate Evaluation — DuckDB (final candidate gate)
+on:
+  pull_request:
+    paths:
+      - "tools/semantic_graph_store_duckdb_v1_0_0/**"
+      - "tests/test_phase3_duckdb_store.py"
+      - "benchmarks/phase3-storage/**"
+      - "documentation/STORAGE-BACKEND-EVALUATIONS.md"
+      - ".github/workflows/phase3-duckdb-evaluation.yml"
+  push:
+    branches: [main]
+    paths:
+      - "tools/semantic_graph_store_duckdb_v1_0_0/**"
+      - "tests/test_phase3_duckdb_store.py"
+      - "benchmarks/phase3-storage/**"
+      - "documentation/STORAGE-BACKEND-EVALUATIONS.md"
+      - ".github/workflows/phase3-duckdb-evaluation.yml"
+permissions:
+  contents: read
+jobs:
+  duckdb-evaluation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: python -m pip install "jsonschema>=4.18,<5" "duckdb>=2.0,<2.1"
+      - name: Compile adapter
+        run: python -m compileall -q tools/semantic_graph_store_duckdb_v1_0_0
+      - name: Run SQLite baseline tests
+        run: python -m unittest discover -s tests -p "test_phase3_graph_store.py" -v
+      - name: Run Phase 1 and Phase 2 regressions
+        run: |
+          python -m unittest discover -s tests -p "test_phase1_exit_acceptance.py" -v
+          python -m unittest discover -s tests -p "test_phase2_grounding.py" -v
+          python -m unittest discover -s tests -p "test_phase2_inference_executor.py" -v
+          python -m unittest discover -s tests -p "test_phase2_evidence_assessment.py" -v
+      - name: Run DuckDB adapter tests
+        run: python -m unittest discover -s tests -p "test_phase3_duckdb_store.py" -v
+      - name: Run SQLite/DuckDB workload benchmark
+        run: python benchmarks/phase3-storage/compare_sqlite_duckdb.py --repeats 3 --extra-expressions 1200
+      - name: Upload benchmark report
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase3-duckdb-benchmark
+          path: phase3-duckdb-benchmark.json

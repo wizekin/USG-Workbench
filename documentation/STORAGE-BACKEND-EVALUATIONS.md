@@ -56,3 +56,29 @@ RocksDB is promising for this workload: approximately 69.4% less disk space, com
 The RocksDB adapter uses one embedded primary process per database directory. A sidecar OS lock serializes writer critical sections but cannot make RocksDB's exclusive database-open lock support multiple independent primary processes. The added concurrency regression checks concurrent readers and serialized writers within one process. If USG requires multiple independent processes to open the same database concurrently, this candidate does not meet that topology without a separate single-owner service.
 
 **Current status:** promising candidate, not yet promoted. Await the latest concurrency regression workflow on commit `db64ae4630572c1812e6494a3259a63c31a9c939`. Even if accepted as a canonical-store candidate, continue the separately requested DuckDB, LanceDB, and Qdrant evaluations. No default backend change is made by this evaluation.
+
+## Candidate 2: DuckDB
+
+DuckDB is evaluated as a true SQL canonical-store candidate, not as a vector database. Its strengths are analytical scans, SQL, and columnar execution. The local adapter preserves full canonical snapshots in BLOB columns and keeps explicit derived indexes in relational tables. It uses ACID transactions for atomic snapshot/revision/index/current-pointer writes.
+
+Important topology constraint: the standard in-process DuckDB read-write database is owned by one process. Multiple writer threads are supported within that process; multiple processes can open read-only. The evaluation therefore tests multiple connections within one process and a read-only reopen. It does not assume a multi-process write topology. This limitation is weighed against SQLite and RocksDB.
+
+
+### Candidate 2 measured result: DuckDB
+
+Benchmark artifact: GitHub Actions run 42820307739, artifact `phase3-duckdb-benchmark`. Three repetitions used the same 1,204-expression USG document and the same canonical-store operations.
+
+| Operation | SQLite median | DuckDB median | DuckDB / SQLite |
+|---|---:|---:|---:|
+| Initial write | 202.1 ms | 880.8 ms | 4.36× |
+| Warm read (7-read median) | 196.4 ms | 201.4 ms | 1.03× |
+| Idempotent write | 194.0 ms | 195.0 ms | 1.01× |
+| Revision update | 208.9 ms | 886.4 ms | 4.24× |
+| Revision history | 0.135 ms | 1.371 ms | 10.18× |
+| Integrity verification | 199.2 ms | 200.0 ms | 1.00× |
+| Index rebuild | 205.0 ms | 888.7 ms | 4.34× |
+| On-disk files after close | 962,560 B | 4,206,592 B | 4.37× |
+
+The adapter passed exact canonical round-trip, schema/grounding and source-hash validation, idempotent writes, revision history, stale-writer rejection within the connection, index drift/rebuild, snapshot tampering detection, large-graph preservation, multiple in-process connections writing separate documents, and read-only reopen. SQLite baseline and Phase 1/2 regression suites also passed.
+
+**Decision:** DuckDB is not a good replacement for SQLite for the current canonical persistence workload. Reads and integrity checks are similar, but write/revision/index-rebuild paths are about 4.2–4.4 times slower and the database footprint is about 4.4 times larger at this scale. Its analytical SQL and columnar execution remain potentially useful as a separate reporting/analytics layer over exported or replicated USG data, but that complementary use needs its own workload test and must not become the canonical source of truth.
