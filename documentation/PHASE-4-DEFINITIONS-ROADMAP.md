@@ -1,6 +1,7 @@
 # USG Phase 4 — Definitions and Roadmap
 
-**Status:** DEFINITION DRAFT — roadmap only; no Phase 4 implementation step is accepted yet.  
+**Status:** Step 4.1 definition frozen; implementation steps 4.2–4.13 remain pending.
+**Step 4.1 contract:** [Interpretation definitions and acceptance contract](PHASE-4-STEP-4.1-INTERPRETATION-CONTRACT.md).  
 **Prerequisites:** Phase 1, Phase 2, and Phase 3 exit acceptance records.  
 **Normative semantic contract:** `USG-SEM/1.0` remains unchanged.  
 **Canonical persistence:** Phase 3 SQLite store remains authoritative.  
