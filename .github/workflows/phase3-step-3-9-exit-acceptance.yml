@@ -140,18 +140,19 @@ jobs:
           loaded = request(lab + "/v1/documents/" + document["documentId"])
           assert loaded["document"] == document
           assert loaded["revision"] == saved["revision"] == 1
+          assert loaded["sha256"] == saved["sha256"]
           integrity = request(api + "/v1/documents/" + document["documentId"] + "/check")
           assert integrity["status"] == "PASS"
           result = request(api + "/v1/query", "POST", {
               "document_id": document["documentId"], "query": query, "revision": 1
           })
-          assert result["document_sha256"] == saved["digest"]
+          assert result["document_sha256"] == saved["sha256"]
           assert result["query_result"]["goal_status"] == "DERIVED_NOT_VERIFIED"
           conditions = request(lab + "/v1/documents/" + document["documentId"] + "/conditions")
           conflicts = request(lab + "/v1/documents/" + document["documentId"] + "/contradictions")
-          assert conditions["document_sha256"] == conflicts["document_sha256"] == saved["digest"]
+          assert conditions["document_sha256"] == conflicts["document_sha256"] == saved["sha256"]
           assert request(lab + "/health")["documentStore"] == "SQLite"
-          print(json.dumps({"shared_sqlite_revision": saved["revision"], "digest": saved["digest"],
+          print(json.dumps({"shared_sqlite_revision": saved["revision"], "sha256": saved["sha256"],
                             "integrity": integrity["status"], "query": result["query_result"]["goal_status"],
                             "conditions": len(conditions["conditions"]), "conflicts": len(conflicts["conflicts"])}, indent=2))
           PY
