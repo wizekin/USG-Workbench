@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+from concurrent.futures import ThreadPoolExecutor
 
 from tools.semantic_graph_store_v1_0_0.canonical import canonical_bytes
 from tools.semantic_graph_store_rocksdict_v1_0_0 import (
@@ -92,6 +93,32 @@ class RocksDBStoreTests(unittest.TestCase):
         invalid.pop("profileId")
         with self.assertRaises(InvalidDocumentError):
             self.store.put_document(invalid)
+
+    def test_concurrent_readers_and_serialized_writers_in_one_process(self):
+        first = self.store.put_document(self.document)
+
+        def reader():
+            seen = []
+            for _ in range(20):
+                loaded = self.store.get_document(self.document["documentId"])
+                self.assertEqual(loaded.status, "VERIFIED")
+                seen.append(loaded.revision)
+            return seen
+
+        def writer():
+            for index in range(2, 5):
+                changed = deepcopy(self.document)
+                changed["extensions"]["threadRevision"] = index
+                self.store.put_document(changed, expected_revision=index - 1)
+
+        with ThreadPoolExecutor(max_workers=5) as pool:
+            readers = [pool.submit(reader) for _ in range(4)]
+            writer_future = pool.submit(writer)
+            writer_future.result()
+            observations = [future.result() for future in readers]
+
+        self.assertEqual(self.store.get_document(self.document["documentId"]).revision, 4)
+        self.assertTrue(all(all(1 <= revision <= 4 for revision in rows) for rows in observations))
 
     def test_reopen_recovery(self):
         self.store.put_document(self.document)
