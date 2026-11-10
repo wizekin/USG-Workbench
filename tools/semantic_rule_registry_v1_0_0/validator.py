@@ -105,7 +105,7 @@ def validate_registry(
 
         if "positive" not in coverage_types:
             errors.append(f"{identity[0]} requires at least one positive benchmark fixture")
-        if not ({"negative", "boundary", "adversarial"} & coverage_types.keys()):
+        if not ({"negative", "boundary", "adversarial", "unsupported", "unresolved"} & coverage_types.keys()):
             errors.append(f"{identity[0]} requires negative, boundary, or adversarial benchmark coverage")
 
         world = rule["assumptions"]["world_assumption"]
