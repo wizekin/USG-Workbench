@@ -148,13 +148,12 @@ class KernelV11ExpressionRelationDocumentAdapterTests(unittest.TestCase):
         with self.assertRaises(ContractMappingError):
             kernel_v11_document_to_contract(imported, validate=False)
 
-    def test_wrong_reference_space_is_rejected(self):
+    def test_wrong_reference_space_is_rejected_by_native_model(self):
         imported = document_to_kernel_v11(self.make_document(), validate=False)
         old = imported.expression_relations["rel:1"]
         wrong = TypedReference(ReferenceSpace.EVIDENCE, "e:1")
-        with self.assertRaises(ContractMappingError):
-            imported.expression_relations["rel:1"] = replace(old, source_expression_ref=wrong)
-            kernel_v11_document_to_contract(imported, validate=False)
+        with self.assertRaises(ValueError):
+            replace(old, source_expression_ref=wrong)
 
     def test_stale_canonical_snapshot_is_rejected(self):
         imported = document_to_kernel_v11(self.make_document(), validate=False)
