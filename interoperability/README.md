@@ -82,3 +82,12 @@ The registries and adapter target the immutable baseline pair: Workbench v0.5.4 
 - Unknown or absent enum values remain canonical-only and are explicitly listed; no default substitution or enum coercion.
 - Reverse export serializes current native Source records and recomputes the SHA-256 hash after text edits. Dependent spans/evidence are checked by full-document validation.
 - Referents, mentions, and all other unsupported record families remain canonical-only; no identity inference or cross-document merge is introduced.
+
+
+### Step 5F — Referent integration contract and native-model gap analysis
+
+- [Step 5F Referent contract](python-kernel-extension/STEP-5F-REFERENT-CONTRACT.md).
+- This step identifies the semantic mismatch between USG-SEM/1.0 Referent identity metadata and the existing Python kernel v0.5.0 Referent record.
+- The native model does not represent identity status, DOCUMENT/WORKSPACE/CORPUS/GLOBAL identity scope, explicit referent equivalence links, display labels/aliases, or all introduction-context references as distinct fields.
+- These fields must not be coerced into ReferentScope, individual_ids, concept references, or labels. Referents remain canonical-only in the v0.5.0 document adapter until a separately versioned native model can represent these distinctions.
+- Step 5F makes no schema or kernel-baseline changes. The next implementation step must define and test the required versioned identity model before native Referent projection.
