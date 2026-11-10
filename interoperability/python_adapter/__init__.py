@@ -32,10 +32,14 @@ _V06_EXPORTS = {"KernelV06Document", "document_to_kernel_v06", "kernel_v06_docum
 _V07_EXPORTS = {"KernelV07Document", "document_to_kernel_v07", "kernel_v07_document_to_contract"}
 _V08_EXPORTS = {"KernelV08Document", "document_to_kernel_v08", "kernel_v08_document_to_contract"}
 _V09_EXPORTS = {"KernelV09Document", "document_to_kernel_v09", "kernel_v09_document_to_contract"}
-__all__ += sorted(_V06_EXPORTS | _V07_EXPORTS | _V08_EXPORTS | _V09_EXPORTS)
+_V10_EXPORTS = {"KernelV10Document", "document_to_kernel_v10", "kernel_v10_document_to_contract"}
+__all__ += sorted(_V06_EXPORTS | _V07_EXPORTS | _V08_EXPORTS | _V09_EXPORTS | _V10_EXPORTS)
 
 def __getattr__(name):
     from importlib import import_module
+    if name in _V10_EXPORTS:
+        module = import_module(".document_v10", __name__)
+        return getattr(module, name)
     if name in _V09_EXPORTS:
         module = import_module(".document_v09", __name__)
         return getattr(module, name)
