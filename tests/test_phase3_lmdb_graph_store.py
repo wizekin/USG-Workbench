@@ -115,6 +115,21 @@ class LMDBCanonicalGraphStoreTests(unittest.TestCase):
         self.assertEqual(counts["expression_index"], len(self.document["expressions"]))
         self.assertEqual(self.store.get_document(self.document["documentId"]).status, "VERIFIED")
 
+    def test_extra_index_rows_are_detected_and_removed_by_rebuild(self):
+        self.store.put_document(self.document)
+        extra_row = [
+            self.document["documentId"], 1, "unexpected-index-entry", None, None,
+            "PREDICATE_APP", "{}", 
+        ]
+        key = self.store._index_key(self.document["documentId"], 1, "unexpected-index-entry")
+        with self.store._env.begin(write=True) as txn:
+            txn.put(key, canonical_bytes(extra_row), db=self.store._db["expression_index"])
+        with self.assertRaises(IntegrityError):
+            self.store.get_document(self.document["documentId"])
+        counts = self.store.rebuild_indexes(self.document["documentId"])
+        self.assertEqual(counts["expression_index"], len(self.document["expressions"]))
+        self.assertEqual(self.store.get_document(self.document["documentId"]).status, "VERIFIED")
+
     def test_large_graph_is_not_truncated(self):
         extra = [
             {
