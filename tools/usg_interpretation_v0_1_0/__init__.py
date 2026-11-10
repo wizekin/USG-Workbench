@@ -24,6 +24,11 @@ from .mentions import (
     MentionAnalysis, MentionAnalyzer,
 )
 
+from .discourse import (
+    DISCOURSE_ANALYSIS_VERSION, DiscourseMarker, DiscourseRegistry,
+    DiscourseLink, DiscourseAnalysis, DiscourseAnalyzer, initial_discourse_registry,
+)
+
 __all__ = [
     "LANGUAGE_PROFILES", "SourceSnapshot", "TextSegment", "SegmentedSource",
     "ingest_source", "segment_source", "LEXICAL_ANALYSIS_VERSION", "Token",
@@ -33,5 +38,7 @@ __all__ = [
     "GrammarAnalyzer", "initial_grammar_registry", "SEMANTIC_COMPOSITION_VERSION",
     "PredicateFrame", "SemanticFrameRegistry", "SemanticNode", "SemanticCandidate",
     "SemanticComposition", "SemanticComposer", "initial_semantic_frame_registry", "REFERENCE_ANALYSIS_VERSION", "Mention",
-    "ReferentCandidate", "MentionAnalysis", "MentionAnalyzer",
+    "ReferentCandidate", "MentionAnalysis", "MentionAnalyzer", "DISCOURSE_ANALYSIS_VERSION",
+    "DiscourseMarker", "DiscourseRegistry", "DiscourseLink", "DiscourseAnalysis",
+    "DiscourseAnalyzer", "initial_discourse_registry",
 ]

@@ -1,0 +1,30 @@
+name: Phase 4 Step 4.7 Discourse and Context
+on:
+  pull_request:
+    paths:
+      - "tools/usg_interpretation_v0_1_0/**"
+      - "tests/test_phase4_discourse.py"
+      - ".github/workflows/phase4-step-4-7-discourse-context.yml"
+  push:
+    branches: [main]
+    paths:
+      - "tools/usg_interpretation_v0_1_0/**"
+      - "tests/test_phase4_discourse.py"
+      - ".github/workflows/phase4-step-4-7-discourse-context.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  discourse:
+    name: phase4-discourse
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python -m compileall -q tools/usg_interpretation_v0_1_0
+      - run: python -m unittest discover -s tests -p "test_phase4_discourse.py" -v
