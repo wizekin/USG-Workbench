@@ -9,7 +9,7 @@ This directory contains the frozen Phase 2 Step 2.2 benchmark contract. It defin
 - `results.schema.json` — candidate-result schema consumed by the evaluator.
 - `thresholds.json` — frozen pre-inference acceptance thresholds and metric definitions.
 
-The fixtures cover 18 semantic domains: identity, typed references, operator scope, conditionals/connectives, roles and semantic kinds, modality/attribution/temporal scope, contexts, evidence, inference, open/closed-world assumptions, corroboration, ambiguity, unresolved content, conflict, unsupported structures, provenance, determinism, and resource interruption.
+Every fixture includes a case-specific rationale tied to its task and expected/prohibited outcomes. The fixtures cover 18 semantic domains: identity, typed references, operator scope, conditionals/connectives, roles and semantic kinds, modality/attribution/temporal scope, contexts, evidence, inference, open/closed-world assumptions, corroboration, ambiguity, unresolved content, conflict, unsupported structures, provenance, determinism, and resource interruption.
 
 All nine requested test classes are represented: positive, negative, boundary, adversarial, ambiguous, unresolved, conflicting, unsupported, and incomplete.
 
