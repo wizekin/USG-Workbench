@@ -297,6 +297,10 @@ def _merge_referent_edit(
                 raise ContractMappingError("semantic_kind is not a USG-SEM semanticKind enum")
             record["semanticKind"] = current.semantic_kind
     if current.concept_refs != snapshot.concept_refs:
+        if any(ref.space is not ReferenceSpace.CONCEPT for ref in current.concept_refs):
+            raise ContractMappingError(
+                "USG-SEM conceptRefs cannot encode PROVISIONAL reference-space distinctions"
+            )
         record["conceptRefs"] = [ref.external_id for ref in current.concept_refs]
     if current.aliases != snapshot.aliases:
         record["aliases"] = list(current.aliases)
