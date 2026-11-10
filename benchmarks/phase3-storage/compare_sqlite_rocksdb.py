@@ -6,13 +6,17 @@ from copy import deepcopy
 import json
 from pathlib import Path
 import statistics
+import sys
 import tempfile
 import time
+
+ROOT = Path(__file__).resolve().parents[2]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 from tools.semantic_graph_store_v1_0_0 import CanonicalDocumentStore as SQLiteStore
 from tools.semantic_graph_store_rocksdict_v1_0_0 import CanonicalDocumentStore as RocksDBStore
 
-ROOT = Path(__file__).resolve().parents[2]
 FIXTURES = json.loads(
     (ROOT / "benchmarks/semantic-reasoning/executor-v1.0.0/fixtures.json").read_text(encoding="utf-8")
 )
@@ -55,6 +59,7 @@ def run_once(backend: str, document: dict, root: Path) -> dict:
             raise RuntimeError(f"{backend}: revision 2 verification failed")
         if report["status"] != "PASS" or [x["revision"] for x in history] != [1, 2]:
             raise RuntimeError(f"{backend}: history/integrity check failed")
+        store.close()
         return {
             "write_seconds": write_s,
             "warm_read_median_7_seconds": statistics.median(read_samples),
