@@ -1,0 +1,1814 @@
+{
+  "benchmark_id": "USG-EVIDENCE-ASSESSMENT-BENCHMARK",
+  "benchmark_version": "1.0.0",
+  "usg_profile": "USG-SEM/1.0",
+  "fixtures": [
+    {
+      "id": "EV-ALIGN-EXACT-001",
+      "document": {
+        "profileId": "USG-SEM/1.0",
+        "documentId": "DOC-EVIDENCE-EXACT",
+        "createdAt": "2026-11-10T00:00:00Z",
+        "sources": [
+          {
+            "id": "src-1",
+            "text": "A supports B",
+            "language": "en",
+            "sourceType": "RESOURCE",
+            "trustTier": "STANDARD",
+            "sensitivity": "PUBLIC",
+            "uri": "https://source.test/one",
+            "offsetUnit": "unicode_code_point"
+          }
+        ],
+        "primarySourceRef": "src-1",
+        "definitions": {
+          "ontologyRelease": "ontology-2026.1",
+          "grammarVersion": "grammar-1.0",
+          "concepts": [],
+          "frames": [],
+          "roles": [],
+          "relations": []
+        },
+        "referents": [],
+        "mentions": [],
+        "expressions": [
+          {
+            "id": "expr-a",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "A"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-b",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "B"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-not-a",
+            "op": "NOT",
+            "sort": "PROP",
+            "operandRefs": [
+              "expr-a"
+            ],
+            "params": {},
+            "interpretationStatus": "RESOLVED"
+          }
+        ],
+        "rootExpressionRefs": [
+          "expr-a",
+          "expr-b",
+          "expr-not-a"
+        ],
+        "assertions": [
+          {
+            "id": "assert-a",
+            "expressionRef": "expr-a",
+            "origin": "SOURCE_TEXT",
+            "epistemicStatus": "SOURCE_ASSERTED",
+            "commitment": "AUTHOR",
+            "evaluationContext": {
+              "kind": "WORLD",
+              "contextRef": "ctx-world"
+            },
+            "lifecycleStage": "STRUCTURED",
+            "evidenceRefs": [
+              "ev-1"
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "id": "ev-1",
+            "sourceRef": "src-1",
+            "span": {
+              "sourceRef": "src-1",
+              "start": 0,
+              "end": 1,
+              "offsetUnit": "unicode_code_point"
+            },
+            "quote": "A",
+            "alignmentStatus": "EXACT",
+            "semanticSupportStatus": "NOT_ESTABLISHED"
+          }
+        ],
+        "contexts": [
+          {
+            "id": "ctx-world",
+            "kind": "WORLD"
+          },
+          {
+            "id": "ctx-other",
+            "kind": "WORLD"
+          }
+        ],
+        "expressionRelations": [],
+        "unresolvedItems": [],
+        "derivations": [],
+        "validation": {
+          "structuralStatus": "PASS",
+          "checks": [],
+          "contractVersion": "USG-SEM/1.0"
+        },
+        "mapping": {
+          "sourceProfile": "USG-SEM/1.0",
+          "sourceVersion": "1.0",
+          "status": "LOSSLESS",
+          "unmappedRefs": []
+        },
+        "extensions": {}
+      },
+      "task": {
+        "task_id": "task-exact",
+        "source_independence_policy": {
+          "policy_id": "USG-EVIDENCE-ASSESSMENT",
+          "version": "1.0.0"
+        },
+        "conflict_policy": "EXACT_COMPLEMENT_SAME_SCOPE"
+      },
+      "expected": {
+        "alignment": "EXACT"
+      }
+    },
+    {
+      "id": "EV-ALIGN-MISMATCH-001",
+      "document": {
+        "profileId": "USG-SEM/1.0",
+        "documentId": "DOC-EVIDENCE-MISMATCH",
+        "createdAt": "2026-11-10T00:00:00Z",
+        "sources": [
+          {
+            "id": "src-1",
+            "text": "A supports B",
+            "language": "en",
+            "sourceType": "RESOURCE",
+            "trustTier": "STANDARD",
+            "sensitivity": "PUBLIC",
+            "uri": "https://source.test/one",
+            "offsetUnit": "unicode_code_point"
+          }
+        ],
+        "primarySourceRef": "src-1",
+        "definitions": {
+          "ontologyRelease": "ontology-2026.1",
+          "grammarVersion": "grammar-1.0",
+          "concepts": [],
+          "frames": [],
+          "roles": [],
+          "relations": []
+        },
+        "referents": [],
+        "mentions": [],
+        "expressions": [
+          {
+            "id": "expr-a",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "A"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-b",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "B"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-not-a",
+            "op": "NOT",
+            "sort": "PROP",
+            "operandRefs": [
+              "expr-a"
+            ],
+            "params": {},
+            "interpretationStatus": "RESOLVED"
+          }
+        ],
+        "rootExpressionRefs": [
+          "expr-a",
+          "expr-b",
+          "expr-not-a"
+        ],
+        "assertions": [
+          {
+            "id": "assert-a",
+            "expressionRef": "expr-a",
+            "origin": "SOURCE_TEXT",
+            "epistemicStatus": "SOURCE_ASSERTED",
+            "commitment": "AUTHOR",
+            "evaluationContext": {
+              "kind": "WORLD",
+              "contextRef": "ctx-world"
+            },
+            "lifecycleStage": "STRUCTURED",
+            "evidenceRefs": [
+              "ev-1"
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "id": "ev-1",
+            "sourceRef": "src-1",
+            "span": {
+              "sourceRef": "src-1",
+              "start": 0,
+              "end": 1,
+              "offsetUnit": "unicode_code_point"
+            },
+            "quote": "Z",
+            "alignmentStatus": "EXACT",
+            "semanticSupportStatus": "NOT_ESTABLISHED"
+          }
+        ],
+        "contexts": [
+          {
+            "id": "ctx-world",
+            "kind": "WORLD"
+          },
+          {
+            "id": "ctx-other",
+            "kind": "WORLD"
+          }
+        ],
+        "expressionRelations": [],
+        "unresolvedItems": [],
+        "derivations": [],
+        "validation": {
+          "structuralStatus": "PASS",
+          "checks": [],
+          "contractVersion": "USG-SEM/1.0"
+        },
+        "mapping": {
+          "sourceProfile": "USG-SEM/1.0",
+          "sourceVersion": "1.0",
+          "status": "LOSSLESS",
+          "unmappedRefs": []
+        },
+        "extensions": {}
+      },
+      "task": {
+        "task_id": "task-mismatch",
+        "source_independence_policy": {
+          "policy_id": "USG-EVIDENCE-ASSESSMENT",
+          "version": "1.0.0"
+        },
+        "conflict_policy": "EXACT_COMPLEMENT_SAME_SCOPE"
+      },
+      "expected": {
+        "alignment": "MISMATCH"
+      }
+    },
+    {
+      "id": "EV-ALIGN-UNICODE-001",
+      "document": {
+        "profileId": "USG-SEM/1.0",
+        "documentId": "DOC-EVIDENCE-UNICODE",
+        "createdAt": "2026-11-10T00:00:00Z",
+        "sources": [
+          {
+            "id": "src-1",
+            "text": "A😀 B",
+            "language": "en",
+            "sourceType": "RESOURCE",
+            "trustTier": "STANDARD",
+            "sensitivity": "PUBLIC",
+            "uri": "https://source.test/one",
+            "offsetUnit": "unicode_code_point"
+          }
+        ],
+        "primarySourceRef": "src-1",
+        "definitions": {
+          "ontologyRelease": "ontology-2026.1",
+          "grammarVersion": "grammar-1.0",
+          "concepts": [],
+          "frames": [],
+          "roles": [],
+          "relations": []
+        },
+        "referents": [],
+        "mentions": [],
+        "expressions": [
+          {
+            "id": "expr-a",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "A"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-b",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "B"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-not-a",
+            "op": "NOT",
+            "sort": "PROP",
+            "operandRefs": [
+              "expr-a"
+            ],
+            "params": {},
+            "interpretationStatus": "RESOLVED"
+          }
+        ],
+        "rootExpressionRefs": [
+          "expr-a",
+          "expr-b",
+          "expr-not-a"
+        ],
+        "assertions": [
+          {
+            "id": "assert-a",
+            "expressionRef": "expr-a",
+            "origin": "SOURCE_TEXT",
+            "epistemicStatus": "SOURCE_ASSERTED",
+            "commitment": "AUTHOR",
+            "evaluationContext": {
+              "kind": "WORLD",
+              "contextRef": "ctx-world"
+            },
+            "lifecycleStage": "STRUCTURED",
+            "evidenceRefs": [
+              "ev-1"
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "id": "ev-1",
+            "sourceRef": "src-1",
+            "span": {
+              "sourceRef": "src-1",
+              "start": 1,
+              "end": 2,
+              "offsetUnit": "unicode_code_point"
+            },
+            "quote": "😀",
+            "alignmentStatus": "EXACT",
+            "semanticSupportStatus": "NOT_ESTABLISHED"
+          }
+        ],
+        "contexts": [
+          {
+            "id": "ctx-world",
+            "kind": "WORLD"
+          },
+          {
+            "id": "ctx-other",
+            "kind": "WORLD"
+          }
+        ],
+        "expressionRelations": [],
+        "unresolvedItems": [],
+        "derivations": [],
+        "validation": {
+          "structuralStatus": "PASS",
+          "checks": [],
+          "contractVersion": "USG-SEM/1.0"
+        },
+        "mapping": {
+          "sourceProfile": "USG-SEM/1.0",
+          "sourceVersion": "1.0",
+          "status": "LOSSLESS",
+          "unmappedRefs": []
+        },
+        "extensions": {}
+      },
+      "task": {
+        "task_id": "task-unicode",
+        "source_independence_policy": {
+          "policy_id": "USG-EVIDENCE-ASSESSMENT",
+          "version": "1.0.0"
+        },
+        "conflict_policy": "EXACT_COMPLEMENT_SAME_SCOPE"
+      },
+      "expected": {
+        "alignment": "EXACT"
+      }
+    },
+    {
+      "id": "EV-SOURCE-HASH-MISMATCH-001",
+      "document": {
+        "profileId": "USG-SEM/1.0",
+        "documentId": "DOC-EVIDENCE-HASH_MISMATCH",
+        "createdAt": "2026-11-10T00:00:00Z",
+        "sources": [
+          {
+            "id": "src-1",
+            "text": "A supports B",
+            "language": "en",
+            "sourceType": "RESOURCE",
+            "trustTier": "STANDARD",
+            "sensitivity": "PUBLIC",
+            "uri": "https://source.test/one",
+            "offsetUnit": "unicode_code_point",
+            "textHash": "0000000000000000000000000000000000000000000000000000000000000000"
+          }
+        ],
+        "primarySourceRef": "src-1",
+        "definitions": {
+          "ontologyRelease": "ontology-2026.1",
+          "grammarVersion": "grammar-1.0",
+          "concepts": [],
+          "frames": [],
+          "roles": [],
+          "relations": []
+        },
+        "referents": [],
+        "mentions": [],
+        "expressions": [
+          {
+            "id": "expr-a",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "A"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-b",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "B"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-not-a",
+            "op": "NOT",
+            "sort": "PROP",
+            "operandRefs": [
+              "expr-a"
+            ],
+            "params": {},
+            "interpretationStatus": "RESOLVED"
+          }
+        ],
+        "rootExpressionRefs": [
+          "expr-a",
+          "expr-b",
+          "expr-not-a"
+        ],
+        "assertions": [
+          {
+            "id": "assert-a",
+            "expressionRef": "expr-a",
+            "origin": "SOURCE_TEXT",
+            "epistemicStatus": "SOURCE_ASSERTED",
+            "commitment": "AUTHOR",
+            "evaluationContext": {
+              "kind": "WORLD",
+              "contextRef": "ctx-world"
+            },
+            "lifecycleStage": "STRUCTURED",
+            "evidenceRefs": [
+              "ev-1"
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "id": "ev-1",
+            "sourceRef": "src-1",
+            "span": {
+              "sourceRef": "src-1",
+              "start": 0,
+              "end": 1,
+              "offsetUnit": "unicode_code_point"
+            },
+            "quote": "A",
+            "alignmentStatus": "EXACT",
+            "semanticSupportStatus": "NOT_ESTABLISHED"
+          }
+        ],
+        "contexts": [
+          {
+            "id": "ctx-world",
+            "kind": "WORLD"
+          },
+          {
+            "id": "ctx-other",
+            "kind": "WORLD"
+          }
+        ],
+        "expressionRelations": [],
+        "unresolvedItems": [],
+        "derivations": [],
+        "validation": {
+          "structuralStatus": "PASS",
+          "checks": [],
+          "contractVersion": "USG-SEM/1.0"
+        },
+        "mapping": {
+          "sourceProfile": "USG-SEM/1.0",
+          "sourceVersion": "1.0",
+          "status": "LOSSLESS",
+          "unmappedRefs": []
+        },
+        "extensions": {}
+      },
+      "task": {
+        "task_id": "task-hash_mismatch",
+        "source_independence_policy": {
+          "policy_id": "USG-EVIDENCE-ASSESSMENT",
+          "version": "1.0.0"
+        },
+        "conflict_policy": "EXACT_COMPLEMENT_SAME_SCOPE"
+      },
+      "expected": {
+        "alignment": "UNVERIFIED"
+      }
+    },
+    {
+      "id": "EV-SOURCE-MISSING-001",
+      "document": {
+        "profileId": "USG-SEM/1.0",
+        "documentId": "DOC-EVIDENCE-MISSING_SOURCE",
+        "createdAt": "2026-11-10T00:00:00Z",
+        "sources": [
+          {
+            "id": "src-1",
+            "text": "A supports B",
+            "language": "en",
+            "sourceType": "RESOURCE",
+            "trustTier": "STANDARD",
+            "sensitivity": "PUBLIC",
+            "uri": "https://source.test/one",
+            "offsetUnit": "unicode_code_point"
+          }
+        ],
+        "primarySourceRef": "src-1",
+        "definitions": {
+          "ontologyRelease": "ontology-2026.1",
+          "grammarVersion": "grammar-1.0",
+          "concepts": [],
+          "frames": [],
+          "roles": [],
+          "relations": []
+        },
+        "referents": [],
+        "mentions": [],
+        "expressions": [
+          {
+            "id": "expr-a",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "A"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-b",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "B"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-not-a",
+            "op": "NOT",
+            "sort": "PROP",
+            "operandRefs": [
+              "expr-a"
+            ],
+            "params": {},
+            "interpretationStatus": "RESOLVED"
+          }
+        ],
+        "rootExpressionRefs": [
+          "expr-a",
+          "expr-b",
+          "expr-not-a"
+        ],
+        "assertions": [
+          {
+            "id": "assert-a",
+            "expressionRef": "expr-a",
+            "origin": "SOURCE_TEXT",
+            "epistemicStatus": "SOURCE_ASSERTED",
+            "commitment": "AUTHOR",
+            "evaluationContext": {
+              "kind": "WORLD",
+              "contextRef": "ctx-world"
+            },
+            "lifecycleStage": "STRUCTURED",
+            "evidenceRefs": [
+              "ev-1"
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "id": "ev-1",
+            "sourceRef": "src-missing",
+            "span": {
+              "sourceRef": "src-missing",
+              "start": 0,
+              "end": 1,
+              "offsetUnit": "unicode_code_point"
+            },
+            "quote": "A",
+            "alignmentStatus": "EXACT",
+            "semanticSupportStatus": "NOT_ESTABLISHED"
+          }
+        ],
+        "contexts": [
+          {
+            "id": "ctx-world",
+            "kind": "WORLD"
+          },
+          {
+            "id": "ctx-other",
+            "kind": "WORLD"
+          }
+        ],
+        "expressionRelations": [],
+        "unresolvedItems": [],
+        "derivations": [],
+        "validation": {
+          "structuralStatus": "PASS",
+          "checks": [],
+          "contractVersion": "USG-SEM/1.0"
+        },
+        "mapping": {
+          "sourceProfile": "USG-SEM/1.0",
+          "sourceVersion": "1.0",
+          "status": "LOSSLESS",
+          "unmappedRefs": []
+        },
+        "extensions": {}
+      },
+      "task": {
+        "task_id": "task-missing_source",
+        "source_independence_policy": {
+          "policy_id": "USG-EVIDENCE-ASSESSMENT",
+          "version": "1.0.0"
+        },
+        "conflict_policy": "EXACT_COMPLEMENT_SAME_SCOPE"
+      },
+      "expected": {
+        "alignment": "UNRESOLVED"
+      }
+    },
+    {
+      "id": "EV-DECLARED-RULE-SUPPORT-001",
+      "document": {
+        "profileId": "USG-SEM/1.0",
+        "documentId": "DOC-EVIDENCE-DECLARED_SUPPORT",
+        "createdAt": "2026-11-10T00:00:00Z",
+        "sources": [
+          {
+            "id": "src-1",
+            "text": "A supports B",
+            "language": "en",
+            "sourceType": "RESOURCE",
+            "trustTier": "STANDARD",
+            "sensitivity": "PUBLIC",
+            "uri": "https://source.test/one",
+            "offsetUnit": "unicode_code_point"
+          }
+        ],
+        "primarySourceRef": "src-1",
+        "definitions": {
+          "ontologyRelease": "ontology-2026.1",
+          "grammarVersion": "grammar-1.0",
+          "concepts": [],
+          "frames": [],
+          "roles": [],
+          "relations": []
+        },
+        "referents": [],
+        "mentions": [],
+        "expressions": [
+          {
+            "id": "expr-a",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "A"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-b",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "B"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-not-a",
+            "op": "NOT",
+            "sort": "PROP",
+            "operandRefs": [
+              "expr-a"
+            ],
+            "params": {},
+            "interpretationStatus": "RESOLVED"
+          }
+        ],
+        "rootExpressionRefs": [
+          "expr-a",
+          "expr-b",
+          "expr-not-a"
+        ],
+        "assertions": [
+          {
+            "id": "assert-a",
+            "expressionRef": "expr-a",
+            "origin": "SOURCE_TEXT",
+            "epistemicStatus": "SOURCE_ASSERTED",
+            "commitment": "AUTHOR",
+            "evaluationContext": {
+              "kind": "WORLD",
+              "contextRef": "ctx-world"
+            },
+            "lifecycleStage": "STRUCTURED",
+            "evidenceRefs": [
+              "ev-1"
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "id": "ev-1",
+            "sourceRef": "src-1",
+            "span": {
+              "sourceRef": "src-1",
+              "start": 0,
+              "end": 1,
+              "offsetUnit": "unicode_code_point"
+            },
+            "quote": "A",
+            "alignmentStatus": "EXACT",
+            "semanticSupportStatus": "RULE_SUPPORTED"
+          }
+        ],
+        "contexts": [
+          {
+            "id": "ctx-world",
+            "kind": "WORLD"
+          },
+          {
+            "id": "ctx-other",
+            "kind": "WORLD"
+          }
+        ],
+        "expressionRelations": [],
+        "unresolvedItems": [],
+        "derivations": [],
+        "validation": {
+          "structuralStatus": "PASS",
+          "checks": [],
+          "contractVersion": "USG-SEM/1.0"
+        },
+        "mapping": {
+          "sourceProfile": "USG-SEM/1.0",
+          "sourceVersion": "1.0",
+          "status": "LOSSLESS",
+          "unmappedRefs": []
+        },
+        "extensions": {}
+      },
+      "task": {
+        "task_id": "task-declared_support",
+        "source_independence_policy": {
+          "policy_id": "USG-EVIDENCE-ASSESSMENT",
+          "version": "1.0.0"
+        },
+        "conflict_policy": "EXACT_COMPLEMENT_SAME_SCOPE"
+      },
+      "expected": {
+        "support": "DECLARED_RULE_SUPPORTED_UNVERIFIED"
+      }
+    },
+    {
+      "id": "EV-RELATION-CONTRADICTS-UNVERIFIED-001",
+      "document": {
+        "profileId": "USG-SEM/1.0",
+        "documentId": "DOC-EVIDENCE-RELATION",
+        "createdAt": "2026-11-10T00:00:00Z",
+        "sources": [
+          {
+            "id": "src-1",
+            "text": "A supports B",
+            "language": "en",
+            "sourceType": "RESOURCE",
+            "trustTier": "STANDARD",
+            "sensitivity": "PUBLIC",
+            "uri": "https://source.test/one",
+            "offsetUnit": "unicode_code_point"
+          }
+        ],
+        "primarySourceRef": "src-1",
+        "definitions": {
+          "ontologyRelease": "ontology-2026.1",
+          "grammarVersion": "grammar-1.0",
+          "concepts": [],
+          "frames": [],
+          "roles": [],
+          "relations": []
+        },
+        "referents": [],
+        "mentions": [],
+        "expressions": [
+          {
+            "id": "expr-a",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "A"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-b",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "B"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-not-a",
+            "op": "NOT",
+            "sort": "PROP",
+            "operandRefs": [
+              "expr-a"
+            ],
+            "params": {},
+            "interpretationStatus": "RESOLVED"
+          }
+        ],
+        "rootExpressionRefs": [
+          "expr-a",
+          "expr-b",
+          "expr-not-a"
+        ],
+        "assertions": [],
+        "evidence": [],
+        "contexts": [
+          {
+            "id": "ctx-world",
+            "kind": "WORLD"
+          },
+          {
+            "id": "ctx-other",
+            "kind": "WORLD"
+          }
+        ],
+        "expressionRelations": [
+          {
+            "id": "rel-1",
+            "type": "CONTRADICTS",
+            "sourceExpressionRef": "expr-a",
+            "targetExpressionRef": "expr-b",
+            "verificationStatus": "NOT_INDEPENDENTLY_VERIFIED"
+          }
+        ],
+        "unresolvedItems": [],
+        "derivations": [],
+        "validation": {
+          "structuralStatus": "PASS",
+          "checks": [],
+          "contractVersion": "USG-SEM/1.0"
+        },
+        "mapping": {
+          "sourceProfile": "USG-SEM/1.0",
+          "sourceVersion": "1.0",
+          "status": "LOSSLESS",
+          "unmappedRefs": []
+        },
+        "extensions": {}
+      },
+      "task": {
+        "task_id": "task-relation",
+        "source_independence_policy": {
+          "policy_id": "USG-EVIDENCE-ASSESSMENT",
+          "version": "1.0.0"
+        },
+        "conflict_policy": "EXACT_COMPLEMENT_SAME_SCOPE"
+      },
+      "expected": {
+        "relation": "UNVERIFIED_RELATION_CLAIM"
+      }
+    },
+    {
+      "id": "EV-EXACT-COMPLEMENT-CONFLICT-001",
+      "document": {
+        "profileId": "USG-SEM/1.0",
+        "documentId": "DOC-EVIDENCE-CONFLICT",
+        "createdAt": "2026-11-10T00:00:00Z",
+        "sources": [
+          {
+            "id": "src-1",
+            "text": "A supports B",
+            "language": "en",
+            "sourceType": "RESOURCE",
+            "trustTier": "STANDARD",
+            "sensitivity": "PUBLIC",
+            "uri": "https://source.test/one",
+            "offsetUnit": "unicode_code_point"
+          }
+        ],
+        "primarySourceRef": "src-1",
+        "definitions": {
+          "ontologyRelease": "ontology-2026.1",
+          "grammarVersion": "grammar-1.0",
+          "concepts": [],
+          "frames": [],
+          "roles": [],
+          "relations": []
+        },
+        "referents": [],
+        "mentions": [],
+        "expressions": [
+          {
+            "id": "expr-a",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "A"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-b",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "B"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-not-a",
+            "op": "NOT",
+            "sort": "PROP",
+            "operandRefs": [
+              "expr-a"
+            ],
+            "params": {},
+            "interpretationStatus": "RESOLVED"
+          }
+        ],
+        "rootExpressionRefs": [
+          "expr-a",
+          "expr-b",
+          "expr-not-a"
+        ],
+        "assertions": [
+          {
+            "id": "assert-a",
+            "expressionRef": "expr-a",
+            "origin": "SOURCE_TEXT",
+            "epistemicStatus": "SOURCE_ASSERTED",
+            "commitment": "AUTHOR",
+            "evaluationContext": {
+              "kind": "WORLD",
+              "contextRef": "ctx-world"
+            },
+            "lifecycleStage": "STRUCTURED"
+          },
+          {
+            "id": "assert-not-a",
+            "expressionRef": "expr-not-a",
+            "origin": "SOURCE_TEXT",
+            "epistemicStatus": "SOURCE_ASSERTED",
+            "commitment": "AUTHOR",
+            "evaluationContext": {
+              "kind": "WORLD",
+              "contextRef": "ctx-world"
+            },
+            "lifecycleStage": "STRUCTURED"
+          }
+        ],
+        "evidence": [],
+        "contexts": [
+          {
+            "id": "ctx-world",
+            "kind": "WORLD"
+          },
+          {
+            "id": "ctx-other",
+            "kind": "WORLD"
+          }
+        ],
+        "expressionRelations": [],
+        "unresolvedItems": [],
+        "derivations": [],
+        "validation": {
+          "structuralStatus": "PASS",
+          "checks": [],
+          "contractVersion": "USG-SEM/1.0"
+        },
+        "mapping": {
+          "sourceProfile": "USG-SEM/1.0",
+          "sourceVersion": "1.0",
+          "status": "LOSSLESS",
+          "unmappedRefs": []
+        },
+        "extensions": {}
+      },
+      "task": {
+        "task_id": "task-conflict",
+        "source_independence_policy": {
+          "policy_id": "USG-EVIDENCE-ASSESSMENT",
+          "version": "1.0.0"
+        },
+        "conflict_policy": "EXACT_COMPLEMENT_SAME_SCOPE"
+      },
+      "expected": {
+        "conflicts": 1
+      }
+    },
+    {
+      "id": "EV-CONTEXT-ISOLATED-001",
+      "document": {
+        "profileId": "USG-SEM/1.0",
+        "documentId": "DOC-EVIDENCE-CONTEXT_CONFLICT",
+        "createdAt": "2026-11-10T00:00:00Z",
+        "sources": [
+          {
+            "id": "src-1",
+            "text": "A supports B",
+            "language": "en",
+            "sourceType": "RESOURCE",
+            "trustTier": "STANDARD",
+            "sensitivity": "PUBLIC",
+            "uri": "https://source.test/one",
+            "offsetUnit": "unicode_code_point"
+          }
+        ],
+        "primarySourceRef": "src-1",
+        "definitions": {
+          "ontologyRelease": "ontology-2026.1",
+          "grammarVersion": "grammar-1.0",
+          "concepts": [],
+          "frames": [],
+          "roles": [],
+          "relations": []
+        },
+        "referents": [],
+        "mentions": [],
+        "expressions": [
+          {
+            "id": "expr-a",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "A"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-b",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "B"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-not-a",
+            "op": "NOT",
+            "sort": "PROP",
+            "operandRefs": [
+              "expr-a"
+            ],
+            "params": {},
+            "interpretationStatus": "RESOLVED"
+          }
+        ],
+        "rootExpressionRefs": [
+          "expr-a",
+          "expr-b",
+          "expr-not-a"
+        ],
+        "assertions": [
+          {
+            "id": "assert-a",
+            "expressionRef": "expr-a",
+            "origin": "SOURCE_TEXT",
+            "epistemicStatus": "SOURCE_ASSERTED",
+            "commitment": "AUTHOR",
+            "evaluationContext": {
+              "kind": "WORLD",
+              "contextRef": "ctx-world"
+            },
+            "lifecycleStage": "STRUCTURED"
+          },
+          {
+            "id": "assert-not-a",
+            "expressionRef": "expr-not-a",
+            "origin": "SOURCE_TEXT",
+            "epistemicStatus": "SOURCE_ASSERTED",
+            "commitment": "AUTHOR",
+            "evaluationContext": {
+              "kind": "WORLD",
+              "contextRef": "ctx-other"
+            },
+            "lifecycleStage": "STRUCTURED"
+          }
+        ],
+        "evidence": [],
+        "contexts": [
+          {
+            "id": "ctx-world",
+            "kind": "WORLD"
+          },
+          {
+            "id": "ctx-other",
+            "kind": "WORLD"
+          }
+        ],
+        "expressionRelations": [],
+        "unresolvedItems": [],
+        "derivations": [],
+        "validation": {
+          "structuralStatus": "PASS",
+          "checks": [],
+          "contractVersion": "USG-SEM/1.0"
+        },
+        "mapping": {
+          "sourceProfile": "USG-SEM/1.0",
+          "sourceVersion": "1.0",
+          "status": "LOSSLESS",
+          "unmappedRefs": []
+        },
+        "extensions": {}
+      },
+      "task": {
+        "task_id": "task-context_conflict",
+        "source_independence_policy": {
+          "policy_id": "USG-EVIDENCE-ASSESSMENT",
+          "version": "1.0.0"
+        },
+        "conflict_policy": "EXACT_COMPLEMENT_SAME_SCOPE"
+      },
+      "expected": {
+        "conflicts": 0
+      }
+    },
+    {
+      "id": "EV-ATTRIBUTION-ISOLATED-001",
+      "document": {
+        "profileId": "USG-SEM/1.0",
+        "documentId": "DOC-EVIDENCE-ATTRIBUTION_CONFLICT",
+        "createdAt": "2026-11-10T00:00:00Z",
+        "sources": [
+          {
+            "id": "src-1",
+            "text": "A supports B",
+            "language": "en",
+            "sourceType": "RESOURCE",
+            "trustTier": "STANDARD",
+            "sensitivity": "PUBLIC",
+            "uri": "https://source.test/one",
+            "offsetUnit": "unicode_code_point"
+          }
+        ],
+        "primarySourceRef": "src-1",
+        "definitions": {
+          "ontologyRelease": "ontology-2026.1",
+          "grammarVersion": "grammar-1.0",
+          "concepts": [],
+          "frames": [],
+          "roles": [],
+          "relations": []
+        },
+        "referents": [
+          {
+            "id": "ref-a",
+            "label": "Speaker A"
+          },
+          {
+            "id": "ref-b",
+            "label": "Speaker B"
+          }
+        ],
+        "mentions": [],
+        "expressions": [
+          {
+            "id": "expr-a",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "A"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-b",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "B"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-not-a",
+            "op": "NOT",
+            "sort": "PROP",
+            "operandRefs": [
+              "expr-a"
+            ],
+            "params": {},
+            "interpretationStatus": "RESOLVED"
+          }
+        ],
+        "rootExpressionRefs": [
+          "expr-a",
+          "expr-b",
+          "expr-not-a"
+        ],
+        "assertions": [
+          {
+            "id": "assert-a",
+            "expressionRef": "expr-a",
+            "origin": "SOURCE_TEXT",
+            "epistemicStatus": "SOURCE_ASSERTED",
+            "commitment": "ATTRIBUTED",
+            "attributedToRef": "ref-a",
+            "evaluationContext": {
+              "kind": "WORLD",
+              "contextRef": "ctx-world"
+            },
+            "lifecycleStage": "STRUCTURED"
+          },
+          {
+            "id": "assert-not-a",
+            "expressionRef": "expr-not-a",
+            "origin": "SOURCE_TEXT",
+            "epistemicStatus": "SOURCE_ASSERTED",
+            "commitment": "ATTRIBUTED",
+            "attributedToRef": "ref-b",
+            "evaluationContext": {
+              "kind": "WORLD",
+              "contextRef": "ctx-world"
+            },
+            "lifecycleStage": "STRUCTURED"
+          }
+        ],
+        "evidence": [],
+        "contexts": [
+          {
+            "id": "ctx-world",
+            "kind": "WORLD"
+          },
+          {
+            "id": "ctx-other",
+            "kind": "WORLD"
+          }
+        ],
+        "expressionRelations": [],
+        "unresolvedItems": [],
+        "derivations": [],
+        "validation": {
+          "structuralStatus": "PASS",
+          "checks": [],
+          "contractVersion": "USG-SEM/1.0"
+        },
+        "mapping": {
+          "sourceProfile": "USG-SEM/1.0",
+          "sourceVersion": "1.0",
+          "status": "LOSSLESS",
+          "unmappedRefs": []
+        },
+        "extensions": {}
+      },
+      "task": {
+        "task_id": "task-attribution_conflict",
+        "source_independence_policy": {
+          "policy_id": "USG-EVIDENCE-ASSESSMENT",
+          "version": "1.0.0"
+        },
+        "conflict_policy": "EXACT_COMPLEMENT_SAME_SCOPE"
+      },
+      "expected": {
+        "conflicts": 0
+      }
+    },
+    {
+      "id": "EV-MULTIPLE-SOURCES-NO-INDEPENDENCE-001",
+      "document": {
+        "profileId": "USG-SEM/1.0",
+        "documentId": "DOC-EVIDENCE-DIVERSITY",
+        "createdAt": "2026-11-10T00:00:00Z",
+        "sources": [
+          {
+            "id": "src-1",
+            "text": "A supports B",
+            "language": "en",
+            "sourceType": "RESOURCE",
+            "trustTier": "STANDARD",
+            "sensitivity": "PUBLIC",
+            "uri": "https://source.test/one",
+            "offsetUnit": "unicode_code_point"
+          },
+          {
+            "id": "src-2",
+            "text": "B agrees",
+            "language": "en",
+            "sourceType": "RESOURCE",
+            "trustTier": "STANDARD",
+            "sensitivity": "PUBLIC",
+            "uri": "https://source.test/two",
+            "offsetUnit": "unicode_code_point"
+          }
+        ],
+        "primarySourceRef": "src-1",
+        "definitions": {
+          "ontologyRelease": "ontology-2026.1",
+          "grammarVersion": "grammar-1.0",
+          "concepts": [],
+          "frames": [],
+          "roles": [],
+          "relations": []
+        },
+        "referents": [],
+        "mentions": [],
+        "expressions": [
+          {
+            "id": "expr-a",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "A"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-b",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "B"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-not-a",
+            "op": "NOT",
+            "sort": "PROP",
+            "operandRefs": [
+              "expr-a"
+            ],
+            "params": {},
+            "interpretationStatus": "RESOLVED"
+          }
+        ],
+        "rootExpressionRefs": [
+          "expr-a",
+          "expr-b",
+          "expr-not-a"
+        ],
+        "assertions": [
+          {
+            "id": "assert-a",
+            "expressionRef": "expr-a",
+            "origin": "SOURCE_TEXT",
+            "epistemicStatus": "SOURCE_ASSERTED",
+            "commitment": "AUTHOR",
+            "evaluationContext": {
+              "kind": "WORLD",
+              "contextRef": "ctx-world"
+            },
+            "lifecycleStage": "STRUCTURED",
+            "evidenceRefs": [
+              "ev-1",
+              "ev-2"
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "id": "ev-1",
+            "sourceRef": "src-1",
+            "span": {
+              "sourceRef": "src-1",
+              "start": 0,
+              "end": 1,
+              "offsetUnit": "unicode_code_point"
+            },
+            "quote": "A",
+            "alignmentStatus": "EXACT",
+            "semanticSupportStatus": "NOT_ESTABLISHED"
+          },
+          {
+            "id": "ev-2",
+            "sourceRef": "src-2",
+            "span": {
+              "sourceRef": "src-2",
+              "start": 0,
+              "end": 1,
+              "offsetUnit": "unicode_code_point"
+            },
+            "quote": "B",
+            "alignmentStatus": "EXACT",
+            "semanticSupportStatus": "NOT_ESTABLISHED"
+          }
+        ],
+        "contexts": [
+          {
+            "id": "ctx-world",
+            "kind": "WORLD"
+          },
+          {
+            "id": "ctx-other",
+            "kind": "WORLD"
+          }
+        ],
+        "expressionRelations": [],
+        "unresolvedItems": [],
+        "derivations": [],
+        "validation": {
+          "structuralStatus": "PASS",
+          "checks": [],
+          "contractVersion": "USG-SEM/1.0"
+        },
+        "mapping": {
+          "sourceProfile": "USG-SEM/1.0",
+          "sourceVersion": "1.0",
+          "status": "LOSSLESS",
+          "unmappedRefs": []
+        },
+        "extensions": {}
+      },
+      "task": {
+        "task_id": "task-diversity",
+        "source_independence_policy": {
+          "policy_id": "USG-EVIDENCE-ASSESSMENT",
+          "version": "1.0.0"
+        },
+        "conflict_policy": "EXACT_COMPLEMENT_SAME_SCOPE"
+      },
+      "expected": {
+        "independence": "NOT_ESTABLISHED",
+        "corroboration": "NOT_ESTABLISHED"
+      }
+    },
+    {
+      "id": "EV-SHARED-LINEAGE-NO-CORROBORATION-001",
+      "document": {
+        "profileId": "USG-SEM/1.0",
+        "documentId": "DOC-EVIDENCE-SAME_LINEAGE",
+        "createdAt": "2026-11-10T00:00:00Z",
+        "sources": [
+          {
+            "id": "src-1",
+            "text": "A supports B",
+            "language": "en",
+            "sourceType": "RESOURCE",
+            "trustTier": "STANDARD",
+            "sensitivity": "PUBLIC",
+            "uri": "https://source.test/one",
+            "offsetUnit": "unicode_code_point",
+            "textHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "id": "src-2",
+            "text": "B agrees",
+            "language": "en",
+            "sourceType": "RESOURCE",
+            "trustTier": "STANDARD",
+            "sensitivity": "PUBLIC",
+            "uri": "https://source.test/one",
+            "textHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "hashAlgorithm": "SHA-256",
+            "encoding": "UTF-8",
+            "offsetUnit": "unicode_code_point"
+          }
+        ],
+        "primarySourceRef": "src-1",
+        "definitions": {
+          "ontologyRelease": "ontology-2026.1",
+          "grammarVersion": "grammar-1.0",
+          "concepts": [],
+          "frames": [],
+          "roles": [],
+          "relations": []
+        },
+        "referents": [],
+        "mentions": [],
+        "expressions": [
+          {
+            "id": "expr-a",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "A"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-b",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "B"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-not-a",
+            "op": "NOT",
+            "sort": "PROP",
+            "operandRefs": [
+              "expr-a"
+            ],
+            "params": {},
+            "interpretationStatus": "RESOLVED"
+          }
+        ],
+        "rootExpressionRefs": [
+          "expr-a",
+          "expr-b",
+          "expr-not-a"
+        ],
+        "assertions": [
+          {
+            "id": "assert-a",
+            "expressionRef": "expr-a",
+            "origin": "SOURCE_TEXT",
+            "epistemicStatus": "SOURCE_ASSERTED",
+            "commitment": "AUTHOR",
+            "evaluationContext": {
+              "kind": "WORLD",
+              "contextRef": "ctx-world"
+            },
+            "lifecycleStage": "STRUCTURED",
+            "evidenceRefs": [
+              "ev-1",
+              "ev-2"
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "id": "ev-1",
+            "sourceRef": "src-1",
+            "span": {
+              "sourceRef": "src-1",
+              "start": 0,
+              "end": 1,
+              "offsetUnit": "unicode_code_point"
+            },
+            "quote": "A",
+            "alignmentStatus": "EXACT",
+            "semanticSupportStatus": "NOT_ESTABLISHED"
+          },
+          {
+            "id": "ev-2",
+            "sourceRef": "src-2",
+            "span": {
+              "sourceRef": "src-2",
+              "start": 0,
+              "end": 1,
+              "offsetUnit": "unicode_code_point"
+            },
+            "quote": "B",
+            "alignmentStatus": "EXACT",
+            "semanticSupportStatus": "NOT_ESTABLISHED"
+          }
+        ],
+        "contexts": [
+          {
+            "id": "ctx-world",
+            "kind": "WORLD"
+          },
+          {
+            "id": "ctx-other",
+            "kind": "WORLD"
+          }
+        ],
+        "expressionRelations": [],
+        "unresolvedItems": [],
+        "derivations": [],
+        "validation": {
+          "structuralStatus": "PASS",
+          "checks": [],
+          "contractVersion": "USG-SEM/1.0"
+        },
+        "mapping": {
+          "sourceProfile": "USG-SEM/1.0",
+          "sourceVersion": "1.0",
+          "status": "LOSSLESS",
+          "unmappedRefs": []
+        },
+        "extensions": {}
+      },
+      "task": {
+        "task_id": "task-same_lineage",
+        "source_independence_policy": {
+          "policy_id": "USG-EVIDENCE-ASSESSMENT",
+          "version": "1.0.0"
+        },
+        "conflict_policy": "EXACT_COMPLEMENT_SAME_SCOPE"
+      },
+      "expected": {
+        "independence": "SHARED_OR_POSSIBLY_SHARED_LINEAGE",
+        "corroboration": "NOT_ESTABLISHED"
+      }
+    },
+    {
+      "id": "EV-EXTERNAL-VERIFICATION-DECLARED-001",
+      "document": {
+        "profileId": "USG-SEM/1.0",
+        "documentId": "DOC-EVIDENCE-EXTERNAL",
+        "createdAt": "2026-11-10T00:00:00Z",
+        "sources": [
+          {
+            "id": "src-1",
+            "text": "A supports B",
+            "language": "en",
+            "sourceType": "RESOURCE",
+            "trustTier": "STANDARD",
+            "sensitivity": "PUBLIC",
+            "uri": "https://source.test/one",
+            "offsetUnit": "unicode_code_point"
+          }
+        ],
+        "primarySourceRef": "src-1",
+        "definitions": {
+          "ontologyRelease": "ontology-2026.1",
+          "grammarVersion": "grammar-1.0",
+          "concepts": [],
+          "frames": [],
+          "roles": [],
+          "relations": []
+        },
+        "referents": [],
+        "mentions": [],
+        "expressions": [
+          {
+            "id": "expr-a",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "A"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-b",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "B"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-not-a",
+            "op": "NOT",
+            "sort": "PROP",
+            "operandRefs": [
+              "expr-a"
+            ],
+            "params": {},
+            "interpretationStatus": "RESOLVED"
+          }
+        ],
+        "rootExpressionRefs": [
+          "expr-a",
+          "expr-b",
+          "expr-not-a"
+        ],
+        "assertions": [
+          {
+            "id": "assert-a",
+            "expressionRef": "expr-a",
+            "origin": "SOURCE_TEXT",
+            "epistemicStatus": "SOURCE_ASSERTED",
+            "commitment": "AUTHOR",
+            "evaluationContext": {
+              "kind": "WORLD",
+              "contextRef": "ctx-world"
+            },
+            "lifecycleStage": "STRUCTURED",
+            "evidenceRefs": [
+              "ev-1"
+            ]
+          }
+        ],
+        "evidence": [
+          {
+            "id": "ev-1",
+            "sourceRef": "src-1",
+            "span": {
+              "sourceRef": "src-1",
+              "start": 0,
+              "end": 1,
+              "offsetUnit": "unicode_code_point"
+            },
+            "quote": "A",
+            "alignmentStatus": "EXACT",
+            "semanticSupportStatus": "NOT_ESTABLISHED"
+          }
+        ],
+        "contexts": [
+          {
+            "id": "ctx-world",
+            "kind": "WORLD"
+          },
+          {
+            "id": "ctx-other",
+            "kind": "WORLD"
+          }
+        ],
+        "expressionRelations": [],
+        "unresolvedItems": [],
+        "derivations": [],
+        "validation": {
+          "structuralStatus": "PASS",
+          "checks": [],
+          "contractVersion": "USG-SEM/1.0"
+        },
+        "mapping": {
+          "sourceProfile": "USG-SEM/1.0",
+          "sourceVersion": "1.0",
+          "status": "LOSSLESS",
+          "unmappedRefs": []
+        },
+        "extensions": {}
+      },
+      "task": {
+        "task_id": "task-external",
+        "source_independence_policy": {
+          "policy_id": "USG-EVIDENCE-ASSESSMENT",
+          "version": "1.0.0"
+        },
+        "conflict_policy": "EXACT_COMPLEMENT_SAME_SCOPE",
+        "external_verification_declarations": [
+          {
+            "subject_ref": "assert-a",
+            "verifier_id": "external-lab-1",
+            "procedure_id": "fact-check",
+            "procedure_version": "2.0",
+            "declared_result": "VERIFIED",
+            "record_ref": "verification-record-1"
+          }
+        ]
+      },
+      "expected": {
+        "external": "DECLARED_UNVERIFIED"
+      }
+    }
+  ]
+}
