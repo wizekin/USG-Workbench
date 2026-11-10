@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wizekin.github.io/USG-Workbench/semantic-inference-task-1.0.0.schema.json",
+  "title": "USG Deterministic Inference Task 1.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "task_id",
+    "rule_ids",
+    "world_assumption",
+    "allow_inferred_premises",
+    "evidence_assessment"
+  ],
+  "properties": {
+    "task_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "rule_ids": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "world_assumption": {
+      "const": "OPEN"
+    },
+    "max_rule_applications": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "allow_inferred_premises": {
+      "const": false
+    },
+    "evidence_assessment": {
+      "const": false
+    }
+  }
+}

@@ -1,0 +1,1624 @@
+{
+  "benchmark_id": "USG-INFERENCE-EXECUTOR-BENCHMARK",
+  "benchmark_version": "1.0.0",
+  "usg_profile": "USG-SEM/1.0",
+  "fixtures": [
+    {
+      "id": "EXEC-MP-POSITIVE-001",
+      "category": "positive",
+      "document": {
+        "profileId": "USG-SEM/1.0",
+        "documentId": "DOC-EXEC-MP",
+        "createdAt": "2026-11-10T00:00:00Z",
+        "sources": [
+          {
+            "id": "source-main",
+            "text": "A. B. If A then B.",
+            "language": "en",
+            "sourceType": "CURATED",
+            "trustTier": "STANDARD",
+            "sensitivity": "PUBLIC",
+            "offsetUnit": "unicode_code_point"
+          }
+        ],
+        "primarySourceRef": "source-main",
+        "definitions": {
+          "ontologyRelease": "ontology-2026.1",
+          "grammarVersion": "grammar-1.0",
+          "concepts": [],
+          "frames": [],
+          "roles": [],
+          "relations": []
+        },
+        "referents": [],
+        "mentions": [],
+        "expressions": [
+          {
+            "id": "expr-a",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "A"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-b",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "B"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-c",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "C"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-imp",
+            "op": "IMPLIES",
+            "sort": "PROP",
+            "operandRefs": [
+              "expr-a",
+              "expr-b"
+            ],
+            "params": {},
+            "interpretationStatus": "RESOLVED"
+          }
+        ],
+        "rootExpressionRefs": [
+          "expr-a",
+          "expr-b",
+          "expr-c",
+          "expr-imp"
+        ],
+        "assertions": [
+          {
+            "id": "assert-a",
+            "expressionRef": "expr-a",
+            "origin": "SOURCE_TEXT",
+            "epistemicStatus": "SOURCE_ASSERTED",
+            "commitment": "AUTHOR",
+            "evaluationContext": {
+              "kind": "WORLD",
+              "contextRef": "ctx-world"
+            },
+            "lifecycleStage": "STRUCTURED"
+          },
+          {
+            "id": "assert-imp",
+            "expressionRef": "expr-imp",
+            "origin": "SOURCE_TEXT",
+            "epistemicStatus": "SOURCE_ASSERTED",
+            "commitment": "AUTHOR",
+            "evaluationContext": {
+              "kind": "WORLD",
+              "contextRef": "ctx-world"
+            },
+            "lifecycleStage": "STRUCTURED"
+          }
+        ],
+        "evidence": [],
+        "contexts": [
+          {
+            "id": "ctx-world",
+            "kind": "WORLD"
+          },
+          {
+            "id": "ctx-other",
+            "kind": "WORLD"
+          }
+        ],
+        "expressionRelations": [],
+        "unresolvedItems": [],
+        "derivations": [],
+        "validation": {
+          "structuralStatus": "PASS",
+          "checks": [],
+          "contractVersion": "USG-SEM/1.0"
+        },
+        "mapping": {
+          "sourceProfile": "USG-SEM/1.0",
+          "sourceVersion": "1.0",
+          "status": "LOSSLESS",
+          "unmappedRefs": []
+        },
+        "extensions": {}
+      },
+      "task": {
+        "task_id": "task-exec-mp-positive-001",
+        "rule_ids": [
+          "benchmark-rule:modus-ponens"
+        ],
+        "world_assumption": "OPEN",
+        "allow_inferred_premises": false,
+        "evidence_assessment": false
+      },
+      "expected": {
+        "completion_status": "COMPLETE",
+        "candidate_count": 1,
+        "diagnostics": []
+      }
+    },
+    {
+      "id": "EXEC-AND-LEFT-POSITIVE-001",
+      "category": "positive",
+      "document": {
+        "profileId": "USG-SEM/1.0",
+        "documentId": "DOC-EXEC-AND",
+        "createdAt": "2026-11-10T00:00:00Z",
+        "sources": [
+          {
+            "id": "source-main",
+            "text": "A. B. If A then B.",
+            "language": "en",
+            "sourceType": "CURATED",
+            "trustTier": "STANDARD",
+            "sensitivity": "PUBLIC",
+            "offsetUnit": "unicode_code_point"
+          }
+        ],
+        "primarySourceRef": "source-main",
+        "definitions": {
+          "ontologyRelease": "ontology-2026.1",
+          "grammarVersion": "grammar-1.0",
+          "concepts": [],
+          "frames": [],
+          "roles": [],
+          "relations": []
+        },
+        "referents": [],
+        "mentions": [],
+        "expressions": [
+          {
+            "id": "expr-a",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "A"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-b",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "B"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-c",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "C"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-and",
+            "op": "AND",
+            "sort": "PROP",
+            "operandRefs": [
+              "expr-a",
+              "expr-b"
+            ],
+            "params": {},
+            "interpretationStatus": "RESOLVED"
+          }
+        ],
+        "rootExpressionRefs": [
+          "expr-a",
+          "expr-b",
+          "expr-c",
+          "expr-and"
+        ],
+        "assertions": [
+          {
+            "id": "assert-and",
+            "expressionRef": "expr-and",
+            "origin": "SOURCE_TEXT",
+            "epistemicStatus": "SOURCE_ASSERTED",
+            "commitment": "AUTHOR",
+            "evaluationContext": {
+              "kind": "WORLD",
+              "contextRef": "ctx-world"
+            },
+            "lifecycleStage": "STRUCTURED"
+          }
+        ],
+        "evidence": [],
+        "contexts": [
+          {
+            "id": "ctx-world",
+            "kind": "WORLD"
+          },
+          {
+            "id": "ctx-other",
+            "kind": "WORLD"
+          }
+        ],
+        "expressionRelations": [],
+        "unresolvedItems": [],
+        "derivations": [],
+        "validation": {
+          "structuralStatus": "PASS",
+          "checks": [],
+          "contractVersion": "USG-SEM/1.0"
+        },
+        "mapping": {
+          "sourceProfile": "USG-SEM/1.0",
+          "sourceVersion": "1.0",
+          "status": "LOSSLESS",
+          "unmappedRefs": []
+        },
+        "extensions": {}
+      },
+      "task": {
+        "task_id": "task-exec-and-left-positive-001",
+        "rule_ids": [
+          "benchmark-rule:and-elimination-left"
+        ],
+        "world_assumption": "OPEN",
+        "allow_inferred_premises": false,
+        "evidence_assessment": false
+      },
+      "expected": {
+        "completion_status": "COMPLETE",
+        "candidate_count": 1,
+        "diagnostics": []
+      }
+    },
+    {
+      "id": "EXEC-MP-CONVERSE-NEGATIVE-001",
+      "category": "adversarial",
+      "document": {
+        "profileId": "USG-SEM/1.0",
+        "documentId": "DOC-EXEC-CONVERSE",
+        "createdAt": "2026-11-10T00:00:00Z",
+        "sources": [
+          {
+            "id": "source-main",
+            "text": "A. B. If A then B.",
+            "language": "en",
+            "sourceType": "CURATED",
+            "trustTier": "STANDARD",
+            "sensitivity": "PUBLIC",
+            "offsetUnit": "unicode_code_point"
+          }
+        ],
+        "primarySourceRef": "source-main",
+        "definitions": {
+          "ontologyRelease": "ontology-2026.1",
+          "grammarVersion": "grammar-1.0",
+          "concepts": [],
+          "frames": [],
+          "roles": [],
+          "relations": []
+        },
+        "referents": [],
+        "mentions": [],
+        "expressions": [
+          {
+            "id": "expr-a",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "A"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-b",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "B"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-c",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "C"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-imp",
+            "op": "IMPLIES",
+            "sort": "PROP",
+            "operandRefs": [
+              "expr-a",
+              "expr-b"
+            ],
+            "params": {},
+            "interpretationStatus": "RESOLVED"
+          }
+        ],
+        "rootExpressionRefs": [
+          "expr-a",
+          "expr-b",
+          "expr-c",
+          "expr-imp"
+        ],
+        "assertions": [
+          {
+            "id": "assert-b",
+            "expressionRef": "expr-b",
+            "origin": "SOURCE_TEXT",
+            "epistemicStatus": "SOURCE_ASSERTED",
+            "commitment": "AUTHOR",
+            "evaluationContext": {
+              "kind": "WORLD",
+              "contextRef": "ctx-world"
+            },
+            "lifecycleStage": "STRUCTURED"
+          },
+          {
+            "id": "assert-imp",
+            "expressionRef": "expr-imp",
+            "origin": "SOURCE_TEXT",
+            "epistemicStatus": "SOURCE_ASSERTED",
+            "commitment": "AUTHOR",
+            "evaluationContext": {
+              "kind": "WORLD",
+              "contextRef": "ctx-world"
+            },
+            "lifecycleStage": "STRUCTURED"
+          }
+        ],
+        "evidence": [],
+        "contexts": [
+          {
+            "id": "ctx-world",
+            "kind": "WORLD"
+          },
+          {
+            "id": "ctx-other",
+            "kind": "WORLD"
+          }
+        ],
+        "expressionRelations": [],
+        "unresolvedItems": [],
+        "derivations": [],
+        "validation": {
+          "structuralStatus": "PASS",
+          "checks": [],
+          "contractVersion": "USG-SEM/1.0"
+        },
+        "mapping": {
+          "sourceProfile": "USG-SEM/1.0",
+          "sourceVersion": "1.0",
+          "status": "LOSSLESS",
+          "unmappedRefs": []
+        },
+        "extensions": {}
+      },
+      "task": {
+        "task_id": "task-exec-mp-converse-negative-001",
+        "rule_ids": [
+          "benchmark-rule:modus-ponens"
+        ],
+        "world_assumption": "OPEN",
+        "allow_inferred_premises": false,
+        "evidence_assessment": false
+      },
+      "expected": {
+        "completion_status": "COMPLETE",
+        "candidate_count": 0,
+        "diagnostics": []
+      }
+    },
+    {
+      "id": "EXEC-CONTEXT-MISMATCH-BOUNDARY-001",
+      "category": "boundary",
+      "document": {
+        "profileId": "USG-SEM/1.0",
+        "documentId": "DOC-EXEC-CONTEXT",
+        "createdAt": "2026-11-10T00:00:00Z",
+        "sources": [
+          {
+            "id": "source-main",
+            "text": "A. B. If A then B.",
+            "language": "en",
+            "sourceType": "CURATED",
+            "trustTier": "STANDARD",
+            "sensitivity": "PUBLIC",
+            "offsetUnit": "unicode_code_point"
+          }
+        ],
+        "primarySourceRef": "source-main",
+        "definitions": {
+          "ontologyRelease": "ontology-2026.1",
+          "grammarVersion": "grammar-1.0",
+          "concepts": [],
+          "frames": [],
+          "roles": [],
+          "relations": []
+        },
+        "referents": [],
+        "mentions": [],
+        "expressions": [
+          {
+            "id": "expr-a",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "A"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-b",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "B"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-c",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "C"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-imp",
+            "op": "IMPLIES",
+            "sort": "PROP",
+            "operandRefs": [
+              "expr-a",
+              "expr-b"
+            ],
+            "params": {},
+            "interpretationStatus": "RESOLVED"
+          }
+        ],
+        "rootExpressionRefs": [
+          "expr-a",
+          "expr-b",
+          "expr-c",
+          "expr-imp"
+        ],
+        "assertions": [
+          {
+            "id": "assert-a",
+            "expressionRef": "expr-a",
+            "origin": "SOURCE_TEXT",
+            "epistemicStatus": "SOURCE_ASSERTED",
+            "commitment": "AUTHOR",
+            "evaluationContext": {
+              "kind": "WORLD",
+              "contextRef": "ctx-other"
+            },
+            "lifecycleStage": "STRUCTURED"
+          },
+          {
+            "id": "assert-imp",
+            "expressionRef": "expr-imp",
+            "origin": "SOURCE_TEXT",
+            "epistemicStatus": "SOURCE_ASSERTED",
+            "commitment": "AUTHOR",
+            "evaluationContext": {
+              "kind": "WORLD",
+              "contextRef": "ctx-world"
+            },
+            "lifecycleStage": "STRUCTURED"
+          }
+        ],
+        "evidence": [],
+        "contexts": [
+          {
+            "id": "ctx-world",
+            "kind": "WORLD"
+          },
+          {
+            "id": "ctx-other",
+            "kind": "WORLD"
+          }
+        ],
+        "expressionRelations": [],
+        "unresolvedItems": [],
+        "derivations": [],
+        "validation": {
+          "structuralStatus": "PASS",
+          "checks": [],
+          "contractVersion": "USG-SEM/1.0"
+        },
+        "mapping": {
+          "sourceProfile": "USG-SEM/1.0",
+          "sourceVersion": "1.0",
+          "status": "LOSSLESS",
+          "unmappedRefs": []
+        },
+        "extensions": {}
+      },
+      "task": {
+        "task_id": "task-exec-context-mismatch-boundary-001",
+        "rule_ids": [
+          "benchmark-rule:modus-ponens"
+        ],
+        "world_assumption": "OPEN",
+        "allow_inferred_premises": false,
+        "evidence_assessment": false
+      },
+      "expected": {
+        "completion_status": "COMPLETE",
+        "candidate_count": 0,
+        "diagnostics": [
+          "RULE_CONTEXT_OR_ATTRIBUTION_MISMATCH"
+        ]
+      }
+    },
+    {
+      "id": "EXEC-DISPUTED-PREMISE-001",
+      "category": "conflict",
+      "document": {
+        "profileId": "USG-SEM/1.0",
+        "documentId": "DOC-EXEC-DISPUTED",
+        "createdAt": "2026-11-10T00:00:00Z",
+        "sources": [
+          {
+            "id": "source-main",
+            "text": "A. B. If A then B.",
+            "language": "en",
+            "sourceType": "CURATED",
+            "trustTier": "STANDARD",
+            "sensitivity": "PUBLIC",
+            "offsetUnit": "unicode_code_point"
+          }
+        ],
+        "primarySourceRef": "source-main",
+        "definitions": {
+          "ontologyRelease": "ontology-2026.1",
+          "grammarVersion": "grammar-1.0",
+          "concepts": [],
+          "frames": [],
+          "roles": [],
+          "relations": []
+        },
+        "referents": [],
+        "mentions": [],
+        "expressions": [
+          {
+            "id": "expr-a",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "A"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-b",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "B"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-c",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "C"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-imp",
+            "op": "IMPLIES",
+            "sort": "PROP",
+            "operandRefs": [
+              "expr-a",
+              "expr-b"
+            ],
+            "params": {},
+            "interpretationStatus": "RESOLVED"
+          }
+        ],
+        "rootExpressionRefs": [
+          "expr-a",
+          "expr-b",
+          "expr-c",
+          "expr-imp"
+        ],
+        "assertions": [
+          {
+            "id": "assert-a",
+            "expressionRef": "expr-a",
+            "origin": "SOURCE_TEXT",
+            "epistemicStatus": "DISPUTED",
+            "commitment": "AUTHOR",
+            "evaluationContext": {
+              "kind": "WORLD",
+              "contextRef": "ctx-world"
+            },
+            "lifecycleStage": "STRUCTURED"
+          },
+          {
+            "id": "assert-imp",
+            "expressionRef": "expr-imp",
+            "origin": "SOURCE_TEXT",
+            "epistemicStatus": "SOURCE_ASSERTED",
+            "commitment": "AUTHOR",
+            "evaluationContext": {
+              "kind": "WORLD",
+              "contextRef": "ctx-world"
+            },
+            "lifecycleStage": "STRUCTURED"
+          }
+        ],
+        "evidence": [],
+        "contexts": [
+          {
+            "id": "ctx-world",
+            "kind": "WORLD"
+          },
+          {
+            "id": "ctx-other",
+            "kind": "WORLD"
+          }
+        ],
+        "expressionRelations": [],
+        "unresolvedItems": [],
+        "derivations": [],
+        "validation": {
+          "structuralStatus": "PASS",
+          "checks": [],
+          "contractVersion": "USG-SEM/1.0"
+        },
+        "mapping": {
+          "sourceProfile": "USG-SEM/1.0",
+          "sourceVersion": "1.0",
+          "status": "LOSSLESS",
+          "unmappedRefs": []
+        },
+        "extensions": {}
+      },
+      "task": {
+        "task_id": "task-exec-disputed-premise-001",
+        "rule_ids": [
+          "benchmark-rule:modus-ponens"
+        ],
+        "world_assumption": "OPEN",
+        "allow_inferred_premises": false,
+        "evidence_assessment": false
+      },
+      "expected": {
+        "completion_status": "COMPLETE",
+        "candidate_count": 0,
+        "diagnostics": [
+          "RULE_PREMISE_DISPUTED"
+        ]
+      }
+    },
+    {
+      "id": "EXEC-AMBIGUOUS-EXPRESSION-001",
+      "category": "ambiguous",
+      "document": {
+        "profileId": "USG-SEM/1.0",
+        "documentId": "DOC-EXEC-AMBIGUOUS",
+        "createdAt": "2026-11-10T00:00:00Z",
+        "sources": [
+          {
+            "id": "source-main",
+            "text": "A. B. If A then B.",
+            "language": "en",
+            "sourceType": "CURATED",
+            "trustTier": "STANDARD",
+            "sensitivity": "PUBLIC",
+            "offsetUnit": "unicode_code_point"
+          }
+        ],
+        "primarySourceRef": "source-main",
+        "definitions": {
+          "ontologyRelease": "ontology-2026.1",
+          "grammarVersion": "grammar-1.0",
+          "concepts": [],
+          "frames": [],
+          "roles": [],
+          "relations": []
+        },
+        "referents": [],
+        "mentions": [],
+        "expressions": [
+          {
+            "id": "expr-a",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "A"
+            },
+            "interpretationStatus": "AMBIGUOUS"
+          },
+          {
+            "id": "expr-b",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "B"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-c",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "C"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-imp",
+            "op": "IMPLIES",
+            "sort": "PROP",
+            "operandRefs": [
+              "expr-a",
+              "expr-b"
+            ],
+            "params": {},
+            "interpretationStatus": "RESOLVED"
+          }
+        ],
+        "rootExpressionRefs": [
+          "expr-a",
+          "expr-b",
+          "expr-c",
+          "expr-imp"
+        ],
+        "assertions": [
+          {
+            "id": "assert-a",
+            "expressionRef": "expr-a",
+            "origin": "SOURCE_TEXT",
+            "epistemicStatus": "SOURCE_ASSERTED",
+            "commitment": "AUTHOR",
+            "evaluationContext": {
+              "kind": "WORLD",
+              "contextRef": "ctx-world"
+            },
+            "lifecycleStage": "STRUCTURED"
+          },
+          {
+            "id": "assert-imp",
+            "expressionRef": "expr-imp",
+            "origin": "SOURCE_TEXT",
+            "epistemicStatus": "SOURCE_ASSERTED",
+            "commitment": "AUTHOR",
+            "evaluationContext": {
+              "kind": "WORLD",
+              "contextRef": "ctx-world"
+            },
+            "lifecycleStage": "STRUCTURED"
+          }
+        ],
+        "evidence": [],
+        "contexts": [
+          {
+            "id": "ctx-world",
+            "kind": "WORLD"
+          },
+          {
+            "id": "ctx-other",
+            "kind": "WORLD"
+          }
+        ],
+        "expressionRelations": [],
+        "unresolvedItems": [],
+        "derivations": [],
+        "validation": {
+          "structuralStatus": "PASS",
+          "checks": [],
+          "contractVersion": "USG-SEM/1.0"
+        },
+        "mapping": {
+          "sourceProfile": "USG-SEM/1.0",
+          "sourceVersion": "1.0",
+          "status": "LOSSLESS",
+          "unmappedRefs": []
+        },
+        "extensions": {}
+      },
+      "task": {
+        "task_id": "task-exec-ambiguous-expression-001",
+        "rule_ids": [
+          "benchmark-rule:modus-ponens"
+        ],
+        "world_assumption": "OPEN",
+        "allow_inferred_premises": false,
+        "evidence_assessment": false
+      },
+      "expected": {
+        "completion_status": "COMPLETE",
+        "candidate_count": 0,
+        "diagnostics": [
+          "RULE_EXPRESSION_AMBIGUOUS"
+        ]
+      }
+    },
+    {
+      "id": "EXEC-UNRESOLVED-EXPRESSION-001",
+      "category": "unresolved",
+      "document": {
+        "profileId": "USG-SEM/1.0",
+        "documentId": "DOC-EXEC-UNRESOLVED",
+        "createdAt": "2026-11-10T00:00:00Z",
+        "sources": [
+          {
+            "id": "source-main",
+            "text": "A. B. If A then B.",
+            "language": "en",
+            "sourceType": "CURATED",
+            "trustTier": "STANDARD",
+            "sensitivity": "PUBLIC",
+            "offsetUnit": "unicode_code_point"
+          }
+        ],
+        "primarySourceRef": "source-main",
+        "definitions": {
+          "ontologyRelease": "ontology-2026.1",
+          "grammarVersion": "grammar-1.0",
+          "concepts": [],
+          "frames": [],
+          "roles": [],
+          "relations": []
+        },
+        "referents": [],
+        "mentions": [],
+        "expressions": [
+          {
+            "id": "expr-a",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "A"
+            },
+            "interpretationStatus": "UNRESOLVED"
+          },
+          {
+            "id": "expr-b",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "B"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-c",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "C"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-imp",
+            "op": "IMPLIES",
+            "sort": "PROP",
+            "operandRefs": [
+              "expr-a",
+              "expr-b"
+            ],
+            "params": {},
+            "interpretationStatus": "RESOLVED"
+          }
+        ],
+        "rootExpressionRefs": [
+          "expr-a",
+          "expr-b",
+          "expr-c",
+          "expr-imp"
+        ],
+        "assertions": [
+          {
+            "id": "assert-a",
+            "expressionRef": "expr-a",
+            "origin": "SOURCE_TEXT",
+            "epistemicStatus": "SOURCE_ASSERTED",
+            "commitment": "AUTHOR",
+            "evaluationContext": {
+              "kind": "WORLD",
+              "contextRef": "ctx-world"
+            },
+            "lifecycleStage": "STRUCTURED"
+          },
+          {
+            "id": "assert-imp",
+            "expressionRef": "expr-imp",
+            "origin": "SOURCE_TEXT",
+            "epistemicStatus": "SOURCE_ASSERTED",
+            "commitment": "AUTHOR",
+            "evaluationContext": {
+              "kind": "WORLD",
+              "contextRef": "ctx-world"
+            },
+            "lifecycleStage": "STRUCTURED"
+          }
+        ],
+        "evidence": [],
+        "contexts": [
+          {
+            "id": "ctx-world",
+            "kind": "WORLD"
+          },
+          {
+            "id": "ctx-other",
+            "kind": "WORLD"
+          }
+        ],
+        "expressionRelations": [],
+        "unresolvedItems": [],
+        "derivations": [],
+        "validation": {
+          "structuralStatus": "PASS",
+          "checks": [],
+          "contractVersion": "USG-SEM/1.0"
+        },
+        "mapping": {
+          "sourceProfile": "USG-SEM/1.0",
+          "sourceVersion": "1.0",
+          "status": "LOSSLESS",
+          "unmappedRefs": []
+        },
+        "extensions": {}
+      },
+      "task": {
+        "task_id": "task-exec-unresolved-expression-001",
+        "rule_ids": [
+          "benchmark-rule:modus-ponens"
+        ],
+        "world_assumption": "OPEN",
+        "allow_inferred_premises": false,
+        "evidence_assessment": false
+      },
+      "expected": {
+        "completion_status": "COMPLETE",
+        "candidate_count": 0,
+        "diagnostics": [
+          "RULE_EXPRESSION_NOT_RESOLVED"
+        ]
+      }
+    },
+    {
+      "id": "EXEC-UNKNOWN-PREMISE-001",
+      "category": "unknown",
+      "document": {
+        "profileId": "USG-SEM/1.0",
+        "documentId": "DOC-EXEC-UNKNOWN",
+        "createdAt": "2026-11-10T00:00:00Z",
+        "sources": [
+          {
+            "id": "source-main",
+            "text": "A. B. If A then B.",
+            "language": "en",
+            "sourceType": "CURATED",
+            "trustTier": "STANDARD",
+            "sensitivity": "PUBLIC",
+            "offsetUnit": "unicode_code_point"
+          }
+        ],
+        "primarySourceRef": "source-main",
+        "definitions": {
+          "ontologyRelease": "ontology-2026.1",
+          "grammarVersion": "grammar-1.0",
+          "concepts": [],
+          "frames": [],
+          "roles": [],
+          "relations": []
+        },
+        "referents": [],
+        "mentions": [],
+        "expressions": [
+          {
+            "id": "expr-a",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "A"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-b",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "B"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-c",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "C"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-imp",
+            "op": "IMPLIES",
+            "sort": "PROP",
+            "operandRefs": [
+              "expr-a",
+              "expr-b"
+            ],
+            "params": {},
+            "interpretationStatus": "RESOLVED"
+          }
+        ],
+        "rootExpressionRefs": [
+          "expr-a",
+          "expr-b",
+          "expr-c",
+          "expr-imp"
+        ],
+        "assertions": [
+          {
+            "id": "assert-a",
+            "expressionRef": "expr-a",
+            "origin": "SOURCE_TEXT",
+            "epistemicStatus": "UNKNOWN",
+            "commitment": "AUTHOR",
+            "evaluationContext": {
+              "kind": "WORLD",
+              "contextRef": "ctx-world"
+            },
+            "lifecycleStage": "STRUCTURED"
+          },
+          {
+            "id": "assert-imp",
+            "expressionRef": "expr-imp",
+            "origin": "SOURCE_TEXT",
+            "epistemicStatus": "SOURCE_ASSERTED",
+            "commitment": "AUTHOR",
+            "evaluationContext": {
+              "kind": "WORLD",
+              "contextRef": "ctx-world"
+            },
+            "lifecycleStage": "STRUCTURED"
+          }
+        ],
+        "evidence": [],
+        "contexts": [
+          {
+            "id": "ctx-world",
+            "kind": "WORLD"
+          },
+          {
+            "id": "ctx-other",
+            "kind": "WORLD"
+          }
+        ],
+        "expressionRelations": [],
+        "unresolvedItems": [],
+        "derivations": [],
+        "validation": {
+          "structuralStatus": "PASS",
+          "checks": [],
+          "contractVersion": "USG-SEM/1.0"
+        },
+        "mapping": {
+          "sourceProfile": "USG-SEM/1.0",
+          "sourceVersion": "1.0",
+          "status": "LOSSLESS",
+          "unmappedRefs": []
+        },
+        "extensions": {}
+      },
+      "task": {
+        "task_id": "task-exec-unknown-premise-001",
+        "rule_ids": [
+          "benchmark-rule:modus-ponens"
+        ],
+        "world_assumption": "OPEN",
+        "allow_inferred_premises": false,
+        "evidence_assessment": false
+      },
+      "expected": {
+        "completion_status": "COMPLETE",
+        "candidate_count": 0,
+        "diagnostics": [
+          "RULE_PREMISE_STATUS_UNKNOWN"
+        ]
+      }
+    },
+    {
+      "id": "EXEC-DISABLED-RULE-001",
+      "category": "unsupported",
+      "document": {
+        "profileId": "USG-SEM/1.0",
+        "documentId": "DOC-EXEC-MP",
+        "createdAt": "2026-11-10T00:00:00Z",
+        "sources": [
+          {
+            "id": "source-main",
+            "text": "A. B. If A then B.",
+            "language": "en",
+            "sourceType": "CURATED",
+            "trustTier": "STANDARD",
+            "sensitivity": "PUBLIC",
+            "offsetUnit": "unicode_code_point"
+          }
+        ],
+        "primarySourceRef": "source-main",
+        "definitions": {
+          "ontologyRelease": "ontology-2026.1",
+          "grammarVersion": "grammar-1.0",
+          "concepts": [],
+          "frames": [],
+          "roles": [],
+          "relations": []
+        },
+        "referents": [],
+        "mentions": [],
+        "expressions": [
+          {
+            "id": "expr-a",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "A"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-b",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "B"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-c",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "C"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-imp",
+            "op": "IMPLIES",
+            "sort": "PROP",
+            "operandRefs": [
+              "expr-a",
+              "expr-b"
+            ],
+            "params": {},
+            "interpretationStatus": "RESOLVED"
+          }
+        ],
+        "rootExpressionRefs": [
+          "expr-a",
+          "expr-b",
+          "expr-c",
+          "expr-imp"
+        ],
+        "assertions": [
+          {
+            "id": "assert-a",
+            "expressionRef": "expr-a",
+            "origin": "SOURCE_TEXT",
+            "epistemicStatus": "SOURCE_ASSERTED",
+            "commitment": "AUTHOR",
+            "evaluationContext": {
+              "kind": "WORLD",
+              "contextRef": "ctx-world"
+            },
+            "lifecycleStage": "STRUCTURED"
+          },
+          {
+            "id": "assert-imp",
+            "expressionRef": "expr-imp",
+            "origin": "SOURCE_TEXT",
+            "epistemicStatus": "SOURCE_ASSERTED",
+            "commitment": "AUTHOR",
+            "evaluationContext": {
+              "kind": "WORLD",
+              "contextRef": "ctx-world"
+            },
+            "lifecycleStage": "STRUCTURED"
+          }
+        ],
+        "evidence": [],
+        "contexts": [
+          {
+            "id": "ctx-world",
+            "kind": "WORLD"
+          },
+          {
+            "id": "ctx-other",
+            "kind": "WORLD"
+          }
+        ],
+        "expressionRelations": [],
+        "unresolvedItems": [],
+        "derivations": [],
+        "validation": {
+          "structuralStatus": "PASS",
+          "checks": [],
+          "contractVersion": "USG-SEM/1.0"
+        },
+        "mapping": {
+          "sourceProfile": "USG-SEM/1.0",
+          "sourceVersion": "1.0",
+          "status": "LOSSLESS",
+          "unmappedRefs": []
+        },
+        "extensions": {}
+      },
+      "task": {
+        "task_id": "task-exec-disabled-rule-001",
+        "rule_ids": [
+          "benchmark-rule:unregistered-rule"
+        ],
+        "world_assumption": "OPEN",
+        "allow_inferred_premises": false,
+        "evidence_assessment": false
+      },
+      "expected": {
+        "completion_status": "UNSUPPORTED",
+        "candidate_count": 0,
+        "diagnostics": [
+          "RULE_NOT_ENABLED"
+        ]
+      }
+    },
+    {
+      "id": "EXEC-RESOURCE-INTERRUPTION-001",
+      "category": "incomplete",
+      "document": {
+        "profileId": "USG-SEM/1.0",
+        "documentId": "DOC-EXEC-MP",
+        "createdAt": "2026-11-10T00:00:00Z",
+        "sources": [
+          {
+            "id": "source-main",
+            "text": "A. B. If A then B.",
+            "language": "en",
+            "sourceType": "CURATED",
+            "trustTier": "STANDARD",
+            "sensitivity": "PUBLIC",
+            "offsetUnit": "unicode_code_point"
+          }
+        ],
+        "primarySourceRef": "source-main",
+        "definitions": {
+          "ontologyRelease": "ontology-2026.1",
+          "grammarVersion": "grammar-1.0",
+          "concepts": [],
+          "frames": [],
+          "roles": [],
+          "relations": []
+        },
+        "referents": [],
+        "mentions": [],
+        "expressions": [
+          {
+            "id": "expr-a",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "A"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-b",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "B"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-c",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "C"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-imp",
+            "op": "IMPLIES",
+            "sort": "PROP",
+            "operandRefs": [
+              "expr-a",
+              "expr-b"
+            ],
+            "params": {},
+            "interpretationStatus": "RESOLVED"
+          }
+        ],
+        "rootExpressionRefs": [
+          "expr-a",
+          "expr-b",
+          "expr-c",
+          "expr-imp"
+        ],
+        "assertions": [
+          {
+            "id": "assert-a",
+            "expressionRef": "expr-a",
+            "origin": "SOURCE_TEXT",
+            "epistemicStatus": "SOURCE_ASSERTED",
+            "commitment": "AUTHOR",
+            "evaluationContext": {
+              "kind": "WORLD",
+              "contextRef": "ctx-world"
+            },
+            "lifecycleStage": "STRUCTURED"
+          },
+          {
+            "id": "assert-imp",
+            "expressionRef": "expr-imp",
+            "origin": "SOURCE_TEXT",
+            "epistemicStatus": "SOURCE_ASSERTED",
+            "commitment": "AUTHOR",
+            "evaluationContext": {
+              "kind": "WORLD",
+              "contextRef": "ctx-world"
+            },
+            "lifecycleStage": "STRUCTURED"
+          }
+        ],
+        "evidence": [],
+        "contexts": [
+          {
+            "id": "ctx-world",
+            "kind": "WORLD"
+          },
+          {
+            "id": "ctx-other",
+            "kind": "WORLD"
+          }
+        ],
+        "expressionRelations": [],
+        "unresolvedItems": [],
+        "derivations": [],
+        "validation": {
+          "structuralStatus": "PASS",
+          "checks": [],
+          "contractVersion": "USG-SEM/1.0"
+        },
+        "mapping": {
+          "sourceProfile": "USG-SEM/1.0",
+          "sourceVersion": "1.0",
+          "status": "LOSSLESS",
+          "unmappedRefs": []
+        },
+        "extensions": {}
+      },
+      "task": {
+        "task_id": "task-exec-resource-interruption-001",
+        "rule_ids": [
+          "benchmark-rule:modus-ponens"
+        ],
+        "world_assumption": "OPEN",
+        "max_rule_applications": 0,
+        "allow_inferred_premises": false,
+        "evidence_assessment": false
+      },
+      "expected": {
+        "completion_status": "INCOMPLETE",
+        "candidate_count": 0,
+        "diagnostics": [
+          "RESOURCE_BUDGET_EXHAUSTED"
+        ]
+      }
+    },
+    {
+      "id": "EXEC-ATTRIBUTION-MISMATCH-BOUNDARY-001",
+      "category": "boundary",
+      "document": {
+        "profileId": "USG-SEM/1.0",
+        "documentId": "DOC-EXEC-ATTRIBUTION-MISMATCH",
+        "createdAt": "2026-11-10T00:00:00Z",
+        "sources": [
+          {
+            "id": "source-main",
+            "text": "A. B. If A then B.",
+            "language": "en",
+            "sourceType": "CURATED",
+            "trustTier": "STANDARD",
+            "sensitivity": "PUBLIC",
+            "offsetUnit": "unicode_code_point"
+          }
+        ],
+        "primarySourceRef": "source-main",
+        "definitions": {
+          "ontologyRelease": "ontology-2026.1",
+          "grammarVersion": "grammar-1.0",
+          "concepts": [],
+          "frames": [],
+          "roles": [],
+          "relations": []
+        },
+        "referents": [
+          {
+            "id": "ref-speaker",
+            "label": "Speaker"
+          }
+        ],
+        "mentions": [],
+        "expressions": [
+          {
+            "id": "expr-a",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "A"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-b",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "B"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-c",
+            "op": "PREDICATE_APP",
+            "sort": "PROP",
+            "operandRefs": [],
+            "params": {
+              "predicate": "C"
+            },
+            "interpretationStatus": "RESOLVED"
+          },
+          {
+            "id": "expr-imp",
+            "op": "IMPLIES",
+            "sort": "PROP",
+            "operandRefs": [
+              "expr-a",
+              "expr-b"
+            ],
+            "params": {},
+            "interpretationStatus": "RESOLVED"
+          }
+        ],
+        "rootExpressionRefs": [
+          "expr-a",
+          "expr-b",
+          "expr-c",
+          "expr-imp"
+        ],
+        "assertions": [
+          {
+            "id": "assert-a",
+            "expressionRef": "expr-a",
+            "origin": "SOURCE_TEXT",
+            "epistemicStatus": "SOURCE_ASSERTED",
+            "commitment": "ATTRIBUTED",
+            "evaluationContext": {
+              "kind": "WORLD",
+              "contextRef": "ctx-world"
+            },
+            "lifecycleStage": "STRUCTURED",
+            "attributedToRef": "ref-speaker"
+          },
+          {
+            "id": "assert-imp",
+            "expressionRef": "expr-imp",
+            "origin": "SOURCE_TEXT",
+            "epistemicStatus": "SOURCE_ASSERTED",
+            "commitment": "AUTHOR",
+            "evaluationContext": {
+              "kind": "WORLD",
+              "contextRef": "ctx-world"
+            },
+            "lifecycleStage": "STRUCTURED"
+          }
+        ],
+        "evidence": [],
+        "contexts": [
+          {
+            "id": "ctx-world",
+            "kind": "WORLD"
+          },
+          {
+            "id": "ctx-other",
+            "kind": "WORLD"
+          }
+        ],
+        "expressionRelations": [],
+        "unresolvedItems": [],
+        "derivations": [],
+        "validation": {
+          "structuralStatus": "PASS",
+          "checks": [],
+          "contractVersion": "USG-SEM/1.0"
+        },
+        "mapping": {
+          "sourceProfile": "USG-SEM/1.0",
+          "sourceVersion": "1.0",
+          "status": "LOSSLESS",
+          "unmappedRefs": []
+        },
+        "extensions": {}
+      },
+      "task": {
+        "task_id": "task-attribution",
+        "rule_ids": [
+          "benchmark-rule:modus-ponens"
+        ],
+        "world_assumption": "OPEN",
+        "allow_inferred_premises": false,
+        "evidence_assessment": false
+      },
+      "expected": {
+        "completion_status": "COMPLETE",
+        "candidate_count": 0,
+        "diagnostics": [
+          "RULE_CONTEXT_OR_ATTRIBUTION_MISMATCH"
+        ]
+      }
+    }
+  ]
+}

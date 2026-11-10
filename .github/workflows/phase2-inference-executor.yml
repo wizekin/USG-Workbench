@@ -1,0 +1,40 @@
+name: Phase 2 Inference Executor
+
+on:
+  pull_request:
+    paths:
+      - "tools/semantic_inference_v1_0_0/**"
+      - "rules/semantic-reasoning/execution/v1.0.0/**"
+      - "benchmarks/semantic-reasoning/executor-v1.0.0/**"
+      - "tests/test_phase2_inference_executor.py"
+      - "documentation/PHASE-2-STEP-2.6-DETERMINISTIC-INFERENCE-EXECUTOR.md"
+      - ".github/workflows/phase2-inference-executor.yml"
+      - "tools/semantic_grounding_v1_0_0/**"
+      - "tools/semantic_rule_registry_v1_0_0/**"
+      - "tools/semantic_rule_semantics_v1_0_0/**"
+      - "rules/semantic-reasoning/v1.0.0/**"
+      - "rules/semantic-reasoning/semantics/v1.0.0/**"
+      - "specifications/usg-sem-1.0.schema.json"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  executor-regression:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install validation dependency
+        run: python -m pip install "jsonschema>=4.18,<5"
+      - name: Compile executor and dependencies
+        run: python -m compileall -q tools/semantic_inference_v1_0_0 tools/semantic_grounding_v1_0_0 tools/semantic_rule_registry_v1_0_0 tools/semantic_rule_semantics_v1_0_0
+      - name: Validate declarative rule registry
+        run: python -m tools.semantic_rule_registry_v1_0_0.validator
+      - name: Validate rule semantics
+        run: python -m tools.semantic_rule_semantics_v1_0_0.validator
+      - name: Run Phase 2 regression suites
+        run: python -m unittest discover -s tests -p 'test_phase2_*.py' -v
