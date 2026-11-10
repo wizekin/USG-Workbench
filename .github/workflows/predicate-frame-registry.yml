@@ -10,7 +10,6 @@ on:
       - "interoperability/python_adapter/**"
       - "interoperability/workbench_adapter/**"
       - "interoperability/round-trip-conformance/**"
-      - "interoperability/workbench_adapter/**"
       - "specifications/predicate-frame-registry-1.0.schema.json"
       - "specifications/operator-scope-registry-1.0.schema.json"
       - "specifications/USG-SEM-1.0.md"
@@ -18,8 +17,6 @@ on:
       - "tests/test_predicate_frame_registry.py"
       - "tests/test_operator_scope_registry.py"
       - "tests/test_document_adapter.py"
-      - "tests/test_workbench_source_adapter.py"
-      - "tests/test_workbench_source_adapter.js"
       - "tests/test_round_trip_conformance.py"
       - "tests/test_workbench_source_adapter.py"
       - "tests/test_workbench_source_adapter.js"
@@ -34,10 +31,11 @@ on:
     branches:
       - main
     paths:
-      - "interoperability/round-trip-conformance/**"
       - "interoperability/predicate-frame-registry/**"
       - "interoperability/operator-scope-registry/**"
       - "interoperability/python_adapter/**"
+      - "interoperability/workbench_adapter/**"
+      - "interoperability/round-trip-conformance/**"
       - "specifications/predicate-frame-registry-1.0.schema.json"
       - "specifications/operator-scope-registry-1.0.schema.json"
       - "specifications/USG-SEM-1.0.md"
@@ -46,6 +44,8 @@ on:
       - "tests/test_operator_scope_registry.py"
       - "tests/test_document_adapter.py"
       - "tests/test_round_trip_conformance.py"
+      - "tests/test_workbench_source_adapter.py"
+      - "tests/test_workbench_source_adapter.js"
       - "tests/README.md"
       - ".github/workflows/predicate-frame-registry.yml"
       - "implementations/semantic-workbench-js/v0.5.4/semantic-core.js"
