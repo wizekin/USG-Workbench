@@ -109,6 +109,20 @@ def main() -> int:
         "human_review_gate_required": False,
         "results": results,
     }
+    schema_path = ROOT / "tools/phase2_exit_acceptance/report.schema.json"
+    schema = json.loads(schema_path.read_text(encoding="utf-8"))
+    try:
+        import jsonschema
+    except ImportError as exc:
+        raise RuntimeError("Install jsonschema>=4.18,<5 before running Phase 2 exit acceptance") from exc
+    jsonschema.Draft202012Validator.check_schema(schema)
+    jsonschema.validate(report, schema)
+
+    if report["checks_total"] != len(report["results"]):
+        raise RuntimeError("Acceptance report check count does not match its result records")
+    if report["checks_passed"] + report["checks_failed"] != report["checks_total"]:
+        raise RuntimeError("Acceptance report pass/fail totals are inconsistent")
+
     report_path = ROOT / args.report
     report_path.parent.mkdir(parents=True, exist_ok=True)
     report_path.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
