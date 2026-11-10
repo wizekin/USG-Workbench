@@ -366,6 +366,34 @@ $("queryPersistentBtn").onclick=async()=>{
   setStatus("Stored-revision query completed: "+result.query_result.goal_status,"ok");
  }catch(e){showPersistent({error:e.message});setStatus(e.message,"err")}
 };
+$("interpretTextBtn").onclick=async()=>{
+ try{
+  $("interpretTextBtn").disabled=true;
+  setStatus("Interpreting raw source text...");
+  const result=await apiRequest("POST","/v1/interpret",{
+   text:$("rawTextInput").value,
+   language:$("rawTextLanguage").value,
+   persist:$("rawTextPersist").checked
+  });
+  $("interpretOutput").textContent=JSON.stringify(result,null,2);
+  if(result.document){
+   $("documentInput").value=JSON.stringify(result.document,null,2);
+  }
+  if(result.persistence){
+   $("persistentDocumentId").value=result.persistence.document_id;
+   $("persistentRevision").value=String(result.persistence.revision);
+   persistentRevision=result.persistence.revision;
+   setStatus("Interpretation "+result.completion_status+" · saved SQLite revision "+result.persistence.revision,"ok");
+  }else{
+   setStatus("Interpretation completed: "+result.completion_status,"ok");
+  }
+ }catch(e){
+  $("interpretOutput").textContent=JSON.stringify({error:e.message},null,2);
+  setStatus(e.message,"err");
+ }finally{
+  $("interpretTextBtn").disabled=false;
+ }
+};
 $("sampleBtn").click();
 loadQueryFixtureList();
 </script>
