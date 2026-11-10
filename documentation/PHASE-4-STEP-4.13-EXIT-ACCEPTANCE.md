@@ -1,6 +1,8 @@
 # Phase 4 — Step 4.13: Integrated Exit Acceptance
 
-**Status:** IMPLEMENTED — pending exact-PR CI and merge acceptance  
+**Status:** ACCEPTED — bounded v0.1.0 demonstrator
+**Merged acceptance commit:** `c0e9d330d67448bcefc7cee91be2a76f48f67472`
+**Integrated exit workflow:** [run 42878901701](https://github.com/wizekin/USG-Workbench/actions/runs/42878901701)  
 **Accepted profile:** `USG-INTERPRET/0.1.0`  
 **Release scope:** bounded offline demonstrator
 
