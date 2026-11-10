@@ -11,10 +11,6 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Mapping
 
-from usg.core.ids import IdSpace, Ref
-from usg.core.records import Anchor, Source
-from usg.core.values import Sensitivity, SourceType, TrustTier
-
 from .document import _digest, validate_contract_document
 from .usg_sem_1 import ContractMappingError
 from .kernel_v05 import (
@@ -38,7 +34,7 @@ class KernelV05Document:
     document: dict[str, Any]
     original_digest: str
     expression_graph: KernelV05Graph
-    sources: dict[str, Source]
+    sources: dict[str, Any]
     record_mapping: dict[str, dict[str, Any]]
     mapping_report: dict[str, Any]
     diagnostics: list[str]
@@ -60,6 +56,9 @@ class KernelV05Document:
                 "Canonical document snapshot was modified; refusing to merge native "
                 "projections into stale document records."
             )
+
+        from usg.core.ids import IdSpace
+        from usg.core.records import Source
 
         graph_document = kernel_v05_graph_to_contract(self.expression_graph, validate=False)
         result = copy.deepcopy(self.document)
@@ -172,6 +171,10 @@ def document_to_kernel_v05(
             f"Document v0.5 adapter requires isolated usg 0.5.0 import path; found {version!r}"
         )
 
+    from usg.core.ids import IdSpace, Ref
+    from usg.core.records import Anchor, Source
+    from usg.core.values import Sensitivity, SourceType, TrustTier
+
     graph = contract_graph_roots_to_kernel_v05_partial(
         payload.get("expressions", []), payload.get("rootExpressionRefs", [])
     )
@@ -181,7 +184,7 @@ def document_to_kernel_v05(
     source_ids = _record_ids(payload, "sources")
     source_ref_map = {source_id: Ref(IdSpace.SOURCE, index + 1)
                       for index, source_id in enumerate(source_ids)}
-    native_sources: dict[str, Source] = {}
+    native_sources: dict[str, Any] = {}
     source_unmapped: list[str] = []
     source_diagnostics: list[str] = []
     for item in payload.get("sources", []):
