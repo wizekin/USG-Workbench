@@ -105,9 +105,18 @@ test('maps a Workbench graph into USG-SEM without flattening operators or EXCEPT
   assert.equal(document.profileId, 'USG-SEM/1.0');
   assert.equal(report.status, 'LOSSLESS');
   assert.equal(byNative.get('pred-needs').op, 'PREDICATE_APP');
+  assert.equal(byNative.get('pred-needs').sort, 'SIT');
   assert.deepEqual(byNative.get('pred-needs').params.roles, ['SUBJECT', 'OBJECT']);
+  const holds = document.expressions.find(x => x.op === 'HOLDS' &&
+    x.operandRefs[0] === byNative.get('pred-needs').id);
+  assert.ok(holds, 'a proposition-valued operator must receive an explicit HOLDS wrapper');
+  assert.equal(holds.sort, 'PROP');
+  assert.deepEqual(byNative.get('neg-needs').operandRefs, [holds.id]);
   assert.equal(byNative.get('neg-needs').op, 'NOT');
   assert.equal(byNative.get('modal-needs').op, 'MODAL');
+  assert.equal(byNative.get('modal-needs').params.force, 'POSSIBILITY');
+  assert.equal(byNative.get('modal-needs').params.flavor, 'EPISTEMIC');
+  assert.equal(byNative.get('modal-needs').params.nativeForce, 'epistemic_possibility');
   assert.equal(byNative.get('unless-root').op, 'CONNECTIVE');
   assert.deepEqual(byNative.get('unless-root').operandRefs,
     [byNative.get('neg-needs').id, byNative.get('modal-needs').id]);

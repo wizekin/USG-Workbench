@@ -31,8 +31,9 @@ The adapter is asynchronous because it computes SHA-256 hashes using Web Crypto.
 
 - Workbench entities become document-local USG-SEM referents. Entity IDs are encoded as opaque UTF-8-hex IDs; labels are never used as identity keys.
 - Workbench mentions remain distinct from referents. Resolved/linked/unresolved state and antecedent referent links are retained.
-- Workbench PREDICATION nodes become `PREDICATE_APP`. Argument order and role order are retained. Each argument is represented by a `REF` or `UNRESOLVED_REF` expression; unresolved pronouns do not create referents.
-- NEGATION maps to `NOT`; MODAL maps to `MODAL`; QUANTIFIER maps to `QUANTIFIER`. Their exact Workbench operator label, force, scope kind, variable and restrictor metadata are retained in parameters.
+- Workbench PREDICATION nodes become `PREDICATE_APP` with sort `SIT`. Argument order and role order are retained. Each argument is represented by a `REF` or `UNRESOLVED_REF` expression; unresolved pronouns do not create referents.
+- When a situation is used as the operand of a proposition-valued operator or connective, the adapter inserts an explicit `HOLDS(SIT) → PROP` wrapper. It never changes a `PREDICATE_APP` situation node into a proposition by relabelling its sort. The reverse adapter unwraps this typed boundary back to the original Workbench predication.
+- NEGATION maps to `NOT`; exact epistemic possibility (`MIGHT`/`MAY` with explicit `epistemic_possibility`) maps to `MODAL(POSSIBILITY, EPISTEMIC)`; explicit deontic `MUST` maps to `MODAL(NECESSITY, DEONTIC)`; QUANTIFIER maps to `QUANTIFIER`. Original Workbench force labels are retained separately. Ambiguous modal labels/forces become `OPAQUE` rather than guessed. Scope kind, variable and restrictor metadata are retained.
 - POLARITY/unknown-scope operators become explicit `OPAQUE` nodes and force a PARTIAL mapping result. They are not relabelled as negation.
 - Directed connectives retain ordered antecedent/consequent references and their marker, logical status, exception interpretation, condition metadata and attribution. Multi-operand connectives retain operand order and explicit operand roles.
 - Evidence references, quote text, source offsets, relations, roots, unresolved items, temporal data, completeness and provenance are carried into the canonical document.
@@ -82,7 +83,10 @@ const { model, report, validation } = await adapter.contractToWorkbench(document
 ```
 
 The adapter reconstructs Workbench `PREDICATION`, `OPERATOR`, and
-`CONNECTIVE` records from canonical graph nodes. It restores argument order,
+`CONNECTIVE` records from canonical graph nodes. Canonical `HOLDS` wrappers are
+transparent at this boundary: their proposition-valued child is reconstructed
+as the native Workbench predication, and operator scope points to that native
+predication ID. It restores argument order,
 referent/mention links, variable bindings, nested operator scope, directed
 antecedent/consequent roles, evidence offsets, temporal data, event-frame
 attributes, attribution, provenance, relations, unresolved items, and roots

@@ -107,9 +107,21 @@
     if (type === 'class' || type === 'concept') return 'ENTITY';
     return 'ENTITY';
   }
+  function modalProjection(node) {
+    if (node.operatorType !== 'MODAL') return null;
+    const operator = String(node.operator || '').toUpperCase();
+    const force = String(node.force || '').toLowerCase();
+    if (force === 'epistemic_possibility' && ['MIGHT', 'MAY'].includes(operator)) {
+      return { force: 'POSSIBILITY', flavor: 'EPISTEMIC', nativeForce: node.force };
+    }
+    if (force === 'deontic_obligation' && operator === 'MUST') {
+      return { force: 'NECESSITY', flavor: 'DEONTIC', nativeForce: node.force };
+    }
+    return null;
+  }
   function operatorConstructor(node) {
     if (node.operatorType === 'NEGATION' && node.operator === 'NOT') return 'NOT';
-    if (node.operatorType === 'MODAL') return 'MODAL';
+    if (node.operatorType === 'MODAL' && modalProjection(node)) return 'MODAL';
     if (node.operatorType === 'QUANTIFIER') return 'QUANTIFIER';
     return 'OPAQUE';
   }
@@ -250,8 +262,11 @@
       } else if (node.type === 'OPERATOR') {
         const target = expressionRef(node.scope?.targetId);
         const op = operatorConstructor(node);
+        const modal = modalProjection(node);
         const params = { operatorType: node.operatorType, operator: node.operator,
-          scopeKind: node.scope?.scopeKind || 'unknown', force: node.force || null,
+          scopeKind: node.scope?.scopeKind || 'unknown',
+          force: modal?.force || null, flavor: modal?.flavor || null,
+          nativeForce: modal?.nativeForce || null,
           variable: node.variable || null,
           restrictor: node.restrictor ? { predicate: node.restrictor.predicate || null,
             referentRef: node.restrictor.entityId ? referentRef(node.restrictor.entityId) : null } : null,
@@ -299,6 +314,29 @@
       }
     }
     canonicalExpressions.push(...argumentNodes);
+
+    // PREDICATE_APP denotes a situation (SIT), while logical operators and
+    // connectives consume propositions (PROP). Insert an explicit HOLDS
+    // proposition wrapper at those typed boundaries; never relabel SIT as PROP.
+    const canonicalById = new Map(canonicalExpressions.map(item => [item.id, item]));
+    const holdsWrappers = new Map();
+    const propositionConstructors = new Set(['NOT', 'MODAL', 'QUANTIFIER', 'CONNECTIVE']);
+    for (const parent of canonicalExpressions) {
+      if (!propositionConstructors.has(parent.op)) continue;
+      parent.operandRefs = parent.operandRefs.map(ref => {
+        const child = canonicalById.get(ref);
+        if (child?.op !== 'PREDICATE_APP') return ref;
+        const wrapperId = opaqueId('holds', child.nativeId || child.id);
+        if (!holdsWrappers.has(wrapperId)) {
+          const wrapper = { id: wrapperId, op: 'HOLDS', sort: 'PROP',
+            operandRefs: [child.id], params: {} };
+          holdsWrappers.set(wrapperId, wrapper);
+          canonicalById.set(wrapperId, wrapper);
+        }
+        return wrapperId;
+      });
+    }
+    canonicalExpressions.push(...holdsWrappers.values());
 
     const rootExpressionRefs = roots.map(expressionRef);
     const canonicalRelations = relations.map(relation => {

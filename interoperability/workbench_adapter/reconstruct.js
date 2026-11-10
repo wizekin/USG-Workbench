@@ -13,7 +13,7 @@
   const SOURCE_PROFILE = 'USG-SR/0.5.1';
   const SOURCE_VERSION = '0.5.1';
   const NAMESPACE = 'org.usg.workbench.v0.5.4';
-  const SUPPORTED_OPS = new Set(['PREDICATE_APP','NOT','MODAL','QUANTIFIER','CONNECTIVE']);
+  const SUPPORTED_OPS = new Set(['PREDICATE_APP','HOLDS','NOT','MODAL','QUANTIFIER','CONNECTIVE']);
   const WORKBENCH_CONNECTIVES = new Set(['CONDITIONAL','EXCEPTION','WHEN','AND','OR','CONTRAST','CONCESSIVE']);
 
   function arr(v) { return Array.isArray(v) ? v : []; }
@@ -324,13 +324,25 @@
 
     // Resolve expression IDs before assembling records; preserve native IDs only
     // when carried explicitly by the canonical projection.
-    for (const x of expressions.values()) wbExpressionId.set(x.id, nativeId(x, x.id));
+    for (const x of expressions.values()) {
+      if (x.op === 'HOLDS' && arr(x.operandRefs).length === 1) {
+        const child = expressions.get(x.operandRefs[0]);
+        if (child?.op === 'PREDICATE_APP') {
+          wbExpressionId.set(x.id, nativeId(child, nativeId(x, x.id)));
+          continue;
+        }
+      }
+      wbExpressionId.set(x.id, nativeId(x, x.id));
+    }
     const expressionsOut = [];
     for (const x of expressions.values()) {
       if (!supported.has(x.id)) continue;
       const outId = wbExpressionId.get(x.id);
       const refs = arr(x.operandRefs);
       const evidenceRefs = arr(x.params?.evidenceRefs).map(ref => wbEvidenceId.get(ref)).filter(Boolean);
+      // HOLDS is the canonical SIT → PROP boundary wrapper. It has no separate
+      // Workbench expression record; its child PREDICATION is the native node.
+      if (x.op === 'HOLDS') continue;
       if (x.op === 'PREDICATE_APP') {
         const roles = arr(x.params?.roles);
         if (roles.length !== refs.length) {
@@ -382,7 +394,7 @@
           operator: p.operator || (x.op === 'NOT' ? 'NOT' : 'UNKNOWN'),
           scope: { targetId: wbExpressionId.get(target) || target, scopeKind: p.scopeKind || 'whole_expression' },
           evidenceRefs };
-        if (p.force) out.force = p.force;
+        if (p.force) out.force = p.nativeForce || p.force;
         if (p.variable) out.variable = p.variable;
         if (p.restrictor) out.restrictor = { predicate: p.restrictor.predicate || null,
           entityId: p.restrictor.referentRef ? wbEntityId.get(p.restrictor.referentRef) || null : null };

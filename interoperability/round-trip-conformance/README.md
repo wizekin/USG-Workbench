@@ -1,9 +1,9 @@
 # Phase 1 Step 4 — Round-trip conformance
 
-**Status:** 4A complete; 4B implementation and CI complete (PR #5 open, not merged); 4C–4D pending  
+**Status:** 4A, 4B, and 4C merged; 4D implementation and CI validation in progress  
 **Contract:** USG-SEM/1.0  
 **Baseline pair:** Semantic Workbench 0.5.4 / Python reference kernel 0.4.0  
-**Branch:** `phase1/round-trip-conformance`
+**Branch:** `phase1/semantic-invariant-conformance`
 
 ## Objective
 
@@ -64,7 +64,7 @@ Tests are in `tests/test_python_reverse_serializer.py` and are included in the
 interoperability CI workflow. PR #5 is merged and its implementation/CI checks
 passed. The broader cross-boundary semantic invariant suite remains Step 4D.
 
-### 4C — Workbench reconstruction adapter — implementation in progress
+### 4C — Workbench reconstruction adapter — completed (PR #6 merged)
 
 Implemented on `phase1/workbench-reconstruction` in
 `interoperability/workbench_adapter/reconstruct.js`, exposed as
@@ -86,12 +86,18 @@ Implemented on `phase1/workbench-reconstruction` in
 
 The implementation has a dedicated Node test suite wired into interoperability
 CI. The PR #6 CI run passed, including the new reconstruction tests and the
-immutable-baseline check. Step 4C is awaiting semantic review; Step 4D remains
-the separate end-to-end invariant suite.
+immutable-baseline check. PR #6 is merged into `main`.
 
-### 4D — semantic invariant suite
+### 4D — semantic invariant suite — implementation in progress
 
-Tests must cover at least:
+Implemented initially in `tests/test_round_trip_conformance.py`, with the
+Node bridge `tests/round_trip_conformance_bridge.js` executing both Workbench
+adapter boundaries. The suite drives the canonical document through the Python
+0.4.0 document projection and reverse serializer between those boundaries.
+
+The first executable suite covers the following semantic invariants. It also
+exercises the typed `SIT → HOLDS → PROP` boundary and exact modal force/flavor
+mapping required for schema-valid operator operands:
 
 - positive and negative predication;
 - nested negation and modality scope;
@@ -109,6 +115,20 @@ Tests must cover at least:
 - canonical edits invalidating stale native snapshots.
 
 The suite compares semantic invariants, not generated opaque IDs or irrelevant serialization order. Exact source text, operand order, role binding, scope, status axes, and reference relationships are invariant.
+
+The Python 0.4.0 kernel currently has no exact native constructors for the
+Workbench adapter's `PREDICATE_APP`, `CONNECTIVE`, and some metadata-bearing
+nodes. Step 4D therefore requires an explicit PARTIAL mapping report while
+proving that unsupported canonical graph nodes, operands, roots, and metadata
+survive the Python boundary without coercion. A separate supported-kernel
+control case proves that native `RELATE` and `Assertion` projections are
+actually imported and freshly serialized. This is not a LOSSLESS claim for the
+entire Workbench model.
+
+The first suite also exercises a 512-root graph without semantic count caps.
+It compares semantic invariants, not generated opaque IDs or incidental JSON
+ordering. Full acceptance remains conditional on all CI tests passing and the
+remaining semantic gaps being explicitly documented.
 
 ## Status vocabulary
 

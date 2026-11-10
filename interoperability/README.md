@@ -33,6 +33,6 @@ Mappings must be exact and documented. Unsupported or lossy mappings must be rep
 - [Round-trip conformance design and verified gap inventory](round-trip-conformance/README.md)
 - **4A completed:** [Workbench v0.5.4 → USG-SEM/1.0 source adapter](workbench_adapter/README.md), including exact native snapshot retention, partial-mapping diagnostics, and UTF-16 → Unicode code-point offset conversion.
 - Node adapter tests and Python JSON Schema validation are included in CI.
-- **4B implementation and CI passed (PR #5 merged):** `python_to_contract_document()` serializes current Python projections into USG-SEM/1.0 and preserves unsupported canonical-only records. **4C implementation is in progress** on `phase1/workbench-reconstruction`; **4D remains:** the end-to-end semantic invariant suite. Step 3's unchanged-snapshot export is not treated as a reverse serializer.
+- **4B implementation and CI passed (PR #5 merged):** `python_to_contract_document()` serializes current Python projections into USG-SEM/1.0 and preserves unsupported canonical-only records. **4C completed and merged (PR #6):** `contractToWorkbench()` reconstructs Workbench v0.5.4 from USG-SEM/1.0. **4D implementation in progress:** the executable four-boundary semantic invariant suite. Step 3's unchanged-snapshot export is not treated as a reverse serializer.
 
 The registries and adapter target the immutable baseline pair: Workbench v0.5.4 and Python reference kernel 0.4.0. They do not yet establish complete runtime interoperability.
