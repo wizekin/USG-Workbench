@@ -95,11 +95,43 @@ class KernelV07Document:
             _merge_mention_edit(records[external_id], self.mention_snapshots[external_id], native)
         if validate:
             problems = validate_contract_document(result, schema_path)
+            problems.extend(_validate_mention_source_spans(result))
             if problems:
                 raise ContractMappingError(
                     "Serialized kernel v0.7.0 document is invalid: " + "; ".join(problems[:20])
                 )
         return result
+
+
+
+def _validate_mention_source_spans(document: Mapping[str, Any]) -> list[str]:
+    """Validate Mention span bounds and exact surface alignment against source text."""
+    sources = {
+        item["id"]: item for item in document.get("sources", [])
+        if isinstance(item, Mapping) and isinstance(item.get("id"), str)
+    }
+    errors: list[str] = []
+    for mention in document.get("mentions", []):
+        span = mention.get("sourceSpan")
+        if span is None:
+            continue
+        source = sources.get(span.get("sourceRef"))
+        if source is None:
+            errors.append(f"mention {mention.get('id')} has dangling sourceSpan sourceRef")
+            continue
+        source_text = source.get("text")
+        start, end = span.get("start"), span.get("end")
+        if not isinstance(source_text, str):
+            errors.append(f"mention {mention.get('id')} sourceSpan source has no text")
+            continue
+        if (not isinstance(start, int) or isinstance(start, bool)
+                or not isinstance(end, int) or isinstance(end, bool)
+                or start < 0 or end < start or end > len(source_text)):
+            errors.append(f"mention {mention.get('id')} sourceSpan is outside source text bounds")
+            continue
+        if source_text[start:end] != mention.get("surfaceText"):
+            errors.append(f"mention {mention.get('id')} sourceSpan does not align with surfaceText")
+    return errors
 
 
 def _ids(document: Mapping[str, Any], collection: str) -> set[str]:
