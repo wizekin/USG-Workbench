@@ -62,7 +62,7 @@ class InterpretationAPITests(unittest.TestCase):
     def test_invalid_request_is_rejected(self):
         status, result = self.app.dispatch("POST", "/v1/interpret", {"text": 7, "language": "en"})
         self.assertEqual(status, 400)
-        self.assertEqual(result["error"]["code"], "INTERPRET_REQUEST_INVALID")
+        self.assertEqual(result["error"], "INTERPRET_REQUEST_INVALID")
 
 
 if __name__ == "__main__":
