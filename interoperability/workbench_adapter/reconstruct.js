@@ -252,7 +252,7 @@
               bindingEntityId: p.bindingReferentRef ? wbEntityId.get(p.bindingReferentRef) || null : null })),
             attributes: clone(frame.attributes || []) },
           attribution: clone(x.params?.attribution || {}), provenance: clone(x.params?.provenance || {}),
-          completeness: clone(x.params?.completeness || { status: 'unknown', missingRoles: [] }),
+          completeness: clone(x.params?.completeness || { status: 'unresolved', missingRoles: [] }),
           evidenceRefs, sourceClaimId: x.params?.nativeSourceClaimId || null });
       } else if (['NOT','MODAL','QUANTIFIER'].includes(x.op)) {
         const p = x.params || {};
@@ -329,12 +329,32 @@
       unresolvedOut.push(out);
     }
 
+    // Canonical-only records have no exact Workbench 0.5.1 native fields.
+    for (const ref of arr(document.mapping?.unmappedRefs)) partial.push(ref);
+    for (const collection of ['assertions','contexts','derivations']) {
+      for (const item of arr(document[collection])) partial.push(item.id || collection);
+    }
+    for (const collection of ['concepts','frames','roles','relations']) {
+      for (const item of arr(document.definitions?.[collection])) partial.push(item.id || collection);
+    }
+    for (const source of arr(document.sources)) {
+      if (source.id !== document.primarySourceRef) partial.push(source.id);
+      if (source.id === document.primarySourceRef &&
+          (source.uri || source.anchor || (source.sourceType && source.sourceType !== 'USER_INPUT') ||
+           (source.trustTier && source.trustTier !== 'UNKNOWN') ||
+           (source.sensitivity && source.sensitivity !== 'UNKNOWN'))) partial.push(source.id);
+    }
+    for (const expression of expressions.values()) {
+      if (arr(expression.annotations?.spans).length || arr(expression.annotations?.ruleIds).length ||
+          Object.keys(expression.annotations?.languageFeatures || {}).length) partial.push(expression.id);
+    }
     const model = { profile: SOURCE_PROFILE, version: SOURCE_VERSION, canonical: true,
       compatibilityView: 'record.claims',
       source: { text: sourceText, language: primary.language || 'und', sourceId: nativeSourceId },
       entities: entitiesOut, mentions: mentionsOut, evidence: evidenceOut,
       expressions: expressionsOut, relations: relationsOut, rootExpressionIds,
-      unresolvedItems: unresolvedOut, buildNotes: [...arr(document.mapping?.notes), ...diagnostics] };
+      unresolvedItems: unresolvedOut,
+      buildNotes: [...(native ? arr(native.buildNotes) : []), ...arr(document.mapping?.notes), ...diagnostics] };
 
     // Restore archival-only fields only as diagnostics/payload, not as semantic
     // model instructions or gates. In particular, requiresHumanReview is inert.
