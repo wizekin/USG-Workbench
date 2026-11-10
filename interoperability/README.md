@@ -6,6 +6,8 @@ Mappings must be exact and documented. Unsupported or lossy mappings must be rep
 
 ## Current Phase 1 work
 
+<badge>Phase 1 complete</badge> The normative USG-SEM/1.0 contract, registries, Workbench boundary, Python native families, adapters, composed document round-trip, and exit acceptance gate have passed the recorded CI checks.
+
 ### Step 1 — predicate-to-frame registry
 
 - [Predicate-to-frame registry 1.0.0](predicate-frame-registry/README.md)
@@ -53,6 +55,6 @@ Mappings must be exact and documented. Unsupported or lossy mappings must be rep
 - **5X completed and merged:** loss-preserving Definitions catalogue document adapter v1.4.0. [Step 5X contract](python-kernel-extension/STEP-5X-DEFINITIONS-DOCUMENT-ADAPTER.md).
 - **5Y completed and merged:** composed USG-SEM/1.0 document adapter v1.5.0. [Step 5Y contract](python-kernel-extension/STEP-5Y-COMPLETE-DOCUMENT-ADAPTER.md).
 - **5Y1 completed and merged:** composed adapter v1.5.1 delegates to the corrected UnresolvedItem v1.2.1 adapter and verifies typed cross-family references.
-- **5Z implemented on branch:** Phase 1 exit acceptance tests and completion record. [Exit acceptance criteria](PHASE-1-EXIT-ACCEPTANCE.md). Phase 1 is not marked complete until the full exit CI gate passes and the PR is merged.
+- **5Z completed and merged:** Phase 1 exit acceptance tests and completion record. [Exit acceptance criteria](PHASE-1-EXIT-ACCEPTANCE.md). The complete Phase 1 exit CI gate passed on PR #38 and again on the merged main commit.
 
 Existing v0.4.0–v1.0.0 model packages, Workbench v0.5.4, USG-SEM/1.0, archives, and immutable baselines remain unchanged.
