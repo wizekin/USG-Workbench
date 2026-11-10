@@ -1,6 +1,6 @@
 # Phase 1 Step 4 — Round-trip conformance
 
-**Status:** 4A completed; 4B reverse serializer implemented and under conformance testing; 4C–4D pending  
+**Status:** 4A complete; 4B implementation and CI complete (PR #5 open, not merged); 4C–4D pending  
 **Contract:** USG-SEM/1.0  
 **Baseline pair:** Semantic Workbench 0.5.4 / Python reference kernel 0.4.0  
 **Branch:** `phase1/round-trip-conformance`
