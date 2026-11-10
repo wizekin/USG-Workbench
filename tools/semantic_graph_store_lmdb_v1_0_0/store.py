@@ -147,6 +147,21 @@ class CanonicalDocumentStore:
         return sha256(canonical_bytes(list(parts))).digest()
 
     @staticmethod
+    def _revision_key(document_id: str, revision: int) -> bytes:
+        return CanonicalDocumentStore._key(document_id) + int(revision).to_bytes(8, "big")
+
+    @staticmethod
+    def _index_prefix(document_id: str, revision: int) -> bytes:
+        return CanonicalDocumentStore._revision_key(document_id, revision)
+
+    @staticmethod
+    def _index_key(document_id: str, revision: int, record_id: str) -> bytes:
+        return (
+            CanonicalDocumentStore._index_prefix(document_id, revision)
+            + sha256(record_id.encode("utf-8")).digest()
+        )
+
+    @staticmethod
     def _encode(value: Any) -> bytes:
         return canonical_bytes(value)
 
@@ -249,7 +264,7 @@ class CanonicalDocumentStore:
             db = self._db[family]
             for row in family_rows:
                 row[1] = revision
-                key = self._key(document["documentId"], revision, row[2])
+                key = self._index_key(document["documentId"], revision, row[2])
                 value = self._encode(row)
                 existing = txn.get(key, db=db)
                 if existing is not None and bytes(existing) != value:
@@ -262,7 +277,7 @@ class CanonicalDocumentStore:
         if doc_meta is None:
             raise DocumentNotFoundError(f"document not found: {document_id}")
         selected = int(doc_meta["current_revision"] if revision is None else revision)
-        revision_key = self._key(document_id, selected)
+        revision_key = self._revision_key(document_id, selected)
         metadata = self._decode(txn.get(revision_key, db=self._db["revisions"]))
         raw = txn.get(revision_key, db=self._db["snapshots"])
         if metadata is None or raw is None:
@@ -290,7 +305,7 @@ class CanonicalDocumentStore:
                     created_at = now
                 else:
                     current_revision = int(current["current_revision"])
-                    rev_key = self._key(document_id, current_revision)
+                    rev_key = self._revision_key(document_id, current_revision)
                     metadata = self._decode(txn.get(rev_key, db=self._db["revisions"]))
                     existing_raw = txn.get(rev_key, db=self._db["snapshots"])
                     if metadata is None or existing_raw is None:
@@ -310,7 +325,7 @@ class CanonicalDocumentStore:
                     revision, predecessor = current_revision + 1, current_revision
                     created_at = current["created_at"]
 
-                revision_key = self._key(document_id, revision)
+                revision_key = self._revision_key(document_id, revision)
                 revision_metadata = {
                     "document_id": document_id, "revision": revision,
                     "profile_id": document["profileId"],
@@ -338,18 +353,20 @@ class CanonicalDocumentStore:
 
     def _verify_index_rows(self, txn, document: dict[str, Any], revision: int) -> None:
         expected = self._index_rows(document)
+        prefix = self._index_prefix(document["documentId"], revision)
         for family, rows in expected.items():
             db = self._db[family]
             expected_values = {}
             for row in rows:
                 row[1] = revision
-                expected_values[self._key(document["documentId"], revision, row[2])] = self._encode(row)
+                expected_values[self._index_key(document["documentId"], revision, row[2])] = self._encode(row)
             actual_values = {}
             with txn.cursor(db=db) as cursor:
-                for key, value in cursor:
-                    decoded = self._decode(value)
-                    if decoded[0] == document["documentId"] and decoded[1] == revision:
-                        actual_values[bytes(key)] = bytes(value)
+                if cursor.set_range(prefix):
+                    while cursor.key().startswith(prefix):
+                        actual_values[bytes(cursor.key())] = bytes(cursor.value())
+                        if not cursor.next():
+                            break
             if actual_values != expected_values:
                 raise IntegrityError(f"derived index drift detected in {family}")
 
@@ -381,16 +398,19 @@ class CanonicalDocumentStore:
             if txn.get(self._key(document_id), db=self._db["documents"]) is None:
                 raise DocumentNotFoundError(f"document not found: {document_id}")
             revisions = []
+            prefix = self._key(document_id)
             with txn.cursor(db=self._db["revisions"]) as cursor:
-                for _, value in cursor:
-                    item = self._decode(value)
-                    if item["document_id"] == document_id:
+                if cursor.set_range(prefix):
+                    while cursor.key().startswith(prefix):
+                        item = self._decode(cursor.value())
                         revisions.append({
                             "revision": item["revision"], "sha256": item["sha256"],
                             "predecessor_revision": item.get("predecessor_revision"),
                             "created_at": item["created_at"],
                             "canonicalization_profile": item["canonicalization_profile"],
                         })
+                        if not cursor.next():
+                            break
             return sorted(revisions, key=lambda item: item["revision"])
 
     def rebuild_indexes(self, document_id: str, revision: int | None = None) -> dict[str, int]:
@@ -406,14 +426,16 @@ class CanonicalDocumentStore:
             if document.get("documentId") != document_id or document.get("profileId") != metadata["profile_id"]:
                 raise IntegrityError("snapshot identity/profile does not match revision metadata")
             with self._write_txn() as txn:
+                prefix = self._index_prefix(document_id, selected)
                 for family in INDEX_FAMILIES:
                     db = self._db[family]
                     stale = []
                     with txn.cursor(db=db) as cursor:
-                        for key, value in cursor:
-                            item = self._decode(value)
-                            if item[0] == document_id and item[1] == selected:
-                                stale.append(bytes(key))
+                        if cursor.set_range(prefix):
+                            while cursor.key().startswith(prefix):
+                                stale.append(bytes(cursor.key()))
+                                if not cursor.next():
+                                    break
                     for key in stale:
                         txn.delete(key, db=db)
                 self._write_indexes(txn, document, selected)
@@ -421,11 +443,13 @@ class CanonicalDocumentStore:
             with self._env.begin() as txn:
                 for family in INDEX_FAMILIES:
                     count = 0
+                    prefix = self._index_prefix(document_id, selected)
                     with txn.cursor(db=self._db[family]) as cursor:
-                        for _, value in cursor:
-                            item = self._decode(value)
-                            if item[0] == document_id and item[1] == selected:
+                        if cursor.set_range(prefix):
+                            while cursor.key().startswith(prefix):
                                 count += 1
+                                if not cursor.next():
+                                    break
                     counts[family] = count
             return counts
 
