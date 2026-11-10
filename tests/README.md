@@ -30,3 +30,5 @@ The document adapter tests verify the full USG-SEM/1.0 envelope, exact source an
 The predicate/frame test checks registry coverage against the Workbench predicate vocabulary and verifies target frame names, versions, inherited roles, role requirements, and class constraints against the archived Python kernel source.
 
 The operator/scope test checks registry dispositions against Workbench operator declarations and verifies the Python kernel operator signatures, quantifier distinctions, conditional/unless scope semantics, and loss-prevention policy against both immutable source baselines.
+
+Phase 1 Step 4 round-trip tests are being developed under the verified four-boundary plan in `interoperability/round-trip-conformance/README.md`. Do not label snapshot-only export as an executable round trip; the source adapter and Python reverse serializer must exist before end-to-end conformance can pass.
