@@ -153,11 +153,10 @@ class KernelV07DocumentAdapterTests(unittest.TestCase):
     def test_wrong_reference_space_is_rejected_by_native_model(self):
         imported = document_to_kernel_v07(self.make_document(), validate=False)
         original = imported.mentions["test:mention-1"]
-        imported.mentions["test:mention-1"] = replace(
-            original, referent_ref=TypedReference(ReferenceSpace.MENTION, "test:mention-2")
-        )
         with self.assertRaises(ValueError):
-            kernel_v07_document_to_contract(imported, validate=False)
+            replace(
+                original, referent_ref=TypedReference(ReferenceSpace.MENTION, "test:mention-2")
+            )
 
     def test_stale_canonical_snapshot_is_rejected(self):
         imported = document_to_kernel_v07(self.make_document(), validate=False)
