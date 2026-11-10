@@ -80,6 +80,52 @@ test('reconstructs native predicate arguments, nested operator scope, and direct
   assert.ok(result.report.diagnostics.some(x => x.includes('inert archival metadata')));
 });
 
+test('preserves quantifier binding and restrictor identity', async () => {
+  const model = sourceModel();
+  model.entities.push({ id: 'person-class', canonicalText: 'person', type: 'class',
+    aliases: ['person'], identityStatus: 'provisional' });
+  model.expressions[0].arguments[0].variableId = 'x';
+  model.expressions[0].arguments[0].bindingEntityId = 'person-class';
+  model.expressions[0].eventFrame.participants[0].variableId = 'x';
+  model.expressions[0].eventFrame.participants[0].bindingEntityId = 'person-class';
+  model.expressions.push({
+    id: 'forall-root', type: 'OPERATOR', operatorType: 'QUANTIFIER', operator: 'FORALL',
+    variable: 'x', restrictor: { entityId: 'person-class', predicate: 'INSTANCE_OF' },
+    variableBinding: { variable: 'x', role: 'subject', restrictorEntityId: 'person-class' },
+    scope: { targetId: 'needs', scopeKind: 'quantifier_body' }, evidenceRefs: ['needs-evidence']
+  });
+  model.rootExpressionIds = ['forall-root'];
+  const { document } = await sourceAdapter.workbenchToContract(model);
+  const result = await adapter.contractToWorkbench(document);
+  assert.equal(result.validation.valid, true, result.validation.errors.join('; '));
+  const quantifier = result.model.expressions.find(x => x.id === 'forall-root');
+  const predication = result.model.expressions.find(x => x.id === 'needs');
+  assert.equal(quantifier.operatorType, 'QUANTIFIER');
+  assert.equal(quantifier.operator, 'FORALL');
+  assert.equal(quantifier.restrictor.entityId, 'person-class');
+  assert.equal(quantifier.variableBinding.restrictorEntityId, 'person-class');
+  assert.equal(predication.arguments[0].variableId, 'x');
+  assert.equal(predication.arguments[0].bindingEntityId, 'person-class');
+});
+
+test('preserves UNLESS as directed EXCEPTION with an explicit negated antecedent', async () => {
+  const model = sourceModel();
+  const root = model.expressions.find(x => x.id === 'if-root');
+  root.connective = 'EXCEPTION';
+  root.marker = 'unless';
+  root.logicalStatus = 'exception_relation_asserted';
+  root.antecedentInterpretation = 'negated_exception_condition_equivalent_to_if_not_P_then_Q';
+  root.conditionMetadata = { effect: 'exception_to_assertion', logicalStatus: 'exception_relation_asserted' };
+  const { document } = await sourceAdapter.workbenchToContract(model);
+  const result = await adapter.contractToWorkbench(document);
+  assert.equal(result.validation.valid, true, result.validation.errors.join('; '));
+  const reconstructed = result.model.expressions.find(x => x.id === 'if-root');
+  assert.equal(reconstructed.connective, 'EXCEPTION');
+  assert.equal(reconstructed.marker, 'unless');
+  assert.equal(result.model.expressions.find(x => x.id === reconstructed.antecedentId).operator, 'NOT');
+  assert.equal(reconstructed.antecedentInterpretation, 'negated_exception_condition_equivalent_to_if_not_P_then_Q');
+});
+
 test('converts canonical code-point spans back to Workbench UTF-16 offsets', async () => {
   const { document } = await sourceAdapter.workbenchToContract(sourceModel());
   const result = await adapter.contractToWorkbench(document);
