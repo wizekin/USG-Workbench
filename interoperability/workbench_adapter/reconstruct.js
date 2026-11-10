@@ -64,48 +64,165 @@
 
   function validateWorkbenchStructure(model) {
     const errors = [];
-    const entityIds = new Set(arr(model.entities).map(x => x.id));
-    const mentionIds = new Set(arr(model.mentions).map(x => x.id));
-    const evidenceIds = new Set(arr(model.evidence).map(x => x.id));
-    const expressions = new Map(arr(model.expressions).map(x => [x.id, x]));
+    if (model?.profile !== SOURCE_PROFILE) errors.push('Unexpected Workbench profile.');
+    if (model?.version !== SOURCE_VERSION) errors.push('Unexpected Workbench version.');
+    if (!model?.source || typeof model.source.text !== 'string' || typeof model.source.language !== 'string') {
+      errors.push('Workbench source must contain exact text and a language tag.');
+    }
+    const sourceText = String(model?.source?.text || '');
+    const unique = (items, label) => {
+      const ids = new Set();
+      for (const item of arr(items)) {
+        if (!item?.id || ids.has(item.id)) errors.push('Missing or duplicate ' + label + ' id: ' + (item?.id || '(empty)'));
+        ids.add(item?.id);
+      }
+      return ids;
+    };
+    const entityIds = unique(model.entities, 'entity');
+    const mentionIds = unique(model.mentions, 'mention');
+    const evidenceIds = unique(model.evidence, 'evidence');
+    const unresolvedIds = unique(model.unresolvedItems, 'unresolved-item');
+    const expressions = new Map();
+    for (const x of arr(model.expressions)) {
+      if (!x?.id || expressions.has(x.id)) errors.push('Missing or duplicate expression id: ' + (x?.id || '(empty)'));
+      expressions.set(x?.id, x);
+    }
+    for (const entity of arr(model.entities)) {
+      if (!String(entity.canonicalText || '').trim()) errors.push('Entity ' + entity.id + ' has no canonical text.');
+    }
     for (const m of arr(model.mentions)) {
       if (m.entityId && !entityIds.has(m.entityId)) errors.push('Mention ' + m.id + ' has a missing entity.');
       if (m.antecedentEntityId && !entityIds.has(m.antecedentEntityId)) errors.push('Mention ' + m.id + ' has a missing antecedent entity.');
+      if (!m.entityId && m.resolutionStatus !== 'unresolved') errors.push('Unlinked mention ' + m.id + ' must remain unresolved.');
+      if (m.sourceSpan) {
+        const { start, end } = m.sourceSpan;
+        if (!Number.isInteger(start) || !Number.isInteger(end) || start < 0 || end < start || end > sourceText.length) {
+          errors.push('Mention ' + m.id + ' has an invalid source span.');
+        } else if (sourceText.slice(start, end) !== m.surfaceText) errors.push('Mention ' + m.id + ' span does not match its surface text.');
+      }
     }
     for (const e of arr(model.evidence)) {
-      if (e.start < 0 || e.end < e.start || e.end > model.source.text.length ||
-          model.source.text.slice(e.start, e.end) !== e.quote) errors.push('Evidence ' + e.id + ' is not aligned to source text.');
+      if (!Number.isInteger(e.start) || !Number.isInteger(e.end) || e.start < 0 || e.end < e.start ||
+          e.end > sourceText.length || sourceText.slice(e.start, e.end) !== e.quote) {
+        errors.push('Evidence ' + e.id + ' is not aligned to source text.');
+      }
     }
+    for (const item of arr(model.unresolvedItems)) {
+      if (!['unresolved','unsupported','ambiguous'].includes(item.status)) errors.push('Unresolved item ' + item.id + ' has invalid status.');
+      if (item.evidenceRef && !evidenceIds.has(item.evidenceRef)) errors.push('Unresolved item ' + item.id + ' has missing evidence.');
+    }
+    const operatorTypes = new Set(['NEGATION','MODAL','QUANTIFIER','POLARITY','UNRESOLVED_SCOPE']);
+    const modalOperators = new Set(['MIGHT','MAY','COULD','CAN','MUST','SHOULD','WILL','WOULD','POSSIBLE','NECESSARY','OBLIGATORY','POSSIBLE_OR_ABILITY','EXPECTED','UNKNOWN']);
+    const quantifiers = new Set(['FORALL','EXISTS','EXACTLY_ONE','AT_LEAST_ONE','AT_MOST_ONE']);
+    const connectives = new Set(['CONDITIONAL','EXCEPTION','WHEN','AND','OR','CONTRAST','CONCESSIVE']);
     for (const x of expressions.values()) {
       for (const ref of arr(x.evidenceRefs)) if (!evidenceIds.has(ref)) errors.push('Expression ' + x.id + ' references missing evidence ' + ref + '.');
       if (x.type === 'PREDICATION') {
-        for (const a of arr(x.arguments)) {
+        const args = arr(x.arguments);
+        if (!x.predicate) errors.push('Predication ' + x.id + ' has no predicate.');
+        if (args.filter(a => a.role === 'subject').length !== 1) errors.push('Predication ' + x.id + ' must have exactly one subject.');
+        if (new Set(args.map(a => a.role)).size !== args.length) errors.push('Predication ' + x.id + ' has duplicate argument roles.');
+        for (const a of args) {
           if (a.entityId && !entityIds.has(a.entityId)) errors.push('Argument in ' + x.id + ' references missing entity.');
           if (a.mentionId && !mentionIds.has(a.mentionId)) errors.push('Argument in ' + x.id + ' references missing mention.');
           if (a.bindingEntityId && !entityIds.has(a.bindingEntityId)) errors.push('Argument in ' + x.id + ' has missing binding entity.');
+          if (a.variableId && !a.bindingEntityId) errors.push('Argument in ' + x.id + ' has a variable without a binding entity.');
+        }
+        const subject = args.find(a => a.role === 'subject');
+        if (subject && !subject.entityId && (!subject.mentionId || !arr(model.mentions).some(m => m.id === subject.mentionId && m.resolutionStatus === 'unresolved'))) {
+          errors.push('Predication ' + x.id + ' must have a linked subject or explicit unresolved subject mention.');
+        }
+        if (!['past','present','future','unknown'].includes(x.grammaticalTense)) errors.push('Predication ' + x.id + ' has invalid tense.');
+        if (!['simple','progressive','perfect','habitual','unknown'].includes(x.aspect)) errors.push('Predication ' + x.id + ' has invalid aspect.');
+        if (!x.eventFrame?.id || x.eventFrame.predicate !== x.predicate) errors.push('Predication ' + x.id + ' has missing or inconsistent event frame.');
+        if (!x.temporalFrame || typeof x.temporalFrame.referenceTime !== 'string' || !Array.isArray(x.temporalFrame.temporalAdverbials)) {
+          errors.push('Predication ' + x.id + ' has invalid temporal metadata.');
+        }
+        if (!['complete','underspecified','unresolved','not_applicable'].includes(x.completeness?.status) ||
+            !Array.isArray(x.completeness?.missingRoles)) errors.push('Predication ' + x.id + ' has invalid completeness metadata.');
+        for (const p of arr(x.eventFrame?.participants)) {
+          if (p.entityId && !entityIds.has(p.entityId)) errors.push('Event frame ' + x.eventFrame.id + ' references missing participant.');
+          if (p.bindingEntityId && !entityIds.has(p.bindingEntityId)) errors.push('Event frame ' + x.eventFrame.id + ' references missing binding entity.');
         }
       } else if (x.type === 'OPERATOR') {
+        if (!operatorTypes.has(x.operatorType) || !x.operator) errors.push('Operator ' + x.id + ' has invalid operator metadata.');
         if (!expressions.has(x.scope?.targetId)) errors.push('Operator ' + x.id + ' has missing scope target.');
+        if (x.operatorType === 'NEGATION' && x.operator !== 'NOT') errors.push('Negation ' + x.id + ' must use NOT.');
+        if (x.operatorType === 'POLARITY' && x.operator !== 'UNKNOWN') errors.push('Unknown polarity ' + x.id + ' must use UNKNOWN.');
+        if (x.operatorType === 'MODAL' && !modalOperators.has(x.operator)) errors.push('Modal ' + x.id + ' uses an unsupported operator.');
+        if (x.operatorType === 'QUANTIFIER') {
+          if (!quantifiers.has(x.operator) || !x.variable || !x.restrictor?.entityId || !entityIds.has(x.restrictor.entityId)) {
+            errors.push('Quantifier ' + x.id + ' lacks a supported operator, variable, or restrictor.');
+          }
+          const binding = x.variableBinding;
+          if (!binding?.variable || binding.variable !== x.variable || !binding.role ||
+              binding.restrictorEntityId !== x.restrictor?.entityId) errors.push('Quantifier ' + x.id + ' has inconsistent variable binding.');
+          let cursor = x.scope?.targetId, bound = null;
+          const seen = new Set();
+          while (cursor && !seen.has(cursor)) {
+            seen.add(cursor);
+            const child = expressions.get(cursor);
+            if (!child) break;
+            if (child.type === 'PREDICATION') { bound = arr(child.arguments).find(a => a.role === binding?.role); break; }
+            if (child.type === 'OPERATOR') cursor = child.scope?.targetId;
+            else if (child.type === 'CONNECTIVE') cursor = child.consequentId || arr(child.operandIds)[0];
+            else break;
+          }
+          if (!bound || bound.variableId !== x.variable || bound.bindingEntityId !== x.restrictor?.entityId) {
+            errors.push('Quantifier ' + x.id + ' is not bound to the corresponding predication argument.');
+          }
+        }
       } else if (x.type === 'CONNECTIVE') {
-        const refs = x.antecedentId && x.consequentId ? [x.antecedentId, x.consequentId] : arr(x.operandIds);
+        const refs = x.antecedentId && x.consequentId ? [x.antecedentId,x.consequentId] : arr(x.operandIds);
+        if (!connectives.has(x.connective)) errors.push('Connective ' + x.id + ' uses unsupported type.');
         if (refs.length < 2 || refs.some(ref => !expressions.has(ref))) errors.push('Connective ' + x.id + ' has invalid operands.');
+        if (['CONDITIONAL','EXCEPTION','CONCESSIVE'].includes(x.connective) && !(x.antecedentId && x.consequentId)) {
+          errors.push('Directed connective ' + x.id + ' lacks antecedent/consequent roles.');
+        }
+        const expectedStatus = { CONDITIONAL:'conditional_not_asserted', EXCEPTION:'exception_relation_asserted',
+          WHEN:'when_clause_not_asserted', CONCESSIVE:'concessive_relation_asserted' }[x.connective];
+        if (expectedStatus && x.logicalStatus !== expectedStatus) errors.push('Connective ' + x.id + ' has inconsistent logical status.');
+        const marker = String(x.marker || '').toLowerCase();
+        const expectedType = marker === 'unless' ? 'EXCEPTION' : marker === 'when' ? 'WHEN' : marker === 'if' ? 'CONDITIONAL' : null;
+        if (expectedType && x.connective !== expectedType) errors.push('Connective ' + x.id + ' marker/type mismatch.');
+        if (x.connective === 'EXCEPTION') {
+          const ant = expressions.get(x.antecedentId);
+          if (!ant || ant.type !== 'OPERATOR' || ant.operatorType !== 'NEGATION' || ant.operator !== 'NOT') {
+            errors.push('EXCEPTION ' + x.id + ' must retain NOT(P) as its antecedent.');
+          }
+        }
+        if (x.connective === 'CONCESSIVE' && !arr(x.evidenceRefs).length) errors.push('CONCESSIVE ' + x.id + ' requires evidence.');
+      } else {
+        errors.push('Expression ' + x.id + ' has unsupported Workbench expression type.');
       }
     }
+    const childRefs = x => x.type === 'OPERATOR' ? [x.scope?.targetId].filter(Boolean) :
+      x.type === 'CONNECTIVE' ? (x.antecedentId && x.consequentId ? [x.antecedentId,x.consequentId] : arr(x.operandIds)) : [];
+    for (const x of expressions.values()) for (const ref of childRefs(x)) {
+      if (!expressions.has(ref)) errors.push('Expression ' + x.id + ' references missing child ' + ref + '.');
+    }
     const roots = arr(model.rootExpressionIds);
-    if (roots.some(ref => !expressions.has(ref))) errors.push('A root expression reference is missing.');
+    if (new Set(roots).size !== roots.length) errors.push('Duplicate root expression IDs.');
+    if (expressions.size && !roots.length) errors.push('Expressions exist but no roots are declared.');
     const visiting = new Set(), visited = new Set();
     function visit(id) {
       if (visiting.has(id)) { errors.push('Expression cycle detected at ' + id); return; }
       if (visited.has(id)) return;
       const x = expressions.get(id); if (!x) return;
-      visiting.add(id);
-      const refs = x.type === 'OPERATOR' ? [x.scope?.targetId] :
-        x.type === 'CONNECTIVE' ? (x.antecedentId && x.consequentId ? [x.antecedentId,x.consequentId] : arr(x.operandIds)) : [];
-      for (const ref of refs) visit(ref);
-      visiting.delete(id); visited.add(id);
+      visiting.add(id); for (const ref of childRefs(x)) visit(ref); visiting.delete(id); visited.add(id);
     }
-    for (const id of roots) visit(id);
-    if (visited.size !== expressions.size) errors.push('One or more reconstructed expressions are unreachable from declared roots.');
+    for (const id of roots) {
+      if (!expressions.has(id)) errors.push('Missing root expression ' + id + '.');
+      else visit(id);
+    }
+    if (visited.size !== expressions.size) errors.push('One or more expressions are unreachable from declared roots.');
+    const relationIds = unique(model.relations, 'relation');
+    const relationTypes = new Set(['CAUSE','CONTRADICTS','SUPPORTS','ATTACKS','RELATED_TO']);
+    for (const r of arr(model.relations)) {
+      if (!relationTypes.has(r.type)) errors.push('Relation ' + r.id + ' has unsupported type.');
+      if (!expressions.has(r.sourceExpressionId) || !expressions.has(r.targetExpressionId)) errors.push('Relation ' + r.id + ' has missing expression endpoint.');
+      for (const ref of arr(r.evidenceRefs)) if (!evidenceIds.has(ref)) errors.push('Relation ' + r.id + ' has missing evidence.');
+    }
     return { valid: errors.length === 0, errors };
   }
 
