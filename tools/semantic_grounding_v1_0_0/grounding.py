@@ -265,9 +265,7 @@ class GroundingIndex:
         if state == "UNKNOWN":
             return self._result("UNKNOWN", "referent", diagnostics=("MENTION_RESOLUTION_UNKNOWN",), extra_provenance={"mention_id": mention_id})
         if state == "AMBIGUOUS":
-            unresolved = self._find_unresolved_item_for_scope(mention_id)
-            candidates = tuple(unresolved.get("candidateRefs", [])) if unresolved else ()
-            return self._result("AMBIGUOUS", "referent", candidates=candidates, diagnostics=("MENTION_RESOLUTION_AMBIGUOUS",), extra_provenance={"mention_id": mention_id})
+            return self._result("AMBIGUOUS", "referent", diagnostics=("MENTION_RESOLUTION_AMBIGUOUS",), extra_provenance={"mention_id": mention_id})
         if state == "UNRESOLVED":
             return self._result("UNRESOLVED", "referent", diagnostics=("MENTION_REFERENT_UNRESOLVED",), extra_provenance={"mention_id": mention_id})
         if state not in {"LINKED", "RESOLVED"}:
@@ -298,11 +296,6 @@ class GroundingIndex:
             "RESOLVED", "referent", referent_id, referent_result.value,
             extra_provenance={"mention_id": mention_id, "mention_resolution_status": state},
         )
-
-    def _find_unresolved_item_for_scope(self, scope_id: str) -> Optional[dict[str, Any]]:
-        items = (self.document.get("unresolvedItems") or [])
-        matches = [item for item in items if item.get("scopeRef") == scope_id or item.get("id") == scope_id]
-        return matches[0] if len(matches) == 1 else None
 
     def resolve_assertion_context(self, assertion_id: str) -> ResolutionResult:
         assertion_result = self.resolve_record("assertion", assertion_id)
@@ -384,9 +377,9 @@ class GroundingIndex:
             node = node_result.value
             if current_id == target_expression_id:
                 paths.append(deepcopy(current_path))
-                return
             if node.get("op") == "OPAQUE":
-                blocked.append(current_id)
+                if current_id != target_expression_id:
+                    blocked.append(current_id)
                 return
             stack.append(current_id)
             operands = node.get("operandRefs", [])
@@ -415,10 +408,10 @@ class GroundingIndex:
             return self._result("INVALID_INPUT", "expression_scope", target_expression_id, diagnostics=("EXPRESSION_GRAPH_CYCLE",), extra_provenance={"cycle_refs": sorted(set(cycle))})
         if len(paths) > 1:
             return self._result("AMBIGUOUS", "expression_scope", target_expression_id, candidates=tuple([root_expression_id, target_expression_id]), diagnostics=("EXPRESSION_SCOPE_MULTIPLE_PATHS",), extra_provenance={"scope_paths": paths})
-        if blocked and not paths:
-            return self._result("UNSUPPORTED", "expression_scope", target_expression_id, diagnostics=("OPAQUE_SCOPE_PATH_UNSUPPORTED",), extra_provenance={"opaque_refs": sorted(set(blocked))})
-        if dangling and not paths:
-            return self._result("UNRESOLVED", "expression_scope", target_expression_id, diagnostics=("EXPRESSION_OPERAND_REFERENCE_UNRESOLVED",), extra_provenance={"missing_refs": sorted(set(dangling))})
+        if blocked:
+            return self._result("UNSUPPORTED", "expression_scope", target_expression_id, diagnostics=("OPAQUE_SCOPE_PATH_UNSUPPORTED",), extra_provenance={"opaque_refs": sorted(set(blocked)), "known_scope_paths": paths})
+        if dangling:
+            return self._result("UNRESOLVED", "expression_scope", target_expression_id, diagnostics=("EXPRESSION_OPERAND_REFERENCE_UNRESOLVED",), extra_provenance={"missing_refs": sorted(set(dangling)), "known_scope_paths": paths})
         if not paths:
             return self._result("UNRESOLVED", "expression_scope", target_expression_id, diagnostics=("EXPRESSION_NOT_IN_ROOT_SCOPE",), extra_provenance={"root_expression_id": root_expression_id})
         return self._result(
@@ -447,6 +440,15 @@ def inspect_compact_benchmark_snapshot(fixture: dict[str, Any]) -> dict[str, Any
         }
     missing_fields: list[str] = []
     unmapped_refs: list[str] = []
+    required_root = {
+        "profileId", "documentId", "sources", "primarySourceRef", "definitions",
+        "referents", "mentions", "expressions", "rootExpressionRefs", "assertions",
+        "evidence", "contexts", "expressionRelations", "unresolvedItems",
+        "derivations", "validation", "mapping", "extensions",
+    }
+    missing_fields.extend(f"document.{field}" for field in sorted(required_root - set(snapshot)))
+    if snapshot.get("profile_id") != "USG-SEM/1.0":
+        missing_fields.append("input_snapshot.profile_id:USG-SEM/1.0")
     semantic = snapshot.get("semantic_records") or {}
     for record_type, records in semantic.items():
         if not isinstance(records, list):
