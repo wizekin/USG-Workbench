@@ -1,7 +1,7 @@
 # USG Phase 2 — Semantic Reasoning Roadmap
 
 **Phase:** 2 — Evidence-grounded, rule-governed semantic reasoning  
-**Status:** ROADMAP ESTABLISHED; Steps 2.1–2.5 definitions, contracts, and grounding complete; inference execution not started  
+**Status:** Steps 2.1–2.6 complete; deterministic inference executor implemented for the explicitly activated Modus Ponens and left-conjunction-elimination subset; evidence assessment and query/interface layers remain pending  
 **Prerequisite:** Phase 1 exit accepted (USG-SEM/1.0 and composed adapter v1.5.1)  
 **Normative Phase 1 record:** [Phase 1 exit acceptance](../interoperability/PHASE-1-EXIT-ACCEPTANCE.md)
 
@@ -220,6 +220,8 @@ These may be considered in later phases only after Phase 2 produces a measurable
 
 ## 11. Current status
 
-This roadmap establishes the Phase 2 sequence and boundaries. Steps 2.1–2.5 have produced the definitions, benchmark/evaluator, versioned rule model, formal rule semantics, and deterministic grounding services. The four reference rules remain disabled; no production rule matcher, inference executor, evidence assessor, or reasoning interface is enabled.
+Steps 2.1–2.5 established the definitions, benchmark/evaluator, versioned rule model, formal rule semantics, and deterministic grounding services. Step 2.6 is merged and implements the first narrow deterministic execution subset: exact Modus Ponens and left conjunction elimination. A separate activation manifest enables only those handlers; the declarative registry and semantics contract remain unchanged, with registry-level execution disabled and rules still marked `SPECIFIED_NOT_EXECUTABLE`.
 
-**Next implementation step:** Phase 2 Step 2.6 — deterministic inference executor. It must consume exact grounding outcomes, execute only explicitly enabled rules, preserve full derivations, and introduce a separately versioned benchmark extension with complete canonical documents and explicit assertion fields. The frozen compact Step 2.2 v1.0.0 fixtures must never be silently coerced into executor inputs.
+The executor accepts complete, schema-valid USG-SEM/1.0 documents and explicit tasks. It uses SOURCE_ASSERTED-only premises, exact typed references, ordered operands, context and attribution bindings, and deterministic derivation provenance. Candidate conclusions remain outside canonical assertions and are marked DERIVED_NOT_VERIFIED. Inferred-premise chaining, evidence assessment, verification, implicit closed-world assumptions, and automatic truth promotion remain disabled. Resource interruption is explicit and preserves all input records without semantic truncation.
+
+**Next implementation step:** Phase 2 Step 2.7 — evidence support and conflict assessment. This step must separately model source-span alignment, semantic support, contradiction, corroboration and source independence, and external verification. It must not treat successful rule derivation as evidence support or objective truth.
