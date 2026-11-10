@@ -1,0 +1,98 @@
+# Phase 1 Step 4 — Round-trip conformance
+
+**Status:** Active implementation work  
+**Contract:** USG-SEM/1.0  
+**Baseline pair:** Semantic Workbench 0.5.4 / Python reference kernel 0.4.0  
+**Branch:** `phase1/round-trip-conformance`
+
+## Objective
+
+Establish executable, semantic-invariant conformance across:
+
+`Workbench 0.5.4 native model → USG-SEM/1.0 → Python kernel 0.4.0 → USG-SEM/1.0 → Workbench 0.5.4 native model`
+
+This is not satisfied by importing a canonical document and returning an unchanged copy. Each conversion boundary must execute, and the test must compare meaning-bearing invariants.
+
+## Verified starting point
+
+1. The Step 1 predicate/frame registry and Step 2 operator/scope registry describe approved and conditional mappings. They are registries, not runtime adapters.
+2. Step 3 provides a document-level USG-SEM → Python projection. It preserves the canonical document as an authoritative snapshot and refuses to export that snapshot after mutation.
+3. The Python adapter currently has no general serializer that reconstructs a new USG-SEM document from changed Python `Source`, `Node`, and `Assertion` projections.
+4. No executable Workbench 0.5.4 → USG-SEM adapter is present in the repository.
+5. Workbench's native semantic core emits `PREDICATION`, `OPERATOR`, and `CONNECTIVE` expression records with explicit references and scope metadata. These are the source structures to adapt; display text is not a substitute.
+6. The Workbench baseline stores evidence offsets as JavaScript string offsets (UTF-16 code units), whereas USG-SEM requires zero-based, end-exclusive Unicode code-point offsets. The adapter must convert offsets and reject any span that splits a surrogate pair.
+7. Workbench v0.5.4 includes a native `acceptanceBoundary.requiresHumanReview` field. This is legacy application workflow metadata, not a USG-SEM semantic validity rule. It may be retained only as inert, namespaced native payload for exact archival round-trip; it must not become a required human gate in the canonical contract or Python projection.
+8. The Workbench builder can discard unsupported or source-unaligned event attributes while emitting a warning. An adapter cannot recover information already discarded upstream. Such a warning must prevent a lossless source-mapping claim; the original input record/native payload must remain available if exact source round-trip is required.
+
+## Implementation sequence
+
+### 4A — Workbench source adapter
+
+Implement a versioned adapter from the actual Workbench semantic model into USG-SEM/1.0.
+
+- Map entities to document-local referents; mentions remain separate records and retain antecedent/resolution state.
+- Map PREDICATION nodes to PREDICATE_APP unless an approved predicate/frame mapping is applicable with all required evidence and role constraints.
+- Map OPERATOR nodes without changing operator type, polarity, modal force, quantifier binding, or scope target.
+- Map CONNECTIVE nodes with directed antecedent/consequent roles and exact marker/status metadata; never flatten EXCEPTION, WHEN, CONCESSIVE, or CONTRAST into AND/OR.
+- Map evidence, unresolved items, relations, roots, source spans, and provenance.
+- Convert UTF-16 offsets to Unicode code-point offsets using the exact source string.
+- Preserve the complete native Workbench payload under a versioned namespace, while keeping it non-authoritative.
+- Report every omitted or non-representable item and its exact native reference. A source warning about discarded information cannot be reported as LOSSLESS.
+
+### 4B — Python projection and reverse serializer
+
+- Retain Step 3's strict partial projection behavior.
+- Add a serializer from actual Python 0.4.0 records and SemIR nodes to a newly constructed USG-SEM document.
+- Preserve node operator, sort, ordered operands, parameters, supported annotations, DAG sharing, source references, and assertion fields.
+- Never use the original canonical snapshot as a substitute for serializing modified Python projections.
+- Return explicit mapping diagnostics for fields/records with no exact Python representation.
+
+### 4C — Workbench reconstruction adapter
+
+- Reconstruct a Workbench semantic model from the returned canonical document.
+- Restore supported Workbench-native distinctions from canonical fields.
+- Restore archival native-only fields only from the namespaced native payload, after verifying its source version and integrity digest.
+- Do not use native payload to overwrite changed canonical meaning.
+- If a canonical change invalidates the native snapshot, refuse stale restoration and return PARTIAL/UNSUPPORTED diagnostics rather than silently reverting it.
+
+### 4D — semantic invariant suite
+
+Tests must cover at least:
+
+- positive and negative predication;
+- nested negation and modality scope;
+- quantifier/restrictor/variable binding, including NOT(FORALL) versus NO;
+- directed IF and UNLESS/EXCEPTION antecedent-consequent structure;
+- WHEN and CONCESSIVE remaining distinct;
+- predicate role order and conditional frame mapping;
+- tense, aspect, temporal frame and adverbials;
+- attribution and assertion commitment;
+- mention/referent distinction and unresolved pronouns;
+- evidence quote alignment and supplementary Unicode before/inside spans;
+- shared DAG identity, multiple roots, and large graphs;
+- unsupported constructors, metadata, and partially mapped roots;
+- source builder warnings and upstream-discarded attributes;
+- canonical edits invalidating stale native snapshots.
+
+The suite compares semantic invariants, not generated opaque IDs or irrelevant serialization order. Exact source text, operand order, role binding, scope, status axes, and reference relationships are invariant.
+
+## Status vocabulary
+
+- `LOSSLESS`: every meaning-bearing field in the declared source scope has an exact target representation and passes round-trip invariant checks.
+- `PARTIAL`: some fields/records are preserved canonically or as explicit native extension data but do not have exact target-native equivalents. All such items must be listed with paths/refs and reasons.
+- `UNMAPPED`: no safe semantic mapping exists for the declared source scope. The source data remains available; no guessed conversion is emitted.
+
+A whole-document result cannot be marked LOSSLESS merely because supported roots converted successfully while other roots or document records were omitted.
+
+## Boundaries
+
+- Do not modify `archives/` or `implementations/`; they are immutable baselines.
+- Do not add arbitrary semantic item-count, nesting-depth, or operand-count caps.
+- Do not infer mappings from lexical similarity.
+- Do not silently flatten, reorder, drop, invent, or coerce semantic content.
+- Do not claim open-domain semantic correctness from structural round-trip tests.
+- CI must run the cross-implementation tests and verify immutable baseline paths remain unchanged.
+
+## Acceptance criteria
+
+Step 4 is complete only when an executable end-to-end conversion test exercises all four boundaries and verifies the listed semantic invariants. Unsupported cases must pass by being explicitly and correctly reported as partial/unmapped, not by pretending they round-trip losslessly.
