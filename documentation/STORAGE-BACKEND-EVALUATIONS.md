@@ -82,3 +82,9 @@ Benchmark artifact: GitHub Actions run 42820307739, artifact `phase3-duckdb-benc
 The adapter passed exact canonical round-trip, schema/grounding and source-hash validation, idempotent writes, revision history, stale-writer rejection within the connection, index drift/rebuild, snapshot tampering detection, large-graph preservation, multiple in-process connections writing separate documents, and read-only reopen. SQLite baseline and Phase 1/2 regression suites also passed.
 
 **Decision:** DuckDB is not a good replacement for SQLite for the current canonical persistence workload. Reads and integrity checks are similar, but write/revision/index-rebuild paths are about 4.2–4.4 times slower and the database footprint is about 4.4 times larger at this scale. Its analytical SQL and columnar execution remain potentially useful as a separate reporting/analytics layer over exported or replicated USG data, but that complementary use needs its own workload test and must not become the canonical source of truth.
+
+## Candidate 3: LanceDB
+
+LanceDB is evaluated both as a potential canonical snapshot store and as a complementary retrieval system. Its embedded local mode supports versioned Lance tables, vector similarity, and full-text search. The prototype stores one complete canonical USG snapshot per revision in an append-only table and keeps semantic/vector retrieval in a separate rebuildable sidecar.
+
+The key contract question is whether LanceDB's table-level MVCC and append commits can meet USG's per-document compare-and-swap revision guarantees. The adapter deliberately reports duplicate revision rows as integrity failures; the append/read/CAS sequence is not a database-enforced unique conditional transaction. A sidecar retrieval index is rebuildable and must never become authoritative semantic truth.
