@@ -39,3 +39,58 @@ python -m unittest discover -s tests -p "test_document_adapter.py" -v
 
 The schema is in `specifications/usg-sem-1.0.schema.json`. Install
 `jsonschema>=4.18,<5` for full schema validation.
+
+## Reverse serialization — Python kernel 0.4.0 → USG-SEM/1.0
+
+The reverse boundary is exposed as:
+
+```python
+from interoperability.python_adapter import (
+    document_to_python,
+    python_to_contract_document,
+)
+
+imported = document_to_python(contract_document)
+updated_contract = python_to_contract_document(imported)
+```
+
+The serializer traverses the current immutable SemIR `Node` objects and writes
+an explicit USG-SEM expression graph (`id`, `op`, `sort`, ordered
+`operandRefs`, `params`). It preserves shared object identity, multiple roots,
+and operand order. It serializes the current `Source` and `Assertion`
+projections rather than returning the original expression/source/assertion
+records as a substitute.
+
+The imported canonical snapshot remains the envelope and preservation source
+for record classes that Python kernel 0.4.0 cannot represent natively. Such
+records are carried forward unchanged and remain listed in the mapping report.
+Unsupported original sources, expressions, assertions, and roots are retained;
+they are not silently deleted.
+
+### Annotation source identity
+
+Python `Ann` stores offsets, rules, basis and language features, but does not
+store `sourceRef`. The reverse serializer restores span source associations
+only when the current offsets exactly match the imported canonical annotation.
+If the spans change, it retains the native annotation in the namespaced
+`org.usg.python-kernel.v0.4.0` extension and reports the expression as
+`PARTIAL`. It never assumes that a span belongs to the primary source.
+
+### Snapshot and scope boundaries
+
+- A modified canonical snapshot is rejected; canonical-only records must not be
+  merged from a stale or user-mutated envelope.
+- Source genre and native-only assertion metadata are retained only as explicit
+  namespaced extension data or reported unsupported.
+- The serializer does not invent referents, mentions, evidence, contexts,
+  definitions, relations, unresolved records, or derivations.
+- `LOSSLESS` is not claimed when canonical-only records remain outside the
+  Python kernel projection.
+- This is a serialization boundary, not a claim of semantic correctness or the
+  completion of the Workbench → Python → Workbench round trip.
+
+Run:
+
+```bash
+python -m unittest discover -s tests -p "test_python_reverse_serializer.py" -v
+```
