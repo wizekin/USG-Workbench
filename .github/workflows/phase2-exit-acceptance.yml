@@ -58,6 +58,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
@@ -74,7 +75,7 @@ jobs:
       - name: Run complete Phase 2 and Phase 1 exit acceptance
         env:
           GITHUB_REPOSITORY: ${{ github.repository }}
-          GITHUB_SHA: ${{ github.sha }}
+          GITHUB_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
           PYTHONPATH: implementations/python-kernel/v0.5.0:tests
         run: python -m tools.phase2_exit_acceptance.run --report phase2-exit-acceptance-report.json
       - name: Upload machine-readable acceptance report
