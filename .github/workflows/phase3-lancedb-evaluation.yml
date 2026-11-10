@@ -1,4 +1,4 @@
-name: Phase 3 Storage Candidate Evaluation — LanceDB (final table-version verification)
+name: Phase 3 Storage Candidate Evaluation — LanceDB (final benchmark decision record)
 on:
   pull_request:
     paths:
