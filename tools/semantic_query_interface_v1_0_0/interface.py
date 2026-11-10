@@ -128,13 +128,37 @@ class QueryInterface:
             "conflict_policy": "EXACT_COMPLEMENT_SAME_SCOPE",
         }
         evidence_result = self.evidence_assessor.assess(document, evidence_task)
+        completion = inference.get("completion_status", "COMPLETE")
+        if completion not in {"COMPLETE", "INCOMPLETE", "UNSUPPORTED"}:
+            completion = "UNSUPPORTED"
         goal_ids = {item["id"] for item in goal_assertions}
+        relevant_refs = goal_ids | premise_ids
         conflicts = [
             item for item in evidence_result["conflicts"]
-            if goal_ids.intersection(item["assertion_refs"])
+            if relevant_refs.intersection(item["assertion_refs"])
         ]
+        conflicted_assertion_ids = {
+            ref for item in conflicts for ref in item["assertion_refs"]
+        }
+        blocked_derivations = [
+            item for item in matching_derivations
+            if conflicted_assertion_ids.intersection(ref for ref in item.get("input_refs", []) if ref in assertions)
+        ]
+        blocked_derivation_ids = {item["id"] for item in blocked_derivations}
+        matching_derivations = [item for item in matching_derivations if item["id"] not in blocked_derivation_ids]
+        allowed_output_refs = {ref for item in matching_derivations for ref in item.get("output_refs", [])}
+        matching_candidates = {
+            candidate_id: {
+                **candidate,
+                "derivation_ids": [ref for ref in candidate.get("derivation_ids", []) if ref in {item["id"] for item in matching_derivations}],
+            }
+            for candidate_id, candidate in matching_candidates.items()
+            if candidate_id in allowed_output_refs
+        }
         relation_claims = evidence_result["relation_claims"]
         diagnostics = list(inference.get("diagnostics", [])) + list(evidence_result.get("diagnostics", []))
+        if blocked_derivations:
+            diagnostics.append("QUERY_DERIVATION_PREMISE_CONFLICTED")
         statuses = {item.get("epistemicStatus") for item in goal_assertions}
         if conflicts:
             goal_status = "CONFLICTING"
@@ -150,10 +174,6 @@ class QueryInterface:
             goal_status = "UNSUPPORTED"
         else:
             goal_status = "NOT_ESTABLISHED"
-
-        completion = inference.get("completion_status", "COMPLETE")
-        if completion not in {"COMPLETE", "INCOMPLETE", "UNSUPPORTED"}:
-            completion = "UNSUPPORTED"
         unresolved = []
         if not goal_assertions and not matching_candidates:
             unresolved.append({"code":"NO_EXACT_ASSERTION_OR_DERIVATION_MATCH","meaning":"No exact result is established; absence is not negation under the open-world policy."})
@@ -164,6 +184,8 @@ class QueryInterface:
             if item["computed_alignment_status"] in {"UNRESOLVED","UNVERIFIED","MISMATCH"}:
                 unresolved.append({"code":"EVIDENCE_ALIGNMENT_"+item["computed_alignment_status"],"evidence_ref":item["evidence_ref"]})
         unsupported = []
+        for derivation in blocked_derivations:
+            unsupported.append({"code":"DERIVATION_PREMISE_CONFLICTED","derivation_ref":derivation["id"],"conflicted_assertion_refs":sorted(conflicted_assertion_ids.intersection(ref for ref in derivation.get("input_refs", []) if ref in assertions))})
         if completion == "UNSUPPORTED":
             unsupported.append({"code":"INFERENCE_RULE_UNSUPPORTED","diagnostics":inference.get("diagnostics", [])})
         if inference.get("completion_status") == "INCOMPLETE":
@@ -180,6 +202,12 @@ class QueryInterface:
             "profile_id":"USG-QUERY/1.0.0","query_id":query["query_id"],
             "document_id":document.get("documentId"),"document_sha256":snapshot,
             "completion_status":completion,"goal_status":goal_status,
+            "assumptions":[
+                {"code":"OPEN_WORLD","value":query["inference_task"]["world_assumption"]},
+                {"code":"EXPLICIT_RULE_ALLOWLIST","rule_ids":query["inference_task"]["rule_ids"]},
+                {"code":"INFERRED_PREMISES_DISABLED","value":False},
+                {"code":"EXACT_GOAL_SCOPE","expression_ref":goal["expression_ref"],"context_ref":goal["context_ref"],"context_kind":goal["context_kind"],"commitment":goal["commitment"],"attributed_to_ref":goal.get("attributed_to_ref")},
+            ],
             "goal":goal,
             "source_assertions":[{"assertion_ref":item["id"],"epistemic_status":item.get("epistemicStatus"),"origin":item.get("origin"),"evidence_refs":item.get("evidenceRefs",[])} for item in goal_assertions],
             "scope_assertions":[{"assertion_ref":item["id"],"expression_ref":item.get("expressionRef"),"epistemic_status":item.get("epistemicStatus"),"origin":item.get("origin")} for item in scope_assertions],
@@ -202,6 +230,12 @@ class QueryInterface:
             "profile_id":"USG-QUERY/1.0.0","query_id":query["query_id"],
             "document_id":document.get("documentId") if isinstance(document,dict) else None,
             "document_sha256":snapshot,"completion_status":completion,"goal_status":goal_status,
+            "assumptions":[
+                {"code":"OPEN_WORLD","value":query["inference_task"]["world_assumption"]},
+                {"code":"EXPLICIT_RULE_ALLOWLIST","rule_ids":query["inference_task"]["rule_ids"]},
+                {"code":"INFERRED_PREMISES_DISABLED","value":False},
+                {"code":"EXACT_GOAL_SCOPE","expression_ref":query["goal"]["expression_ref"],"context_ref":query["goal"]["context_ref"],"context_kind":query["goal"]["context_kind"],"commitment":query["goal"]["commitment"],"attributed_to_ref":query["goal"].get("attributed_to_ref")},
+            ],
             "goal":query["goal"],"source_assertions":[],"scope_assertions":[],
             "inference_candidates":[],"derivations":[],"evidence_assessment":None,
             "conflicts":[],"relation_claims":[],"unresolved_questions":[{"code":"GOAL_RESOLUTION_DETAIL","detail":item} for item in details],
