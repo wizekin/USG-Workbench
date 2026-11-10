@@ -55,6 +55,29 @@ class QdrantStoreTests(unittest.TestCase):
         with self.assertRaises(RevisionConflictError):
             self.store.put_document(stale, expected_revision=1)
 
+    def test_competing_threads_are_serialized_for_compare_and_swap(self):
+        from concurrent.futures import ThreadPoolExecutor
+        from threading import Barrier
+        self.store.put_document(self.document)
+        barrier = Barrier(2)
+        first = deepcopy(self.document)
+        first["extensions"]["writer"] = "first"
+        second = deepcopy(self.document)
+        second["extensions"]["writer"] = "second"
+
+        def attempt(changed):
+            barrier.wait()
+            try:
+                return self.store.put_document(changed, expected_revision=1).revision
+            except RevisionConflictError:
+                return "CONFLICT"
+
+        with ThreadPoolExecutor(max_workers=2) as pool:
+            results = [pool.submit(attempt, first), pool.submit(attempt, second)]
+            outcomes = [item.result() for item in results]
+        self.assertEqual(sorted(str(x) for x in outcomes), ["2", "CONFLICT"])
+        self.assertEqual([x["revision"] for x in self.store.list_revisions(self.document["documentId"])], [1, 2])
+
     def test_persistent_reopen_preserves_revisions(self):
         self.store.put_document(self.document)
         changed = deepcopy(self.document)
