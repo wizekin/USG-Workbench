@@ -195,7 +195,7 @@ class CompleteDocumentAdapterV15Tests(unittest.TestCase):
                               label="CLIENT"),),
         )
         out = kernel_v15_document_to_contract(imported, validate=False)
-        self.assertEqual(out["sources"][0]["text"], "Alice needs a tool.")
+        self.assertEqual(out["sources"][0]["text"], doc["sources"][0]["text"])
         self.assertEqual(out["referents"][0]["label"], "ALICE")
         self.assertEqual(out["mentions"][0]["surfaceText"], "ALICE")
         self.assertEqual(out["assertions"][0]["epistemicStatus"], "DISPUTED")
