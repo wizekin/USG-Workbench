@@ -1,7 +1,7 @@
 # USG Phase 2 — Semantic Reasoning Roadmap
 
 **Phase:** 2 — Evidence-grounded, rule-governed semantic reasoning  
-**Status:** Steps 2.1–2.8 complete; deterministic inference, conservative evidence/conflict assessment, and structured query/explanation layers implemented; interactive Kernel Lab and Phase 2 exit acceptance remain pending  
+**Status:** Steps 2.1–2.9 complete; deterministic inference, evidence/conflict assessment, structured query/explanation, and integrated local Kernel Lab are implemented; final Phase 2 exit acceptance remains pending  
 **Prerequisite:** Phase 1 exit accepted (USG-SEM/1.0 and composed adapter v1.5.1)  
 **Normative Phase 1 record:** [Phase 1 exit acceptance](../interoperability/PHASE-1-EXIT-ACCEPTANCE.md)
 
@@ -226,4 +226,6 @@ Step 2.7 is merged and adds the separate `USG-EVIDENCE-ASSESSMENT/1.0.0` ledger.
 
 Step 2.8 is merged and adds the `USG-QUERY/1.0.0` exact-reference query API and JSON CLI. It returns explicit assumptions, source assertions, derivations, evidence and conflict projections, unresolved questions, unsupported portions, and deterministic structured explanation steps. It blocks derived results whose premises participate in exact-scope conflicts. It does not parse free text or treat absence as false.
 
-**Next implementation step:** Phase 2 Step 2.9 — Kernel Lab reasoning interface. It must provide an interactive workflow to load versioned fixtures, run explicit reasoning tasks, inspect full grounding/inference/evidence/query traces and diagnostics, compare actual outputs with expected outcomes, and export reproducible results without modifying canonical inputs or frozen baselines.
+Step 2.9 is merged and extends the existing local-only Kernel Lab with the Phase 2 query interface, 13 versioned query fixtures, individual query execution, full benchmark comparison, trace inspection, and JSON export. The existing v0.7 Mention adapter testing workflow remains intact; the lab binds only to loopback and has no telemetry or cloud calls.
+
+**Next implementation step:** Phase 2 Step 2.10 — final exit acceptance. Run the complete Phase 2 regression and benchmark suite, verify the strict false-inference gate and every compatibility invariant, publish a machine-readable acceptance report, and declare unsupported capabilities explicitly. Phase 2 must not be declared complete if any required gate is missing, failed, or inconclusive.
