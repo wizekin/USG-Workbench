@@ -54,3 +54,22 @@ python -m unittest discover -s tests -p "test_workbench_source_adapter.py" -v
 The source adapter tests exercise Workbench v0.5.4 semantic-model conversion, operator/connective scope, argument-role ordering, unresolved mentions, native snapshot digests, partial mapping, dangling references, and UTF-16 → Unicode code-point offset conversion. The Python test validates the actual generated document against the USG-SEM/1.0 JSON Schema.
 
 The complete four-boundary round trip is not yet implemented. Step 4B now serializes Python projections back to USG-SEM/1.0; Workbench reconstruction and end-to-end semantic invariant tests remain required before full conformance can pass.
+
+
+End-to-end semantic invariant conformance (Phase 1 Step 4D):
+
+```bash
+python -m unittest discover -s tests -p "test_round_trip_conformance.py" -v
+```
+
+This suite executes Workbench v0.5.4 → USG-SEM/1.0 → Python kernel 0.4.0
+projection → fresh USG-SEM/1.0 serialization → Workbench reconstruction. It
+compares semantic invariants rather than generated IDs or incidental JSON
+ordering. It includes nested operator scope, FORALL versus EXISTS scope under
+negation, directed IF/UNLESS, WHEN versus CONCESSIVE, role ordering, tense,
+aspect, temporal metadata, attribution, unresolved mentions, evidence alignment
+after supplementary Unicode, relation metadata, multiple roots, unsupported
+canonical constructors, source-builder warnings, stale native snapshots, and a
+512-root graph. A PARTIAL result is expected where Python 0.4.0 lacks an exact
+constructor; the canonical graph must survive unchanged and be reported rather
+than coerced.
