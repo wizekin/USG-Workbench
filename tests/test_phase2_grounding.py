@@ -54,9 +54,10 @@ def make_document():
         "expressions": [
             {"id": "expr-alice", "op": "REF", "sort": "TERM", "operandRefs": [], "params": {"referentRef": "ref-alice"}, "interpretationStatus": "RESOLVED"},
             {"id": "expr-open", "op": "PREDICATE_APP", "sort": "SIT", "operandRefs": ["expr-alice"], "params": {"predicate": "OPEN"}, "interpretationStatus": "RESOLVED"},
+            {"id": "expr-direct", "op": "PREDICATE_APP", "sort": "SIT", "operandRefs": ["expr-alice"], "params": {"predicate": "DIRECT_OPEN"}, "interpretationStatus": "RESOLVED"},
             {"id": "expr-not", "op": "NOT", "sort": "PROP", "operandRefs": ["expr-open"], "params": {}, "interpretationStatus": "RESOLVED"},
             {"id": "expr-quant", "op": "QUANTIFIER", "sort": "PROP", "operandRefs": ["expr-not"], "params": {"quantifier": "EXISTS", "variable": "x"}, "interpretationStatus": "RESOLVED"},
-            {"id": "expr-root", "op": "AND", "sort": "PROP", "operandRefs": ["expr-open", "expr-quant"], "params": {}, "interpretationStatus": "RESOLVED"},
+            {"id": "expr-root", "op": "AND", "sort": "PROP", "operandRefs": ["expr-direct", "expr-quant"], "params": {}, "interpretationStatus": "RESOLVED"},
             {"id": "expr-shared-root", "op": "AND", "sort": "PROP", "operandRefs": ["expr-open", "expr-open"], "params": {}, "interpretationStatus": "RESOLVED"},
             {"id": "expr-opaque-root", "op": "OPAQUE", "sort": "PROP", "operandRefs": ["expr-open"], "params": {"sourceType": "unmapped"}, "interpretationStatus": "UNRESOLVED"},
         ],
@@ -72,9 +73,7 @@ def make_document():
             {"id": "ctx-fiction", "kind": "FICTION", "parentRef": "ctx-world"},
         ],
         "expressionRelations": [],
-        "unresolvedItems": [
-            {"id": "unresolved-mention", "status": "AMBIGUOUS", "reason": "More than one candidate.", "scopeRef": "mention-ambiguous", "candidateRefs": ["ref-alice", "ref-bob"]}
-        ],
+        "unresolvedItems": [],
         "derivations": [],
         "validation": {"structuralStatus": "PASS", "checks": [], "validator": "fixture", "contractVersion": "USG-SEM/1.0"},
         "mapping": {"sourceProfile": "fixture", "sourceVersion": "1.0", "status": "LOSSLESS", "unmappedRefs": []},
@@ -183,7 +182,7 @@ class GroundingServiceTests(unittest.TestCase):
         self.assertIn("CONTEXT_PARENT_CYCLE", result.diagnostics)
 
     def test_scope_path_preserves_nested_operator_and_operand_order(self):
-        result = self.index.resolve_scope("expr-root", "expr-open")
+        result = self.index.resolve_scope("expr-root", "expr-direct")
         self.assertEqual(result.status, "RESOLVED")
         self.assertEqual(result.value["path"][0]["operator"], "AND")
         self.assertEqual(result.value["path"][0]["operand_index"], 0)
