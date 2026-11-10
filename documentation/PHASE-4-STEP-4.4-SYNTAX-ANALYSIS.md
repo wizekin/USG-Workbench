@@ -1,6 +1,6 @@
 # Phase 4 — Step 4.4: Grammar and Syntactic Analysis
 
-**Status:** IMPLEMENTED — pending exact-PR CI and merge acceptance  
+**Status:** ACCEPTED — included in bounded v0.1.0 demonstrator  
 **Analyzer:** `syntax-analysis/0.1.0`
 
 ## Contract
