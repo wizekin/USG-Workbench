@@ -1,0 +1,124 @@
+{
+  "code_manifest_sha256": "fc7c7171ab7fc2e5d5ec5462e0e23c51489365c412e9ff5fe0a4863c9cc18c42",
+  "version": "0.4.0",
+  "models_used": 0,
+  "human_review_required": false,
+  "passed": true,
+  "checks": [
+    {
+      "name": "two_source_units",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "no_truth_from_extraction",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "persistent_store_audit",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "restart_and_idempotency",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "restart_integrity",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "untrusted_reversible_import",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "json_exact_round_trip",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "compact_exact_round_trip",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "template_exact_round_trip",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "adversarial_abstention",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "constructed_gold",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "full_regression_suite",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "release_files_unchanged",
+      "passed": true,
+      "detail": ""
+    }
+  ],
+  "benchmark": {
+    "run_id": "b3b722d38f834e36bb1fa523f2fe53a1",
+    "split": "test",
+    "scope": "constructed subset; consistency proxies, not open-domain correctness",
+    "checked_invariants": [
+      "covered_outputs_validate",
+      "no_false_confident_resolution_in_corpus",
+      "contrastive_preservation",
+      "exact_binary_roundtrip"
+    ],
+    "latency_scope": "parser and canonicalization; excludes database, models and I/O",
+    "samples": 49,
+    "supported_samples": 40,
+    "outcome_accuracy": 1.0,
+    "exact_semantic_accuracy": 1.0,
+    "exact_semantic_95_ci": [
+      0.9123754607496077,
+      1
+    ],
+    "frame_accuracy": 1.0,
+    "role_f1": 1.0,
+    "false_confident_resolutions": 0,
+    "validation_failures": 0,
+    "contrastive_collapses": [],
+    "roundtrip_passes": 49,
+    "hard_invariants_pass": true,
+    "latency_ms_p50": 2.1562999972957186,
+    "latency_ms_p95": 2.8800000000046566,
+    "elapsed_s": 0.44303950000175973,
+    "peak_traced_python_bytes": 652865,
+    "compression": {
+      "canonical_json_bytes": 33897,
+      "zlib_json_bytes": 1701,
+      "usbf_bytes": 1977,
+      "selection": "measure; no compression superiority assumed"
+    },
+    "environment": {
+      "python": "3.12.14",
+      "platform": "Windows-11-10.0.22631-SP0",
+      "sqlite": "3.53.1",
+      "models": "none",
+      "dependencies": "standard library"
+    },
+    "failures": []
+  },
+  "full_tests": {
+    "exit_code": 0,
+    "output": "----------------------------------------------------------------------\nRan 430 tests in 21.932s\n\nOK\n"
+  },
+  "scope": "Executable reference-system acceptance; universal language accuracy and full specification conformance are not established."
+}

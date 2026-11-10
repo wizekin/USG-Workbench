@@ -41,3 +41,5 @@ Mappings must be exact and documented. Unsupported or lossy mappings must be rep
 - Step 5A is a design-only change. It does not modify USG-SEM/1.0, either immutable implementation baseline, or the current adapters. Step 5B will implement the contract in a separately versioned Python kernel release only after the contract checks pass.
 
 The registries and adapter target the immutable baseline pair: Workbench v0.5.4 and Python reference kernel 0.4.0. They do not yet establish complete runtime interoperability.
+
+- **5B implementation in progress:** new versioned Python kernel package at [v0.5.0](../implementations/python-kernel/v0.5.0/README.md). The immutable v0.4.0 baseline remains unchanged. Step 5B adds typed native constructors and binder-aware utilities; exact semantic mappings remain explicit and conservative.
