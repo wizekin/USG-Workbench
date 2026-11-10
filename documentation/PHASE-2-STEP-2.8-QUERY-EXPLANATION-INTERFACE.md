@@ -1,6 +1,6 @@
 # Phase 2 Step 2.8 — Query and Explanation Interface
 
-**Status:** Implementation under test; acceptance requires every PR-head check to pass.
+**Status:** COMPLETE — merged as PR #48. The integrated implementation and regression scope are recorded in the Phase 2 roadmap.
 
 ## Contract
 
