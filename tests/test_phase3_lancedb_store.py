@@ -98,6 +98,7 @@ class LanceDBStoreTests(unittest.TestCase):
         changed = deepcopy(self.document)
         changed["extensions"]["revisionNote"] = "revision two"
         self.store.put_document(changed, expected_revision=1)
+        table = self.store._table
         self.assertGreater(table.version, version_one)
         table.checkout(version_one)
         rows = table.to_arrow().to_pylist()
