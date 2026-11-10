@@ -31,6 +31,7 @@ CHECK_GROUPS = {
     ],
     "phase3_packaging_and_release": [
         "test_phase3_packaging.py",
+        "test_phase3_exit_acceptance_runner.py",
     ],
     "phase1_compatibility": [
         "test_phase1_exit_acceptance.py",
@@ -51,8 +52,8 @@ CHECK_GROUPS = {
 
 def _details(items):
     return [
-        {"test": test.id(), "traceback": test.shortDescription() or str(test)}
-        for test, _ in items
+        {"test": test.id(), "traceback": trace}
+        for test, trace in items
     ]
 
 
