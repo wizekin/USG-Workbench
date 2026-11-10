@@ -343,13 +343,7 @@ class InferenceExecutor:
             "document_id": document.get("documentId"), "document_sha256": snapshot_hash,
             "rule_decisions": [], "conclusion_candidates": [], "derivations": [],
             "pending_work": [], "diagnostics": diagnostics, "details": details or [],
-            "preserved_input_refs": sorted(
-                record["id"] for collection in (
-                    "sources", "definitions", "referents", "mentions", "expressions",
-                    "assertions", "evidence", "contexts", "expressionRelations",
-                    "unresolvedItems", "derivations",
-                ) for record in document.get(collection, []) if isinstance(record, dict) and isinstance(record.get("id"), str)
-            ),
+            "preserved_input_refs": _preserved_input_refs(document),
             "resource": {"applications_used": 0, "budget": None, "semantic_truncation": False},
             "safety": {"truth_promotion": False, "inferred_premise_chaining": False, "canonical_document_mutated": False},
         }
