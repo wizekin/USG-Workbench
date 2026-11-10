@@ -1,6 +1,6 @@
 # Phase 3 Step 3.8 — Packaging and one-command demo
 
-**Status:** IMPLEMENTED — awaiting exact-PR-head CI and merge.
+**Status:** COMPLETE — merged in [PR #68](https://github.com/wizekin/USG-Workbench/pull/68).
 **Package:** `usg-workbench-local==0.1.0`.
 **Canonical storage:** SQLite.
 **Canonical profile:** USG-SEM/1.0.
