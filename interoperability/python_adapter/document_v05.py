@@ -12,6 +12,10 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Mapping
 
+from usg.core.ids import IdSpace, Ref
+from usg.core.records import Anchor, Source
+from usg.core.values import Sensitivity, SourceType, TrustTier
+
 from .document import _canonical_bytes, _digest, validate_contract_document
 from .usg_sem_1 import ContractMappingError
 from .kernel_v05 import (
@@ -35,6 +39,7 @@ class KernelV05Document:
     document: dict[str, Any]
     original_digest: str
     expression_graph: KernelV05Graph
+    sources: dict[str, Source]
     record_mapping: dict[str, dict[str, Any]]
     mapping_report: dict[str, Any]
     diagnostics: list[str]
@@ -59,6 +64,36 @@ class KernelV05Document:
 
         graph_document = kernel_v05_graph_to_contract(self.expression_graph, validate=False)
         result = copy.deepcopy(self.document)
+
+        # Serialize current native Source records. Canonical source records that
+        # could not be projected remain untouched in the original envelope.
+        source_by_id = {item["id"]: item for item in result.get("sources", [])}
+        for source_id, source in self.sources.items():
+            if not isinstance(source, Source):
+                raise ContractMappingError(f"Non-Source native record for {source_id}")
+            if source.ref is None or source.ref.space is not IdSpace.SOURCE:
+                raise ContractMappingError(f"Native Source {source_id} has no valid SOURCE identity")
+            record = {
+                "id": source_id, "text": source.text, "language": source.language,
+                "sourceType": source.type.value, "trustTier": source.trust_tier.value,
+                "sensitivity": source.sensitivity.value, "textHash": source.text_hash,
+                "hashAlgorithm": "SHA-256", "encoding": "UTF-8",
+                "offsetUnit": "unicode_code_point",
+            }
+            if source.uri is not None:
+                record["uri"] = source.uri
+            if source.anchor is not None:
+                record["anchor"] = {
+                    "documentDate": source.anchor.document_date,
+                    "timeZone": source.anchor.time_zone,
+                    "calendar": source.anchor.calendar,
+                    "speechTime": source.anchor.speech_time,
+                }
+            source_by_id[source_id] = record
+        source_order = list(dict.fromkeys(
+            [item["id"] for item in result.get("sources", [])] + list(self.sources)
+        ))
+        result["sources"] = [source_by_id[key] for key in source_order if key in source_by_id]
         original_by_id = {item["id"]: item for item in result.get("expressions", [])}
         serialized_by_id = {item["id"]: item for item in graph_document["expressions"]}
         # The graph serializer emits the current native graph and preserves
@@ -118,6 +153,38 @@ def document_to_kernel_v05(
     graph = contract_graph_roots_to_kernel_v05_partial(
         payload.get("expressions", []), payload.get("rootExpressionRefs", [])
     )
+
+    # USG-SEM IDs are opaque. Assign deterministic typed IDs through this
+    # explicit document-local map; never parse meaning from identifier text.
+    source_ids = _record_ids(payload, "sources")
+    source_ref_map = {source_id: Ref(IdSpace.SOURCE, index + 1)
+                      for index, source_id in enumerate(source_ids)}
+    native_sources: dict[str, Source] = {}
+    source_unmapped: list[str] = []
+    source_diagnostics: list[str] = []
+    for item in payload.get("sources", []):
+        source_id = item["id"]
+        try:
+            source_type = SourceType(item["sourceType"])
+            trust_tier = TrustTier(item["trustTier"])
+            sensitivity = Sensitivity(item["sensitivity"])
+            anchor_data = item.get("anchor")
+            anchor = Anchor(
+                document_date=anchor_data.get("documentDate"),
+                time_zone=anchor_data.get("timeZone"),
+                calendar=anchor_data.get("calendar", "gregorian"),
+                speech_time=anchor_data.get("speechTime"),
+            ) if anchor_data is not None else None
+            native_sources[source_id] = Source(
+                text=item["text"], language=item["language"], type=source_type,
+                trust_tier=trust_tier, sensitivity=sensitivity, anchor=anchor,
+                uri=item.get("uri"), ref=source_ref_map[source_id],
+                text_hash=item["textHash"],
+            )
+        except (KeyError, ValueError, TypeError) as exc:
+            source_unmapped.append(source_id)
+            source_diagnostics.append(f"source {source_id} remains canonical-only: {exc}")
+
     expression_ids = _record_ids(payload, "expressions")
     native_ids = set(graph.node_identity_refs.values())
     native_ids.update(graph.partial_refs)
@@ -138,16 +205,27 @@ def document_to_kernel_v05(
         }
     }
     canonical_only_ids: list[str] = []
-    diagnostics = list(graph.diagnostics)
+    diagnostics = list(graph.diagnostics) + source_diagnostics
     for collection in _DOCUMENT_COLLECTIONS:
         ids = _record_ids(payload, collection)
+        if collection == "sources":
+            mapped = sorted(native_sources)
+            unmapped_ids = sorted(source_unmapped)
+            canonical_only_ids.extend(unmapped_ids)
+            record_mapping[collection] = {
+                "status": "LOSSLESS" if not unmapped_ids else "PARTIAL",
+                "mapped": mapped,
+                "unmappedRefs": unmapped_ids,
+                "notes": ["Only exact SourceType/TrustTier/Sensitivity values are projected; unknown or absent enum values remain canonical-only."] if unmapped_ids else [],
+            }
+            continue
         canonical_only_ids.extend(ids)
         record_mapping[collection] = {
             "status": "UNMAPPED" if ids else "LOSSLESS",
             "mapped": [],
             "unmappedRefs": ids,
             "notes": [
-                "Preserved in the canonical document envelope; kernel v0.5.0 document-record projection is not implemented in Step 5D."
+                "Preserved in the canonical document envelope; native v0.5.0 projection is not implemented for this record family."
             ] if ids else [],
         }
     definition_ids = _record_ids(payload, "definitions")
@@ -178,8 +256,8 @@ def document_to_kernel_v05(
         "recordMapping": copy.deepcopy(record_mapping),
         "notes": [
             "The complete canonical document is retained as the authoritative document envelope.",
-            "Only expression roots are projected into native Python kernel 0.5.0 Nodes in Step 5D.",
-            "Sources, referents, mentions, assertions, evidence, contexts, definitions, relations, unresolved items, derivations, validation, mapping, and extensions are not silently dropped or reinterpreted.",
+            "Expression roots and exact supported Source records are projected into native Python kernel 0.5.0 records.",
+            "Referents, mentions, assertions, evidence, contexts, definitions, relations, unresolved items, derivations, validation, mapping, and extensions remain canonical-only in this step.",
             "Expression records not reachable from rootExpressionRefs remain canonical-only.",
             "OPAQUE projections preserve unknown operators but do not establish semantic interpretation or inference eligibility.",
         ],
@@ -188,6 +266,7 @@ def document_to_kernel_v05(
         document=payload,
         original_digest=_digest(payload),
         expression_graph=graph,
+        sources=native_sources,
         record_mapping=record_mapping,
         mapping_report=mapping_report,
         diagnostics=diagnostics,
