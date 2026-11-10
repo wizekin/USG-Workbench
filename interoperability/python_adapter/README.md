@@ -51,9 +51,8 @@ Run the v0.8.0 Assertion and v0.9.0 Evidence model and adapter suites:
 ```bash
 PYTHONPATH=implementations/python-kernel/v0.8.0 python -m unittest discover -s implementations/python-kernel/v0.8.0/tests -v
 PYTHONPATH=implementations/python-kernel/v0.8.0 python -m unittest discover -s tests -p "test_python_kernel_v08_document_adapter.py" -v
-```
-
 PYTHONPATH=implementations/python-kernel/v0.9.0 python -m unittest discover -s implementations/python-kernel/v0.9.0/tests -v
 PYTHONPATH=implementations/python-kernel/v0.9.0 python -m unittest discover -s tests -p "test_python_kernel_v09_document_adapter.py" -v
+```
 
 The canonical schema is `specifications/usg-sem-1.0.schema.json`.
