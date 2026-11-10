@@ -19,7 +19,7 @@ Mappings must be exact and documented. Unsupported or lossy mappings must be rep
 - Covers negation, modal force/flavor, quantifier structure, logical connectives, and explicit graph-scope conversion requirements.
 - Exact/conditional mappings are separated from ambiguous, partial, and unsupported readings.
 
-### Step 3 — document-level Python adapter (implementation in progress)
+### Step 3 — document-level Python adapter (completed)
 
 - [Python adapter package](python_adapter/README.md)
 - Canonical contract: [USG-SEM/1.0](../specifications/USG-SEM-1.0.md)
@@ -27,5 +27,12 @@ Mappings must be exact and documented. Unsupported or lossy mappings must be rep
 - Preserves the entire canonical document for exact export while projecting only source records, supported SemIR roots and assertions that have exact Python kernel 0.4.0 equivalents.
 - Referents, mentions, evidence assessments, contexts, definitions, expression relations, unresolved items, derivations, validation metadata and extensions remain canonical-only and are explicitly reported as partial/unmapped where no exact native model exists.
 - No SQLite migration, Workbench runtime integration, or changes to either immutable implementation baseline are included.
+
+### Step 4 — round-trip conformance (active)
+
+- [Round-trip conformance design and verified gap inventory](round-trip-conformance/README.md)
+- **4A completed:** [Workbench v0.5.4 → USG-SEM/1.0 source adapter](workbench_adapter/README.md), including exact native snapshot retention, partial-mapping diagnostics, and UTF-16 → Unicode code-point offset conversion.
+- Node adapter tests and Python JSON Schema validation are included in CI.
+- **4B–4D remain:** Python projection reverse serializer, Workbench reconstruction adapter, and end-to-end semantic invariant suite. Step 3's unchanged-snapshot export is not treated as a reverse serializer.
 
 The registries and adapter target the immutable baseline pair: Workbench v0.5.4 and Python reference kernel 0.4.0. They do not yet establish complete runtime interoperability.
