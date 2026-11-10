@@ -186,7 +186,10 @@ class _RequestHandler(BaseHTTPRequestHandler):
             self._respond(411, {"error": "CONTENT_LENGTH_REQUIRED", "message": "Content-Length is required"})
             return
         try:
-            raw = self.rfile.read(int(length))
+            content_length = int(length)
+            if content_length < 0:
+                raise ValueError("negative Content-Length")
+            raw = self.rfile.read(content_length)
             body = json.loads(raw.decode("utf-8"))
         except (ValueError, UnicodeDecodeError, json.JSONDecodeError):
             self._respond(400, {"error": "JSON_INVALID", "message": "request body must be valid UTF-8 JSON"})
@@ -204,6 +207,7 @@ class USGHTTPServer(ThreadingHTTPServer):
 
     def __init__(self, address, application):
         self.application = application
+        self.address_family = socket.AF_INET6 if ":" in address[0] else socket.AF_INET
         super().__init__(address, _RequestHandler)
 
 
