@@ -238,14 +238,16 @@ class CanonicalDocumentStore:
         """
         now = self._now()
         with self._lock:
-            self._connection.execute("BEGIN IMMEDIATE")
+            safe_now = now.replace("'", "''")
+            script = (
+                "BEGIN IMMEDIATE;\n"
+                + ddl
+                + "\nINSERT OR IGNORE INTO schema_migrations(version,migration_name,applied_at) "
+                + f"VALUES({MIGRATION_VERSION},'initial-canonical-document-store','{safe_now}');\n"
+                + "COMMIT;"
+            )
             try:
-                self._connection.executescript(ddl)
-                self._connection.execute(
-                    "INSERT OR IGNORE INTO schema_migrations(version,migration_name,applied_at) VALUES(?,?,?)",
-                    (MIGRATION_VERSION, "initial-canonical-document-store", now),
-                )
-                self._connection.execute("COMMIT")
+                self._connection.executescript(script)
             except BaseException:
                 if self._connection.in_transaction:
                     self._connection.execute("ROLLBACK")
