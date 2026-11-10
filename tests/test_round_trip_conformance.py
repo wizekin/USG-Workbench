@@ -124,6 +124,10 @@ class RoundTripSemanticInvariantTests(unittest.TestCase):
         self.assertEqual(expressions["needs"]["attribution"]["status"], "source_asserted")
         self.assertEqual(expressions["needs"]["completeness"]["status"], "complete")
         self.assertEqual(reconstructed["mentions"][0]["surfaceText"], "Alice")
+        alice_mention = next(m for m in reconstructed["mentions"] if m["surfaceText"] == "Alice")
+        self.assertEqual(alice_mention["entityId"], "alice")
+        self.assertNotEqual(alice_mention["id"], alice_mention["entityId"],
+                            "mention occurrence identity must remain distinct from referent identity")
         unresolved = next(m for m in reconstructed["mentions"] if m["id"] == "it-mention")
         self.assertIsNone(unresolved["entityId"])
         self.assertEqual(unresolved["resolutionStatus"], "unresolved")
@@ -157,6 +161,9 @@ class RoundTripSemanticInvariantTests(unittest.TestCase):
         self.assertEqual(root["op"], "RELATE")
         self.assertEqual(root["operandRefs"], ["test:expr:alice", "test:expr:tool"])
         self.assertEqual(returned["assertions"][0]["expressionRef"], "test:expr:needs")
+        self.assertEqual(returned["assertions"][0]["origin"], "SOURCE_TEXT")
+        self.assertEqual(returned["assertions"][0]["epistemicStatus"], "SOURCE_ASSERTED")
+        self.assertEqual(returned["assertions"][0]["commitment"], "AUTHOR")
         self.assertEqual(returned["mapping"]["status"], "PARTIAL")
 
     def test_source_builder_warnings_and_opaque_constructors_remain_explicit(self):
