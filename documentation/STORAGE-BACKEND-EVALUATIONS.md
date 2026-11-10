@@ -56,3 +56,10 @@ RocksDB is promising for this workload: approximately 69.4% less disk space, com
 The RocksDB adapter uses one embedded primary process per database directory. A sidecar OS lock serializes writer critical sections but cannot make RocksDB's exclusive database-open lock support multiple independent primary processes. The added concurrency regression checks concurrent readers and serialized writers within one process. If USG requires multiple independent processes to open the same database concurrently, this candidate does not meet that topology without a separate single-owner service.
 
 **Current status:** promising candidate, not yet promoted. Await the latest concurrency regression workflow on commit `db64ae4630572c1812e6494a3259a63c31a9c939`. Even if accepted as a canonical-store candidate, continue the separately requested DuckDB, LanceDB, and Qdrant evaluations. No default backend change is made by this evaluation.
+
+## Candidate 2: DuckDB
+
+DuckDB is evaluated as a true SQL canonical-store candidate, not as a vector database. Its strengths are analytical scans, SQL, and columnar execution. The local adapter preserves full canonical snapshots in BLOB columns and keeps explicit derived indexes in relational tables. It uses ACID transactions for atomic snapshot/revision/index/current-pointer writes.
+
+Important topology constraint: the standard in-process DuckDB read-write database is owned by one process. Multiple writer threads are supported within that process; multiple processes can open read-only. The evaluation therefore tests multiple connections within one process and a read-only reopen. It does not assume a multi-process write topology. This limitation is weighed against SQLite and RocksDB.
+
