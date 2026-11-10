@@ -19,6 +19,7 @@ on:
       - "tests/test_document_adapter.py"
       - "tests/test_python_reverse_serializer.py"
       - "tests/test_python_kernel_v05_adapter.py"
+      - "tests/test_python_kernel_v05_document_adapter.py"
       - "tests/test_round_trip_conformance.py"
       - "tests/test_workbench_source_adapter.py"
       - "tests/test_workbench_source_adapter.js"
@@ -50,6 +51,7 @@ on:
       - "tests/test_document_adapter.py"
       - "tests/test_python_reverse_serializer.py"
       - "tests/test_python_kernel_v05_adapter.py"
+      - "tests/test_python_kernel_v05_document_adapter.py"
       - "tests/test_round_trip_conformance.py"
       - "tests/test_workbench_source_adapter.py"
       - "tests/test_workbench_source_adapter.js"
@@ -132,6 +134,15 @@ jobs:
           test_status=${PIPESTATUS[0]}
           echo "test_status=${test_status}" >> "$GITHUB_OUTPUT"
           exit "${test_status}"
+      - name: Run Python kernel 0.5.0 document adapter tests
+        id: python-kernel-v05-document-adapter-tests
+        shell: bash
+        run: |
+          set +e
+          python -m unittest discover -s tests -p "test_python_kernel_v05_document_adapter.py" -v 2>&1 | tee python-kernel-v05-document-adapter-ci.log
+          test_status=${PIPESTATUS[0]}
+          echo "test_status=${test_status}" >> "$GITHUB_OUTPUT"
+          exit "${test_status}"
       - name: Run Workbench source adapter tests
         id: workbench-source-adapter-tests
         shell: bash
@@ -196,6 +207,7 @@ jobs:
             document-adapter-ci.log
             python-reverse-serializer-ci.log
             python-kernel-v05-adapter-ci.log
+            python-kernel-v05-document-adapter-ci.log
             workbench-source-adapter-ci.log
             workbench-source-schema-ci.log
             workbench-reconstruction-ci.log

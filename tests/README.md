@@ -82,3 +82,18 @@ python -m unittest discover -s tests -p "test_python_kernel_v05_adapter.py" -v
 ```
 
 This suite exercises native `PREDICATE_APP`, `CONNECTIVE`, and `QUANTIFIER` projections, reverse graph serialization, binder identity, OPAQUE/UNRESOLVED_REF distinctions, unknown and malformed operators, and shared DAG identity. It runs in an isolated Python process with the v0.5.0 package path; the existing v0.4.0 adapter remains unchanged.
+
+
+Python kernel 0.5.0 document-level adapter (Phase 1 Step 5D):
+
+```bash
+python -m unittest discover -s tests -p "test_python_kernel_v05_document_adapter.py" -v
+```
+
+This suite verifies the full USG-SEM/1.0 document envelope around native v0.5.0
+expression roots, preservation/reporting of canonical-only record families,
+fresh serialization of edited native Nodes, immutable snapshot enforcement,
+unreachable-expression retention, and invalid-document rejection. It does not
+claim native v0.5.0 document records for sources, referents, mentions,
+assertions, evidence, contexts, definitions, relations, unresolved items, or
+derivations.

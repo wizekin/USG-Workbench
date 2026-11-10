@@ -17,18 +17,21 @@ __all__ = [
     "mapping_report_for_python",
 ]
 
-# Python kernel 0.5.0 expression-graph adapter. Kept separate from the
-# legacy document-level v0.4.0 projection above.
+# Python kernel 0.5.0 expression-graph adapter.
 from .kernel_v05 import (
     KernelV05Graph,
     contract_graph_roots_to_kernel_v05,
     contract_graph_roots_to_kernel_v05_partial,
     kernel_v05_graph_to_contract,
 )
+from .document_v05 import (
+    KernelV05Document,
+    document_to_kernel_v05,
+    kernel_v05_document_to_contract,
+)
 
 __all__ += [
-    "KernelV05Graph",
-    "contract_graph_roots_to_kernel_v05",
-    "contract_graph_roots_to_kernel_v05_partial",
-    "kernel_v05_graph_to_contract",
+    "KernelV05Graph", "contract_graph_roots_to_kernel_v05",
+    "contract_graph_roots_to_kernel_v05_partial", "kernel_v05_graph_to_contract",
+    "KernelV05Document", "document_to_kernel_v05", "kernel_v05_document_to_contract",
 ]
