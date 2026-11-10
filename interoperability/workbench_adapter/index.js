@@ -304,6 +304,7 @@
         targetExpressionRef: expressionRef(relation.targetExpressionId),
         verificationStatus: exactVerification ? 'NOT_INDEPENDENTLY_VERIFIED' : 'UNKNOWN',
         nativeVerification: relation.verification || 'unknown',
+        nativeStatus: relation.status || null, note: relation.note || null,
         evidenceRefs: arr(relation.evidenceRefs).map(evidenceRef),
         attribution: clone(relation.attribution || {}) };
     });
