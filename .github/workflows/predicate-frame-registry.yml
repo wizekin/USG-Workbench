@@ -194,8 +194,23 @@ jobs:
         shell: bash
         run: |
           git fetch origin main --depth=1
-          changed=$(git diff --name-only FETCH_HEAD...HEAD -- archives implementations | grep -v '^implementations/python-kernel/v0.5.0/' || true)
-          test -z "$changed" || { echo "$changed"; exit 1; }
+          changed=$(git diff --name-only FETCH_HEAD...HEAD -- archives implementations | while IFS= read -r path; do
+            case "$path" in
+              archives/*|implementations/python-kernel/v0.4.0/*|implementations/python-kernel/v0.5.0/*)
+                echo "$path"
+                ;;
+              implementations/python-kernel/README.md)
+                # The index may list new, separately versioned packages; it is not a frozen runtime baseline.
+                ;;
+              implementations/*)
+                # Existing implementation files are immutable; additive files for new versions are allowed.
+                if git cat-file -e "FETCH_HEAD:$path" 2>/dev/null; then
+                  echo "$path"
+                fi
+                ;;
+            esac
+          done)
+          test -z "$changed" || { echo "Immutable baseline files were modified:"; echo "$changed"; exit 1; }
       - name: Upload diagnostic logs
         if: always()
         uses: actions/upload-artifact@v4
