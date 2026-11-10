@@ -1,0 +1,22 @@
+{
+  "policy_id": "USG-STRUCTURED-QUERY",
+  "policy_version": "1.0.0",
+  "usg_profile": "USG-SEM/1.0",
+  "input_mode": "EXPLICIT_TYPED_REFERENCES_ONLY",
+  "goal_matching": "EXACT_EXPRESSION_CONTEXT_COMMITMENT_ATTRIBUTION",
+  "inference": "EXPLICIT_TASK_RULE_ALLOWLIST_ONLY",
+  "evidence": "SEPARATE_EVIDENCE_ASSESSMENT_LEDGER",
+  "explanation": "DETERMINISTIC_STRUCTURED_TRACE",
+  "no_match_semantics": "NOT_ESTABLISHED_OPEN_WORLD",
+  "candidate_status": "DERIVED_NOT_VERIFIED",
+  "invariants": {
+    "truth_promotion": false,
+    "absence_means_false": false,
+    "free_text_inference": false,
+    "inferred_premise_chaining": false,
+    "conflict_winner_selection": false,
+    "canonical_document_mutation": false,
+    "semantic_truncation": false,
+    "human_review_gate": false
+  }
+}
