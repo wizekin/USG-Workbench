@@ -1,6 +1,6 @@
 # Phase 4 — Step 4.3: Lexical and Morphological Analysis Contract
 
-**Status:** IMPLEMENTED — pending exact-PR CI and merge acceptance  
+**Status:** ACCEPTED — included in bounded v0.1.0 demonstrator  
 **Package:** `tools.usg_interpretation_v0_1_0`  
 **Analyzer version:** `lexical-analysis/0.1.0`
 
