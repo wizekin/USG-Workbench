@@ -14,7 +14,7 @@ This package gives precise declarative meaning to the rule model in `USG-RULE/1.
 
 - Exact typed identity and version matching only; no label matching or coercion.
 - Every required premise and constraint must pass in declared order.
-- The initial reference-rule eligibility policy admits `SOURCE_ASSERTED` only. `INFERRED` is not chained in rule model v1.0.0; `VERIFIED` is not implicitly admitted; `DISPUTED` returns CONFLICTING; `UNKNOWN` remains UNKNOWN; missing status is UNRESOLVED.
+- The initial reference-rule eligibility policy admits `SOURCE_ASSERTED` only. The compact Step 2.2 evaluator snapshots are not full canonical documents and must not be passed directly to an executor without an explicit fixture adapter or versioned fixture extension. `INFERRED` is not chained in rule model v1.0.0; `VERIFIED` is not implicitly admitted; `DISPUTED` returns CONFLICTING; `UNKNOWN` remains UNKNOWN; missing status is UNRESOLVED.
 - Attribution, context, polarity, modality, quantifier scope, temporal order, and role order are preserved exactly.
 - Conflicts are preserved without selecting a winner.
 - Open world is the default. Closed-world negation requires an explicit task-scoped policy and a named complete domain.
