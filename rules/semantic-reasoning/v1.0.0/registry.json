@@ -279,8 +279,8 @@
             "field_bindings": {
               "id": "E",
               "operand_refs": [
-                "$A",
-                "$B"
+                "A",
+                "B"
               ]
             },
             "fixed_fields": {
