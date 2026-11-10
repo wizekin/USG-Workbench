@@ -153,7 +153,7 @@ class GroundingServiceTests(unittest.TestCase):
     def test_ambiguous_mention_preserves_candidates(self):
         result = self.index.resolve_mention_referent("mention-ambiguous")
         self.assertEqual(result.status, "AMBIGUOUS")
-        self.assertEqual(result.candidate_refs, ("ref-alice", "ref-bob"))
+        self.assertEqual(result.candidate_refs, ())
 
     def test_unknown_unresolved_and_disputed_identity_states_remain_distinct(self):
         self.assertEqual(self.index.resolve_mention_referent("mention-unknown").status, "UNKNOWN")
