@@ -74,7 +74,7 @@ class Phase2InferenceExecutorTests(unittest.TestCase):
     def test_benchmark_bundle_schema_and_fixture_declarations(self):
         errors = list(Draft202012Validator(FIXTURE_SCHEMA).iter_errors(FIXTURES))
         self.assertEqual(errors, [])
-        self.assertEqual(len(FIXTURES["fixtures"]), 10)
+        self.assertEqual(len(FIXTURES["fixtures"]), 11)
         for fixture in FIXTURES["fixtures"]:
             with self.subTest(fixture=fixture["id"]):
                 self.assert_canonical(fixture["document"])
