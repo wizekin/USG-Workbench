@@ -22,6 +22,7 @@ on:
       - "tests/test_workbench_source_adapter.py"
       - "tests/test_workbench_source_adapter.js"
       - "tests/test_workbench_reconstruction_adapter.js"
+      - "tests/round_trip_conformance_bridge.js"
       - "tests/README.md"
       - ".github/workflows/predicate-frame-registry.yml"
       - "implementations/semantic-workbench-js/v0.5.4/semantic-core.js"
@@ -143,6 +144,15 @@ jobs:
           test_status=${PIPESTATUS[0]}
           echo "test_status=${test_status}" >> "$GITHUB_OUTPUT"
           exit "${test_status}"
+      - name: Run end-to-end semantic invariant conformance
+        id: round-trip-conformance-tests
+        shell: bash
+        run: |
+          set +e
+          python -m unittest discover -s tests -p "test_round_trip_conformance.py" -v 2>&1 | tee round-trip-conformance-ci.log
+          test_status=${PIPESTATUS[0]}
+          echo "test_status=${test_status}" >> "$GITHUB_OUTPUT"
+          exit "${test_status}"
       - name: Verify immutable implementation baselines
         if: success()
         shell: bash
@@ -162,5 +172,6 @@ jobs:
             workbench-source-adapter-ci.log
             workbench-source-schema-ci.log
             workbench-reconstruction-ci.log
+            round-trip-conformance-ci.log
           if-no-files-found: warn
           retention-days: 7
