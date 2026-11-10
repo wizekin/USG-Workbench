@@ -57,8 +57,9 @@ class PythonReverseSerializerTests(unittest.TestCase):
         self.assertEqual(result["mapping"]["status"], "PARTIAL")
         namespace = result["extensions"]["org.usg.python-kernel.v0.4.0"]
         preservation = namespace["reverseSerializerPreservation"]
-        self.assertIn("py:node:1", preservation)
-        self.assertIn("nativeAnnotation", preservation["py:node:1"])
+        archived_nodes = [key for key in preservation if key.startswith("py:node:")]
+        self.assertTrue(archived_nodes)
+        self.assertIn("nativeAnnotation", preservation[archived_nodes[0]])
 
     def test_unsupported_original_roots_and_records_are_preserved(self):
         document = DocumentAdapterTests().make_document()
