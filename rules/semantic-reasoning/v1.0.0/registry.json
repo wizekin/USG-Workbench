@@ -731,7 +731,7 @@
         },
         {
           "fixture_id": "USG-BENCH-PAST-PRESENT-001",
-          "expectation": "boundary"
+          "expectation": "adversarial"
         }
       ],
       "execution_semantics": {
