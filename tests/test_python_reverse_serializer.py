@@ -63,20 +63,31 @@ class PythonReverseSerializerTests(unittest.TestCase):
 
     def test_unsupported_original_roots_and_records_are_preserved(self):
         document = DocumentAdapterTests().make_document()
-        document["expressions"].append({
-            "id": "test:expr:unsupported",
-            "op": "PREDICATE_APP",
-            "sort": "SIT",
-            "operandRefs": [],
-            "params": {"predicate": "UNKNOWN", "roles": []},
-        })
-        document["rootExpressionRefs"].append("test:expr:unsupported")
+        document["expressions"].extend([
+            {
+                "id": "test:expr:unsupported-predicate",
+                "op": "PREDICATE_APP",
+                "sort": "SIT",
+                "operandRefs": [],
+                "params": {"predicate": "UNKNOWN", "roles": []},
+            },
+            {
+                "id": "test:expr:unsupported-root",
+                "op": "HOLDS",
+                "sort": "PROP",
+                "operandRefs": ["test:expr:unsupported-predicate"],
+                "params": {},
+            },
+        ])
+        document["rootExpressionRefs"].append("test:expr:unsupported-root")
         imported = document_to_python(document)
         result = python_to_contract_document(imported)
         ids = {item["id"] for item in result["expressions"]}
-        self.assertIn("test:expr:unsupported", ids)
-        self.assertIn("test:expr:unsupported", result["rootExpressionRefs"])
-        self.assertIn("test:expr:unsupported", result["mapping"]["unmappedRefs"])
+        self.assertIn("test:expr:unsupported-predicate", ids)
+        self.assertIn("test:expr:unsupported-root", ids)
+        self.assertIn("test:expr:unsupported-root", result["rootExpressionRefs"])
+        self.assertIn("test:expr:unsupported-predicate", result["mapping"]["unmappedRefs"])
+        self.assertIn("test:expr:unsupported-root", result["mapping"]["unmappedRefs"])
 
     def test_stale_canonical_snapshot_is_refused(self):
         imported = self.imported_fixture()
