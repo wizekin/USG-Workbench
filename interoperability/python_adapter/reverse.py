@@ -35,11 +35,13 @@ def _ref_index(id_map: Mapping[str, Mapping[str, Any]]) -> dict[Any, str]:
             for opaque_id, native_ref in collection.items()}
 
 
-def _source_to_contract(source: Any, opaque_id: str) -> tuple[dict[str, Any], dict[str, Any] | None]:
+def _source_to_contract(source: Any, opaque_id: str, expected_ref: Any) -> tuple[dict[str, Any], dict[str, Any] | None]:
     from usg.core.records import Source
 
     if not isinstance(source, Source):
         raise ContractMappingError(f"Source projection {opaque_id} is not a kernel Source")
+    if source.ref != expected_ref:
+        raise ContractMappingError(f"Source projection {opaque_id} changed its typed identity reference")
     result = {
         "id": opaque_id,
         "text": source.text,
@@ -207,11 +209,14 @@ def _serialize_graph(imported: Any, used_ids: set[str], archival: dict[str, Any]
 
 
 def _assertion_to_contract(assertion: Any, opaque_id: str, refs: Mapping[Any, str],
-                           root_id_map: Mapping[str, str], archival: dict[str, Any]) -> dict[str, Any]:
+                           expected_ref: Any, root_id_map: Mapping[str, str],
+                           archival: dict[str, Any]) -> dict[str, Any]:
     from usg.core.records import Assertion, ContentType
 
     if not isinstance(assertion, Assertion):
         raise ContractMappingError(f"Assertion projection {opaque_id} is not a kernel Assertion")
+    if assertion.ref != expected_ref:
+        raise ContractMappingError(f"Assertion projection {opaque_id} changed its typed identity reference")
     if assertion.content_type is not ContentType.NODE:
         raise ContractMappingError("Only NODE content assertions have an exact USG-SEM/1.0 projection")
     expression_id = refs.get(assertion.content)
@@ -238,6 +243,10 @@ def _assertion_to_contract(assertion: Any, opaque_id: str, refs: Mapping[Any, st
             raise ContractMappingError("Assertion source Ref has no canonical source identity")
         result["sourceRef"] = source_id
     unsupported = {}
+    if assertion.grammar_version:
+        unsupported["grammarVersion"] = assertion.grammar_version
+    if assertion.ontology_release:
+        unsupported["ontologyRelease"] = assertion.ontology_release
     if assertion.attributed_to is not None:
         unsupported["attributedTo"] = str(assertion.attributed_to)
     if assertion.evidence is not None:
@@ -276,7 +285,7 @@ def python_to_contract_document(imported: Any, *, validate: bool = True,
     source_records = []
     for opaque_id, source in imported.sources.items():
         try:
-            record, extra = _source_to_contract(source, opaque_id)
+            record, extra = _source_to_contract(source, opaque_id, imported.id_map["sources"][opaque_id])
             source_records.append(record)
             if extra:
                 archival[opaque_id] = extra
@@ -293,8 +302,10 @@ def python_to_contract_document(imported: Any, *, validate: bool = True,
     assertion_records = []
     for opaque_id, assertion in imported.assertions.items():
         try:
-            assertion_records.append(_assertion_to_contract(assertion, opaque_id, ref_ids,
-                                                             root_id_map, archival))
+            assertion_records.append(_assertion_to_contract(
+                assertion, opaque_id, ref_ids, imported.id_map["assertions"][opaque_id],
+                root_id_map, archival
+            ))
         except Exception as exc:
             unmapped.append(opaque_id)
             archival[opaque_id] = {"reason": str(exc)}
