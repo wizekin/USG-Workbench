@@ -1,7 +1,7 @@
 # USG Phase 2 — Semantic Reasoning Roadmap
 
 **Phase:** 2 — Evidence-grounded, rule-governed semantic reasoning  
-**Status:** Steps 2.1–2.7 complete; deterministic inference and conservative evidence/conflict assessment layers implemented; query/explanation and interactive Kernel Lab layers remain pending  
+**Status:** Steps 2.1–2.8 complete; deterministic inference, conservative evidence/conflict assessment, and structured query/explanation layers implemented; interactive Kernel Lab and Phase 2 exit acceptance remain pending  
 **Prerequisite:** Phase 1 exit accepted (USG-SEM/1.0 and composed adapter v1.5.1)  
 **Normative Phase 1 record:** [Phase 1 exit acceptance](../interoperability/PHASE-1-EXIT-ACCEPTANCE.md)
 
@@ -224,4 +224,6 @@ Steps 2.1–2.5 established the definitions, benchmark/evaluator, versioned rule
 
 Step 2.7 is merged and adds the separate `USG-EVIDENCE-ASSESSMENT/1.0.0` ledger. It computes exact source-span alignment, detects only direct opposite-polarity conflicts under exact context/commitment/attribution scope, and preserves semantic-support and relation labels as declarations rather than proof. Multiple source records do not imply independence; corroboration remains NOT_ESTABLISHED without proven independence; external verification declarations remain DECLARED_UNVERIFIED unless a trusted verifier and procedure are actually bound and run. No truth promotion or conflict winner selection occurs.
 
-**Next implementation step:** Phase 2 Step 2.8 — query and explanation interface. It must accept explicit structured goals, return grounded candidates with complete derivation and evidence/conflict projections, distinguish established results from declared/unverified information, and expose unresolved, unsupported, ambiguous, and incomplete outcomes without generating unlicensed conclusions.
+Step 2.8 is merged and adds the `USG-QUERY/1.0.0` exact-reference query API and JSON CLI. It returns explicit assumptions, source assertions, derivations, evidence and conflict projections, unresolved questions, unsupported portions, and deterministic structured explanation steps. It blocks derived results whose premises participate in exact-scope conflicts. It does not parse free text or treat absence as false.
+
+**Next implementation step:** Phase 2 Step 2.9 — Kernel Lab reasoning interface. It must provide an interactive workflow to load versioned fixtures, run explicit reasoning tasks, inspect full grounding/inference/evidence/query traces and diagnostics, compare actual outputs with expected outcomes, and export reproducible results without modifying canonical inputs or frozen baselines.
