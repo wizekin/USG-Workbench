@@ -238,6 +238,8 @@ class GroundingIndex:
 
     def find_definition_candidates_by_label(self, definition_type: str, label: str) -> ResolutionResult:
         """Return label candidates for inspection; a label can never resolve identity."""
+        if self.validation_errors:
+            return self._result("INVALID_INPUT", definition_type, diagnostics=("DOCUMENT_SCHEMA_INVALID",), extra_provenance={"schema_errors": list(self.validation_errors)})
         if definition_type not in _DEFINITION_TYPES:
             return self._result("UNSUPPORTED", definition_type, diagnostics=("DEFINITION_TYPE_UNSUPPORTED",))
         if not isinstance(label, str) or not label:
