@@ -99,7 +99,7 @@ class ScopeAwareRuleTests(unittest.TestCase):
 
     def test_invalid_document_returns_invalid_without_partial_frames(self):
         doc = base_document()
-        doc["expressions"][0]["op"] = "NOT"
+        doc["expressions"][0]["op"] = "NOT_A_USG_OPERATOR"
         result = self.analyzer.analyze(doc)
         self.assertEqual(result["completion_status"], "INVALID_INPUT")
         self.assertEqual(result["operator_frames"], [])
