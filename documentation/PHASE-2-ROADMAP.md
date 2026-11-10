@@ -1,7 +1,7 @@
 # USG Phase 2 — Semantic Reasoning Roadmap
 
 **Phase:** 2 — Evidence-grounded, rule-governed semantic reasoning  
-**Status:** ROADMAP ESTABLISHED; Steps 2.1–2.3 rule-model foundation complete; production reasoning execution not started  
+**Status:** ROADMAP ESTABLISHED; Steps 2.1–2.4 reasoning contracts complete; production reasoning execution not started  
 **Prerequisite:** Phase 1 exit accepted (USG-SEM/1.0 and composed adapter v1.5.1)  
 **Normative Phase 1 record:** [Phase 1 exit acceptance](../interoperability/PHASE-1-EXIT-ACCEPTANCE.md)
 
@@ -220,6 +220,6 @@ These may be considered in later phases only after Phase 2 produces a measurable
 
 ## 11. Current status
 
-This roadmap establishes the Phase 2 sequence and boundaries. Steps 2.1–2.3 have produced the definitions, 35-fixture benchmark/evaluator, frozen thresholds, and a separately versioned declarative rule model/registry. The four reference rules remain disabled; no production rule loader, matcher, inference executor, truth evaluator, or ontology learner is implemented.
+This roadmap establishes the Phase 2 sequence and boundaries. Steps 2.1–2.4 have produced the definitions, 35-fixture benchmark/evaluator, frozen thresholds, versioned declarative rule model/registry, and formal applicability/safety semantics. The four reference rules remain disabled; no production grounding service, rule matcher, inference executor, truth evaluator, or ontology learner is implemented.
 
-**Next implementation step:** Phase 2 Step 2.4 — rule semantics and safety contract. It must define the precise operational meaning of matching, constraints, applicability, non-applicability, conflict handling, and failure outcomes before any registry rule can execute.
+**Next implementation step:** Phase 2 Step 2.5 — definition, reference, scope, and context grounding. It must implement exact identity/version resolution and preserve ambiguity, missing references, and scope mismatch. It must also define an explicit adapter from the compact Step 2.2 fixture snapshots to complete profile-valid inputs; missing assertion fields must never be defaulted.
