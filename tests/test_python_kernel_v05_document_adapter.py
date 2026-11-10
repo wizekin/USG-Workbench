@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import copy
+import dataclasses
 import hashlib
 import sys
 import unittest
@@ -81,7 +82,7 @@ class KernelV05DocumentAdapterTests(unittest.TestCase):
         self.assertEqual(imported.mapping_report["status"], "PARTIAL")
         self.assertIn("test:referent", imported.mapping_report["unmappedRefs"])
         self.assertIn("test:mention", imported.mapping_report["unmappedRefs"])
-        self.assertEqual(imported.record_mapping["sources"]["status"], "UNMAPPED")
+        self.assertEqual(imported.record_mapping["sources"]["status"], "LOSSLESS")
         self.assertEqual(imported.document["extensions"], document["extensions"])
 
     def test_export_rebuilds_full_document_and_preserves_canonical_only_records(self):
@@ -141,6 +142,42 @@ class KernelV05DocumentAdapterTests(unittest.TestCase):
         exported = kernel_v05_document_to_contract(imported)
         orphan = next(item for item in exported["expressions"] if item["id"] == "test:orphan")
         self.assertEqual(orphan, document["expressions"][-1])
+
+
+    def test_exact_sources_are_projected_to_typed_native_records(self):
+        document = self.make_document()
+        document["sources"][0]["sourceType"] = "SENTENCE"
+        imported = document_to_kernel_v05(document)
+        source = imported.sources["test:source"]
+        self.assertEqual(source.ref.space.value, "SOURCE")
+        self.assertEqual(source.text, document["sources"][0]["text"])
+        self.assertEqual(source.text_hash, document["sources"][0]["textHash"])
+        self.assertEqual(imported.record_mapping["sources"]["status"], "LOSSLESS")
+        self.assertEqual(imported.record_mapping["sources"]["mapped"], ["test:source"])
+        exported = kernel_v05_document_to_contract(imported)
+        self.assertEqual(exported["sources"], document["sources"])
+
+    def test_native_source_edits_are_serialized_and_rehashed(self):
+        document = self.make_document()
+        imported = document_to_kernel_v05(document)
+        original = imported.sources["test:source"]
+        imported.sources["test:source"] = dataclasses.replace(
+            original, text=original.text + " Bob arrived.", text_hash=""
+        )
+        exported = kernel_v05_document_to_contract(imported)
+        source = exported["sources"][0]
+        self.assertEqual(source["text"], "Alice needs the tool. Bob arrived.")
+        self.assertEqual(source["textHash"], hashlib.sha256(source["text"].encode("utf-8")).hexdigest())
+
+    def test_unknown_source_enum_values_remain_canonical_only(self):
+        document = self.make_document()
+        document["sources"][0]["sourceType"] = "UNKNOWN"
+        imported = document_to_kernel_v05(document)
+        self.assertNotIn("test:source", imported.sources)
+        self.assertEqual(imported.record_mapping["sources"]["status"], "PARTIAL")
+        self.assertEqual(imported.record_mapping["sources"]["unmappedRefs"], ["test:source"])
+        exported = kernel_v05_document_to_contract(imported)
+        self.assertEqual(exported["sources"], document["sources"])
 
     def test_invalid_contract_is_rejected_before_native_projection(self):
         document = self.make_document()

@@ -64,3 +64,21 @@ The registries and adapter target the immutable baseline pair: Workbench v0.5.4 
 - Per-record-family coverage distinguishes native projection from canonical preservation. Sources, referents, mentions, assertions, evidence, contexts, definitions, relations, unresolved items, derivations, validation, mapping, and extensions remain canonical-only/preserved; no unimplemented native record equivalence is claimed.
 - Edited/replaced native nodes receive fresh IDs; unchanged object identities retain their original IDs. Mutating the canonical snapshot is rejected.
 - Step 5D does not change USG-SEM/1.0, the v0.4.0 adapter, Workbench v0.5.4, archives, or historical baselines.
+
+
+### Step 5D — kernel v0.5.0 document-level integration (completed, PR #12)
+
+- [Step 5D document boundary](python-kernel-extension/STEP-5D-DOCUMENT-ADAPTER.md), implemented in [document_v05.py](python_adapter/document_v05.py).
+- Imports and validates the complete USG-SEM/1.0 envelope, verifies the isolated kernel version is exactly 0.5.0, and projects declared expression roots through Step 5C.
+- Reconstructs the full document using current native expression Nodes while retaining canonical-only record families, unreachable expressions, and metadata.
+- Per-record-family coverage distinguishes native projection from canonical preservation. Step 5D initially left all document record families canonical-only; Step 5E extends this boundary for exact Source records.
+
+### Step 5E — native Source record integration
+
+- **Implementation candidate:** [Step 5E Source integration](python-kernel-extension/STEP-5E-SOURCE-RECORDS.md).
+- Extends the v0.5.0 document adapter with native Source projections.
+- Preserves opaque USG-SEM source IDs through an explicit document-local typed SOURCE reference map.
+- Maps text/hash, language, source type, trust tier, sensitivity, URI, and time anchor only when exact.
+- Unknown or absent enum values remain canonical-only and are explicitly listed; no default substitution or enum coercion.
+- Reverse export serializes current native Source records and recomputes the SHA-256 hash after text edits. Dependent spans/evidence are checked by full-document validation.
+- Referents, mentions, and all other unsupported record families remain canonical-only; no identity inference or cross-document merge is introduced.
