@@ -47,7 +47,7 @@ def make_document(kind="mp"):
         assertions = [{"id":"assert-and","expressionRef":"expr-and","origin":"SOURCE_TEXT","epistemicStatus":"SOURCE_ASSERTED","commitment":"AUTHOR","evaluationContext":{"kind":"WORLD","contextRef":"ctx-world"},"lifecycleStage":"STRUCTURED"}]
     return {
         "profileId":"USG-SEM/1.0","documentId":document_id,"createdAt":"2026-11-10T00:00:00Z",
-        "sources":[],"primarySourceRef":None,
+        "sources":[{"id":"source-main","text":"A. B. If A then B.","language":"en","sourceType":"CURATED","trustTier":"STANDARD","sensitivity":"PUBLIC","offsetUnit":"unicode_code_point"}],"primarySourceRef":"source-main",
         "definitions":{"ontologyRelease":"ontology-2026.1","grammarVersion":"grammar-1.0","concepts":[],"frames":[],"roles":[],"relations":[]},
         "referents":[],"mentions":[],"expressions":expressions,"rootExpressionRefs":[item["id"] for item in expressions],
         "assertions":assertions,"evidence":[],"contexts":[{"id":"ctx-world","kind":"WORLD"},{"id":"ctx-other","kind":"WORLD"}],
@@ -75,6 +75,13 @@ class Phase2InferenceExecutorTests(unittest.TestCase):
         errors = list(Draft202012Validator(FIXTURE_SCHEMA).iter_errors(FIXTURES))
         self.assertEqual(errors, [])
         self.assertEqual(len(FIXTURES["fixtures"]), 10)
+        for fixture in FIXTURES["fixtures"]:
+            with self.subTest(fixture=fixture["id"]):
+                self.assert_canonical(fixture["document"])
+                result = self.executor.execute(fixture["document"], fixture["task"])
+                self.assertEqual(result["completion_status"], fixture["expected"]["completion_status"])
+                self.assertEqual(len(result["conclusion_candidates"]), fixture["expected"]["candidate_count"])
+                self.assertTrue(set(fixture["expected"]["diagnostics"]).issubset(set(result["diagnostics"])))
 
     def test_modus_ponens_creates_non_truth_promoting_candidate(self):
         document = make_document("mp")
