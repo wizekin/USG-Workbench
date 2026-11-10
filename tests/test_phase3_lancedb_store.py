@@ -108,7 +108,7 @@ class LanceDBStoreTests(unittest.TestCase):
         table = self.store._db.open_table("retrieval_records")
         from lancedb.index import FTS
         table.create_index("text", config=FTS())
-        vector_hits = self.store.search_vectors([0.95, 0.05, 0.0, 0.0], limit=2)
+        vector_hits = self.store.search_vectors([0.88, 0.12, 0.0, 0.0], limit=2)
         self.assertEqual(vector_hits[0]["record_id"], "b")
         text_hits = self.store.search_text("running", limit=3)
         self.assertGreaterEqual(len(text_hits), 2)
