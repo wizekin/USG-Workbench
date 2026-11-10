@@ -134,10 +134,19 @@ class LMDBCanonicalGraphStoreTests(unittest.TestCase):
         )
         self.assertEqual(stored.revision, 1)
 
-    def test_long_document_identity_does_not_hit_lmdb_key_size_limit(self):
-        self.document["documentId"] = "doc-" + ("x" * 1200)
+    def test_long_composite_index_identity_does_not_hit_lmdb_key_size_limit(self):
+        # Both identifiers are within the USG-SEM schema's 256-character bound,
+        # but their combined composite key would exceed LMDB's default 511-byte key limit.
+        self.document["documentId"] = "d" * 256
+        self.document["expressions"].append({
+            "id": "e" * 256, "op": "PREDICATE_APP", "sort": "PROP",
+            "operandRefs": [], "params": {"predicate": "LONG_IDENTIFIER"},
+            "interpretationStatus": "RESOLVED",
+        })
         stored = self.store.put_document(self.document)
-        self.assertEqual(self.store.get_document(self.document["documentId"]).digest, stored.digest)
+        loaded = self.store.get_document(self.document["documentId"])
+        self.assertEqual(loaded.digest, stored.digest)
+        self.assertEqual(len(loaded.document["expressions"][-1]["id"]), 256)
 
     def test_invalid_document_is_rejected_before_write(self):
         invalid = deepcopy(self.document)
