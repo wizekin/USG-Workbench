@@ -42,7 +42,7 @@ Mappings must be exact and documented. Unsupported or lossy mappings must be rep
 
 The registries and adapter target the immutable baseline pair: Workbench v0.5.4 and Python reference kernel 0.4.0. They do not yet establish complete runtime interoperability.
 
-- **5C implementation in progress:** [Step 5C adapter contract and implementation](python-kernel-extension/STEP-5C-ADAPTER.md); versioned expression-graph adapter at [kernel_v05.py](python_adapter/kernel_v05.py). It projects supported USG-SEM expressions into native v0.5.0 nodes, serializes current nodes back to the contract graph, and keeps v0.4.0 adapter behavior unchanged. Unsupported operators remain explicit `OPAQUE`; invalid known constructions remain canonical-only and are reported.
+- **5C completed and merged (PR #11):** [Step 5C adapter contract and implementation](python-kernel-extension/STEP-5C-ADAPTER.md); versioned expression-graph adapter at [kernel_v05.py](python_adapter/kernel_v05.py). It projects supported USG-SEM expressions into native v0.5.0 nodes, serializes current nodes back to the contract graph, and keeps v0.4.0 adapter behavior unchanged. Unsupported operators remain explicit `OPAQUE`; invalid known constructions remain canonical-only and are reported.
 
 
 ### Step 5C — USG-SEM ↔ Python kernel v0.5.0 graph adapter
@@ -53,3 +53,14 @@ The registries and adapter target the immutable baseline pair: Workbench v0.5.4 
 - Unknown operators are preserved as inference-ineligible `OPAQUE` nodes; `UNRESOLVED_REF` remains a distinct node. Invalid known operators are not downgraded to OPAQUE; their canonical roots remain preserved and are reported.
 - Expression-level `semanticKind`, `interpretationStatus`, and `nativeId` remain sidecar metadata rather than being mistaken for kernel truth conditions.
 - Reverse serialization traverses current native nodes, preserves DAG identity and canonical-only expressions, and reports partial mappings. No USG-SEM schema change is required.
+
+
+### Step 5D — kernel v0.5.0 document-level integration
+
+- **Implementation candidate:** [Step 5D document boundary](python-kernel-extension/STEP-5D-DOCUMENT-ADAPTER.md), implemented in [document_v05.py](python_adapter/document_v05.py).
+- Public APIs: `document_to_kernel_v05()` and `kernel_v05_document_to_contract()`; exported from the Python adapter package.
+- Imports the complete USG-SEM/1.0 envelope, validates it, verifies the isolated kernel version is exactly 0.5.0, and projects declared expression roots through Step 5C.
+- Reconstructs the complete document using fresh serialization of current native Nodes while retaining all canonical-only record families, unreachable expressions, and document metadata.
+- Per-record-family coverage distinguishes native projection from canonical preservation. Sources, referents, mentions, assertions, evidence, contexts, definitions, relations, unresolved items, derivations, validation, mapping, and extensions remain canonical-only/preserved; no unimplemented native record equivalence is claimed.
+- Edited/replaced native nodes receive fresh IDs; unchanged object identities retain their original IDs. Mutating the canonical snapshot is rejected.
+- Step 5D does not change USG-SEM/1.0, the v0.4.0 adapter, Workbench v0.5.4, archives, or historical baselines.
