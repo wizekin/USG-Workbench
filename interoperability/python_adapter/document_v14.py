@@ -268,7 +268,7 @@ def document_to_kernel_v14(document: Mapping[str, Any], *, validate: bool = True
                 diagnostics.append(f"{group} {item['id']} remains canonical-only: " + ", ".join(bad))
                 continue
             natives.append(native)
-            snapshots[f"{group}:{item['id']}"] = copy.deepcopy(item)
+            snapshots[f"{group}:{item['id']}"] = copy.deepcopy(native)
             bad = sorted(set(bad))
             status = "PARTIAL" if bad else "LOSSLESS"
             (unmapped if bad else mapped).append(item["id"])
