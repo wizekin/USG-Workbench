@@ -52,3 +52,25 @@ def __getattr__(name):
         module = import_module(".document_v06", __name__)
         return getattr(module, name)
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+
+
+# Keep the independent v0.7.0 discourse model lazy. Older adapters must not
+# require the new package or its PYTHONPATH in their workflows.
+_V07_EXPORTS = {
+    "KernelV07Document",
+    "document_to_kernel_v07",
+    "kernel_v07_document_to_contract",
+}
+__all__ += sorted(_V07_EXPORTS)
+
+
+def __getattr__(name):
+    if name in _V07_EXPORTS:
+        from importlib import import_module
+        module = import_module(".document_v07", __name__)
+        return getattr(module, name)
+    if name in _V06_EXPORTS:
+        from importlib import import_module
+        module = import_module(".document_v06", __name__)
+        return getattr(module, name)
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
