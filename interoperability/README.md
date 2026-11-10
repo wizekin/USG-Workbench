@@ -37,5 +37,6 @@ Mappings must be exact and documented. Unsupported or lossy mappings must be rep
 
 - **5A–5J completed and merged:** native expression constructors and separately versioned Source, Referent identity, and Mention models/adapters.
 - **5K completed and merged:** native Assertion model v0.8.0. [Step 5K contract](python-kernel-extension/STEP-5K-NATIVE-ASSERTION-MODEL.md).
-- **5L implementation in progress:** [Assertion document adapter v0.8.0](python-kernel-extension/STEP-5L-ASSERTION-DOCUMENT-ADAPTER.md). Projects exact, resolvable Assertion fields; keeps unsupported/dangling fields and Alternative Group references canonical-only; merges native edits only into Assertion records.
-- Existing v0.4.0–v0.7.0 models, Workbench v0.5.4, USG-SEM/1.0, archives, and immutable baselines remain unchanged.
+- **5L completed and merged:** Assertion document adapter v0.8.0. [Step 5L contract](python-kernel-extension/STEP-5L-ASSERTION-DOCUMENT-ADAPTER.md).
+- **5M implementation in progress:** native Evidence model v0.9.0. [Step 5M contract](python-kernel-extension/STEP-5M-NATIVE-EVIDENCE-MODEL.md). It keeps source-span alignment separate from semantic support, preserves ordered/repeated supporting-rule references, and does not claim entailment or truth evaluation.
+- Existing v0.4.0–v0.8.0 models, Workbench v0.5.4, USG-SEM/1.0, archives, and immutable baselines remain unchanged.
