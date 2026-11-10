@@ -1,0 +1,606 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wizekin.github.io/usg-workbench/semantic-rule-semantics/v1.0.0/contract.schema.json",
+  "title": "USG Rule Semantics and Safety Contract v1.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "semantics_id",
+    "semantics_version",
+    "rule_model_version",
+    "registry_id",
+    "registry_version",
+    "usg_profile",
+    "benchmark_id",
+    "benchmark_version",
+    "activation_state",
+    "execution_enabled",
+    "execution_order",
+    "failure_precedence",
+    "outcomes",
+    "assertion_eligibility_policies",
+    "scope_policies",
+    "constraint_semantics",
+    "conflict_policy",
+    "open_world_policy",
+    "determinism_policy",
+    "resource_policy",
+    "safety_invariants",
+    "diagnostic_catalog"
+  ],
+  "properties": {
+    "semantics_id": {
+      "const": "USG-RULE-SEMANTICS"
+    },
+    "semantics_version": {
+      "const": "1.0.0"
+    },
+    "rule_model_version": {
+      "const": "USG-RULE/1.0.0"
+    },
+    "registry_id": {
+      "const": "USG-SEMANTIC-RULE-REGISTRY"
+    },
+    "registry_version": {
+      "const": "1.0.0"
+    },
+    "usg_profile": {
+      "const": "USG-SEM/1.0"
+    },
+    "benchmark_id": {
+      "const": "USG-SEMANTIC-REASONING"
+    },
+    "benchmark_version": {
+      "const": "1.0.0"
+    },
+    "activation_state": {
+      "const": "SPECIFICATION_ONLY"
+    },
+    "execution_enabled": {
+      "const": false
+    },
+    "execution_order": {
+      "const": [
+        "VALIDATE_INPUT_PROFILE_AND_TYPED_REFERENCE_GRAPH",
+        "RESOLVE_EXACT_REGISTRY_ID_AND_RULE_VERSION",
+        "REQUIRE_RULE_ACTIVATION_AND_TASK_SELECTION",
+        "BIND_TYPED_VARIABLES_IN_DECLARED_PREMISE_ORDER",
+        "EVALUATE_CONSTRAINTS_IN_DECLARED_ARRAY_ORDER",
+        "CREATE_CONCLUSION_CANDIDATE_ONLY_IF_ALL_REQUIRED_CHECKS_PASS",
+        "ATTACH_COMPLETE_ORDERED_DERIVATION_PROVENANCE",
+        "VALIDATE_CANDIDATE_AND_PRESERVE_ALL_NON_APPLICABLE_CONTENT"
+      ]
+    },
+    "failure_precedence": {
+      "const": [
+        "RESOURCE_INTERRUPTED",
+        "INVALID_INPUT",
+        "UNSUPPORTED",
+        "CONFLICTING",
+        "AMBIGUOUS",
+        "UNRESOLVED",
+        "UNKNOWN",
+        "NOT_APPLICABLE",
+        "APPLICABLE"
+      ]
+    },
+    "outcomes": {
+      "type": "array",
+      "minItems": 9,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "code",
+          "meaning",
+          "may_create_conclusion_candidate",
+          "completion_effect"
+        ],
+        "properties": {
+          "code": {
+            "enum": [
+              "APPLICABLE",
+              "NOT_APPLICABLE",
+              "UNKNOWN",
+              "UNRESOLVED",
+              "AMBIGUOUS",
+              "CONFLICTING",
+              "UNSUPPORTED",
+              "INVALID_INPUT",
+              "RESOURCE_INTERRUPTED"
+            ]
+          },
+          "meaning": {
+            "type": "string",
+            "minLength": 1
+          },
+          "may_create_conclusion_candidate": {
+            "type": "boolean"
+          },
+          "completion_effect": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "uniqueItems": true
+      }
+    },
+    "assertion_eligibility_policies": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "policy_id",
+          "token",
+          "scope",
+          "required_fields",
+          "allowed_epistemic_statuses",
+          "blocked_status_outcomes",
+          "missing_status_outcome",
+          "required_interpretation_status",
+          "ambiguous_interpretation_outcome",
+          "unresolved_interpretation_outcome",
+          "attribution_policy",
+          "inferred_premise_chaining_allowed",
+          "verified_status_auto_promotion",
+          "allowed_origins",
+          "unknown_origin_outcome",
+          "commitment_rules"
+        ],
+        "properties": {
+          "policy_id": {
+            "type": "string"
+          },
+          "token": {
+            "type": "string"
+          },
+          "scope": {
+            "type": "string"
+          },
+          "required_fields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "allowed_epistemic_statuses": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "SOURCE_ASSERTED",
+                "INFERRED",
+                "VERIFIED",
+                "DISPUTED",
+                "UNKNOWN"
+              ]
+            }
+          },
+          "blocked_status_outcomes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "epistemic_status",
+                "outcome",
+                "diagnostic"
+              ],
+              "properties": {
+                "epistemic_status": {
+                  "enum": [
+                    "SOURCE_ASSERTED",
+                    "INFERRED",
+                    "VERIFIED",
+                    "DISPUTED",
+                    "UNKNOWN"
+                  ]
+                },
+                "outcome": {
+                  "enum": [
+                    "NOT_APPLICABLE",
+                    "UNKNOWN",
+                    "CONFLICTING",
+                    "UNRESOLVED"
+                  ]
+                },
+                "diagnostic": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "missing_status_outcome": {
+            "enum": [
+              "UNKNOWN",
+              "UNRESOLVED"
+            ]
+          },
+          "required_interpretation_status": {
+            "const": "RESOLVED"
+          },
+          "ambiguous_interpretation_outcome": {
+            "const": "AMBIGUOUS"
+          },
+          "unresolved_interpretation_outcome": {
+            "const": "UNRESOLVED"
+          },
+          "attribution_policy": {
+            "const": "PRESERVE_EXACT_COMMITMENT_AND_ATTRIBUTED_REFERENT"
+          },
+          "inferred_premise_chaining_allowed": {
+            "const": false
+          },
+          "verified_status_auto_promotion": {
+            "const": false
+          },
+          "allowed_origins": {
+            "type": "array",
+            "minItems": 5,
+            "uniqueItems": true,
+            "items": {
+              "enum": [
+                "SOURCE_TEXT",
+                "GRAMMATICAL",
+                "BACKGROUND_INFERENCE",
+                "IMPORTED_RESOURCE",
+                "CURATED"
+              ]
+            }
+          },
+          "unknown_origin_outcome": {
+            "const": "UNKNOWN"
+          },
+          "commitment_rules": {
+            "type": "array",
+            "minItems": 3,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "commitment",
+                "require_attributed_to_ref",
+                "behavior"
+              ],
+              "properties": {
+                "commitment": {
+                  "enum": [
+                    "AUTHOR",
+                    "ATTRIBUTED",
+                    "NONE"
+                  ]
+                },
+                "require_attributed_to_ref": {
+                  "type": "boolean"
+                },
+                "behavior": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "scope_policies": {
+      "type": "array",
+      "minItems": 9,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "axis",
+          "policy"
+        ],
+        "properties": {
+          "axis": {
+            "enum": [
+              "typed_identity",
+              "context",
+              "attribution",
+              "polarity",
+              "modality",
+              "quantifier",
+              "temporal",
+              "roles",
+              "definition_grounding"
+            ]
+          },
+          "policy": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "constraint_semantics": {
+      "type": "array",
+      "minItems": 19,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "kind",
+          "meaning",
+          "failure_outcomes",
+          "failure_diagnostics"
+        ],
+        "properties": {
+          "kind": {
+            "enum": [
+              "same_binding",
+              "typed_reference",
+              "constructor_is",
+              "operator_direction",
+              "status_eligible",
+              "context_equal",
+              "context_preserved",
+              "attribution_preserved",
+              "polarity_preserved",
+              "modality_preserved",
+              "quantifier_scope_preserved",
+              "temporal_order_preserved",
+              "role_order_preserved",
+              "definition_version_exact",
+              "domain_closed",
+              "domain_complete",
+              "absence_within_domain",
+              "explicit_assumption_present",
+              "premise_available"
+            ]
+          },
+          "meaning": {
+            "type": "string",
+            "minLength": 1
+          },
+          "failure_outcomes": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "enum": [
+                "NOT_APPLICABLE",
+                "UNKNOWN",
+                "UNRESOLVED",
+                "AMBIGUOUS",
+                "CONFLICTING",
+                "UNSUPPORTED",
+                "INVALID_INPUT"
+              ]
+            }
+          },
+          "failure_diagnostics": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Z][A-Z0-9_]+$"
+            }
+          }
+        }
+      }
+    },
+    "conflict_policy": {
+      "type": "object",
+      "required": [
+        "policy_id",
+        "same_scope_comparison",
+        "on_conflict",
+        "rule_eligibility",
+        "winner_selection",
+        "recency_tiebreak",
+        "frequency_tiebreak",
+        "confidence_tiebreak",
+        "automatic_truth_promotion"
+      ],
+      "properties": {
+        "policy_id": {
+          "type": "string"
+        },
+        "same_scope_comparison": {
+          "type": "array",
+          "minItems": 4,
+          "items": {
+            "type": "string"
+          }
+        },
+        "on_conflict": {
+          "type": "string"
+        },
+        "rule_eligibility": {
+          "type": "string"
+        },
+        "winner_selection": {
+          "const": "FORBIDDEN"
+        },
+        "recency_tiebreak": {
+          "const": "FORBIDDEN"
+        },
+        "frequency_tiebreak": {
+          "const": "FORBIDDEN"
+        },
+        "confidence_tiebreak": {
+          "const": "FORBIDDEN"
+        },
+        "automatic_truth_promotion": {
+          "const": false
+        }
+      }
+    },
+    "open_world_policy": {
+      "type": "object",
+      "required": [
+        "default",
+        "absence_means_negation",
+        "closed_world_requires",
+        "scope_is_global"
+      ],
+      "properties": {
+        "default": {
+          "const": "OPEN"
+        },
+        "absence_means_negation": {
+          "const": false
+        },
+        "closed_world_requires": {
+          "type": "array",
+          "minItems": 5,
+          "items": {
+            "type": "string"
+          }
+        },
+        "scope_is_global": {
+          "const": false
+        }
+      }
+    },
+    "determinism_policy": {
+      "type": "object",
+      "required": [
+        "input_snapshot_required",
+        "registry_and_rule_versions_required",
+        "rule_selection_order",
+        "premise_matching_order",
+        "constraint_evaluation_order",
+        "candidate_order",
+        "unordered_map_iteration_semantics",
+        "duplicate_conclusion_identity",
+        "timestamps_and_runtime_ids",
+        "recursion"
+      ],
+      "properties": {
+        "input_snapshot_required": {
+          "const": true
+        },
+        "registry_and_rule_versions_required": {
+          "const": true
+        },
+        "rule_selection_order": {
+          "type": "string"
+        },
+        "premise_matching_order": {
+          "type": "string"
+        },
+        "constraint_evaluation_order": {
+          "type": "string"
+        },
+        "candidate_order": {
+          "type": "string"
+        },
+        "unordered_map_iteration_semantics": {
+          "type": "string"
+        },
+        "duplicate_conclusion_identity": {
+          "type": "string"
+        },
+        "timestamps_and_runtime_ids": {
+          "type": "string"
+        },
+        "recursion": {
+          "type": "string"
+        }
+      }
+    },
+    "resource_policy": {
+      "type": "object",
+      "required": [
+        "budgets_apply_to",
+        "safe_interruption_points",
+        "on_interruption",
+        "semantic_truncation",
+        "drop_unprocessed_input",
+        "claim_complete_after_interruption"
+      ],
+      "properties": {
+        "budgets_apply_to": {
+          "type": "string"
+        },
+        "safe_interruption_points": {
+          "type": "string"
+        },
+        "on_interruption": {
+          "type": "string"
+        },
+        "semantic_truncation": {
+          "const": false
+        },
+        "drop_unprocessed_input": {
+          "const": false
+        },
+        "claim_complete_after_interruption": {
+          "const": false
+        }
+      }
+    },
+    "safety_invariants": {
+      "type": "object",
+      "required": [
+        "implicit_coercion",
+        "lexical_identity_matching",
+        "implicit_closed_world",
+        "automatic_truth_promotion",
+        "truth_from_derivation",
+        "evidence_alignment_as_entailment",
+        "duplicate_source_as_independent_corroboration",
+        "human_review_gate_required",
+        "semantic_truncation"
+      ],
+      "properties": {
+        "implicit_coercion": {
+          "const": false
+        },
+        "lexical_identity_matching": {
+          "const": false
+        },
+        "implicit_closed_world": {
+          "const": false
+        },
+        "automatic_truth_promotion": {
+          "const": false
+        },
+        "truth_from_derivation": {
+          "const": false
+        },
+        "evidence_alignment_as_entailment": {
+          "const": false
+        },
+        "duplicate_source_as_independent_corroboration": {
+          "const": false
+        },
+        "human_review_gate_required": {
+          "const": false
+        },
+        "semantic_truncation": {
+          "const": false
+        }
+      }
+    },
+    "diagnostic_catalog": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "code",
+          "meaning"
+        ],
+        "properties": {
+          "code": {
+            "type": "string",
+            "pattern": "^[A-Z][A-Z0-9_]+$"
+          },
+          "meaning": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "uniqueItems": true
+      }
+    }
+  },
+  "$defs": {}
+}

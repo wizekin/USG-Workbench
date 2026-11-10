@@ -128,3 +128,15 @@ python -m unittest discover -s tests -p "test_phase2_rule_registry.py" -v
 The rule-model package is in `rules/semantic-reasoning/v1.0.0/`. The static validator is `tools/semantic_rule_registry_v1_0_0/validator.py`. The registry contains four disabled reference rules and cross-links to positive and negative/boundary/adversarial/unsupported fixtures in the frozen Step 2.2 corpus. No rule is executable in Step 2.3.
 
 See [Phase 2 Step 2.3 documentation](../documentation/PHASE-2-STEP-2.3-RULE-MODEL-AND-REGISTRY.md).
+
+
+## Phase 2 Step 2.4 — Rule semantics and safety contract
+
+```bash
+python -m pip install "jsonschema>=4.18,<5"
+python -m unittest discover -s tests -p "test_phase2_rule_semantics.py" -v
+```
+
+The formal contract is in `rules/semantic-reasoning/semantics/v1.0.0/`; the static cross-validator is `tools/semantic_rule_semantics_v1_0_0/validator.py`. It defines nine distinct applicability outcomes, all 19 rule constraint kinds, the initial SOURCE_ASSERTED-only premise policy, conflict and open-world behavior, deterministic ordering, and interruption without semantic truncation. No rule is executable in Step 2.4.
+
+See [Phase 2 Step 2.4 documentation](../documentation/PHASE-2-STEP-2.4-RULE-SEMANTICS-AND-SAFETY-CONTRACT.md).
