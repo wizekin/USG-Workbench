@@ -18,13 +18,19 @@ def _emit(value):
 
 
 def build_parser():
-    parser = argparse.ArgumentParser(prog="usg", description="Local USG-SEM/1.0 workbench")
+    parser = argparse.ArgumentParser(prog="usg-workbench", description="Local USG-SEM/1.0 workbench")
+    parser.add_argument("--version", action="version", version="usg-workbench 0.1.0")
     sub = parser.add_subparsers(dest="command", required=True)
 
     serve = sub.add_parser("serve", help="start the loopback-only HTTP API")
     serve.add_argument("--db", default="usg-workbench.sqlite3")
     serve.add_argument("--host", choices=["127.0.0.1", "::1"], default="127.0.0.1")
     serve.add_argument("--port", type=int, default=8765)
+
+    lab = sub.add_parser("lab", help="launch the integrated browser Kernel Lab and SQLite workspace")
+    lab.add_argument("--db", default="usg-workbench.sqlite3")
+    lab.add_argument("--host", choices=["127.0.0.1"], default="127.0.0.1")
+    lab.add_argument("--port", type=int, default=8765)
 
     validate = sub.add_parser("validate", help="validate a canonical USG-SEM/1.0 JSON file")
     validate.add_argument("file")
@@ -59,6 +65,27 @@ def build_parser():
 
 def main(argv=None):
     args = build_parser().parse_args(argv)
+    if args.command == "lab":
+        import importlib.util
+        root = Path(__file__).resolve().parents[2]
+        server_path = root / "tools" / "usg-kernel-lab" / "server.py"
+        spec = importlib.util.spec_from_file_location("usg_kernel_lab_packaged_server", server_path)
+        if spec is None or spec.loader is None:
+            raise RuntimeError("packaged Kernel Lab server asset is missing")
+        module = importlib.util.module_from_spec(spec)
+        sys.modules[spec.name] = module
+        spec.loader.exec_module(module)
+        server = module.create_lab_server(args.db, args.host, args.port)
+        print(f"USG Kernel Lab: http://{args.host}:{server.server_address[1]}")
+        print(f"SQLite database: {args.db}")
+        try:
+            server.serve_forever()
+        except KeyboardInterrupt:
+            pass
+        finally:
+            server.server_close()
+        return 0
+
     if args.command == "serve":
         application = USGApplication(args.db)
         try:
