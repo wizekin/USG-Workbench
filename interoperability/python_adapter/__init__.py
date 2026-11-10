@@ -17,52 +17,31 @@ __all__ = [
     "mapping_report_for_python",
 ]
 
-# Python kernel 0.5.0 expression-graph and document adapters.
 from .kernel_v05 import (
-    KernelV05Graph,
-    contract_graph_roots_to_kernel_v05,
-    contract_graph_roots_to_kernel_v05_partial,
-    kernel_v05_graph_to_contract,
+    KernelV05Graph, contract_graph_roots_to_kernel_v05,
+    contract_graph_roots_to_kernel_v05_partial, kernel_v05_graph_to_contract,
 )
-from .document_v05 import (
-    KernelV05Document,
-    document_to_kernel_v05,
-    kernel_v05_document_to_contract,
-)
-
+from .document_v05 import KernelV05Document, document_to_kernel_v05, kernel_v05_document_to_contract
 __all__ += [
     "KernelV05Graph", "contract_graph_roots_to_kernel_v05",
     "contract_graph_roots_to_kernel_v05_partial", "kernel_v05_graph_to_contract",
     "KernelV05Document", "document_to_kernel_v05", "kernel_v05_document_to_contract",
 ]
 
-# Keep the independently versioned v0.6.0 model lazy so existing v0.4.0
-# and v0.5.0 workflows do not need its package on PYTHONPATH.
-_V06_EXPORTS = {
-    "KernelV06Document",
-    "document_to_kernel_v06",
-    "kernel_v06_document_to_contract",
-}
-__all__ += sorted(_V06_EXPORTS)
-
-
-# Keep the independent v0.7.0 discourse model lazy. Older adapters must not
-# require the new package or its PYTHONPATH in their workflows.
-_V07_EXPORTS = {
-    "KernelV07Document",
-    "document_to_kernel_v07",
-    "kernel_v07_document_to_contract",
-}
-__all__ += sorted(_V07_EXPORTS)
-
+_V06_EXPORTS = {"KernelV06Document", "document_to_kernel_v06", "kernel_v06_document_to_contract"}
+_V07_EXPORTS = {"KernelV07Document", "document_to_kernel_v07", "kernel_v07_document_to_contract"}
+_V08_EXPORTS = {"KernelV08Document", "document_to_kernel_v08", "kernel_v08_document_to_contract"}
+__all__ += sorted(_V06_EXPORTS | _V07_EXPORTS | _V08_EXPORTS)
 
 def __getattr__(name):
+    from importlib import import_module
+    if name in _V08_EXPORTS:
+        module = import_module(".document_v08", __name__)
+        return getattr(module, name)
     if name in _V07_EXPORTS:
-        from importlib import import_module
         module = import_module(".document_v07", __name__)
         return getattr(module, name)
     if name in _V06_EXPORTS:
-        from importlib import import_module
         module = import_module(".document_v06", __name__)
         return getattr(module, name)
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
