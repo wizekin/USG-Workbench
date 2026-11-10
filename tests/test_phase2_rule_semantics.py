@@ -64,6 +64,12 @@ class Phase2RuleSemanticsTests(unittest.TestCase):
         self.assertEqual(blocked["DISPUTED"], "CONFLICTING")
         self.assertEqual(blocked["UNKNOWN"], "UNKNOWN")
         self.assertEqual(policy["missing_status_outcome"], "UNRESOLVED")
+        self.assertEqual(policy["unknown_origin_outcome"], "UNKNOWN")
+        self.assertEqual(
+            {item["commitment"] for item in policy["commitment_rules"]},
+            {"AUTHOR", "ATTRIBUTED", "NONE"},
+        )
+        self.assertTrue(next(item for item in policy["commitment_rules"] if item["commitment"] == "ATTRIBUTED")["require_attributed_to_ref"])
 
     def test_conflict_policy_forbids_automatic_winner_selection(self):
         policy = self.contract["conflict_policy"]
