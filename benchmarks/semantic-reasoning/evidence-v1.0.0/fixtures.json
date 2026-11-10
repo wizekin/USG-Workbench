@@ -1514,20 +1514,16 @@
             "trustTier": "STANDARD",
             "sensitivity": "PUBLIC",
             "uri": "https://source.test/one",
-            "offsetUnit": "unicode_code_point",
-            "textHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            "offsetUnit": "unicode_code_point"
           },
           {
             "id": "src-2",
-            "text": "B agrees",
+            "text": "A supports B",
             "language": "en",
             "sourceType": "RESOURCE",
             "trustTier": "STANDARD",
             "sensitivity": "PUBLIC",
             "uri": "https://source.test/one",
-            "textHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-            "hashAlgorithm": "SHA-256",
-            "encoding": "UTF-8",
             "offsetUnit": "unicode_code_point"
           }
         ],
@@ -1620,7 +1616,7 @@
               "end": 1,
               "offsetUnit": "unicode_code_point"
             },
-            "quote": "B",
+            "quote": "A",
             "alignmentStatus": "EXACT",
             "semanticSupportStatus": "NOT_ESTABLISHED"
           }
