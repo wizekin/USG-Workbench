@@ -17,7 +17,7 @@ __all__ = [
     "mapping_report_for_python",
 ]
 
-# Python kernel 0.5.0 expression-graph adapter.
+# Python kernel 0.5.0 expression-graph and document adapters.
 from .kernel_v05 import (
     KernelV05Graph,
     contract_graph_roots_to_kernel_v05,
@@ -35,3 +35,20 @@ __all__ += [
     "contract_graph_roots_to_kernel_v05_partial", "kernel_v05_graph_to_contract",
     "KernelV05Document", "document_to_kernel_v05", "kernel_v05_document_to_contract",
 ]
+
+# Keep the independently versioned v0.6.0 model lazy so existing v0.4.0
+# and v0.5.0 workflows do not need its package on PYTHONPATH.
+_V06_EXPORTS = {
+    "KernelV06Document",
+    "document_to_kernel_v06",
+    "kernel_v06_document_to_contract",
+}
+__all__ += sorted(_V06_EXPORTS)
+
+
+def __getattr__(name):
+    if name in _V06_EXPORTS:
+        from importlib import import_module
+        module = import_module(".document_v06", __name__)
+        return getattr(module, name)
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
