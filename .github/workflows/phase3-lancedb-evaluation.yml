@@ -1,4 +1,4 @@
-name: Phase 3 Storage Candidate Evaluation — LanceDB
+name: Phase 3 Storage Candidate Evaluation — LanceDB (vector tie fixed)
 on:
   pull_request:
     paths:
