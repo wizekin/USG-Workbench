@@ -45,7 +45,7 @@ The v1.0.0 corpus contains **35 fixtures across 18 categories**:
 | Determinism | Stable repeated structured output and meaningful list order |
 | Resource interruption | Explicit INCOMPLETE status, interruption diagnostics, and preservation without truncation |
 
-Every fixture declares its stable ID, category and test classes, relevant profile/implementation versions, exact input snapshot, task/query, assumptions and test-only reference policy, expected completion state, expected conclusions, prohibited conclusions, diagnostics, scope bindings, evidence assessments, required provenance, and preserved item IDs. Resource fixtures additionally specify interruption and preservation requirements.
+Every fixture declares its stable ID, category and test classes, relevant profile/implementation versions, exact input snapshot, task/query, assumptions and test-only reference policy, expected completion state, expected conclusions, prohibited conclusions, diagnostics, scope bindings, evidence assessments, required provenance, preserved item IDs, and a case-specific rationale. Resource fixtures additionally specify interruption and preservation requirements.
 
 ## 3. Candidate output and evaluator
 
