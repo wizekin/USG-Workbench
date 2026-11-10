@@ -8,8 +8,6 @@ Source/Node/Assertion projections. The serializer refuses a modified snapshot.
 from __future__ import annotations
 
 import copy
-import hashlib
-import json
 from typing import Any, Mapping
 
 from .usg_sem_1 import ContractMappingError
@@ -300,7 +298,7 @@ def python_to_contract_document(imported: Any, *, validate: bool = True,
             ))
         except Exception as exc:
             unmapped.append(opaque_id)
-            archival[opaque_id] = {"reason": str(exc)}
+            archival.setdefault(opaque_id, {})["reason"] = str(exc)
 
     # Keep canonical records that did not receive a native projection. A
     # failed/unsupported root must remain present and reachable as a root.
