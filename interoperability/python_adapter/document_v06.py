@@ -13,17 +13,46 @@ from typing import Any, Mapping
 
 from .document import _digest, validate_contract_document
 from .usg_sem_1 import ContractMappingError
-from usg_identity_v06 import (
-    MODEL_VERSION,
-    IdentityScope,
-    IdentityStatus,
-    IntroductionContext,
-    IntroductionKind,
-    NativeReferentV06,
-    ReferenceSpace,
-    ReferentIdentity,
-    TypedReference,
-)
+
+
+def _load_identity_model():
+    """Load the isolated v0.6.0 package without changing global import paths."""
+    try:
+        import usg_identity_v06 as model
+        return model
+    except ModuleNotFoundError as exc:
+        if exc.name != "usg_identity_v06":
+            raise
+    import importlib.util
+    import sys
+
+    package_dir = (
+        Path(__file__).resolve().parents[2]
+        / "implementations" / "python-kernel" / "v0.6.0" / "usg_identity_v06"
+    )
+    init_file = package_dir / "__init__.py"
+    spec = importlib.util.spec_from_file_location(
+        "usg_identity_v06", init_file,
+        submodule_search_locations=[str(package_dir)],
+    )
+    if spec is None or spec.loader is None:
+        raise ImportError(f"Cannot load Python identity model from {init_file}")
+    model = importlib.util.module_from_spec(spec)
+    sys.modules["usg_identity_v06"] = model
+    spec.loader.exec_module(model)
+    return model
+
+
+_identity_model = _load_identity_model()
+MODEL_VERSION = _identity_model.MODEL_VERSION
+IdentityScope = _identity_model.IdentityScope
+IdentityStatus = _identity_model.IdentityStatus
+IntroductionContext = _identity_model.IntroductionContext
+IntroductionKind = _identity_model.IntroductionKind
+NativeReferentV06 = _identity_model.NativeReferentV06
+ReferenceSpace = _identity_model.ReferenceSpace
+ReferentIdentity = _identity_model.ReferentIdentity
+TypedReference = _identity_model.TypedReference
 
 SCHEMA_PATH = Path(__file__).resolve().parents[2] / "specifications" / "usg-sem-1.0.schema.json"
 
