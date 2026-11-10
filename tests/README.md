@@ -166,3 +166,15 @@ python -m tools.phase2_exit_acceptance.run --report phase2-exit-acceptance-repor
 The runner compiles all Phase 2 packages, validates the declarative rule registry and semantics contract, reruns the frozen Step 2.2 evaluator tests, all Phase 2 step regressions, the Kernel Lab integration tests, and the Phase 1 exit/adapter/interoperability suites. It emits a schema-validated JSON report. The overall status is ACCEPTED only if every required check passes. GitHub Actions uploads the report as an artifact; a failed or missing check blocks Phase 2 completion.
 
 See [Phase 2 Step 2.10 documentation](../documentation/PHASE-2-STEP-2.10-EXIT-ACCEPTANCE.md).
+
+
+## Phase 3 Step 3.2 — SQLite canonical document store
+
+Run the dedicated store suite:
+
+```bash
+python -m pip install "jsonschema>=4.18,<5"
+python -m unittest discover -s tests -p "test_phase3_graph_store.py" -v
+```
+
+The package is tools/semantic_graph_store_v1_0_0. It stores complete canonical USG-SEM/1.0 snapshots as authoritative bytes and maintains rebuildable SQLite indexes for expressions, assertions, evidence, and sources. Tests cover canonical byte round-trip, Unicode preservation, immutable revisions, compare-and-swap updates, idempotency, atomic rollback, hash/integrity checks, index rebuild, and large graph preservation. See [Step 3.2 documentation](../documentation/PHASE-3-STEP-3.2-SQLITE-CANONICAL-STORE.md).
