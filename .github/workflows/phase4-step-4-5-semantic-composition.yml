@@ -1,0 +1,32 @@
+name: Phase 4 Step 4.5 Compositional Semantic Construction
+on:
+  pull_request:
+    paths:
+      - "tools/usg_interpretation_v0_1_0/**"
+      - "tests/test_phase4_semantic_composition.py"
+      - ".github/workflows/phase4-step-4-5-semantic-composition.yml"
+  push:
+    branches: [main]
+    paths:
+      - "tools/usg_interpretation_v0_1_0/**"
+      - "tests/test_phase4_semantic_composition.py"
+      - ".github/workflows/phase4-step-4-5-semantic-composition.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  semantic-composition:
+    name: phase4-semantic-composition
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Compile interpretation package
+        run: python -m compileall -q tools/usg_interpretation_v0_1_0
+      - name: Run Step 4.5 tests
+        run: python -m unittest discover -s tests -p "test_phase4_semantic_composition.py" -v
