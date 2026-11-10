@@ -116,6 +116,7 @@ test('reports builder warnings and opaque operator meanings as PARTIAL', async (
   model.expressions[1] = { id: 'unknown-polarity', type: 'OPERATOR', operatorType: 'POLARITY',
     operator: 'UNKNOWN', scope: { targetId: 'pred-needs', scopeKind: 'whole_expression' }, evidenceRefs: [] };
   model.expressions[2].scope.targetId = 'unknown-polarity';
+  model.expressions[3].antecedentId = 'unknown-polarity';
   const { document, report } = await adapter.workbenchToContract(model);
   const opaque = document.expressions.find(x => x.nativeId === 'unknown-polarity');
   assert.equal(opaque.op, 'OPAQUE');
