@@ -23,6 +23,6 @@ The archive inventory records fresh tests and limitations for the original packa
 
 ## Interactive testing interface
 
-- [USG Kernel Lab](tools/usg-kernel-lab/README.md) is a local browser interface for testing the Python v0.7.0 Mention model and the USG-SEM/1.0 document adapter. It supports document validation, native Mention inspection/editing, mapping reports, and validated export.
+- [USG Kernel Lab](tools/usg-kernel-lab/README.md) is a local browser interface for testing the Python v0.7.0 Mention model and its USG-SEM/1.0 adapter.
 - It is intentionally separate from the JavaScript Semantic Workbench v0.5.4. It does not yet provide natural-language generation or a unified runtime for every USG module.
-- Step 5K adds a separate native Assertion model v0.8.0; the current Kernel Lab does not yet expose it.
+- Native Assertion model v0.8.0 and its document adapter are available as Python APIs, but the current Kernel Lab interface does not yet expose them.
