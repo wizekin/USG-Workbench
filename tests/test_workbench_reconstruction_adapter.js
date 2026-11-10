@@ -60,7 +60,8 @@ test('reconstructs native predicate arguments, nested operator scope, and direct
   assert.equal(sourceReport.status, 'LOSSLESS');
   const result = await adapter.contractToWorkbench(document);
   assert.equal(result.validation.valid, true, result.validation.errors.join('; '));
-  assert.equal(result.report.status, 'LOSSLESS');
+  assert.equal(result.report.status, 'PARTIAL', 'adapter-generated derivation metadata has no Workbench-native field');
+  assert.ok(result.report.unmappedRefs.some(ref => ref.startsWith('wb:derivation:')));
   const byId = new Map(result.model.expressions.map(x => [x.id, x]));
   const root = byId.get('if-root');
   assert.equal(root.type, 'CONNECTIVE');
