@@ -41,3 +41,6 @@ All non-UnresolvedItem record families remain canonical-only in this adapter. No
 ```bash
 PYTHONPATH=implementations/python-kernel/v1.2.0 python -m unittest discover -s tests -p "test_python_kernel_v12_document_adapter.py" -v
 ```
+
+
+> **Contract-alignment note:** The initial v1.2.0 model/adapter is retained as historical. Step 5T1 introduces v1.2.1, where `scopeRef` is a typed Expression reference and `evidenceRefs` are typed Evidence references, matching the canonical document validator. Use v1.2.1 for current composed interoperability.
