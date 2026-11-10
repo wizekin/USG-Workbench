@@ -82,7 +82,7 @@ class KernelV05DocumentAdapterTests(unittest.TestCase):
         self.assertEqual(imported.mapping_report["status"], "PARTIAL")
         self.assertIn("test:referent", imported.mapping_report["unmappedRefs"])
         self.assertIn("test:mention", imported.mapping_report["unmappedRefs"])
-        self.assertEqual(imported.record_mapping["sources"]["status"], "UNMAPPED")
+        self.assertEqual(imported.record_mapping["sources"]["status"], "LOSSLESS")
         self.assertEqual(imported.document["extensions"], document["extensions"])
 
     def test_export_rebuilds_full_document_and_preserves_canonical_only_records(self):
