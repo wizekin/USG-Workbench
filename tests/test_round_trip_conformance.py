@@ -131,7 +131,11 @@ class RoundTripSemanticInvariantTests(unittest.TestCase):
 
         # Exact evidence remains aligned, including the supplementary Unicode prefix.
         needs_evidence = next(e for e in reconstructed["evidence"] if e["quote"] == "needs")
-        self.assertEqual(reconstructed["source"]["text"][needs_evidence["start"]:needs_evidence["end"]],
+        expected_python_start = reconstructed["source"]["text"].index("needs")
+        expected_utf16_start = len(reconstructed["source"]["text"][:expected_python_start].encode("utf-16-le")) // 2
+        self.assertEqual(needs_evidence["start"], expected_utf16_start)
+        self.assertEqual(needs_evidence["end"], expected_utf16_start + len("needs"))
+        self.assertEqual(reconstructed["source"]["text"][expected_python_start:expected_python_start + 5],
                          needs_evidence["quote"])
         self.assertEqual(needs_evidence["quote"], "needs")
         self.assertEqual(reconstructed["relations"][0]["verification"], "candidate_not_proof")
