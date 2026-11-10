@@ -1,0 +1,51 @@
+name: Step 5Y Complete Document Adapter
+on:
+  pull_request:
+    paths:
+      - "interoperability/python_adapter/document_v15.py"
+      - "interoperability/python_adapter/__init__.py"
+      - "tests/test_python_kernel_v15_document_adapter.py"
+      - "interoperability/python-kernel-extension/STEP-5Y-COMPLETE-DOCUMENT-ADAPTER.md"
+      - ".github/workflows/step-5y-complete-document-adapter.yml"
+      - "interoperability/python_adapter/document_v*.py"
+      - "implementations/python-kernel/**"
+  push:
+    branches: [main]
+    paths:
+      - "interoperability/python_adapter/document_v15.py"
+      - "interoperability/python_adapter/__init__.py"
+      - "tests/test_python_kernel_v15_document_adapter.py"
+      - "interoperability/python-kernel-extension/STEP-5Y-COMPLETE-DOCUMENT-ADAPTER.md"
+      - ".github/workflows/step-5y-complete-document-adapter.yml"
+      - "interoperability/python_adapter/document_v*.py"
+      - "implementations/python-kernel/**"
+permissions:
+  contents: read
+jobs:
+  complete-document-adapter:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install schema validator
+        run: python -m pip install "jsonschema>=4.18,<5"
+      - name: Run complete cross-family adapter conformance
+        env:
+          PYTHONPATH: implementations/python-kernel/v0.5.0
+        run: python -m unittest discover -s tests -p "test_python_kernel_v15_document_adapter.py" -v
+      - name: Run complete legacy and versioned adapter regression
+        env:
+          PYTHONPATH: implementations/python-kernel/v0.5.0
+        run: |
+          python -m unittest discover -s tests -p "test_python_kernel_v05_document_adapter.py" -v
+          python -m unittest discover -s tests -p "test_python_kernel_v06_document_adapter.py" -v
+          python -m unittest discover -s tests -p "test_python_kernel_v07_document_adapter.py" -v
+          python -m unittest discover -s tests -p "test_python_kernel_v08_document_adapter.py" -v
+          python -m unittest discover -s tests -p "test_python_kernel_v09_document_adapter.py" -v
+          python -m unittest discover -s tests -p "test_python_kernel_v10_document_adapter.py" -v
+          python -m unittest discover -s tests -p "test_python_kernel_v11_document_adapter.py" -v
+          python -m unittest discover -s tests -p "test_python_kernel_v12_document_adapter.py" -v
+          python -m unittest discover -s tests -p "test_python_kernel_v13_document_adapter.py" -v
+          python -m unittest discover -s tests -p "test_python_kernel_v14_document_adapter.py" -v

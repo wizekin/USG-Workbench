@@ -56,3 +56,20 @@ PYTHONPATH=implementations/python-kernel/v0.9.0 python -m unittest discover -s t
 ```
 
 The canonical schema is `specifications/usg-sem-1.0.schema.json`.
+
+
+### Python kernel v1.0.0–v1.4.0
+
+- Context v1.0.0: `document_to_kernel_v10()`, `kernel_v10_document_to_contract()`.
+- ExpressionRelation v1.1.0: `document_to_kernel_v11()`, `kernel_v11_document_to_contract()`.
+- UnresolvedItem v1.2.0: `document_to_kernel_v12()`, `kernel_v12_document_to_contract()`.
+- Derivation v1.3.0: `document_to_kernel_v13()`, `kernel_v13_document_to_contract()`.
+- Definitions v1.4.0: `document_to_kernel_v14()`, `kernel_v14_document_to_contract()`.
+
+### Composed adapter v1.5.0
+
+- APIs: `document_to_kernel_v15()`, `kernel_v15_document_to_contract()`.
+- Composes the v0.5.0–v1.4.0 family-specific adapters over one immutable canonical snapshot.
+- Merges only the collections owned by each adapter, preventing cross-family edits from overwriting one another.
+- Aggregates per-family mapping coverage and performs final cross-family span checks after composition.
+- The composed adapter does not replace or renumber any of the individual model packages.
