@@ -91,3 +91,14 @@ The registries and adapter target the immutable baseline pair: Workbench v0.5.4 
 - The native model does not represent identity status, DOCUMENT/WORKSPACE/CORPUS/GLOBAL identity scope, explicit referent equivalence links, display labels/aliases, or all introduction-context references as distinct fields.
 - These fields must not be coerced into ReferentScope, individual_ids, concept references, or labels. Referents remain canonical-only in the v0.5.0 document adapter until a separately versioned native model can represent these distinctions.
 - Step 5F makes no schema or kernel-baseline changes. The next implementation step must define and test the required versioned identity model before native Referent projection.
+
+
+### Step 5G — versioned native Referent identity model
+
+- [Step 5G model contract](python-kernel-extension/STEP-5G-REFERENT-IDENTITY-MODEL.md).
+- Adds an independent, additive usg_identity_v06 model at implementations/python-kernel/v0.6.0/; it does not edit the frozen usg v0.5.0 package.
+- Models the six identity-resolution statuses and four identity scopes as separate axes; absent status/scope remain absent rather than defaulting to UNKNOWN or a scope.
+- Uses explicit typed opaque references to keep referent equivalence, concept classification, source grounding, and introduction-context references in separate target spaces.
+- Preserves explicit equivalence links without inferring symmetry, transitivity, or merging referents. Labels and aliases are never identity keys.
+- Includes a native Referent record and conformance tests. Document-level adapter integration remains a later step; no full Referent round-trip is claimed yet.
+- USG-SEM/1.0, Python kernel v0.5.0, Workbench v0.5.4, archives, immutable baselines, and existing Node.js workflow/action versions remain unchanged.
