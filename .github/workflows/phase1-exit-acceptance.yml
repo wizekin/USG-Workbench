@@ -16,6 +16,8 @@ on:
       - "tests/test_workbench_reconstruction_adapter.js"
       - "interoperability/**"
       - "specifications/**"
+      - "documentation/PHASE-2-*.md"
+      - "documentation/README.md"
       - ".github/workflows/phase1-exit-acceptance.yml"
   push:
     branches: [main]
@@ -24,6 +26,8 @@ on:
       - "tests/test_python_kernel_v*_document_adapter.py"
       - "interoperability/**"
       - "specifications/**"
+      - "documentation/PHASE-2-*.md"
+      - "documentation/README.md"
       - ".github/workflows/phase1-exit-acceptance.yml"
 permissions:
   contents: read
