@@ -17,7 +17,7 @@ __all__ = [
     "mapping_report_for_python",
 ]
 
-# Python kernel 0.5.0 expression-graph adapter.
+# Python kernel 0.5.0 expression-graph and document adapters.
 from .kernel_v05 import (
     KernelV05Graph,
     contract_graph_roots_to_kernel_v05,
@@ -34,4 +34,15 @@ __all__ += [
     "KernelV05Graph", "contract_graph_roots_to_kernel_v05",
     "contract_graph_roots_to_kernel_v05_partial", "kernel_v05_graph_to_contract",
     "KernelV05Document", "document_to_kernel_v05", "kernel_v05_document_to_contract",
+]
+
+# Independently versioned Referent identity document adapter (v0.6.0).
+from .document_v06 import (
+    KernelV06Document,
+    document_to_kernel_v06,
+    kernel_v06_document_to_contract,
+)
+
+__all__ += [
+    "KernelV06Document", "document_to_kernel_v06", "kernel_v06_document_to_contract",
 ]
