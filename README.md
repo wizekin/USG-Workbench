@@ -20,3 +20,9 @@ The JavaScript Semantic Workbench and Python reference kernel are separate imple
 ## Baseline status
 
 The archive inventory records fresh tests and limitations for the original packages. Passing package tests do not establish unrestricted natural-language understanding or general semantic correctness.
+
+
+## Interactive testing interface
+
+- [USG Kernel Lab](tools/usg-kernel-lab/README.md) is a local browser interface for testing the Python v0.7.0 Mention model and the USG-SEM/1.0 document adapter. It supports document validation, native Mention inspection/editing, mapping reports, and validated export.
+- It is intentionally separate from the JavaScript Semantic Workbench v0.5.4. It does not yet provide natural-language generation or a unified runtime for every USG module.
