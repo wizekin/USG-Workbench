@@ -30,9 +30,17 @@ details{border:1px solid var(--line);border-radius:10px;background:#0d1626}summa
 .mention-card{border:1px solid var(--line);background:#0c1524;border-radius:11px;padding:12px;margin:10px 0}.mention-top{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:9px}.mention-id{font:11px ui-monospace,Consolas;color:#a9caff;overflow-wrap:anywhere}
 .field-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.field{display:flex;flex-direction:column;gap:4px}.field label{font-size:10px;color:var(--muted)}.field input,.field select{width:100%;background:#111e31;border:1px solid #30415d;border-radius:7px;padding:7px 8px;color:#e6eef9;font-size:12px;min-width:0}.field.full{grid-column:1/-1}
 .empty{border:1px dashed #3a4b67;border-radius:12px;padding:26px;text-align:center;color:var(--muted);font-size:13px}
+.query-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:12px 0}
+.query-grid .field input,.query-grid .field select{min-height:36px}
+.query-actions{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.query-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}
+.query-summary .metric b{font-size:18px}
+.query-trace{max-height:560px;min-height:300px}
+.query-note{background:#0d1c2e;border:1px solid #304764;border-radius:9px;padding:10px 12px;color:#b9cce5;font-size:12px;margin:10px 0}
 .footer{margin-top:18px;color:#8394ad;font-size:11px;text-align:center}
 @media(max-width:950px){.layout{grid-template-columns:1fr}textarea,.output{min-height:360px}.status{width:100%;margin-left:0}}
-@media(max-width:540px){header{align-items:flex-start}.version{display:none}.field-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.metrics{grid-template-columns:repeat(3,1fr)}.metric b{font-size:18px}}
+@media(max-width:950px){.query-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.query-summary{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:540px){header{align-items:flex-start}.version{display:none}.field-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.metrics{grid-template-columns:repeat(3,1fr)}.metric b{font-size:18px}.query-grid{grid-template-columns:1fr}.query-summary{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
 <body>
@@ -58,6 +66,30 @@ details{border:1px solid var(--line);border-radius:10px;background:#0d1626}summa
 </div>
 </section>
 </div>
+<section class="panel" style="margin-top:16px">
+<div class="panel-head"><div><div class="eyebrow">03 / phase 2 reasoning</div><h2>Kernel Lab · Query & Explanation</h2></div><span class="eyebrow">USG-QUERY/1.0.0</span></div>
+<div class="panel-body">
+<div class="query-note"><strong>Structured reasoning only:</strong> select a versioned fixture or enter exact expression/context references. This interface does not interpret free text, and an absent result is not treated as false.</div>
+<div class="query-grid">
+ <div class="field"><label>Versioned query fixture</label><select id="queryFixtureSelect"><option value="">Loading fixtures…</option></select></div>
+ <div class="field"><label>Goal expression reference</label><input id="queryExpression" placeholder="e.g. expr-b"></div>
+ <div class="field"><label>Context reference</label><input id="queryContext" value="ctx-world"></div>
+ <div class="field"><label>Context kind</label><input id="queryContextKind" value="WORLD"></div>
+ <div class="field"><label>Commitment</label><select id="queryCommitment"><option>AUTHOR</option><option>ATTRIBUTED</option><option>NONE</option></select></div>
+ <div class="field"><label>Attributed referent ref</label><input id="queryAttribution" placeholder="required only for ATTRIBUTED"></div>
+ <div class="field"><label>Rule IDs (comma-separated)</label><input id="queryRules" value="benchmark-rule:modus-ponens"></div>
+ <div class="field"><label>Maximum rule applications (optional)</label><input id="queryBudget" type="number" min="0" placeholder="unbounded"></div>
+</div>
+<div class="query-actions">
+ <button class="subtle" id="loadQueryFixtureBtn">Load selected fixture</button>
+ <button class="primary" id="runQueryBtn">Run structured query</button>
+ <button class="subtle" id="runQueryBenchmarkBtn">Run all query fixtures</button>
+ <button class="subtle" id="downloadQueryBtn" disabled>Download query trace</button>
+</div>
+<div class="query-summary" id="querySummary"><div class="empty" style="grid-column:1/-1">No query has been run yet.</div></div>
+<details open><summary>Grounding, derivation, evidence, conflict & explanation trace</summary><pre class="query-trace" id="queryOutput">Select a fixture and run a query to inspect the complete structured result.</pre></details>
+</div>
+</section>
 <div class="footer">Runs locally on this computer · no cloud upload · canonical document remains the preservation envelope</div>
 </main>
 <script>
@@ -149,7 +181,75 @@ $("downloadBtn").onclick=()=>{
  const blob=new Blob([JSON.stringify(latestExport,null,2)],{type:"application/json"});
  const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="usg-sem-1.0-export.json";a.click();URL.revokeObjectURL(url)
 };
+let latestQueryExport=null, selectedQueryExpected=null;
+function setQuerySummary(data){
+ const summary=$("querySummary");
+ const metrics=data.benchmark
+  ? [["Fixtures",data.benchmark.total],["Passed",data.benchmark.passed],["Failed",data.benchmark.failed],["Accepted",data.benchmark.accepted?"YES":"NO"]]
+  : [["Completion",data.result.completion_status],["Goal status",data.result.goal_status],["Candidates",data.result.inference_candidates.length],["Conflicts",data.result.conflicts.length]];
+ summary.innerHTML=metrics.map(([label,value])=>'<div class="metric"><b>'+esc(value)+'</b><span>'+esc(label)+'</span></div>').join("");
+}
+function setQueryOutput(value){
+ latestQueryExport=value;
+ $("queryOutput").textContent=JSON.stringify(value,null,2);
+ $("downloadQueryBtn").disabled=false;
+}
+async function loadQueryFixtureList(){
+ try{
+  const response=await fetch("/api/fixtures");const data=await response.json();
+  if(!response.ok||!data.ok)throw new Error(data.error||"Could not load query fixtures");
+  $("queryFixtureSelect").innerHTML=data.fixtures.map(item=>'<option value="'+esc(item.id)+'">'+esc(item.id)+' · '+esc(item.expected.goal_status||item.expected.completion_status)+'</option>').join("");
+  setStatus("Phase 2 query fixtures loaded","ok");
+ }catch(e){$("queryFixtureSelect").innerHTML='<option value="">Fixture list unavailable</option>';setStatus(e.message,"err")}
+}
+$("loadQueryFixtureBtn").onclick=async()=>{
+ try{
+  const fixtureId=$("queryFixtureSelect").value;if(!fixtureId)throw new Error("Select a query fixture first");
+  $("loadQueryFixtureBtn").disabled=true;
+  const data=await post("/api/fixture",{fixture_id:fixtureId});
+  $("documentInput").value=JSON.stringify(data.document,null,2);
+  const q=data.query,g=q.goal,t=q.inference_task;
+  $("queryExpression").value=g.expression_ref;$("queryContext").value=g.context_ref;$("queryContextKind").value=g.context_kind;
+  $("queryCommitment").value=g.commitment;$("queryAttribution").value=g.attributed_to_ref||"";
+  $("queryRules").value=t.rule_ids.join(", ");$("queryBudget").value=t.max_rule_applications??"";
+  selectedQueryExpected=data.expected;
+  setQueryOutput({fixture_id:fixtureId,expected:data.expected,message:"Canonical fixture loaded into the document editor. Run the structured query to compare actual and expected results."});
+  setQuerySummary({result:{completion_status:"READY",goal_status:"READY",inference_candidates:[],conflicts:[]}});
+  setStatus("Query fixture loaded","ok");
+ }catch(e){setStatus(e.message,"err")}
+ finally{$("loadQueryFixtureBtn").disabled=false}
+};
+$("runQueryBtn").onclick=async()=>{
+ try{
+  $("runQueryBtn").disabled=true;setStatus("Running grounding, inference, evidence and conflict assessment...");
+  const document=JSON.parse($("documentInput").value);
+  const ruleIds=$("queryRules").value.split(",").map(x=>x.trim()).filter(Boolean);
+  const commitment=$("queryCommitment").value;
+  const query={query_id:"kernel-lab-query",goal:{expression_ref:$("queryExpression").value.trim(),context_ref:$("queryContext").value.trim(),context_kind:$("queryContextKind").value.trim(),commitment,...(commitment==="ATTRIBUTED"?{attributed_to_ref:$("queryAttribution").value.trim()}:{})},
+   inference_task:{task_id:"kernel-lab-query:inference",rule_ids:ruleIds,world_assumption:"OPEN",allow_inferred_premises:false,evidence_assessment:false}};
+  const budget=$("queryBudget").value.trim();if(budget!=="")query.inference_task.max_rule_applications=Number(budget);
+  const data=await post("/api/query",{document,query,expected:selectedQueryExpected||undefined});
+  setQuerySummary(data);setQueryOutput(data);setStatus("Structured query completed: "+data.result.goal_status,"ok");
+ }catch(e){setStatus(e.message,"err");$("queryOutput").textContent=e.message}
+ finally{$("runQueryBtn").disabled=false}
+};
+$("runQueryBenchmarkBtn").onclick=async()=>{
+ try{
+  $("runQueryBenchmarkBtn").disabled=true;setStatus("Running the complete versioned query benchmark...");
+  const data=await post("/api/benchmark",{});
+  setQuerySummary({benchmark:data});setQueryOutput(data);
+  setStatus(data.accepted?"All query benchmark fixtures passed":"Some query benchmark fixtures failed",""+(data.accepted?"ok":"err"));
+ }catch(e){setStatus(e.message,"err");$("queryOutput").textContent=e.message}
+ finally{$("runQueryBenchmarkBtn").disabled=false}
+};
+$("downloadQueryBtn").onclick=()=>{
+ if(!latestQueryExport)return;
+ const blob=new Blob([JSON.stringify(latestQueryExport,null,2)],{type:"application/json"});
+ const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="usg-kernel-lab-query-trace.json";a.click();URL.revokeObjectURL(url)
+};
+
 $("sampleBtn").click();
+loadQueryFixtureList();
 </script>
 </body>
 </html>
