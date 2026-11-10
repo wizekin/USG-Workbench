@@ -157,8 +157,20 @@
             "field_bindings": {
               "type": "object",
               "additionalProperties": {
-                "type": "string",
-                "pattern": "^[A-Z][A-Za-z0-9_]*$"
+                "oneOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^[A-Z][A-Za-z0-9_]*$"
+                  },
+                  {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "type": "string",
+                      "pattern": "^[A-Z][A-Za-z0-9_]*$"
+                    }
+                  }
+                ]
               }
             },
             "fixed_fields": {
