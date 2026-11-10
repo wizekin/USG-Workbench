@@ -1,4 +1,4 @@
-name: Phase 3 Storage Candidate Evaluation — RocksDB (optimized write path)
+name: Phase 3 Storage Candidate Evaluation — RocksDB (concurrency validation)
 
 on:
   pull_request:
