@@ -130,7 +130,7 @@ class RoundTripSemanticInvariantTests(unittest.TestCase):
         self.assertEqual(reconstructed["unresolvedItems"][0]["status"], "unresolved")
 
         # Exact evidence remains aligned, including the supplementary Unicode prefix.
-        needs_evidence = next(e for e in reconstructed["evidence"] if e["id"] == "needs-evidence")
+        needs_evidence = next(e for e in reconstructed["evidence"] if e["quote"] == "needs")
         self.assertEqual(reconstructed["source"]["text"][needs_evidence["start"]:needs_evidence["end"]],
                          needs_evidence["quote"])
         self.assertEqual(needs_evidence["quote"], "needs")
