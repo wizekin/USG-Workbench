@@ -116,12 +116,11 @@ class EvidenceAssessmentEngine:
                 reason = "SOURCE_REFERENCE_NOT_FOUND"
                 source_integrity = "UNKNOWN"
             else:
-                source_integrity = "VALID"
+                source_integrity = "NOT_HASHED"
                 declared_hash = source.get("textHash")
                 if declared_hash:
                     actual_hash = sha256(source["text"].encode("utf-8")).hexdigest()
-                    if actual_hash.lower() != declared_hash.lower():
-                        source_integrity = "HASH_MISMATCH"
+                    source_integrity = "HASH_MATCH" if actual_hash.lower() == declared_hash.lower() else "HASH_MISMATCH"
                 span = item.get("span", {})
                 if span.get("sourceRef") != item.get("sourceRef"):
                     computed, reason = "MISMATCH", "EVIDENCE_AND_SPAN_SOURCE_MISMATCH"
@@ -169,7 +168,7 @@ class EvidenceAssessmentEngine:
             })
 
         conflicts = self._conflicts(assertion_ids, assertions, expressions, {item["id"]: item for item in document.get("contexts", [])}, {item["id"]: item for item in document.get("referents", [])})
-        corroboration = self._corroboration(assertion_ids, assertions, evidence, sources)
+        corroboration = self._corroboration(assertion_ids, assertions, evidence, sources, set(evidence_ids))
         external = [{
             "subject_ref": item["subject_ref"], "verifier_id": item["verifier_id"],
             "procedure_id": item["procedure_id"], "procedure_version": item["procedure_version"],
@@ -237,13 +236,13 @@ class EvidenceAssessmentEngine:
                     })
         return sorted(pairs, key=lambda item: item["assertion_refs"])
 
-    def _corroboration(self, assertion_ids, assertions, evidence, sources):
+    def _corroboration(self, assertion_ids, assertions, evidence, sources, selected_evidence_ids):
         results = []
         for assertion_id in assertion_ids:
             assertion = assertions.get(assertion_id)
             if assertion is None:
                 continue
-            linked = [evidence[ref] for ref in assertion.get("evidenceRefs", []) if ref in evidence]
+            linked = [evidence[ref] for ref in assertion.get("evidenceRefs", []) if ref in evidence and ref in selected_evidence_ids]
             source_refs = sorted({item.get("sourceRef") for item in linked if isinstance(item.get("sourceRef"), str)})
             if len(source_refs) <= 1:
                 diversity = "SINGLE_SOURCE_RECORD" if source_refs else "NO_LINKED_EVIDENCE"
