@@ -387,7 +387,10 @@ class CanonicalDocumentStore:
                         (document_id, current_revision),
                     ).fetchone()
                     if existing and existing["sha256"] == digest:
-                        existing_document = parse_canonical(bytes(existing["canonical_json"]))
+                        existing_raw = bytes(existing["canonical_json"])
+                        if sha256(existing_raw).hexdigest() != existing["sha256"]:
+                            raise IntegrityError("current canonical snapshot SHA-256 mismatch")
+                        existing_document = parse_canonical(existing_raw)
                         self._connection.execute("COMMIT")
                         return StoredDocument(
                             document_id, current_revision, existing["predecessor_revision"],
@@ -509,6 +512,8 @@ class CanonicalDocumentStore:
             except CanonicalizationError as exc:
                 raise IntegrityError(str(exc)) from exc
             self._validate_document(document)
+            if document.get("documentId") != document_id or document.get("profileId") != row["profile_id"]:
+                raise IntegrityError("snapshot identity/profile does not match revision metadata")
             selected_revision = int(row["revision"])
             self._connection.execute("BEGIN IMMEDIATE")
             try:
