@@ -97,7 +97,7 @@ class LMDBCanonicalGraphStoreTests(unittest.TestCase):
 
     def test_snapshot_tampering_is_detected(self):
         self.store.put_document(self.document)
-        key = self.store._key(self.document["documentId"], 1)
+        key = self.store._revision_key(self.document["documentId"], 1)
         with self.store._env.begin(write=True) as txn:
             txn.put(key, b"{}", db=self.store._db["snapshots"])
         with self.assertRaises(IntegrityError):
@@ -106,7 +106,7 @@ class LMDBCanonicalGraphStoreTests(unittest.TestCase):
     def test_index_drift_is_detected_and_rebuilt(self):
         self.store.put_document(self.document)
         expression = self.document["expressions"][0]
-        key = self.store._key(self.document["documentId"], 1, expression["id"])
+        key = self.store._index_key(self.document["documentId"], 1, expression["id"])
         with self.store._env.begin(write=True) as txn:
             txn.delete(key, db=self.store._db["expression_index"])
         with self.assertRaises(IntegrityError):
