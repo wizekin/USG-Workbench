@@ -59,8 +59,9 @@ class RoundTripSemanticInvariantTests(unittest.TestCase):
         self.assertEqual(modal["params"]["nativeForce"], "epistemic_possibility")
 
         imported = document_to_python(original)
-        self.assertEqual(imported.sources[original["primarySourceRef"]].text,
-                         original_model["source"]["text"])
+        self.assertEqual(imported.sources, {},
+                         "Workbench UNKNOWN trust/sensitivity labels must not be coerced into Python enums")
+        self.assertIn(original["primarySourceRef"], imported.mapping_report["unmappedRefs"])
         self.assertEqual(imported.mapping_report["status"], "PARTIAL")
         self.assertTrue(imported.mapping_report["unmappedRefs"],
                         "Workbench-only constructors/metadata must be reported, not coerced")
