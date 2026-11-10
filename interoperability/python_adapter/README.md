@@ -1,96 +1,56 @@
-# Python document adapter — USG-SEM/1.0 → kernel 0.4.0
+# Python document adapters — USG-SEM/1.0
 
-This adapter imports a complete USG-SEM/1.0 document while retaining the full
-canonical document as the authoritative, loss-preserving interchange payload.
+This package contains separate, versioned adapters for the canonical USG-SEM/1.0 document and Python kernel model generations. Each adapter retains the complete canonical document as the authoritative preservation envelope. A family-specific adapter projects only the records and fields its native model can represent exactly.
 
-## Native projections
+## Existing v0.4.0 adapter
 
-- Sources are projected to Python `Source` records only when their source type,
-  trust tier, sensitivity, encoding, hash algorithm and offset convention have
-  exact kernel equivalents.
-- Supported expression roots are projected to immutable SemIR `Node` objects.
-  Multiple roots share one memo, preserving common DAG subexpressions.
-- Assertions are projected only when their expression, source, attribution,
-  evidence, context, status and lifecycle fields can be represented exactly.
+The original adapter projects supported Sources, SemIR expression roots, and Assertions that have exact Python kernel 0.4.0 equivalents. It retains unsupported record families in the canonical envelope and exposes the original import/export boundary. See the legacy API and tests below.
 
-## Preserved canonical-only records
+## Versioned adapters
 
-The adapter retains referents, mentions, evidence assessments, contexts,
-expression relations, unresolved items, derivations, validation metadata,
-definitions and extensions in the original document. It reports them as
-unmapped/partial when kernel 0.4.0 has no exact record equivalent. In particular,
-a mention is not a referent, a source span is not evidence entailment, and a
-contract frame catalogue is not automatically a Python `FrameDef`.
+### Python kernel v0.5.0
 
-## Round-trip boundary
+- Expression graph and document APIs: `document_to_kernel_v05()`, `kernel_v05_document_to_contract()`.
+- Preserves graph identity, root structure, operand order, and unsupported canonical records.
 
-`ImportedDocument.export_contract_document()` returns an exact copy of the
-original document. It refuses export if the snapshot was modified, avoiding a
-stale or lossy merge between mutable Python projections and the canonical data.
-This step does not write to SQLite, merge stores, or modify kernel 0.4.0.
+### Python Referent identity v0.6.0
 
-## Test
+- APIs: `document_to_kernel_v06()`, `kernel_v06_document_to_contract()`.
+- Projects exact Referent identity fields and reports unsupported identity details per record/field.
 
-From repository root:
+### Python Mention v0.7.0
 
-```bash
-python -m unittest discover -s tests -p "test_document_adapter.py" -v
-```
+- APIs: `document_to_kernel_v07()`, `kernel_v07_document_to_contract()`.
+- Projects Mention occurrence records without inferring coreference or antecedents.
 
-The schema is in `specifications/usg-sem-1.0.schema.json`. Install
-`jsonschema>=4.18,<5` for full schema validation.
+### Python Assertion v0.8.0
 
-## Reverse serialization — Python kernel 0.4.0 → USG-SEM/1.0
+- APIs: `document_to_kernel_v08()`, `kernel_v08_document_to_contract()`.
+- Projects exact Assertion fields and resolvable typed references; provides per-Assertion/per-field mapping coverage.
+- Preserves the independent origin, epistemic status, commitment, evaluation-context, and lifecycle axes.
+- Keeps Alternative Group references canonical-only because USG-SEM/1.0 has no corresponding first-class record collection.
+- Native edits merge only into Assertion records; all other families and unsupported fields remain in the canonical envelope.
 
-The reverse boundary is exposed as:
+All versioned adapter exports are lazy where required so earlier adapter workflows do not acquire new PYTHONPATH requirements merely because later models exist.
 
-```python
-from interoperability.python_adapter import (
-    document_to_python,
-    python_to_contract_document,
-)
+## Loss-preservation rules
 
-imported = document_to_python(contract_document)
-updated_contract = python_to_contract_document(imported)
-```
+- Unsupported, unknown, and dangling fields are retained in the canonical envelope and reported; they are not silently coerced or dropped.
+- Required native fields that cannot be represented exactly keep that record canonical-only.
+- A changed native reference must have the expected explicit reference space and resolve in the matching canonical collection.
+- Ordered references and repeated references remain ordered and repeated.
+- Export rejects a modified canonical snapshot rather than merging native edits into stale data.
+- A PARTIAL adapter report does not mean the canonical document itself has been lost; the full canonical payload remains available.
 
-The serializer traverses the current immutable SemIR `Node` objects and writes
-an explicit USG-SEM expression graph (`id`, `op`, `sort`, ordered
-`operandRefs`, `params`). It preserves shared object identity, multiple roots,
-and operand order. It serializes the current `Source` and `Assertion`
-projections rather than returning the original expression/source/assertion
-records as a substitute.
+## Validation
 
-The imported canonical snapshot remains the envelope and preservation source
-for record classes that Python kernel 0.4.0 cannot represent natively. Such
-records are carried forward unchanged and remain listed in the mapping report.
-Unsupported original sources, expressions, assertions, and roots are retained;
-they are not silently deleted.
+Install `jsonschema>=4.18,<5` for full USG-SEM/1.0 schema validation.
 
-### Annotation source identity
-
-Python `Ann` stores offsets, rules, basis and language features, but does not
-store `sourceRef`. The reverse serializer restores span source associations
-only when the current offsets exactly match the imported canonical annotation.
-If the spans change, it retains the native annotation in the namespaced
-`org.usg.python-kernel.v0.4.0` extension and reports the expression as
-`PARTIAL`. It never assumes that a span belongs to the primary source.
-
-### Snapshot and scope boundaries
-
-- A modified canonical snapshot is rejected; canonical-only records must not be
-  merged from a stale or user-mutated envelope.
-- Source genre and native-only assertion metadata are retained only as explicit
-  namespaced extension data or reported unsupported.
-- The serializer does not invent referents, mentions, evidence, contexts,
-  definitions, relations, unresolved records, or derivations.
-- `LOSSLESS` is not claimed when canonical-only records remain outside the
-  Python kernel projection.
-- This is a serialization boundary, not a claim of semantic correctness or the
-  completion of the Workbench → Python → Workbench round trip.
-
-Run:
+Run the v0.8.0 Assertion model and adapter suites:
 
 ```bash
-python -m unittest discover -s tests -p "test_python_reverse_serializer.py" -v
+PYTHONPATH=implementations/python-kernel/v0.8.0 python -m unittest discover -s implementations/python-kernel/v0.8.0/tests -v
+PYTHONPATH=implementations/python-kernel/v0.8.0 python -m unittest discover -s tests -p "test_python_kernel_v08_document_adapter.py" -v
 ```
+
+The canonical schema is `specifications/usg-sem-1.0.schema.json`.
