@@ -93,7 +93,8 @@
         ],
         "preserved_item_ids": []
       },
-      "determinism_required": true
+      "determinism_required": true,
+      "rationale": "Referent or concept identity requires explicit identity links. Surface-label equality or lexical similarity alone does not establish identity. Two mentions explicitly share one referent. The expected conclusion set is [\"COREF:m1:m2\"]; the prohibited set is []. The declared task is: Determine whether m1 and m2 identify the same referent."
     },
     {
       "id": "USG-BENCH-IDENTITY-002",
@@ -167,7 +168,8 @@
           "m-b"
         ]
       },
-      "determinism_required": true
+      "determinism_required": true,
+      "rationale": "Referent or concept identity requires explicit identity links. Surface-label equality or lexical similarity alone does not establish identity. Identical labels do not establish identity. No positive conclusion is licensed; any attempted output in [\"COREF:m-a:m-b\"] is prohibited. The declared task is: Determine whether matching labels alone license coreference."
     },
     {
       "id": "USG-BENCH-TYPED-REF-001",
@@ -239,7 +241,8 @@
           "evidence-1"
         ]
       },
-      "determinism_required": true
+      "determinism_required": true,
+      "rationale": "References resolve only within their declared typed target space. Opaque IDs must not be reinterpreted as another record type. A Referent ID cannot be used as a Source reference. No positive conclusion is licensed; any attempted output in [] is prohibited. The declared task is: Validate evidence.source_ref using typed-reference spaces."
     },
     {
       "id": "USG-BENCH-SCOPE-NEGATION-001",
@@ -343,7 +346,8 @@
         ],
         "preserved_item_ids": []
       },
-      "determinism_required": true
+      "determinism_required": true,
+      "rationale": "Operator nesting, quantifier scope, binding, and operand order are semantic content. A superficially similar scope is not an interchangeable representation. NOT scopes over the existential quantifier. The expected conclusion set is [\"NOT(EXISTS(HUMAN(x)))\"]; the prohibited set is []. The declared task is: Preserve NOT(EXISTS x HUMAN(x)) without changing quantifier scope."
     },
     {
       "id": "USG-BENCH-SCOPE-QUANTIFIER-002",
@@ -451,7 +455,8 @@
         ],
         "preserved_item_ids": []
       },
-      "determinism_required": true
+      "determinism_required": true,
+      "rationale": "Operator nesting, quantifier scope, binding, and operand order are semantic content. A superficially similar scope is not an interchangeable representation. EXISTS NOT is not NOT EXISTS. The expected conclusion set is [\"EXISTS(NOT(HUMAN(y)))\"]; the prohibited set is [\"NOT(EXISTS(HUMAN(y)))\"]. The declared task is: Distinguish EXISTS y NOT HUMAN(y) from NOT EXISTS y HUMAN(y)."
     },
     {
       "id": "USG-BENCH-CONDITIONAL-MP-001",
@@ -572,7 +577,8 @@
         ],
         "preserved_item_ids": []
       },
-      "determinism_required": true
+      "determinism_required": true,
+      "rationale": "Connective direction and rule preconditions must be preserved. A conditional does not license its converse, and inference requires every declared premise. Modus ponens is licensed by the explicit reference rule. The expected conclusion set is [\"ASSERTED:GROUND_WET@world\"]; the prohibited set is []. The declared task is: Apply the explicit benchmark modus-ponens rule to derive GROUND_WET in world."
     },
     {
       "id": "USG-BENCH-CONDITIONAL-CONVERSE-002",
@@ -654,7 +660,8 @@
         "required_derivations": [],
         "preserved_item_ids": []
       },
-      "determinism_required": true
+      "determinism_required": true,
+      "rationale": "Connective direction and rule preconditions must be preserved. A conditional does not license its converse, and inference requires every declared premise. An implication does not license its converse. No positive conclusion is licensed; any attempted output in [\"IMPLIES:B:A\"] is prohibited. The declared task is: Given A and A implies B, determine whether B implies A follows."
     },
     {
       "id": "USG-BENCH-ROLE-ORDER-001",
@@ -737,7 +744,8 @@
         "required_derivations": [],
         "preserved_item_ids": []
       },
-      "determinism_required": true
+      "determinism_required": true,
+      "rationale": "Role bindings are ordered and typed, and SemanticKind is distinct. Slot swaps or kind coercions require an explicit validated mapping. Agent and patient role bindings remain ordered. No positive conclusion is licensed; any attempted output in [\"AGENT:object-b\",\"PATIENT:person-a\"] is prohibited. The declared task is: Determine whether object-b is also the AGENT."
     },
     {
       "id": "USG-BENCH-SEMANTIC-KIND-001",
@@ -808,7 +816,8 @@
         "required_derivations": [],
         "preserved_item_ids": []
       },
-      "determinism_required": true
+      "determinism_required": true,
+      "rationale": "Role bindings are ordered and typed, and SemanticKind is distinct. Slot swaps or kind coercions require an explicit validated mapping. STATE and PROCESS kinds are not coerced. No positive conclusion is licensed; any attempted output in [\"KIND_MATCH:tired:PROCESS\"] is prohibited. The declared task is: Use a rule requiring PROCESS on an expression grounded as STATE."
     },
     {
       "id": "USG-BENCH-MODALITY-001",
@@ -875,7 +884,8 @@
         "required_derivations": [],
         "preserved_item_ids": []
       },
-      "determinism_required": true
+      "determinism_required": true,
+      "rationale": "Possibility, attribution, tense, and temporal direction are independent semantic distinctions and cannot be strengthened or reversed silently. Possibility does not assert actuality. No positive conclusion is licensed; any attempted output in [\"ACTUAL:RAIN\"] is prohibited. The declared task is: Determine whether POSSIBLE(RAIN) licenses actual-world RAIN."
     },
     {
       "id": "USG-BENCH-ATTRIBUTION-001",
@@ -947,7 +957,8 @@
         "required_derivations": [],
         "preserved_item_ids": []
       },
-      "determinism_required": true
+      "determinism_required": true,
+      "rationale": "Possibility, attribution, tense, and temporal direction are independent semantic distinctions and cannot be strengthened or reversed silently. An attributed belief is not the narrator's assertion. No positive conclusion is licensed; any attempted output in [\"SOURCE_ASSERTED:ACTUAL:LEFT(bob)\"] is prohibited. The declared task is: Determine whether the attributed belief is an unqualified actual-world source assertion."
     },
     {
       "id": "USG-BENCH-TEMPORAL-DIRECTION-001",
@@ -1056,7 +1067,8 @@
         ],
         "preserved_item_ids": []
       },
-      "determinism_required": true
+      "determinism_required": true,
+      "rationale": "Possibility, attribution, tense, and temporal direction are independent semantic distinctions and cannot be strengthened or reversed silently. BEFORE remains directed. The expected conclusion set is [\"BEFORE:departure:arrival\"]; the prohibited set is [\"BEFORE:arrival:departure\"]. The declared task is: Return the represented temporal order without reversing its operands."
     },
     {
       "id": "USG-BENCH-CONTEXT-FICTION-001",
@@ -1128,7 +1140,8 @@
         "required_derivations": [],
         "preserved_item_ids": []
       },
-      "determinism_required": true
+      "determinism_required": true,
+      "rationale": "Assertions remain within their declared context. Fictional, hypothetical, belief, and actual-world contexts cannot be merged without an explicit rule. Fictional context does not transfer into WORLD. No positive conclusion is licensed; any attempted output in [\"ASSERTED:DRAGON_EXISTS@world\"] is prohibited. The declared task is: Determine whether DRAGON_EXISTS is asserted in world."
     },
     {
       "id": "USG-BENCH-EVIDENCE-ALIGN-001",
@@ -1202,7 +1215,8 @@
         "required_derivations": [],
         "preserved_item_ids": []
       },
-      "determinism_required": true
+      "determinism_required": true,
+      "rationale": "Exact quote alignment is only source alignment. Semantic support, relevance, corroboration, and conflict are separate assessments; offsets use Unicode code points. Exact quote alignment does not establish semantic support. No positive conclusion is licensed; any attempted output in [\"ENTAILS:evidence-1:power-supplied\"] is prohibited. The declared task is: Assess alignment and support as independent axes."
     },
     {
       "id": "USG-BENCH-EVIDENCE-UNICODE-001",
@@ -1274,7 +1288,8 @@
         "required_derivations": [],
         "preserved_item_ids": []
       },
-      "determinism_required": true
+      "determinism_required": true,
+      "rationale": "Exact quote alignment is only source alignment. Semantic support, relevance, corroboration, and conflict are separate assessments; offsets use Unicode code points. Unicode code-point spans remain correct after emoji. No positive conclusion is licensed; any attempted output in [] is prohibited. The declared task is: Validate the exact source span for Alex using code-point offsets."
     },
     {
       "id": "USG-BENCH-EVIDENCE-IRRELEVANT-001",
@@ -1355,7 +1370,8 @@
         "required_derivations": [],
         "preserved_item_ids": []
       },
-      "determinism_required": true
+      "determinism_required": true,
+      "rationale": "Exact quote alignment is only source alignment. Semantic support, relevance, corroboration, and conflict are separate assessments; offsets use Unicode code points. An aligned but irrelevant quote is not support. No positive conclusion is licensed; any attempted output in [\"SUPPORTS:evidence-1:raining\"] is prohibited. The declared task is: Assess exact alignment separately from relevance/support."
     },
     {
       "id": "USG-BENCH-INFERENCE-AND-ELIMINATION-001",
@@ -1470,7 +1486,8 @@
         ],
         "preserved_item_ids": []
       },
-      "determinism_required": true
+      "determinism_required": true,
+      "rationale": "A conclusion is licensed only by an explicit test reference rule with all required premises and exact semantics. Relation labels do not imply unstated closure properties. Conjunction elimination requires its declared rule. The expected conclusion set is [\"ASSERTED:A@world\"]; the prohibited set is []. The declared task is: Apply the benchmark's explicit left-conjunction-elimination rule."
     },
     {
       "id": "USG-BENCH-UNLICENSED-TRANSITIVITY-001",
@@ -1531,7 +1548,8 @@
         "required_derivations": [],
         "preserved_item_ids": []
       },
-      "determinism_required": true
+      "determinism_required": true,
+      "rationale": "A conclusion is licensed only by an explicit test reference rule with all required premises and exact semantics. Relation labels do not imply unstated closure properties. CAUSE labels do not imply transitivity. No positive conclusion is licensed; any attempted output in [\"CAUSE:a:c\"] is prohibited. The declared task is: Determine whether CAUSE(a,c) follows without a transitivity rule."
     },
     {
       "id": "USG-BENCH-OPEN-WORLD-001",
@@ -1596,7 +1614,8 @@
         "required_derivations": [],
         "preserved_item_ids": []
       },
-      "determinism_required": true
+      "determinism_required": true,
+      "rationale": "Open-world absence is not negation. Negation by absence is permitted only for a named domain explicitly declared closed and complete under a reference policy. Missing records in an open world do not imply negation. No positive conclusion is licensed; any attempted output in [\"NOT:HAS_LICENSE(person-b)\"] is prohibited. The declared task is: Determine whether absent HAS_LICENSE(person-b) means NOT HAS_LICENSE(person-b)."
     },
     {
       "id": "USG-BENCH-CLOSED-WORLD-001",
@@ -1709,7 +1728,8 @@
         ],
         "preserved_item_ids": []
       },
-      "determinism_required": true
+      "determinism_required": true,
+      "rationale": "Open-world absence is not negation. Negation by absence is permitted only for a named domain explicitly declared closed and complete under a reference policy. Complete closed-domain policy permits declared negation by absence. The expected conclusion set is [\"NOT:HAS_LICENSE(person-b)\"]; the prohibited set is []. The declared task is: Evaluate HAS_LICENSE(person-b) under the explicitly complete closed-domain rule."
     },
     {
       "id": "USG-BENCH-CLOSED-WORLD-INCOMPLETE-002",
@@ -1764,7 +1784,8 @@
         "required_derivations": [],
         "preserved_item_ids": []
       },
-      "determinism_required": true
+      "determinism_required": true,
+      "rationale": "Open-world absence is not negation. Negation by absence is permitted only for a named domain explicitly declared closed and complete under a reference policy. An incomplete closed domain does not license absence-as-negation. No positive conclusion is licensed; any attempted output in [\"NOT:HAS_LICENSE(person-b)\"] is prohibited. The declared task is: Evaluate missing HAS_LICENSE(person-b) against a domain marked incomplete."
     },
     {
       "id": "USG-BENCH-CORROBORATION-001",
@@ -1837,7 +1858,8 @@
         "required_derivations": [],
         "preserved_item_ids": []
       },
-      "determinism_required": true
+      "determinism_required": true,
+      "rationale": "Independent corroboration requires independent evidence sources or observations. Repeated records derived from one source do not establish independence. Two quotations from one source are not independent corroboration. No positive conclusion is licensed; any attempted output in [\"CORROBORATED:claim-10\"] is prohibited. The declared task is: Determine whether the two evidence records establish independent corroboration."
     },
     {
       "id": "USG-BENCH-AMBIGUOUS-DEFINITION-001",
@@ -1917,7 +1939,8 @@
           "open-expression"
         ]
       },
-      "determinism_required": true
+      "determinism_required": true,
+      "rationale": "A matching label is not a unique definition identity. Multiple compatible-looking definitions remain ambiguous until an exact ID and version are resolved. Duplicate definition labels remain ambiguous without exact identity. No positive conclusion is licensed; any attempted output in [] is prohibited. The declared task is: Resolve the label open without a unique definition ID/version."
     },
     {
       "id": "USG-BENCH-UNRESOLVED-REFERENCE-001",
@@ -1986,7 +2009,8 @@
           "arrival"
         ]
       },
-      "determinism_required": true
+      "determinism_required": true,
+      "rationale": "Unknown, unresolved, and ambiguous states are distinct. Missing antecedents or references must be preserved instead of guessed. An unresolved antecedent does not create a Referent. No positive conclusion is licensed; any attempted output in [] is prohibited. The declared task is: Resolve the agent only if an explicit antecedent identity link exists."
     },
     {
       "id": "USG-BENCH-CONFLICT-ASSERTIONS-001",
@@ -2058,7 +2082,8 @@
           "assert-closed"
         ]
       },
-      "determinism_required": true
+      "determinism_required": true,
+      "rationale": "Conflicting assertions or assessments must remain visible. The system must not choose a winner using recency, count, or an unstated confidence score. Conflicting assertions remain visible without arbitrary winner selection. No positive conclusion is licensed; any attempted output in [] is prohibited. The declared task is: Report conflict and preserve both assertions without choosing by recency or count."
     },
     {
       "id": "USG-BENCH-OPAQUE-PREMISE-001",
@@ -2122,7 +2147,8 @@
           "opaque-assertion"
         ]
       },
-      "determinism_required": true
+      "determinism_required": true,
+      "rationale": "Opaque constructions and model proposals without an enabled registered rule are not eligible premises and must remain explicitly unsupported. OPAQUE expressions are not inference-eligible. No positive conclusion is licensed; any attempted output in [\"RESULT_FROM_OPAQUE\"] is prohibited. The declared task is: Determine whether an opaque expression can be a premise for an enabled rule."
     },
     {
       "id": "USG-BENCH-MISSING-PREMISE-001",
@@ -2204,7 +2230,8 @@
         "required_derivations": [],
         "preserved_item_ids": []
       },
-      "determinism_required": true
+      "determinism_required": true,
+      "rationale": "A conclusion is licensed only by an explicit test reference rule with all required premises and exact semantics. Relation labels do not imply unstated closure properties. A conditional alone does not supply its antecedent. No positive conclusion is licensed; any attempted output in [\"ASSERTED:B\"] is prohibited. The declared task is: Use modus ponens only if both antecedent and conditional premises are asserted."
     },
     {
       "id": "USG-BENCH-PROVENANCE-001",
@@ -2318,7 +2345,8 @@
         ],
         "preserved_item_ids": []
       },
-      "determinism_required": true
+      "determinism_required": true,
+      "rationale": "Every emitted conclusion needs a reproducible derivation, including method, input/output references, and the exact rule identity/version where a rule is used. A conclusion has complete rule and input provenance. The expected conclusion set is [\"ASSERTED:B\"]; the prohibited set is []. The declared task is: Derive B and retain the exact rule version plus ordered premise references."
     },
     {
       "id": "USG-BENCH-DETERMINISM-001",
@@ -2388,7 +2416,8 @@
         "required_derivations": [],
         "preserved_item_ids": []
       },
-      "determinism_required": true
+      "determinism_required": true,
+      "rationale": "The same input snapshot, reference policy, and execution configuration should yield equivalent structured output while preserving meaningful ordering. Repeated runs retain deterministic output and order. The expected conclusion set is [\"ASSERTED:A\",\"ASSERTED:B\"]; the prohibited set is []. The declared task is: Run the identical task twice and compare normalized semantic output."
     },
     {
       "id": "USG-BENCH-RESOURCE-INTERRUPTION-001",
@@ -2539,7 +2568,8 @@
           "minimum_preserved_items": 12
         }
       },
-      "determinism_required": true
+      "determinism_required": true,
+      "rationale": "A resource budget may interrupt computation but must not limit semantic representation. The result must be incomplete, diagnose interruption, and preserve all required input items. Interruption is incomplete, explicit, and loss-preserving. No positive conclusion is licensed; any attempted output in [] is prohibited. The declared task is: Interrupt after a small operation budget and preserve every input expression without truncation."
     },
     {
       "id": "USG-BENCH-LEXICAL-SIMILARITY-001",
@@ -2598,7 +2628,8 @@
         "required_derivations": [],
         "preserved_item_ids": []
       },
-      "determinism_required": true
+      "determinism_required": true,
+      "rationale": "Referent or concept identity requires explicit identity links. Surface-label equality or lexical similarity alone does not establish identity. Lexical similarity does not establish concept identity. No positive conclusion is licensed; any attempted output in [\"SAME_CONCEPT:bank-river:bank-finance\"] is prohibited. The declared task is: Determine whether matching labels or similarity alone prove identity/equivalence."
     },
     {
       "id": "USG-BENCH-EVIDENCE-CONFLICT-001",
@@ -2672,7 +2703,8 @@
           "e-dispute"
         ]
       },
-      "determinism_required": true
+      "determinism_required": true,
+      "rationale": "Exact quote alignment is only source alignment. Semantic support, relevance, corroboration, and conflict are separate assessments; offsets use Unicode code points. Conflicting evidence assessments do not become VERIFIED. No positive conclusion is licensed; any attempted output in [] is prohibited. The declared task is: Represent support and dispute together without automatic epistemic promotion."
     },
     {
       "id": "USG-BENCH-PROPOSAL-NOT-RULE-001",
@@ -2748,7 +2780,8 @@
           "expr-c"
         ]
       },
-      "determinism_required": true
+      "determinism_required": true,
+      "rationale": "Opaque constructions and model proposals without an enabled registered rule are not eligible premises and must remain explicitly unsupported. A model proposal is not an executable rule. No positive conclusion is licensed; any attempted output in [\"ASSERTED:C\"] is prohibited. The declared task is: Do not emit C solely because a model proposed it when no enabled matching rule exists."
     },
     {
       "id": "USG-BENCH-PAST-PRESENT-001",
@@ -2825,7 +2858,8 @@
         "required_derivations": [],
         "preserved_item_ids": []
       },
-      "determinism_required": true
+      "determinism_required": true,
+      "rationale": "Possibility, attribution, tense, and temporal direction are independent semantic distinctions and cannot be strengthened or reversed silently. Past tense does not silently become present tense. No positive conclusion is licensed; any attempted output in [\"PRESENT:ARRIVED(person-a)\"] is prohibited. The declared task is: Determine whether a past-tense assertion establishes the proposition in the present interval."
     },
     {
       "id": "USG-BENCH-STATUS-DISTINCTION-001",
@@ -2886,7 +2920,8 @@
           "ambiguous-item"
         ]
       },
-      "determinism_required": true
+      "determinism_required": true,
+      "rationale": "Unknown, unresolved, and ambiguous states are distinct. Missing antecedents or references must be preserved instead of guessed. UNKNOWN, UNRESOLVED, and AMBIGUOUS remain distinct. No positive conclusion is licensed; any attempted output in [] is prohibited. The declared task is: Preserve all distinct statuses without normalizing them to one generic unresolved state."
     }
   ]
 }
