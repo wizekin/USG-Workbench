@@ -5,8 +5,8 @@ This benchmark extension is separate from the frozen compact
 USG-SEM/1.0 document plus an explicit task; compact snapshots are never
 coerced into canonical executor inputs.
 
-The executor test suite constructs and validates the canonical documents
-against `specifications/usg-sem-1.0.schema.json`, then evaluates positive
+The fixture bundle contains complete canonical documents and the executor
+test suite validates every one against `specifications/usg-sem-1.0.schema.json`, then evaluates positive
 Modus Ponens and left-conjunction elimination cases plus converse rejection,
 context/attribution mismatch, disputed and unknown premises, ambiguous and
 unresolved expressions, disabled rules, and resource interruption.
