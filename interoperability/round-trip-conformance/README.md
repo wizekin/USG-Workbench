@@ -60,9 +60,9 @@ Implemented in `interoperability/python_adapter/reverse.py` and exported as
 - Reports unsupported records and fields; no guessed source association or
   constructor coercion is used.
 
-Tests are in `tests/test_python_reverse_serializer.py` and are added to the
-interoperability CI workflow. Step 4B is not complete until CI and the semantic
-invariant review pass.
+Tests are in `tests/test_python_reverse_serializer.py` and are included in the
+interoperability CI workflow. PR #5 is merged and its implementation/CI checks
+passed. The broader cross-boundary semantic invariant suite remains Step 4D.
 
 ### 4C — Workbench reconstruction adapter — implementation in progress
 
@@ -85,7 +85,9 @@ Implemented on `phase1/workbench-reconstruction` in
   if verified, it is exposed only as inert archival metadata.
 
 The implementation has a dedicated Node test suite wired into interoperability
-CI. Step 4C remains pending until that suite and CI pass.
+CI. The PR #6 CI run passed, including the new reconstruction tests and the
+immutable-baseline check. Step 4C is awaiting semantic review; Step 4D remains
+the separate end-to-end invariant suite.
 
 ### 4D — semantic invariant suite
 
