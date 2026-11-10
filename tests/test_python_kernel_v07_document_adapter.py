@@ -51,7 +51,7 @@ class KernelV07DocumentAdapterTests(unittest.TestCase):
                     "referentRef": "test:referent",
                     "antecedentMentionRef": "test:mention-1",
                     "antecedentReferentRef": "test:referent",
-                    "sourceSpan": {"sourceRef": "test:source", "start": 10, "end": 14,
+                    "sourceSpan": {"sourceRef": "test:source", "start": 11, "end": 15,
                                    "offsetUnit": "unicode_code_point"},
                 },
             ],
