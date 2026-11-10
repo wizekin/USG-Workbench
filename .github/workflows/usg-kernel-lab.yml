@@ -5,6 +5,11 @@ on:
     paths:
       - "tools/usg-kernel-lab/**"
       - "tests/test_usg_kernel_lab.py"
+      - "tests/test_phase3_kernel_lab_integration.py"
+      - "tools/usg_local_api_v1_0_0/**"
+      - "tools/document_analysis_services_v1_0_0/**"
+      - "tools/scope_aware_rules_v1_0_0/**"
+      - "tools/semantic_graph_store_v1_0_0/**"
       - "interoperability/python_adapter/document_v07.py"
       - "implementations/python-kernel/v0.7.0/**"
       - "specifications/usg-sem-1.0.schema.json"
@@ -12,6 +17,11 @@ on:
       - "tools/semantic_inference_v1_0_0/**"
       - "tools/semantic_evidence_assessment_v1_0_0/**"
       - "tools/semantic_grounding_v1_0_0/**"
+      - "tools/usg_local_api_v1_0_0/**"
+      - "tools/document_analysis_services_v1_0_0/**"
+      - "tools/scope_aware_rules_v1_0_0/**"
+      - "tools/semantic_graph_store_v1_0_0/**"
+      - "tests/test_phase3_kernel_lab_integration.py"
       - "benchmarks/semantic-reasoning/query-v1.0.0/**"
       - "benchmarks/semantic-reasoning/executor-v1.0.0/**"
       - "benchmarks/semantic-reasoning/evidence-v1.0.0/**"
@@ -43,5 +53,7 @@ jobs:
         env:
           PYTHONPATH: implementations/python-kernel/v0.7.0
         run: python -m unittest discover -s tests -p "test_usg_kernel_lab.py" -v
-      - name: Compile server and Phase 2 query dependencies
-        run: python -m compileall -q tools/usg-kernel-lab tools/semantic_query_interface_v1_0_0 tools/semantic_inference_v1_0_0 tools/semantic_evidence_assessment_v1_0_0 tools/semantic_grounding_v1_0_0
+      - name: Test persistent Kernel Lab API and SQLite integration
+        run: python -m unittest discover -s tests -p "test_phase3_kernel_lab_integration.py" -v
+      - name: Compile server and reasoning dependencies
+        run: python -m compileall -q tools/usg-kernel-lab tools/usg_local_api_v1_0_0 tools/document_analysis_services_v1_0_0 tools/scope_aware_rules_v1_0_0 tools/semantic_graph_store_v1_0_0 tools/semantic_query_interface_v1_0_0 tools/semantic_inference_v1_0_0 tools/semantic_evidence_assessment_v1_0_0 tools/semantic_grounding_v1_0_0
