@@ -1,4 +1,4 @@
-name: Phase 3 Graph Store
+name: Phase 3 Graph Store and Backend Evaluation
 
 on:
   pull_request:
