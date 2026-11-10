@@ -1,0 +1,67 @@
+{
+  "policy_id": "USG-EVIDENCE-ASSESSMENT",
+  "policy_version": "1.0.0",
+  "usg_profile": "USG-SEM/1.0",
+  "axes": [
+    "SOURCE_SPAN_ALIGNMENT",
+    "DECLARED_SEMANTIC_SUPPORT",
+    "ASSERTED_RELATION_STATUS",
+    "EXACT_SCOPE_CONFLICT",
+    "SOURCE_DIVERSITY",
+    "SOURCE_INDEPENDENCE",
+    "EXTERNAL_VERIFICATION"
+  ],
+  "alignment": {
+    "offset_unit": "unicode_code_point",
+    "exact_quote_required": true,
+    "source_hash_mismatch_effect": "UNVERIFIED",
+    "missing_source_effect": "UNRESOLVED",
+    "quote_mismatch_effect": "MISMATCH"
+  },
+  "semantic_support": {
+    "quote_alignment_is_support": false,
+    "relation_label_is_proof": false,
+    "derivation_is_evidence_support": false,
+    "automatic_support_promotion": false,
+    "declared_statuses_are_authoritative": false
+  },
+  "conflict": {
+    "comparison": [
+      "exact_expression_or_direct_NOT_complement",
+      "exact_context_reference",
+      "exact_context_kind",
+      "exact_commitment",
+      "exact_attributed_referent"
+    ],
+    "eligible_epistemic_statuses": [
+      "SOURCE_ASSERTED",
+      "DISPUTED"
+    ],
+    "winner_selection": "FORBIDDEN",
+    "recency_tiebreak": "FORBIDDEN",
+    "frequency_tiebreak": "FORBIDDEN",
+    "confidence_tiebreak": "FORBIDDEN"
+  },
+  "corroboration": {
+    "distinct_record_ids_establish_independence": false,
+    "distinct_uris_establish_independence": false,
+    "matching_source_hash_or_uri_indicates_shared_or_possible_lineage": true,
+    "independence_default": "NOT_ESTABLISHED",
+    "corroboration_default": "NOT_ESTABLISHED"
+  },
+  "verification": {
+    "external_declarations_are_authoritative": false,
+    "unregistered_verifier_effect": "DECLARED_UNVERIFIED",
+    "verification_default": "NOT_PROVIDED"
+  },
+  "invariants": {
+    "truth_promotion": false,
+    "semantic_support_from_quote_alignment": false,
+    "corroboration_without_independence": false,
+    "implicit_source_independence": false,
+    "conflict_winner_selection": false,
+    "human_review_gate": false,
+    "canonical_document_mutation": false,
+    "semantic_truncation": false
+  }
+}

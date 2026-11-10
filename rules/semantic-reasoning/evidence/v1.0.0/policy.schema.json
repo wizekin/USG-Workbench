@@ -1,0 +1,222 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wizekin.github.io/USG-Workbench/evidence-assessment-policy-1.0.0.schema.json",
+  "title": "USG Evidence Assessment Policy 1.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "policy_id",
+    "policy_version",
+    "usg_profile",
+    "axes",
+    "alignment",
+    "semantic_support",
+    "conflict",
+    "corroboration",
+    "verification",
+    "invariants"
+  ],
+  "properties": {
+    "policy_id": {
+      "const": "USG-EVIDENCE-ASSESSMENT"
+    },
+    "policy_version": {
+      "const": "1.0.0"
+    },
+    "usg_profile": {
+      "const": "USG-SEM/1.0"
+    },
+    "axes": {
+      "type": "array",
+      "uniqueItems": true,
+      "minItems": 7,
+      "items": {
+        "type": "string"
+      }
+    },
+    "alignment": {
+      "type": "object",
+      "required": [
+        "offset_unit",
+        "exact_quote_required",
+        "source_hash_mismatch_effect",
+        "missing_source_effect",
+        "quote_mismatch_effect"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "offset_unit": {
+          "const": "unicode_code_point"
+        },
+        "exact_quote_required": {
+          "const": true
+        },
+        "source_hash_mismatch_effect": {
+          "const": "UNVERIFIED"
+        },
+        "missing_source_effect": {
+          "const": "UNRESOLVED"
+        },
+        "quote_mismatch_effect": {
+          "const": "MISMATCH"
+        }
+      }
+    },
+    "semantic_support": {
+      "type": "object",
+      "required": [
+        "quote_alignment_is_support",
+        "relation_label_is_proof",
+        "derivation_is_evidence_support",
+        "automatic_support_promotion",
+        "declared_statuses_are_authoritative"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "quote_alignment_is_support": {
+          "const": false
+        },
+        "relation_label_is_proof": {
+          "const": false
+        },
+        "derivation_is_evidence_support": {
+          "const": false
+        },
+        "automatic_support_promotion": {
+          "const": false
+        },
+        "declared_statuses_are_authoritative": {
+          "const": false
+        }
+      }
+    },
+    "conflict": {
+      "type": "object",
+      "required": [
+        "comparison",
+        "eligible_epistemic_statuses",
+        "winner_selection",
+        "recency_tiebreak",
+        "frequency_tiebreak",
+        "confidence_tiebreak"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "comparison": {
+          "type": "array",
+          "minItems": 5,
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          }
+        },
+        "eligible_epistemic_statuses": {
+          "const": [
+            "SOURCE_ASSERTED",
+            "DISPUTED"
+          ]
+        },
+        "winner_selection": {
+          "const": "FORBIDDEN"
+        },
+        "recency_tiebreak": {
+          "const": "FORBIDDEN"
+        },
+        "frequency_tiebreak": {
+          "const": "FORBIDDEN"
+        },
+        "confidence_tiebreak": {
+          "const": "FORBIDDEN"
+        }
+      }
+    },
+    "corroboration": {
+      "type": "object",
+      "required": [
+        "distinct_record_ids_establish_independence",
+        "distinct_uris_establish_independence",
+        "matching_source_hash_or_uri_indicates_shared_or_possible_lineage",
+        "independence_default",
+        "corroboration_default"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "distinct_record_ids_establish_independence": {
+          "const": false
+        },
+        "distinct_uris_establish_independence": {
+          "const": false
+        },
+        "matching_source_hash_or_uri_indicates_shared_or_possible_lineage": {
+          "const": true
+        },
+        "independence_default": {
+          "const": "NOT_ESTABLISHED"
+        },
+        "corroboration_default": {
+          "const": "NOT_ESTABLISHED"
+        }
+      }
+    },
+    "verification": {
+      "type": "object",
+      "required": [
+        "external_declarations_are_authoritative",
+        "unregistered_verifier_effect",
+        "verification_default"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "external_declarations_are_authoritative": {
+          "const": false
+        },
+        "unregistered_verifier_effect": {
+          "const": "DECLARED_UNVERIFIED"
+        },
+        "verification_default": {
+          "const": "NOT_PROVIDED"
+        }
+      }
+    },
+    "invariants": {
+      "type": "object",
+      "required": [
+        "truth_promotion",
+        "semantic_support_from_quote_alignment",
+        "corroboration_without_independence",
+        "implicit_source_independence",
+        "conflict_winner_selection",
+        "human_review_gate",
+        "canonical_document_mutation",
+        "semantic_truncation"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "truth_promotion": {
+          "const": false
+        },
+        "semantic_support_from_quote_alignment": {
+          "const": false
+        },
+        "corroboration_without_independence": {
+          "const": false
+        },
+        "implicit_source_independence": {
+          "const": false
+        },
+        "conflict_winner_selection": {
+          "const": false
+        },
+        "human_review_gate": {
+          "const": false
+        },
+        "canonical_document_mutation": {
+          "const": false
+        },
+        "semantic_truncation": {
+          "const": false
+        }
+      }
+    }
+  }
+}
