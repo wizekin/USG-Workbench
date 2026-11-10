@@ -19,7 +19,7 @@ Mappings must be exact and documented. Unsupported or lossy mappings must be rep
 - Covers negation, modal force/flavor, quantifier structure, logical connectives, and explicit graph-scope conversion requirements.
 - Exact/conditional mappings are separated from ambiguous, partial, and unsupported readings.
 
-### Step 3 — document-level Python adapter (implementation in progress)
+### Step 3 — document-level Python adapter (completed)
 
 - [Python adapter package](python_adapter/README.md)
 - Canonical contract: [USG-SEM/1.0](../specifications/USG-SEM-1.0.md)
