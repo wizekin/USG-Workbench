@@ -137,6 +137,7 @@ class Phase5SQLiteResourceCatalogueTests(unittest.TestCase):
         manifest = self.catalogue.manifest()
         self.assertEqual(len(manifest["resources"]), len(descriptors))
         self.assertEqual(manifest["registry_id"], "usg-v0.2-resource-catalogue")
+        self.assertEqual(manifest["schema_version"], "sqlite-semantic-resource-catalogue/0.1.0")
         self.assertEqual(len(self.catalogue.digest()), 64)
 
     def test_catalogue_version_increments_for_registry_changes_but_not_usage_events(self):
