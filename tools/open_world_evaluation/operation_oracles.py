@@ -37,6 +37,34 @@ SUITES: dict[str, dict[str, Any]] = {
         "oracle": "gold role bindings/spans, negative abstention, and declared development-only candidate gate",
         "claim": "mixed_gold_and_development_oracles",
     },
+    "python-usg-sem-document-adapters-v15": {
+        "tests": ["test_python_kernel_v15_document_adapter.py"],
+        "oracle": "complete multi-family fixture: native projection, round-trip preservation, cross-family edits, and canonical-only record retention",
+        "claim": "fixture_backed_adapter_contract_conformance",
+        "python_paths": [
+            "implementations/python-kernel/v0.5.0",
+            "implementations/python-kernel/v0.8.0",
+            "implementations/python-kernel/v0.9.0",
+            "implementations/python-kernel/v1.0.0",
+            "implementations/python-kernel/v1.1.0",
+            "implementations/python-kernel/v1.2.0",
+            "implementations/python-kernel/v1.2.1",
+            "implementations/python-kernel/v1.3.0",
+            "implementations/python-kernel/v1.4.0",
+        ],
+    },
+    "python-native-model-boundaries": {
+        "tests": [
+            "implementations/python-kernel/v0.6.0/tests/test_referent_identity.py",
+            "implementations/python-kernel/v1.4.0/tests/test_native_definitions.py",
+        ],
+        "oracle": "versioned native model constructor invariants, typed-reference boundaries, identity semantics, and definition catalogue invariants",
+        "claim": "native_model_contract_conformance",
+        "python_paths": [
+            "implementations/python-kernel/v0.6.0/usg_identity_v06",
+            "implementations/python-kernel/v1.4.0/usg_definitions_v14",
+        ],
+    },
 }
 
 
@@ -62,7 +90,11 @@ def run_suites() -> dict[str, Any]:
             path = TESTS / filename
             if not path.is_file():
                 raise FileNotFoundError(f"registered operation-oracle test is missing: {filename}")
-            module = _load_module(path, "ow11_" + filename.replace(".", "_"))
+            for relative in specification.get("python_paths", []):
+                resolved = str(ROOT / relative)
+                if resolved not in sys.path:
+                    sys.path.insert(0, resolved)
+            module = _load_module(path, "ow12_" + filename.replace(".", "_"))
             target_tests.append(unittest.defaultTestLoader.loadTestsFromModule(module))
         suite = unittest.TestSuite(target_tests)
         result = unittest.TestResult()
@@ -98,7 +130,10 @@ def run_suites() -> dict[str, Any]:
         "limitations": [
             "Operation suites use controlled repository fixtures; they are not a naturalistic open-world corpus.",
             "The Phase 6 v0.4.1 nominal candidate gate is development self-consistency on a fixture-derived lexicon, not held-out accuracy.",
-            "Only the listed targets receive operation-level suites in OW-11; other targets remain import-smoke-only or not-executed.",
+            "Operation-level suites cover only the listed targets and fixtures; other targets remain import-smoke-only or not-executed.",
+            "The v1.5 composed-adapter suite is a controlled fixture population, not an independently sampled production corpus.",
+            "Native model suites exercise selected v0.6 referent-identity and v1.4 definition-model boundaries, not every versioned model package.",
+            "Browser checks exercise the local Workbench UI workflow only; they do not assess semantic correctness.",
             "Passing tests establish only the assertions encoded by their independent fixture oracles.",
         ],
     }
