@@ -89,6 +89,16 @@ SUITES: dict[str, dict[str, Any]] = {
         "oracle": "source-aligned Unicode offset conversion, USG-SEM/1.0 schema validation, explicit predicate/operator structure, unresolved-reference preservation, and acceptance-boundary archival",
         "claim": "fixture_backed_adapter_contract_conformance",
     },
+    "phase4-bounded-interpreter": {
+        "tests": ["test_phase4_integrated_api.py"],
+        "oracle": "controlled English and Arabic interpretation fixtures with exact completion classes, canonical document shape, unresolved abstention, multi-sentence unsupported behavior, and optional SQLite persistence",
+        "claim": "bounded_interpreter_fixture_conformance",
+    },
+    "phase5-bounded-interpreter": {
+        "tests": ["test_phase5_integrated_api.py"],
+        "oracle": "versioned pipeline stage artifacts, deterministic resource catalogue digest, transaction rollback/role boundary, idempotent run replay, and exact persisted source snapshot assertions",
+        "claim": "bounded_interpreter_and_resource_contract_conformance",
+    },
 }
 
 
