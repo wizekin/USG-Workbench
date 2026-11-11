@@ -91,17 +91,13 @@ def _remove_path(value: dict[str, Any], path: str) -> None:
         current.pop(parts[-1], None)
 
 
-def stable_target_result_digest(
+def stable_target_result_projection(
     record: dict[str, Any],
     target_id: str,
     *,
     profiles: dict[str, Any] | None = None,
-) -> tuple[str | None, str | None]:
-    """Return stable target-result digest and observed pipeline version.
-
-    Only target-specific, explicitly reviewed volatile JSON paths are removed.
-    Unknown targets and pipeline-version mismatches are intentionally not comparable.
-    """
+) -> tuple[dict[str, Any] | None, str | None]:
+    """Return the normalized target-result projection and observed pipeline version."""
     profiles = profiles or load_stability_profiles()
     profile = profiles["profiles"].get(target_id)
     target_result = _target_result(record)
@@ -116,7 +112,48 @@ def stable_target_result_digest(
     stable = copy.deepcopy(target_result)
     for path in profile["volatile_json_paths"]:
         _remove_path(stable, path)
-    return _sha256(_canonical_bytes(stable)), str(observed_version)
+    return stable, str(observed_version)
+
+
+def stable_target_result_digest(
+    record: dict[str, Any],
+    target_id: str,
+    *,
+    profiles: dict[str, Any] | None = None,
+) -> tuple[str | None, str | None]:
+    stable, version = stable_target_result_projection(record, target_id, profiles=profiles)
+    if stable is None:
+        return None, version
+    return _sha256(_canonical_bytes(stable)), version
+
+
+def _differing_json_paths(left: Any, right: Any, *, limit: int = 32) -> list[str]:
+    differences: list[str] = []
+
+    def visit(a: Any, b: Any, path: str) -> None:
+        if len(differences) >= limit:
+            return
+        if isinstance(a, dict) and isinstance(b, dict):
+            for key in sorted(set(a) | set(b)):
+                child = f"{path}.{key}" if path else str(key)
+                if key not in a or key not in b:
+                    differences.append(child)
+                else:
+                    visit(a[key], b[key], child)
+                if len(differences) >= limit:
+                    return
+        elif isinstance(a, list) and isinstance(b, list):
+            if len(a) != len(b):
+                differences.append(path + ".[length]")
+            for index, (item_a, item_b) in enumerate(zip(a, b)):
+                visit(item_a, item_b, f"{path}[{index}]")
+                if len(differences) >= limit:
+                    return
+        elif a != b:
+            differences.append(path or "$")
+
+    visit(left, right, "")
+    return differences
 
 
 def compare_replay(
@@ -126,16 +163,26 @@ def compare_replay(
     profiles: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     target_id = str(original.get("target", {}).get("component_id", "unknown"))
-    original_digest, original_version = stable_target_result_digest(
+    original_projection, original_version = stable_target_result_projection(
         original, target_id, profiles=profiles
     )
-    replay_digest, replay_version = stable_target_result_digest(
+    replay_projection, replay_version = stable_target_result_projection(
         replayed, target_id, profiles=profiles
+    )
+    original_digest = (
+        _sha256(_canonical_bytes(original_projection))
+        if original_projection is not None else None
+    )
+    replay_digest = (
+        _sha256(_canonical_bytes(replay_projection))
+        if replay_projection is not None else None
     )
     outcome_matches = original.get("outcome") == replayed.get("outcome")
     comparable = original_digest is not None and replay_digest is not None
-    target_result_matches = (
-        original_digest == replay_digest if comparable else None
+    target_result_matches = original_digest == replay_digest if comparable else None
+    differing_paths = (
+        _differing_json_paths(original_projection, replay_projection)
+        if comparable and not target_result_matches else []
     )
 
     if not outcome_matches:
@@ -160,6 +207,7 @@ def compare_replay(
         "original_target_result_sha256": original_digest,
         "replay_target_result_sha256": replay_digest,
         "target_result_matches": target_result_matches,
+        "differing_json_paths": differing_paths,
         "original_pipeline_version": original_version,
         "replay_pipeline_version": replay_version,
         "status": status,
@@ -349,6 +397,11 @@ def main(argv: list[str] | None = None) -> int:
         "tested_commit_sha": report["tested_commit_sha"],
         "replayed_record_count": report["replayed_record_count"],
         "counts": report["counts"],
+        "mismatches": [
+            {"case_id": item["case_id"], "status": item["status"],
+             "differing_json_paths": item.get("differing_json_paths", [])}
+            for item in report["entries"] if item["status"] in {"outcome_mismatch", "target_result_mismatch"}
+        ],
         "output": str(args.output),
     }, ensure_ascii=False, indent=2))
     return 1 if report["status"] == "differences_found" else 0
