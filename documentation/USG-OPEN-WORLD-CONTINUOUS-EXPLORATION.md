@@ -7,10 +7,10 @@
 
 | Trigger | UTC schedule / event | Base prompts | Target-matrix cases | Diagnostic cases | Total planned cases |
 |---|---|---:|---:|---:|---:|
-| Daily smoke | 02:15 UTC daily | 20 | 60 | 106 | 166 |
-| Weekly deep | 03:30 UTC every Monday | 100 | 300 | 106 | 406 |
-| Release | Published GitHub release | 250 | 750 | 106 | 856 |
-| On demand | Manual workflow dispatch | 1–2,000 (default 100) | 3–6,000 | 106 | 109–6,106 |
+| Daily smoke | 02:15 UTC daily | 20 | 220 | 106 | 326 |
+| Weekly deep | 03:30 UTC every Monday | 100 | 1,100 | 106 | 1,206 |
+| Release | Published GitHub release | 250 | 2,750 | 106 | 2,856 |
+| On demand | Manual workflow dispatch | 1–2,000 (default 100) | 11–22,000 | 106 | 117–22,106 |
 
 Each campaign runs the same versioned random generator, controlled diagnostic importer, isolated runner, scorer, and append-only report publisher. The profile resolver enforces campaign limits before generation. One concurrency group prevents scheduled and manually requested runs from overlapping; queued work is not cancelled.
 
@@ -19,7 +19,7 @@ Each campaign runs the same versioned random generator, controlled diagnostic im
 Every run:
 - pins the tested Git commit;
 - records the campaign cadence and seed in a generation manifest;
-- executes the three currently registered targets, with the browser-only JavaScript interface explicitly marked `not_executed`;
+- executes all 11 registered component profiles; Python model/service families currently receive import-only smoke checks (`partial`, semantic accuracy unassessed), while browser-only JavaScript targets remain `not_executed`;
 - preserves separate random and controlled diagnostic populations;
 - assigns semantic scores only to imported diagnostic fields with an independent oracle declaration;
 - produces JSON/Markdown report bundles and a SHA-256 manifest;
@@ -30,7 +30,7 @@ The naturalistic population remains empty until a dataset passes source-license,
 ## Resource and safety policy
 
 - Daily 20, weekly 100, and release 250 prompts are bounded default budgets.
-- Manual runs are limited to 2,000 base prompts.
+- Manual runs are limited to 2,000 base prompts across all 11 registered target profiles (up to 22,000 random target cases plus diagnostics).
 - Each case has its own wall-time and memory limit; the runner also applies the per-job ceiling.
 - Test content is passed as JSON data, not shell code.
 - The workflow compares target-specific failure signatures with prior campaign reports. Structural/runtime failures can produce up to 150 formatting-only follow-up cases per campaign; unsupported/ambiguous/partial/not-executed outcomes do not automatically trigger mutations. The follow-up cases are executed and rescored before the final report is created.
