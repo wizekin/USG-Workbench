@@ -6,12 +6,17 @@ import json
 from pathlib import Path
 import sys
 from collections import Counter, defaultdict
+from statistics import median
+from time import perf_counter
+import tracemalloc
+from hashlib import sha256
 
 from jsonschema import Draft202012Validator
+from tools.usg_interpretation_v0_2_0 import Phase5InterpretationService, bundled_resource_descriptors
 
 ROOT = Path(__file__).resolve().parents[2]
-CORPUS = ROOT / "benchmarks/phase5-interpretation/v0.2.0/corpus.json"
-SCHEMA = ROOT / "benchmarks/phase5-interpretation/v0.2.0/corpus.schema.json"
+CORPUS = ROOT / "benchmarks/phase5-interpretation-v0.2.1/corpus.json"
+SCHEMA = ROOT / "benchmarks/phase5-interpretation-v0.2.1/corpus.schema.json"
 
 
 def load_and_validate(path: Path = CORPUS) -> dict:
@@ -38,10 +43,8 @@ def load_and_validate(path: Path = CORPUS) -> dict:
                 raise ValueError(f"positive case must annotate AGENT/ACTION/PATIENT: {case['id']}")
         elif case["expected_roles"] or case["expected_role_spans"] or case["expected_construction"] is not None:
             raise ValueError(f"negative/ambiguous case must not invent a unique role graph: {case['id']}")
-        if case["gold_class"] == "NEGATIVE" and case["expected_completion_status"] != "UNSUPPORTED":
-            raise ValueError(f"negative case must expect UNSUPPORTED: {case['id']}")
-        if case["gold_class"] == "AMBIGUOUS" and case["expected_completion_status"] != "AMBIGUOUS":
-            raise ValueError(f"ambiguous case must expect AMBIGUOUS: {case['id']}")
+        elif case["expected_completion_status"] is not None:
+            raise ValueError(f"negative/ambiguous target-class cases must leave whole-pipeline status unscored: {case['id']}")
     return corpus
 
 
@@ -82,7 +85,8 @@ def evaluate(corpus: dict, predictions: dict) -> dict:
     case_rows = []
     for lang in sorted({x["language"] for x in corpus["cases"]}):
         gold = [x for x in corpus["cases"] if x["language"] == lang]
-        tp = fp = fn = status_ok = roles_ok = spans_ok = positive_total = 0
+        tp = fp = fn = status_ok = status_total = roles_ok = spans_ok = positive_total = 0
+        negative_total = ambiguous_total = negative_abstentions = ambiguous_abstentions = 0
         for case in gold:
             pred = pred_by_id.get(case["id"], {})
             predicted_status = pred.get("completion_status")
@@ -92,14 +96,23 @@ def evaluate(corpus: dict, predictions: dict) -> dict:
             predicted_positive = predicted_construction is not None
             if gold_positive:
                 positive_total += 1
+            elif case["gold_class"] == "NEGATIVE":
+                negative_total += 1
+                negative_abstentions += int(not predicted_positive)
+            else:
+                ambiguous_total += 1
+                ambiguous_abstentions += int(not predicted_positive)
             if predicted_positive and gold_positive and predicted_construction == gold_construction:
                 tp += 1
             elif predicted_positive:
                 fp += 1
             if gold_positive and not (predicted_positive and predicted_construction == gold_construction):
                 fn += 1
-            status_match = predicted_status == case["expected_completion_status"]
-            status_ok += int(status_match)
+            expected_status = case["expected_completion_status"]
+            status_match = None if expected_status is None else predicted_status == expected_status
+            if expected_status is not None:
+                status_total += 1
+                status_ok += int(status_match)
             role_match = pred.get("role_bindings", {}) == case["expected_roles"]
             if gold_positive:
                 roles_ok += int(role_match)
@@ -124,6 +137,9 @@ def evaluate(corpus: dict, predictions: dict) -> dict:
                 "case_id": case["id"], "language": lang,
                 "gold_class": case["gold_class"],
                 "status_match": status_match,
+                "expected_completion_status": expected_status,
+                "predicted_completion_status": predicted_status,
+                "predicted_construction_id": predicted_construction,
                 "construction_match": (predicted_construction == gold_construction),
                 "role_bindings_match": role_match,
                 "role_spans_match_and_valid": span_match and spans_valid,
@@ -133,12 +149,19 @@ def evaluate(corpus: dict, predictions: dict) -> dict:
         by_language[lang] = {
             "case_count": len(gold),
             "positive_gold_count": positive_total,
+            "negative_gold_count": negative_total,
+            "ambiguous_gold_count": ambiguous_total,
+            "negative_abstention_rate": negative_abstentions / negative_total if negative_total else 0.0,
+            "ambiguous_abstention_rate": ambiguous_abstentions / ambiguous_total if ambiguous_total else 0.0,
+            "nonpositive_unique_constructions": fp,
             "construction_true_positive": tp,
             "construction_false_positive": fp,
             "construction_false_negative": fn,
             "construction_precision": tp / predicted_positive_count if predicted_positive_count else 0.0,
             "construction_recall": tp / positive_total if positive_total else 0.0,
-            "completion_status_accuracy": status_ok / len(gold) if gold else 0.0,
+            "positive_completion_status_accuracy": status_ok / status_total if status_total else 0.0,
+            "completion_status_accuracy": status_ok / status_total if status_total else 0.0,
+            "positive_completion_status_cases": status_total,
             "role_binding_exact_accuracy": roles_ok / positive_total if positive_total else 0.0,
             "role_span_exact_and_valid_accuracy": spans_ok / positive_total if positive_total else 0.0,
             "missing_predictions": sum(1 for x in gold if x["id"] not in pred_by_id),
@@ -152,15 +175,132 @@ def evaluate(corpus: dict, predictions: dict) -> dict:
     }
 
 
+def quality_gate(evaluation: dict) -> dict:
+    """Apply per-language release gates to actual construction predictions."""
+    by_language = {}
+    for language, metrics in evaluation["by_language"].items():
+        checks = {
+            "construction_precision_at_least_0_95": metrics["construction_precision"] >= 0.95,
+            "construction_recall_at_least_0_90": metrics["construction_recall"] >= 0.90,
+            "exact_role_bindings": metrics["role_binding_exact_accuracy"] == 1.0,
+            "exact_valid_source_spans": metrics["role_span_exact_and_valid_accuracy"] == 1.0,
+            "zero_false_unique_constructions": metrics["nonpositive_unique_constructions"] == 0,
+            "negative_target_abstention": metrics["negative_abstention_rate"] == 1.0,
+            "ambiguous_target_abstention": metrics["ambiguous_abstention_rate"] == 1.0,
+        }
+        by_language[language] = {"checks": checks, "passed": all(checks.values())}
+    return {
+        "passed": all(item["passed"] for item in by_language.values()),
+        "by_language": by_language,
+        "policy": "Per-language gates; no cross-language aggregate can mask a failure.",
+    }
+
+
+def run_pipeline(corpus: dict) -> tuple[dict, dict]:
+    """Run the real deterministic Phase 5 service over every gold fixture."""
+    descriptors = [
+        {name: getattr(item, name) for name in item.__dataclass_fields__}
+        for item in bundled_resource_descriptors()
+    ]
+    manifest_bytes = json.dumps(
+        descriptors, ensure_ascii=False, sort_keys=True, separators=(",", ":"),
+        allow_nan=False,
+    ).encode("utf-8")
+    manifest_digest = sha256(manifest_bytes).hexdigest()
+    service = Phase5InterpretationService()
+    predictions = []
+    elapsed_ms = []
+    tracemalloc.start()
+    try:
+        for case in corpus["cases"]:
+            started = perf_counter()
+            result = service.interpret(
+                case["text"], case["language"],
+                resource_manifest_digest=manifest_digest,
+            )
+            elapsed_ms.append((perf_counter() - started) * 1000)
+            syntax = result["stages"]["syntax"]["artifact"]
+            lexical = result["stages"]["lexical"]["artifact"]
+            token_by_id = {
+                item["token"]["token_id"]: item["token"]
+                for item in lexical["tokens"]
+            }
+            syntax_candidates = [
+                candidate
+                for clause in syntax["clauses"]
+                for candidate in clause["candidates"]
+            ]
+            construction_id = None
+            role_bindings = {}
+            role_spans = {}
+            semantic = result["stages"]["semantic_composition"]["artifact"]
+            if (
+                result["completion_status"] == "COMPLETE"
+                and semantic["status"] == "COMPOSED"
+                and len(semantic["candidates"]) == 1
+                and len(syntax_candidates) == 1
+            ):
+                candidate = syntax_candidates[0]
+                construction_id = candidate["construction_id"]
+                for role, token_id in candidate["role_token_refs"]:
+                    token = token_by_id[token_id]
+                    role_bindings[role] = token["surface_text"]
+                    role_spans[role] = {
+                        "start": token["start"],
+                        "end": token["end"],
+                        "surface": token["surface_text"],
+                    }
+            predictions.append({
+                "case_id": case["id"],
+                "completion_status": result["completion_status"],
+                "construction_id": construction_id,
+                "role_bindings": role_bindings,
+                "role_spans": role_spans,
+            })
+        _, peak_bytes = tracemalloc.get_traced_memory()
+    finally:
+        tracemalloc.stop()
+    ordered = sorted(elapsed_ms)
+    p95_index = max(0, min(len(ordered) - 1, int(0.95 * len(ordered) + 0.999999) - 1))
+    corpus_bytes = json.dumps(
+        corpus, ensure_ascii=False, sort_keys=True, separators=(",", ":"),
+        allow_nan=False,
+    ).encode("utf-8")
+    performance = {
+        "case_count": len(elapsed_ms),
+        "corpus_sha256": sha256(corpus_bytes).hexdigest(),
+        "enabled_constructions_observed": sorted({
+            item["construction_id"] for item in predictions
+            if item["construction_id"] is not None
+        }),
+        "total_elapsed_ms": round(sum(elapsed_ms), 3),
+        "mean_case_elapsed_ms": round(sum(elapsed_ms) / len(elapsed_ms), 3) if elapsed_ms else 0.0,
+        "median_case_elapsed_ms": round(median(elapsed_ms), 3) if elapsed_ms else 0.0,
+        "p95_case_elapsed_ms": round(ordered[p95_index], 3) if ordered else 0.0,
+        "peak_traced_memory_bytes": peak_bytes,
+        "resource_manifest_digest": manifest_digest,
+        "measurement_note": "Single-process in-memory benchmark; tracemalloc excludes native allocator and OS RSS.",
+    }
+    return {"predictions": predictions}, performance
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--corpus", type=Path, default=CORPUS)
     parser.add_argument("--predictions", type=Path)
+    parser.add_argument("--run-pipeline", action="store_true", help="run the real Phase 5 service over the full gold corpus")
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
     corpus = load_and_validate(args.corpus)
     report = corpus_summary(corpus)
-    if args.predictions:
+    if args.run_pipeline and args.predictions:
+        parser.error("--run-pipeline and --predictions are mutually exclusive")
+    if args.run_pipeline:
+        predictions, performance = run_pipeline(corpus)
+        report["evaluation"] = evaluate(corpus, predictions)
+        report["quality_gate"] = quality_gate(report["evaluation"])
+        report["performance"] = performance
+    elif args.predictions:
         predictions = json.loads(args.predictions.read_text(encoding="utf-8"))
         report["evaluation"] = evaluate(corpus, predictions)
     else:
@@ -171,8 +311,9 @@ def main() -> int:
         args.output.write_text(encoded, encoding="utf-8")
     else:
         print(encoded, end="")
-    gates = report["minimum_fixture_gate"]
-    return 0 if all(gates.values()) else 1
+    fixture_gate_passed = all(report["minimum_fixture_gate"].values())
+    quality_gate_passed = report.get("quality_gate", {}).get("passed", True)
+    return 0 if fixture_gate_passed and quality_gate_passed else 1
 
 
 if __name__ == "__main__":
