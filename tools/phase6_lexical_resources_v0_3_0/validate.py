@@ -16,7 +16,7 @@ def validate_resource():
  cases={c["id"]:c for c in corpus["cases"]}
  keys=set()
  for entry in data["entries"]:
-  key=(entry["language"],entry["form"],entry["part_of_speech"])
+  key=(entry["language"],entry["form"],entry["part_of_speech"],entry["sense_id"])
   if key in keys: raise ValueError(f"duplicate lexical entry: {key}")
   keys.add(key)
   if entry["language_profile"]!=corpus["language_profiles"][entry["language"]]:
