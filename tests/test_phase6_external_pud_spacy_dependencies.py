@@ -19,8 +19,8 @@ class TestSpacyDependencyEvaluation(unittest.TestCase):
 
     def test_unlabeled_attachment_accuracy(self):
         sentences = [{"tokens": [
-            {"form": "Cats", "upos": "NOUN", "deprel": "nsubj", "gold_head_index": 1},
-            {"form": "run", "upos": "VERB", "deprel": "root", "gold_head_index": 1},
+            {"form": "Cats", "upos": "NOUN", "deprel": "nsubj", "gold_head_index": 1, "is_root": False},
+            {"form": "run", "upos": "VERB", "deprel": "root", "gold_head_index": 1, "is_root": True},
         ]}]
         predictions = [[{"head_index": 1}, {"head_index": 1}]]
         result = evaluate_predictions(sentences, predictions)
@@ -31,7 +31,7 @@ class TestSpacyDependencyEvaluation(unittest.TestCase):
         self.assertEqual(result["totals"]["root_attachment_accuracy"], 1.0)
 
     def test_rejects_token_count_mismatch(self):
-        sentences = [{"tokens": [{"form": "word", "upos": "NOUN", "deprel": "root", "gold_head_index": 0}]}]
+        sentences = [{"tokens": [{"form": "word", "upos": "NOUN", "deprel": "root", "gold_head_index": 0, "is_root": True}]}]
         with self.assertRaises(ValueError):
             evaluate_predictions(sentences, [[]])
 
