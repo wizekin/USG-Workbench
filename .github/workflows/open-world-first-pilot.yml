@@ -140,6 +140,7 @@ jobs:
           retention-days: 90
       - name: Publish campaign bundle through an append-only report pull request
         id: create-report-pr
+        continue-on-error: true
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
