@@ -246,6 +246,8 @@ def run() -> dict:
     predicted_status = Counter(item["status"] for item in predicted_adapted)
     predicted_span_failures = sum(item["span_alignment_failures"] for item in predicted_adapted)
     metrics = evaluate_candidate_sets(predicted_adapted, gold_adapted)
+    if metrics["gold_candidate_count"] == 0:
+        raise ValueError("Arabic PUD gold adapter produced zero candidates; refusing an empty-denominator evaluation")
 
     report = {
         "evaluation_type": "STANZA_TO_USG_NOMINAL_CANDIDATE_END_TO_END_ARABIC_PUD",
