@@ -2,7 +2,7 @@
 
 **Status:** IMPLEMENTED — benchmark acceptance pending  
 **Contract:** `USG-INTERPRET/0.3.0`  
-**Corrected gold:** `USG-INTERPRET-GOLD/0.3.1`  
+**Corrected gold:** `USG-INTERPRET-GOLD/0.3.2`  
 **Construction resource:** `phase6.predicate-argument-rules.candidate/0.3.0`
 
 ## Scope
@@ -17,7 +17,7 @@ The rules require lexical category and sense evidence in addition to token order
 
 ## Acceptance
 
-The analyzer is evaluated against all 400 corrected v0.3.1 fixtures. Each of the eight language/construction profiles must independently meet the frozen thresholds for precision, recall, participant roles, participant spans, predicate spans, grammatical markers, negative abstention, and ambiguity abstention. A successful unit test alone does not enable a broader grammar.
+The analyzer is evaluated against all 400 corrected v0.3.2 fixtures. Each of the eight language/construction profiles must independently meet the frozen thresholds for precision, recall, participant roles, participant spans, predicate spans, grammatical markers, negative abstention, and ambiguity abstention. A successful unit test alone does not enable a broader grammar.
 
 ## Limits
 
