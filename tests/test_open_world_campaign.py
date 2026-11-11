@@ -38,7 +38,21 @@ def make_case(case_id, population, target="phase4-bounded-interpreter"):
             "master_seed": "0123456789abcdef", "case_seed": "fedcba9876543210",
             "generation_trace": ["fixture"], "mutation_ops": [],
         },
-        "source": {"kind": "synthetic", "source_id": "ow5-tests"},
+        "source": (
+            {
+                "kind": "public_documentation",
+                "source_id": "ow5-public-fixture",
+                "source_url": "https://example.org/ow5-fixture",
+                "retrieved_at": STAMP,
+                "license_status": "approved",
+                "redistribution_allowed": True,
+                "privacy_review_status": "approved",
+                "attribution": "OW-5 synthetic test publisher",
+                "content_digest": "f" * 64,
+            }
+            if population == "naturalistic"
+            else {"kind": "synthetic", "source_id": "ow5-tests"}
+        ),
         "input": {
             "text": text,
             "utf8_sha256": hashlib.sha256(text.encode()).hexdigest(),
@@ -51,7 +65,7 @@ def make_case(case_id, population, target="phase4-bounded-interpreter"):
             "interface": "python_api" if target.startswith("phase4") else "browser_ui",
         },
         "taxonomy": {"labels": ["fixture"], "unclassified": False},
-        "oracle": {"type": "none", "independent": False},
+        "oracle": (\n            {"type": "structural", "independent": True, "oracle_id": "ow5-fixture-oracle"}\n            if population == "controlled_diagnostic"\n            else {"type": "none", "independent": False}\n        ),
         "resource_limits": {
             "wall_time_seconds": 5, "memory_megabytes": 256,
             "max_input_bytes": 10000, "network_access": False,
