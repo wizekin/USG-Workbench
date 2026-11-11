@@ -55,3 +55,15 @@ __all__ += [
     "DISCOURSE_ANALYSIS_VERSION", "Mention", "ReferenceCandidate",
     "DiscourseRelation", "DiscourseAnalysis", "DiscourseAnalyzer",
 ]
+
+from .catalogue import (
+    SQLITE_RESOURCE_CATALOGUE_VERSION, AssociationRetrieval,
+    SQLiteResourceCatalogue, verify_resource_file,
+    bundled_resource_descriptors, register_bundled_resources,
+)
+
+__all__ += [
+    "SQLITE_RESOURCE_CATALOGUE_VERSION", "AssociationRetrieval",
+    "SQLiteResourceCatalogue", "verify_resource_file",
+    "bundled_resource_descriptors", "register_bundled_resources",
+]
