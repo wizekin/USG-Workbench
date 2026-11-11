@@ -484,6 +484,7 @@ class LexicalCrawler:
             "processed_entries": 0,
             "processed_senses": 0,
             "failed_headwords": 0,
+            "failed_pages": 0,
             "stored_bytes": int((previous or {}).get("stored_bytes", 0)),
             "updated_at": utc_now(),
         }
@@ -526,6 +527,7 @@ class LexicalCrawler:
             "processed_entries": checkpoint.get("processed_entries", 0),
             "processed_senses": checkpoint.get("processed_senses", 0),
             "failed_headwords": checkpoint.get("failed_headwords", 0),
+            "failed_pages": checkpoint.get("failed_pages", 0),
             "batch_count": checkpoint.get("batch_number", 0),
             "stored_bytes": checkpoint.get("stored_bytes", 0),
             "storage_budget_bytes": self.storage_budget_bytes,
@@ -583,7 +585,7 @@ class LexicalCrawler:
         page_index = int(checkpoint.get("page_index", 0))
         entry_index = int(checkpoint.get("entry_index", 0))
         records: list[str] = []
-        batch_headwords = batch_entries = batch_senses = batch_failed = 0
+        batch_headwords = batch_entries = batch_senses = batch_failed = batch_failed_pages = 0
         stop_reason = "batch_limit"
         limit = max(1, min(int(max_headwords), 100_000))
 
@@ -600,17 +602,19 @@ class LexicalCrawler:
                 stop_reason = "source_rate_limited"
                 break
             except ProviderError as exc:
+                # A browse page can contain hundreds of headwords. Never advance
+                # past it after a fetch/parse error: the next scheduled run retries
+                # this exact page and cursor instead of silently losing its entries.
                 records.append(json.dumps({
                     "event_type": "browse_page_error",
                     "page_path": page_path,
                     "error_type": type(exc).__name__,
                     "recorded_at": utc_now(),
                 }, ensure_ascii=False, separators=(",", ":")))
-                page_index += 1
-                entry_index = 0
-                batch_failed += 1
-                checkpoint["failed_headwords"] = int(checkpoint.get("failed_headwords", 0)) + 1
-                continue
+                batch_failed_pages += 1
+                checkpoint["failed_pages"] = int(checkpoint.get("failed_pages", 0)) + 1
+                stop_reason = "browse_page_error"
+                break
 
             while entry_index < len(page_rows):
                 if time.monotonic() >= deadline:
@@ -685,6 +689,7 @@ class LexicalCrawler:
                 checkpoint["processed_entries"] = 0
                 checkpoint["processed_senses"] = 0
                 checkpoint["failed_headwords"] = 0
+                checkpoint["failed_pages"] = 0
                 checkpoint["stored_bytes"] = 0
             checkpoint["status"] = "storage_limit_reached"
             checkpoint["updated_at"] = utc_now()
@@ -701,6 +706,7 @@ class LexicalCrawler:
             "processed_entries": checkpoint["processed_entries"],
             "processed_senses": checkpoint["processed_senses"],
             "failed_headwords": checkpoint["failed_headwords"],
+            "failed_pages": checkpoint.get("failed_pages", 0),
             "batch_count": checkpoint["batch_number"],
             "stored_bytes": checkpoint["stored_bytes"],
             "updated_at": utc_now(),
@@ -717,7 +723,8 @@ class LexicalCrawler:
                 "headwords": batch_headwords,
                 "entries": batch_entries,
                 "senses": batch_senses,
-                "failures": batch_failed,
+                "failed_headwords": batch_failed,
+                "failed_pages": batch_failed_pages,
                 "stop_reason": stop_reason,
             }
 
@@ -741,7 +748,8 @@ class LexicalCrawler:
                 "headwords": batch_headwords,
                 "entries": batch_entries,
                 "senses": batch_senses,
-                "failures": batch_failed,
+                "failed_headwords": batch_failed,
+                "failed_pages": batch_failed_pages,
                 "compressed_bytes": len(shard_bytes),
                 "shard_path": shard_path,
             },
@@ -749,7 +757,8 @@ class LexicalCrawler:
                 "headwords": checkpoint["processed_headwords"],
                 "entries": checkpoint["processed_entries"],
                 "senses": checkpoint["processed_senses"],
-                "failures": checkpoint["failed_headwords"],
+                "failed_headwords": checkpoint["failed_headwords"],
+                "failed_pages": checkpoint.get("failed_pages", 0),
                 "stored_bytes": checkpoint["stored_bytes"],
                 "expected_headwords": checkpoint.get("expected_headwords"),
             },
