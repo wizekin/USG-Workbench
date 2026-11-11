@@ -10,6 +10,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable
 
+from jsonschema import Draft202012Validator, FormatChecker
+
 from .execute_cases import execute_case
 from .validate_protocol import validate_instance
 
@@ -308,6 +310,11 @@ def replay_files(
         cases, results, commit_sha=commit_sha, max_cases=max_cases,
         selected_case_ids=selected_case_ids, max_wall_seconds=max_wall_seconds,
     )
+    schema_path = ROOT / "tools" / "open_world_evaluation" / "schemas" / "replay-report.schema.json"
+    schema = json.loads(schema_path.read_text(encoding="utf-8"))
+    errors = list(Draft202012Validator(schema, format_checker=FormatChecker()).iter_errors(report))
+    if errors:
+        raise ValueError("replay report schema errors: " + "; ".join(error.message for error in errors))
     output_path.parent.mkdir(parents=True, exist_ok=True)
     with output_path.open("x", encoding="utf-8", newline="\n") as stream:
         json.dump(report, stream, ensure_ascii=False, indent=2, sort_keys=True)
