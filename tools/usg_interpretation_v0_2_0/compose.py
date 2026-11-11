@@ -98,6 +98,14 @@ class SemanticCandidate:
             raise ValueError("semantic roots must reference existing nodes")
         if any(ref not in known for node in self.nodes for ref in node.operand_refs):
             raise ValueError("semantic operands must reference existing nodes")
+        for node in self.nodes:
+            params = dict(node.params)
+            if node.op == "OPERATOR" and params.get("scopeTargetRef") not in known:
+                raise ValueError("operator scope target must reference an existing graph node")
+            if node.op == "PREDICATE":
+                bindings = params.get("roleBindings", {})
+                if any(ref not in known for ref in bindings.values()):
+                    raise ValueError("predicate role bindings must reference existing graph nodes")
         if self.source_span[0] < 0 or self.source_span[1] <= self.source_span[0]:
             raise ValueError("candidate source span must be non-empty")
 
