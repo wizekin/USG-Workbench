@@ -43,4 +43,4 @@ This release improves coverage for selected English forms and makes the resource
 
 ## Scoped-operator interaction
 
-The existing Phase 5 simple-transitive syntax patterns do not yet represent predicate or argument scope. If operator analysis resolves a semantic operator (for example negation, modality, tense/aspect, or quantification) in a clause, syntax conservatively withholds a bare simple-transitive assertion candidate for that clause. Auxiliary-only markers do not trigger this guard. This avoids deleting an operator token and then misreading the remaining words as an unmodified assertion. Full operator-aware syntactic/semantic composition remains a later integration task.
+The Phase 5 operator and semantic-composition stages retain their existing operator-aware behavior. The Step 5.11 benchmark evaluates only the bare simple-transitive construction family; its prediction adapter therefore withholds a bare SVO benchmark label whenever a non-auxiliary scoped operator is present. This keeps negated, modal, tense/aspect, and quantified predicates from being counted as unmodified SVO assertions without disabling their Phase 5 operator or semantic artifacts.
