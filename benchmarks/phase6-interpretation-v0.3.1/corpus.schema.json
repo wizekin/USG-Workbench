@@ -1,0 +1,248 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wizekin.github.io/USG-Workbench/benchmarks/phase6-interpretation-v0.3.1/corpus.schema.json",
+  "title": "USG Interpretation Gold Benchmark v0.3.1 — Predicate/Role Annotation Correction",
+  "type": "object",
+  "required": [
+    "benchmark_id",
+    "version",
+    "contract",
+    "annotation_profile",
+    "offset_unit",
+    "language_profiles",
+    "construction_inventory",
+    "minimums_per_language_and_construction",
+    "cases"
+  ],
+  "properties": {
+    "benchmark_id": {
+      "const": "usg-interpretation-v0.3.1-construction-expansion-annotation-correction"
+    },
+    "version": {
+      "const": "0.3.1"
+    },
+    "contract": {
+      "const": "USG-INTERPRET/0.3.0"
+    },
+    "annotation_profile": {
+      "const": "USG-INTERPRET-GOLD/0.3.1"
+    },
+    "offset_unit": {
+      "const": "unicode_code_point"
+    },
+    "language_profiles": {
+      "type": "object",
+      "required": [
+        "en",
+        "ar"
+      ],
+      "properties": {
+        "en": {
+          "const": "en/standard-written-1.0"
+        },
+        "ar": {
+          "const": "ar/modern-standard-1.0"
+        }
+      },
+      "additionalProperties": false
+    },
+    "construction_inventory": {
+      "type": "object",
+      "required": [
+        "en",
+        "ar"
+      ],
+      "properties": {
+        "en": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/construction"
+          }
+        },
+        "ar": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/construction"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "minimums_per_language_and_construction": {
+      "type": "object",
+      "required": [
+        "positive",
+        "negative",
+        "ambiguous"
+      ],
+      "properties": {
+        "positive": {
+          "const": 20
+        },
+        "negative": {
+          "const": 20
+        },
+        "ambiguous": {
+          "const": 10
+        }
+      },
+      "additionalProperties": false
+    },
+    "cases": {
+      "type": "array",
+      "minItems": 400,
+      "items": {
+        "$ref": "#/$defs/case"
+      }
+    }
+  },
+  "$defs": {
+    "construction": {
+      "type": "object",
+      "required": [
+        "construction_id",
+        "family",
+        "enabled"
+      ],
+      "properties": {
+        "construction_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "family": {
+          "enum": [
+            "intransitive",
+            "ditransitive",
+            "copular",
+            "prepositional"
+          ]
+        },
+        "enabled": {
+          "const": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "span": {
+      "type": "object",
+      "required": [
+        "start",
+        "end",
+        "surface"
+      ],
+      "properties": {
+        "start": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "end": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "surface": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "case": {
+      "type": "object",
+      "required": [
+        "id",
+        "language",
+        "target_construction",
+        "text",
+        "gold_class",
+        "expected_completion_status",
+        "gold_construction",
+        "expected_roles",
+        "expected_role_spans",
+        "ambiguity_reason",
+        "expected_predicate_span",
+        "expected_grammatical_markers"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "language": {
+          "enum": [
+            "en",
+            "ar"
+          ]
+        },
+        "target_construction": {
+          "type": "string",
+          "minLength": 1
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1
+        },
+        "gold_class": {
+          "enum": [
+            "POSITIVE",
+            "NEGATIVE",
+            "AMBIGUOUS"
+          ]
+        },
+        "expected_completion_status": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "COMPLETE",
+            null
+          ]
+        },
+        "gold_construction": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "expected_roles": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "expected_role_spans": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/span"
+          }
+        },
+        "ambiguity_reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "expected_predicate_span": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/span"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "expected_grammatical_markers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/span"
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
