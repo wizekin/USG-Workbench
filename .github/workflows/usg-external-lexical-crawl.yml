@@ -118,7 +118,7 @@ jobs:
 
       - name: Reconcile durable checkpoint, manifest and shard inventory
         if: success()
-        run: |
-          python -m tools.usg_external_lexical_v0_1_0 audit-remote \\
-            --repository "${GITHUB_REPOSITORY}" \\
-            --branch "${USG_LEXICAL_DATA_BRANCH}"
+        run: >-
+          python -m tools.usg_external_lexical_v0_1_0 audit-remote
+          --repository "${GITHUB_REPOSITORY}"
+          --branch "${USG_LEXICAL_DATA_BRANCH}"
