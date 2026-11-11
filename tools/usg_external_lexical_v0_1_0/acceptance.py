@@ -54,6 +54,8 @@ def validate_report(report: dict) -> dict:
               all(isinstance(totals.get(k), int) and totals[k] >= 0 for k in required),
               "required totals must be non-negative integers")
         if all(isinstance(totals.get(k), int) and totals[k] >= 0 for k in required):
+            check("nonempty_gold_corpus", totals["tokens"] > 0,
+                  "PUD gold token population is empty")
             check("token_partition", totals["seen_tokens"] + totals["oov_tokens"] == totals["tokens"],
                   "seen and OOV counts do not sum to tokens")
             check("ambiguity_partition",
