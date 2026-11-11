@@ -1,0 +1,61 @@
+name: Phase 5 Lexical Foundation v0.7.0
+
+on:
+  pull_request:
+    paths:
+      - "tools/usg_interpretation_v0_2_0/**"
+      - "resources/lexical/**"
+      - "tests/test_phase5_lexical_foundation_v0_5_0.py"
+      - "tests/test_phase5_contextual_lexical.py"
+      - "tests/test_phase5_tokenization_normalization.py"
+      - "tests/test_phase5_packaged_resources.py"
+      - "tests/test_phase5_integrated_api.py"
+      - "documentation/PHASE5-LEXICAL-FOUNDATION-BASELINE.md"
+      - ".github/workflows/phase5-lexical-foundation-v0.7.0.yml"
+  push:
+    branches: [main]
+    paths:
+      - "tools/usg_interpretation_v0_2_0/**"
+      - "resources/lexical/**"
+      - "tests/test_phase5_lexical_foundation_v0_5_0.py"
+      - "tests/test_phase5_contextual_lexical.py"
+      - "tests/test_phase5_tokenization_normalization.py"
+      - "tests/test_phase5_packaged_resources.py"
+      - "tests/test_phase5_integrated_api.py"
+      - "documentation/PHASE5-LEXICAL-FOUNDATION-BASELINE.md"
+      - ".github/workflows/phase5-lexical-foundation-v0.7.0.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lexical-foundation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install schema validation dependency
+        run: python -m pip install "jsonschema>=4.18,<5"
+      - name: Validate starter lexicon schema and compile interpreter
+        run: |
+          python -c "import json; from jsonschema import Draft202012Validator; schema=json.load(open('resources/lexical/v0.1.0/lexicon.schema.json', encoding='utf-8')); resource=json.load(open('resources/lexical/v0.5.0/en-core-starter-lexicon.json', encoding='utf-8')); Draft202012Validator(schema).validate(resource)"
+          python -m compileall -q tools/usg_interpretation_v0_2_0
+      - name: Run lexical foundation tests
+        run: python -m unittest discover -s tests -p "test_phase5_lexical_foundation_v0_5_0.py" -v
+      - name: Run contextual lexical ranking tests
+        run: python -m unittest discover -s tests -p "test_phase5_contextual_lexical.py" -v
+      - name: Run tokenization and Unicode boundary tests
+        run: python -m unittest discover -s tests -p "test_phase5_tokenization_normalization.py" -v
+      - name: Run Phase 5 integration and package regressions
+        run: |
+          python -m unittest discover -s tests -p "test_phase5_integrated_api.py" -v
+          python -m unittest discover -s tests -p "test_phase5_packaged_resources.py" -v
+      - name: Run Phase 5 full interpreter benchmark regression
+        run: python -m unittest discover -s tests -p "test_phase5_step_5_11_benchmark.py" -v
