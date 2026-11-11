@@ -5,7 +5,7 @@ on:
       - "tools/phase5_interpretation_benchmark_v0_2_0/**"
       - "tools/usg_interpretation_v0_2_0/**"
       - "resources/**"
-      - "benchmarks/phase5-interpretation/v0.2.0/**"
+      - "benchmarks/phase5-interpretation-v0.2.1/**"
       - "tests/test_phase5_step_5_11_benchmark.py"
       - "documentation/PHASE-5-STEP-5.11-BENCHMARK-EXIT-ACCEPTANCE.md"
       - ".github/workflows/phase5-step-5-11-benchmark.yml"
@@ -15,7 +15,7 @@ on:
       - "tools/phase5_interpretation_benchmark_v0_2_0/**"
       - "tools/usg_interpretation_v0_2_0/**"
       - "resources/**"
-      - "benchmarks/phase5-interpretation/v0.2.0/**"
+      - "benchmarks/phase5-interpretation-v0.2.1/**"
       - "tests/test_phase5_step_5_11_benchmark.py"
       - ".github/workflows/phase5-step-5-11-benchmark.yml"
   workflow_dispatch:
