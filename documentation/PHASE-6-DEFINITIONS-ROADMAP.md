@@ -6,7 +6,7 @@
 **Canonical semantic interchange:** `USG-SEM/1.0` remains unchanged.  
 **Canonical persistence:** the existing Phase 3 SQLite store remains authoritative.  
 **Initial language profiles:** English and Modern Standard Arabic (MSA).  
-**Next gate:** Step 6.6 — nominal, property, possession, and modifier semantics; definition inventory and candidate benchmark v0.4.0 added; linguistic adjudication and implementation acceptance remain pending.
+**Next gate:** Step 6.6 — nominal, property, genitive-relation, and modifier semantics; definition inventory and candidate benchmarks v0.4.0/v0.4.1 added; the v0.4.1 corpus uses structurally neutral genitive roles; implementation and acceptance remain pending.
 
 ## 1. Purpose and transition from Phase 5
 
