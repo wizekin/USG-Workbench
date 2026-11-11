@@ -51,3 +51,47 @@ improvement should be retained as a negative result.
 python -m unittest discover -s tests -p 'test_phase6_external_pud_contextual.py' -v
 python -m tools.phase6_external_pud_v0_6.contextual
 ```
+
+## Observed ten-fold results (2026-11-11)
+
+The final run evaluated all 20,747 annotated Arabic PUD tokens. The model used
+three epochs per fold and constrained test-time POS decoding to the POS
+candidates returned by the morphology analyzer.
+
+| Measure | Result |
+|---|---:|
+| Full morphology candidate upper-bound lemma/POS recall | 75.32% |
+| CAMeL MLE top-1 lemma/POS accuracy (word-based baseline) | 69.49% |
+| Contextual structured-perceptron POS accuracy | 77.69% |
+| Contextual candidate-selected lemma/POS accuracy | 73.18% |
+| Selected accuracy when a candidate was selected | 77.91% |
+| Candidate selection coverage | 93.92% |
+| Abstention rate | 6.08% |
+| Ambiguous candidate rate | 52.23% |
+
+The contextual selector improves exact lemma/POS accuracy by 3.69 percentage
+points over CAMeL MLE top-1 overall, recovering 73.18% of tokens against a
+75.32% candidate-set upper bound. This indicates that sentence context helps
+select among the morphology candidates, but the remaining gap is real.
+
+The improvement is not uniform across parts of speech:
+
+| UPOS | MLE top-1 | Contextual selection |
+|---|---:|---:|
+| NOUN | 84.14% | 85.72% |
+| VERB | 91.51% | 90.48% |
+| ADJ | 72.25% | 76.20% |
+| PROPN | 32.70% | 33.80% |
+
+Verb selection is slightly worse than the MLE baseline, and proper-name
+performance remains poor. The model is therefore not ready for runtime
+integration. A separate name/entity pathway and improved lemma ranking are
+needed; do not tune per-class rules against this same test set.
+
+**Decision:** retain this as a promising candidate-only contextual baseline.
+It demonstrates an overall improvement over the out-of-context MLE baseline,
+but is not a validated production disambiguator. The result gives no semantic
+role or construction acceptance credit, and Step 6.6 remains unaccepted.
+
+Report artifact:
+[workflow run 42992316211](https://github.com/wizekin/USG-Workbench/actions/runs/42992316211).
