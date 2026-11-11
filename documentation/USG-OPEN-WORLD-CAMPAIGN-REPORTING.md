@@ -63,14 +63,14 @@ Campaign status now follows actual execution:
 
 ## First-blocking-stage attribution
 
-New reports include coverage.stage_attribution. The analyzer uses explicit blocking diagnostics or blocking stage statuses, normalized to a declared pipeline order. It reports:
-- counts by earliest observed blocking stage;
-- later-stage blocking diagnostic co-occurrences;
+New reports include coverage.stage_attribution. The analyzer uses explicit blocking diagnostics or blocking stage statuses and a versioned target-specific dependency graph in tools/open_world_evaluation/stage_dependency_graph.json. It identifies first blockers as blocked stages with no other blocked declared ancestor. Independent parallel blockers are retained together. It reports:
+- counts by first blocking stage, including multiple parallel first blockers;
+- dependency-related later-stage blocking diagnostic co-occurrences;
 - breakdowns by target, population, and language;
 - representative case IDs;
 - records without a target-result payload, without a blocking diagnostic, and with unmapped stage names.
 
-This is deliberately called **first observed blocking stage**, not proven root cause. A later diagnostic may be independent rather than caused by the earlier one. Unknown stages are reported instead of being forced into a guessed order. Missing diagnostics are not silently assigned to lexical or any other stage.
+This is deliberately called **first blocker**, not proven root cause. A dependency edge means a stage consumes an upstream artifact; it does not prove an upstream failure caused a later diagnostic. The Phase 4 and Phase 5 profiles differ because their stage dependencies differ. Unknown stages and targets without a registered graph profile are reported rather than forced into a guessed order. Missing diagnostics are not silently assigned to lexical or any other stage.
 
 The accounting and attribution are reporting/diagnostic improvements only. They do not change interpreter behavior or establish semantic correctness.
 

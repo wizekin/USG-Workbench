@@ -464,11 +464,11 @@ def render_markdown(report: dict[str, Any]) -> str:
         f"- Attempts without target-result payload: {attribution.get('records_without_target_result_payload', 0)}",
         f"- Attempts without observed blocking diagnostics: {attribution.get('records_without_observed_blocking_diagnostic', 0)}",
         "",
-        "| First blocking stage | Cases | Later-stage blocker co-occurrences |",
+        "| First blocker (dependency DAG) | Cases | Dependency-related later blockers |",
         "|---|---:|---:|",
     ]
     first_counts = attribution.get("first_blocking_stage_counts", {})
-    later_counts = attribution.get("later_blocking_stage_cooccurrence_counts", {})
+    later_counts = attribution.get("dependency_related_later_stage_counts", {})
     for stage in sorted(set(first_counts) | set(later_counts)):
         lines.append(f"| {stage} | {first_counts.get(stage, 0)} | {later_counts.get(stage, 0)} |")
     lines += [
