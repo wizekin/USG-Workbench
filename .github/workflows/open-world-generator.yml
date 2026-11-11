@@ -40,8 +40,16 @@ jobs:
             --created-at "2026-11-11T11:00:00Z" \
             --target-matrix \
             --output "$RUNNER_TEMP/ow2-smoke.jsonl"
-          python -c "from pathlib import Path; p=Path('$RUNNER_TEMP/ow2-smoke.jsonl'); assert len(p.read_text(encoding='utf-8').splitlines()) == 36"
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          registry = json.loads(Path('tools/open_world_evaluation/target_profiles.json').read_text(encoding='utf-8'))
+          expected = 12 * len(registry['targets'])
+          actual = len(Path('$RUNNER_TEMP/ow2-smoke.jsonl').read_text(encoding='utf-8').splitlines())
+          assert actual == expected, (actual, expected)
+          PY
       - name: Compile generator and validator
         run: |
           python -m py_compile tools/open_world_evaluation/generate_scenarios.py
           python -m py_compile tools/open_world_evaluation/validate_protocol.py
+          python -m py_compile tools/open_world_evaluation/worker.py
