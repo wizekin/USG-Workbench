@@ -65,7 +65,7 @@ class ExternalLexicalPudEvaluationTests(unittest.TestCase):
 
     def test_lemma_metrics_are_optional_for_legacy_callers(self):
         report = evaluate(
-            [{"tokens": [{"form": "bank", "upos": "NOUN"}]},
+            [{"tokens": [{"form": "bank", "upos": "NOUN"}]}],
             {"bank": {"NOUN"}}, "en"
         )
         self.assertIsNone(report["lexicon_lemma_count"])
