@@ -225,13 +225,14 @@ jobs:
             - Naturalistic population: not yet populated; status remains partial
             - Complete JSONL cases/results/scores, Markdown/JSON report, and SHA-256 manifest are attached
       - name: Record the report PR
+        if: always()
         run: |
-          echo "Cadence: $OW_CADENCE"
-          echo "Campaign: $CAMPAIGN_ID"
-          echo "Expected cases: $OW_EXPECTED_CASE_COUNT"
+          echo "Cadence: $OW_CADENCE" >> "$GITHUB_STEP_SUMMARY"
+          echo "Campaign: $CAMPAIGN_ID" >> "$GITHUB_STEP_SUMMARY"
+          echo "Expected cases: $OW_EXPECTED_CASE_COUNT" >> "$GITHUB_STEP_SUMMARY"
           if [ -n "${{ steps.report-pr.outputs.pull-request-number }}" ]; then
             echo "Report PR: ${{ steps.report-pr.outputs.pull-request-number }}" >> "$GITHUB_STEP_SUMMARY"
           else
             echo "Report branch: reports/ow7-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" >> "$GITHUB_STEP_SUMMARY"
-            echo "Automatic PR creation is disabled by repository Actions settings; campaign artifacts and report branch are preserved." >> "$GITHUB_STEP_SUMMARY"
+            echo "The campaign artifact was saved and uploaded. Repository Actions settings did not permit automatic PR creation; publish the report branch manually or enable Actions PR creation in repository settings." >> "$GITHUB_STEP_SUMMARY"
           fi
