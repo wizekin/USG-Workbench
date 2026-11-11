@@ -7,7 +7,7 @@ import json
 from pathlib import Path
 from typing import Literal
 
-from .lexical import LexicalAnalysis
+from .lexical import LexicalAnalysis, bundled_lexical_resource_v0_2_0
 from .segmentation import SegmentedDocument
 
 OPERATOR_ANALYSIS_VERSION = "operator-scope-analysis/0.1.0"
@@ -74,12 +74,6 @@ def load_operator_resource(path: str | Path) -> tuple[OperatorLexeme, ...]:
 def bundled_operator_resource() -> tuple[OperatorLexeme, ...]:
     path = Path(__file__).resolve().parents[2] / "resources" / "operators" / "v0.1.0" / "operators-en-ar.json"
     return load_operator_resource(path)
-
-
-def bundled_lexical_resource_v0_2_0():
-    from .lexical import load_lexical_resource
-    path = Path(__file__).resolve().parents[2] / "resources" / "lexical" / "v0.2.0" / "en-ar-operator-lexicon.json"
-    return load_lexical_resource(path)
 
 
 class OperatorAnalyzer:
