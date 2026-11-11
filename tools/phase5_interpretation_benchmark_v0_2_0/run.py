@@ -15,8 +15,8 @@ from jsonschema import Draft202012Validator
 from tools.usg_interpretation_v0_2_0 import Phase5InterpretationService, bundled_resource_descriptors
 
 ROOT = Path(__file__).resolve().parents[2]
-CORPUS = ROOT / "benchmarks/phase5-interpretation/v0.2.0/corpus.json"
-SCHEMA = ROOT / "benchmarks/phase5-interpretation/v0.2.0/corpus.schema.json"
+CORPUS = ROOT / "benchmarks/phase5-interpretation-v0.2.1/corpus.json"
+SCHEMA = ROOT / "benchmarks/phase5-interpretation-v0.2.1/corpus.schema.json"
 
 
 def load_and_validate(path: Path = CORPUS) -> dict:
@@ -43,10 +43,8 @@ def load_and_validate(path: Path = CORPUS) -> dict:
                 raise ValueError(f"positive case must annotate AGENT/ACTION/PATIENT: {case['id']}")
         elif case["expected_roles"] or case["expected_role_spans"] or case["expected_construction"] is not None:
             raise ValueError(f"negative/ambiguous case must not invent a unique role graph: {case['id']}")
-        if case["gold_class"] == "NEGATIVE" and case["expected_completion_status"] != "UNSUPPORTED":
-            raise ValueError(f"negative case must expect UNSUPPORTED: {case['id']}")
-        if case["gold_class"] == "AMBIGUOUS" and case["expected_completion_status"] != "AMBIGUOUS":
-            raise ValueError(f"ambiguous case must expect AMBIGUOUS: {case['id']}")
+        elif case["expected_completion_status"] is not None:
+            raise ValueError(f"negative/ambiguous target-class cases must leave whole-pipeline status unscored: {case['id']}")
     return corpus
 
 
@@ -87,7 +85,7 @@ def evaluate(corpus: dict, predictions: dict) -> dict:
     case_rows = []
     for lang in sorted({x["language"] for x in corpus["cases"]}):
         gold = [x for x in corpus["cases"] if x["language"] == lang]
-        tp = fp = fn = status_ok = roles_ok = spans_ok = positive_total = 0
+        tp = fp = fn = status_ok = status_total = roles_ok = spans_ok = positive_total = 0
         negative_total = ambiguous_total = negative_abstentions = ambiguous_abstentions = 0
         for case in gold:
             pred = pred_by_id.get(case["id"], {})
@@ -110,8 +108,11 @@ def evaluate(corpus: dict, predictions: dict) -> dict:
                 fp += 1
             if gold_positive and not (predicted_positive and predicted_construction == gold_construction):
                 fn += 1
-            status_match = predicted_status == case["expected_completion_status"]
-            status_ok += int(status_match)
+            expected_status = case["expected_completion_status"]
+            status_match = None if expected_status is None else predicted_status == expected_status
+            if expected_status is not None:
+                status_total += 1
+                status_ok += int(status_match)
             role_match = pred.get("role_bindings", {}) == case["expected_roles"]
             if gold_positive:
                 roles_ok += int(role_match)
@@ -136,7 +137,7 @@ def evaluate(corpus: dict, predictions: dict) -> dict:
                 "case_id": case["id"], "language": lang,
                 "gold_class": case["gold_class"],
                 "status_match": status_match,
-                "expected_completion_status": case["expected_completion_status"],
+                "expected_completion_status": expected_status,
                 "predicted_completion_status": predicted_status,
                 "predicted_construction_id": predicted_construction,
                 "construction_match": (predicted_construction == gold_construction),
@@ -158,7 +159,8 @@ def evaluate(corpus: dict, predictions: dict) -> dict:
             "construction_false_negative": fn,
             "construction_precision": tp / predicted_positive_count if predicted_positive_count else 0.0,
             "construction_recall": tp / positive_total if positive_total else 0.0,
-            "completion_status_accuracy": status_ok / len(gold) if gold else 0.0,
+            "positive_completion_status_accuracy": status_ok / status_total if status_total else 0.0,
+            "positive_completion_status_cases": status_total,
             "role_binding_exact_accuracy": roles_ok / positive_total if positive_total else 0.0,
             "role_span_exact_and_valid_accuracy": spans_ok / positive_total if positive_total else 0.0,
             "missing_predictions": sum(1 for x in gold if x["id"] not in pred_by_id),
@@ -169,6 +171,27 @@ def evaluate(corpus: dict, predictions: dict) -> dict:
         "evaluation_status": "EVALUATED",
         "by_language": by_language,
         "cases": case_rows,
+    }
+
+
+def quality_gate(evaluation: dict) -> dict:
+    """Apply per-language release gates to actual construction predictions."""
+    by_language = {}
+    for language, metrics in evaluation["by_language"].items():
+        checks = {
+            "construction_precision_at_least_0_95": metrics["construction_precision"] >= 0.95,
+            "construction_recall_at_least_0_90": metrics["construction_recall"] >= 0.90,
+            "exact_role_bindings": metrics["role_binding_exact_accuracy"] == 1.0,
+            "exact_valid_source_spans": metrics["role_span_exact_and_valid_accuracy"] == 1.0,
+            "zero_false_unique_constructions": metrics["nonpositive_unique_constructions"] == 0,
+            "negative_target_abstention": metrics["negative_abstention_rate"] == 1.0,
+            "ambiguous_target_abstention": metrics["ambiguous_abstention_rate"] == 1.0,
+        }
+        by_language[language] = {"checks": checks, "passed": all(checks.values())}
+    return {
+        "passed": all(item["passed"] for item in by_language.values()),
+        "by_language": by_language,
+        "policy": "Per-language gates; no cross-language aggregate can mask a failure.",
     }
 
 
@@ -265,6 +288,7 @@ def main() -> int:
     if args.run_pipeline:
         predictions, performance = run_pipeline(corpus)
         report["evaluation"] = evaluate(corpus, predictions)
+        report["quality_gate"] = quality_gate(report["evaluation"])
         report["performance"] = performance
     elif args.predictions:
         predictions = json.loads(args.predictions.read_text(encoding="utf-8"))
@@ -277,8 +301,9 @@ def main() -> int:
         args.output.write_text(encoded, encoding="utf-8")
     else:
         print(encoded, end="")
-    gates = report["minimum_fixture_gate"]
-    return 0 if all(gates.values()) else 1
+    fixture_gate_passed = all(report["minimum_fixture_gate"].values())
+    quality_gate_passed = report.get("quality_gate", {}).get("passed", True)
+    return 0 if fixture_gate_passed and quality_gate_passed else 1
 
 
 if __name__ == "__main__":
