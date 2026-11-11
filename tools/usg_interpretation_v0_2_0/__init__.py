@@ -3,7 +3,7 @@ from .lexical import (
     LEXICAL_ANALYSIS_VERSION, MORPHOLOGY_RULESET_VERSION, LexicalEntry,
     MorphologyRule, LexicalResource, LexicalCandidate, TokenAnalysis,
     LexicalAnalysis, LexicalAnalyzer, load_lexical_resource,
-    bundled_lexical_resource,
+    bundled_lexical_resource, bundled_lexical_resource_v0_2_0,
 )
 from .segmentation import (
     SEGMENTATION_VERSION, SentenceSegment, ClauseSegment, ClauseBoundary,
@@ -23,11 +23,23 @@ __all__ = [
     "LEXICAL_ANALYSIS_VERSION", "MORPHOLOGY_RULESET_VERSION", "LexicalEntry",
     "MorphologyRule", "LexicalResource", "LexicalCandidate", "TokenAnalysis",
     "LexicalAnalysis", "LexicalAnalyzer", "load_lexical_resource",
-    "bundled_lexical_resource", "SEGMENTATION_VERSION", "SentenceSegment",
+    "bundled_lexical_resource", "bundled_lexical_resource_v0_2_0", "SEGMENTATION_VERSION", "SentenceSegment",
     "ClauseSegment", "ClauseBoundary", "SegmentedDocument", "segment_document",
     "SYNTAX_ANALYSIS_VERSION", "ConstituentNode", "DependencyEdge",
     "SyntaxCandidate", "ClauseSyntaxResult", "ClauseAttachment",
     "SyntaxAnalysis", "SyntaxAnalyzer", "SEMANTIC_COMPOSITION_VERSION",
     "PredicateFrame", "SemanticFrameRegistry", "SemanticNode", "SemanticCandidate",
     "SemanticComposition", "initial_semantic_frame_registry", "SemanticComposer",
+]
+
+from .operators import (
+    OPERATOR_ANALYSIS_VERSION, OperatorLexeme, OperatorCandidate,
+    ClauseOperatorResult, OperatorAnalysis, load_operator_resource,
+    bundled_operator_resource, OperatorAnalyzer,
+)
+
+__all__ += [
+    "OPERATOR_ANALYSIS_VERSION", "OperatorLexeme", "OperatorCandidate",
+    "ClauseOperatorResult", "OperatorAnalysis", "load_operator_resource",
+    "bundled_operator_resource", "OperatorAnalyzer",
 ]
