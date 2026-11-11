@@ -99,6 +99,15 @@ SUITES: dict[str, dict[str, Any]] = {
         "oracle": "versioned pipeline stage artifacts, deterministic resource catalogue digest, transaction rollback/role boundary, idempotent run replay, and exact persisted source snapshot assertions",
         "claim": "bounded_interpreter_and_resource_contract_conformance",
     },
+    "python-reference-kernel-v04-v05": {
+        "tests": [
+            "test_open_world_reference_kernel_v04.py",
+            "test_python_kernel_v05_adapter.py",
+            "test_python_kernel_v05_document_adapter.py",
+        ],
+        "oracle": "reference-kernel core record and lifecycle invariants, grammar/sort/scope/serialization invariants, frame inheritance and validation rules, formal validator checks, and v0.5 adapter round-trip/metadata preservation fixtures",
+        "claim": "reference_kernel_and_adapter_contract_conformance",
+    },
 }
 
 
