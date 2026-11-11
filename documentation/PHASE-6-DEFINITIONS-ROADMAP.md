@@ -1,12 +1,12 @@
 # USG Phase 6 — Definitions and Roadmap
 
-**Status:** IN PROGRESS — Steps 6.1–6.4 accepted; construction implementation remains benchmark-gated.  
+**Status:** IN PROGRESS — Steps 6.1–6.5 accepted for their bounded, benchmarked scope; broader grammar and unified integration remain pending.  
 **Proposed interpretation contract:** `USG-INTERPRET/0.3.0`, additive to the accepted Phase 5 contract.  
 **Accepted starting point:** Phase 5 `USG-INTERPRET/0.2.0`.  
 **Canonical semantic interchange:** `USG-SEM/1.0` remains unchanged.  
 **Canonical persistence:** the existing Phase 3 SQLite store remains authoritative.  
 **Initial language profiles:** English and Modern Standard Arabic (MSA).  
-**Next gate:** Step 6.5 — expanded predicate and argument structures (Steps 6.1–6.4 accepted).
+**Next gate:** Step 6.6 — nominal, property, possession, and modifier semantics (Steps 6.1–6.5 accepted for their bounded benchmark scope).
 
 ## 1. Purpose and transition from Phase 5
 
@@ -158,7 +158,7 @@ Each step is a separate contract/implementation/acceptance gate. The sequence is
 - Step 6.1 freezes the new interpretation boundary and protects the accepted versions.
 - Step 6.2 must precede grammar implementation so feature selection and quality thresholds are not chosen after observing model output.
 - Step 6.3 defines the semantic role/frame vocabulary required by the later construction families.
-- Step 6.4 adds only the lexical/morphological evidence demanded by the frozen benchmark and accepted construction plan.
+- Step 6.4 adds only the lexical/morphological evidence demanded by the frozen benchmark and accepted construction plan. The additive gold profiles v0.3.1 and v0.3.2 separate predicate/marker spans and repair repeated participant mention offsets; v0.3.2 is the scoring baseline for Steps 6.5 and 6.14.
 - Steps 6.5–6.6 expand clause and phrase semantics using the role/frame model.
 - Steps 6.7–6.8 close important Phase 5 composition gaps after the underlying argument and modifier representations are stable.
 - Step 6.9 separates grammatical voice and communicative form from semantic assertion.
@@ -268,4 +268,4 @@ It will not mean unrestricted language understanding, universal semantic coverag
 
 ## 12. Phase 6 starting point
 
-After this roadmap is accepted, begin with **Step 6.1 only**. Do not implement construction expansion before the Phase 6 contract and benchmark design are frozen. Each later step follows the same sequence used in Phase 5: define the contract, implement one bounded capability, run its focused and compatibility tests, publish its evidence, and merge only after the exact pull-request head passes the required checks.
+Steps 6.1–6.5 are accepted for their bounded scope. Proceed with **Step 6.6 only**. Do not broaden a construction beyond its measured evidence. Each later step follows the same sequence used in Phase 5: define the contract, implement one bounded capability, run its focused and compatibility tests, publish its evidence, and merge only after the exact pull-request head passes the required checks.
