@@ -3920,21 +3920,7 @@
           "start": 16,
           "end": 19,
           "surface": "the"
-        }
-      ]
-    },
-    {
-      "language": "en",
-      "language_profile": "en/standard-written-1.0",
-      "form": "the",
-      "lemma": "the",
-      "part_of_speech": "DET",
-      "sense_id": "usg.sense.determiner",
-      "features": {
-        "Definiteness": "Definite"
-      },
-      "status": "CANDIDATE",
-      "evidence": [
+        },
         {
           "fixture_id": "en.prepositional.location.positive.01",
           "start": 13,
