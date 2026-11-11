@@ -45,16 +45,17 @@ class OpenWorldScenarioGeneratorTests(unittest.TestCase):
     def test_default_target_assignment_is_balanced(self):
         cases = self.generator().generate(31)
         counts = Counter(case["target"]["component_id"] for case in cases)
-        self.assertEqual(len(counts), 3)
+        self.assertEqual(len(counts), len(self.generator().targets))
         self.assertLessEqual(max(counts.values()) - min(counts.values()), 1)
 
     def test_target_matrix_reuses_each_prompt_across_every_target(self):
         cases = self.generator().generate(7, target_matrix=True)
-        self.assertEqual(len(cases), 21)
-        for offset in range(0, len(cases), 3):
-            group = cases[offset:offset + 3]
+        target_count = len(self.generator().targets)
+        self.assertEqual(len(cases), 7 * target_count)
+        for offset in range(0, len(cases), target_count):
+            group = cases[offset:offset + target_count]
             self.assertEqual(len({case["input"]["text"] for case in group}), 1)
-            self.assertEqual(len({case["target"]["component_id"] for case in group}), 3)
+            self.assertEqual(len({case["target"]["component_id"] for case in group}), target_count)
 
     def test_unclassified_cases_are_retained_in_the_random_population(self):
         cases = self.generator().generate(60)

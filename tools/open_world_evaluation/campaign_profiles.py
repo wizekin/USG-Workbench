@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import argparse
+import json
 import os
+from pathlib import Path
 from typing import Any
 
 SCHEDULE_PROFILES = {
@@ -13,7 +15,22 @@ SCHEDULE_PROFILES = {
 RELEASE_PROMPT_COUNT = 250
 MANUAL_DEFAULT = 100
 MANUAL_MAX = 2000
-TARGETS_PER_PROMPT = 3
+ROOT = Path(__file__).resolve().parents[2]
+TARGET_REGISTRY = ROOT / "tools" / "open_world_evaluation" / "target_profiles.json"
+
+
+def registered_target_count() -> int:
+    registry = json.loads(TARGET_REGISTRY.read_text(encoding="utf-8"))
+    targets = registry.get("targets")
+    if not isinstance(targets, list) or not targets:
+        raise ValueError("target registry must contain at least one target")
+    ids = [item.get("component_id") for item in targets]
+    if any(not isinstance(item, str) or not item for item in ids) or len(ids) != len(set(ids)):
+        raise ValueError("target registry contains missing or duplicate component IDs")
+    return len(ids)
+
+
+TARGETS_PER_PROMPT = registered_target_count()
 CONTROLLED_DIAGNOSTIC_COUNT = 106
 
 

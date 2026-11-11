@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
     inputs:
       prompt_count:
-        description: "Base random prompt count (each prompt is tested against three targets)"
+        description: "Base random prompt count (each prompt is tested against every registered target)"
         required: false
         default: "100"
         type: string
@@ -18,8 +18,11 @@ on:
       - ".github/workflows/open-world-continuous.yml"
       - "tools/open_world_evaluation/campaign_profiles.py"
       - "tools/open_world_evaluation/coverage_ledger.py"
+      - "tools/open_world_evaluation/target_profiles.json"
+      - "tools/open_world_evaluation/worker.py"
       - "tools/open_world_evaluation/schemas/coverage-ledger.schema.json"
       - "tests/test_open_world_continuous.py"
+      - "tests/test_open_world_component_adapters.py"
       - "documentation/USG-OPEN-WORLD-CONTINUOUS-EXPLORATION.md"
 
 permissions:
@@ -39,10 +42,14 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+      - name: Install protocol validator
+        run: python -m pip install "jsonschema>=4.18,<5"
       - name: Test campaign budget and cadence profiles
         run: python -m unittest discover -s tests -p "test_open_world_continuous.py" -v
-      - name: Compile profile resolver
-        run: python -m py_compile tools/open_world_evaluation/campaign_profiles.py
+      - name: Test full component adapter registry
+        run: python -m unittest discover -s tests -p "test_open_world_component_adapters.py" -v
+      - name: Compile evaluation entry points
+        run: python -m py_compile tools/open_world_evaluation/campaign_profiles.py tools/open_world_evaluation/worker.py
 
   campaign:
     if: github.event_name != 'pull_request'
@@ -222,7 +229,7 @@ jobs:
 
             - Cadence: ${{ steps.profile.outputs.cadence }}
             - Tested commit: ${{ github.sha }}
-            - Random base prompts: ${{ steps.profile.outputs.prompt_count }} x 3 registered targets
+            - Random base prompts: ${{ steps.profile.outputs.prompt_count }} x all registered target profiles
             - Controlled diagnostics: 106 repository fixtures
             - Naturalistic population: not yet populated; status remains partial
             - Complete JSONL cases/results/scores, Markdown/JSON report, and SHA-256 manifest are attached

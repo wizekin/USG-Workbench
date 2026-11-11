@@ -1,0 +1,48 @@
+"""Acceptance tests for OW-10 component registration and smoke adapters."""
+from __future__ import annotations
+import json
+import unittest
+from tools.open_world_evaluation.worker import _run_import_smoke
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+INVENTORY = ROOT / "documentation/USG-OPEN-WORLD-CAPABILITY-INVENTORY.json"
+PROFILES = ROOT / "tools/open_world_evaluation/target_profiles.json"
+
+class ComponentAdapterRegistryTests(unittest.TestCase):
+    def test_every_inventory_component_has_exactly_one_target_profile(self):
+        inventory = json.loads(INVENTORY.read_text(encoding="utf-8"))
+        profiles = json.loads(PROFILES.read_text(encoding="utf-8"))
+        inventory_ids = {item["id"] for item in inventory["components"]}
+        profile_ids = [item["component_id"] for item in profiles["targets"]]
+        self.assertEqual(set(profile_ids), inventory_ids)
+        self.assertEqual(len(profile_ids), len(set(profile_ids)))
+
+    def test_smoke_module_paths_are_repository_relative_and_nonempty(self):
+        profiles = json.loads(PROFILES.read_text(encoding="utf-8"))
+        for profile in profiles["targets"]:
+            for relative_path, module_name in profile.get("smoke_modules", []):
+                self.assertIsInstance(relative_path, str)
+                self.assertIsInstance(module_name, str)
+                self.assertTrue(module_name)
+                resolved = (ROOT / relative_path).resolve()
+                self.assertTrue(resolved == ROOT or ROOT in resolved.parents)
+                self.assertTrue(resolved.exists(), f"missing adapter path: {relative_path}")
+
+    def test_python_smoke_profiles_have_an_explicit_module_allowlist(self):
+        profiles = json.loads(PROFILES.read_text(encoding="utf-8"))
+        for profile in profiles["targets"]:
+            if profile.get("smoke_modules"):
+                self.assertTrue(profile.get("smoke_modules"), profile["component_id"])
+
+    def test_registered_python_import_adapters_execute_without_semantic_claims(self):
+        profiles = json.loads(PROFILES.read_text(encoding="utf-8"))
+        for profile in profiles["targets"]:
+            if profile.get("smoke_modules"):
+                with self.subTest(component=profile["component_id"]):
+                    result = _run_import_smoke(profile["component_id"])
+                    self.assertEqual(result["outcome"], "partial")
+                    self.assertFalse(result["execution_metadata"]["semantic_accuracy_assessed"])
+
+if __name__ == "__main__":
+    unittest.main()
