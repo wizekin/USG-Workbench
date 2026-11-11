@@ -1,6 +1,6 @@
 # Phase 6 — Step 6.6: Nominal, Property, Possession, and Modifier Semantics
 
-**Status:** DEFINITION ACCEPTED — implementation and benchmark gate pending  
+**Status:** DEFINITION ACCEPTED — candidate interpreter implemented; independent benchmark gate pending  
 **Contract:** `USG-INTERPRET/0.3.0`  
 **Candidate inventory:** `phase6.nominal-modifier-rules.candidate/0.3.0`
 
