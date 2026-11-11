@@ -46,3 +46,4 @@ The archive inventory records fresh tests and limitations for the original packa
 - [OW-3 isolated execution runner](documentation/USG-OPEN-WORLD-EXECUTION-RUNNER.md) executes Phase 4 and Phase 5 in fresh child processes and explicitly records targets that are not yet executable.
 - [OW-4 scoring and validation](documentation/USG-OPEN-WORLD-SCORING-AND-VALIDATION.md) separates deterministic structural checks from semantic claims requiring independent oracles.
 - [OW-5 campaign reporting](documentation/USG-OPEN-WORLD-CAMPAIGN-REPORTING.md) builds validated JSON/Markdown reports, hashes every artifact, clusters failures, optionally minimizes reproducers, and stores write-once campaign bundles.
+- [OW-6 first pilot](documentation/USG-OPEN-WORLD-FIRST-PILOT.md) runs a broad seeded random target matrix plus separately annotated Phase 4/5 diagnostic fixtures, and publishes the report with explicit missing-population gaps.
