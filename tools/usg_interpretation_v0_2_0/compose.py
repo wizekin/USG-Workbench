@@ -282,7 +282,12 @@ class SemanticComposer:
             else:
                 unresolved.append(result.clause_ref)
         if not options_by_clause:
-            status = "INCOMPLETE_RESOURCE_LIMIT" if resource_limited else "UNSUPPORTED"
+            if resource_limited:
+                status = "INCOMPLETE_RESOURCE_LIMIT"
+            elif any(x.status == "INCOMPLETE" for x in syntax.clauses):
+                status = "PARTIAL"
+            else:
+                status = "UNSUPPORTED"
             return SemanticComposition(status, (), tuple(unresolved))
 
         candidates = []
@@ -302,7 +307,13 @@ class SemanticComposer:
             status = "AMBIGUOUS"
         else:
             status = "COMPOSED"
-        if status == "AMBIGUOUS":
+        if status == "INCOMPLETE_RESOURCE_LIMIT":
+            candidates = [
+                SemanticCandidate(x.candidate_id, x.root_ref, x.clause_root_refs,
+                                  x.nodes, "PARTIAL", x.source_span)
+                for x in candidates
+            ]
+        elif status == "AMBIGUOUS":
             candidates = [
                 SemanticCandidate(x.candidate_id, x.root_ref, x.clause_root_refs,
                                   x.nodes, "AMBIGUOUS", x.source_span)
