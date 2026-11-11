@@ -388,7 +388,7 @@ def parse_english_dictionary_entry(markdown: str, queried_word: str, entry_url: 
     heading_matches = [
         heading
         for heading in re.finditer(
-            r"(?m)^##\\s+(.+?)(?:\\s+·\\s+Etymology\\s+\\d+\\s+·\\s+Record\\s+(\\d+))?\\s*$",
+            r"(?m)^##\s+(.+?)(?:\s+·\s+Etymology\s+\d+\s+·\s+Record\s+(\d+))?\s*$",
             body,
         )
         if heading.group(1).strip().casefold() not in {"source gaps", "sources"}
