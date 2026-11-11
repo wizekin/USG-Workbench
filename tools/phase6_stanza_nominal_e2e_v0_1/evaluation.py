@@ -13,7 +13,7 @@ import json
 import stanza
 
 from tools.phase6_external_pud_v0_1.run import DATASETS, download_dataset, parse_conllu
-from tools.phase6_spacy_nominal_e2e_v0_1.evaluation import evaluate_candidate_sets
+from collections import defaultdict
 from tools.phase6_ud_nominal_candidate_v0_1.adapter import adapt_sentence
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -123,6 +123,109 @@ def parse_in_batches(nlp, sentences: list[dict], batch_size: int = BATCH_SIZE) -
                 alignment_failures += 1
                 output.append({"meta": dict(gold.get("meta", {})), "tokens": []})
     return output, alignment_failures
+
+
+def _flatten_candidates(adapted: dict) -> list[dict]:
+    flattened = []
+    for candidate in adapted["candidates"]:
+        if candidate["status"] == "AMBIGUOUS":
+            flattened.extend(candidate["alternatives"])
+        else:
+            flattened.append(candidate)
+    return flattened
+
+
+def _signature(candidate: dict, sentence_index: int) -> tuple:
+    derivation = candidate["derivation"]
+    roles = tuple(sorted(
+        (role, span["start"], span["end"])
+        for role, span in candidate["role_spans"].items()
+    ))
+    markers = tuple(sorted(
+        (span["start"], span["end"])
+        for span in candidate["grammatical_markers"]
+    ))
+    return (
+        sentence_index,
+        candidate["construction_id"],
+        derivation["head_token_id"],
+        derivation["dependent_token_id"],
+        roles,
+        markers,
+    )
+
+
+def _structural_signature(candidate: dict, sentence_index: int) -> tuple:
+    derivation = candidate["derivation"]
+    return (
+        sentence_index,
+        candidate["construction_id"],
+        derivation["head_token_id"],
+        derivation["dependent_token_id"],
+    )
+
+
+def _prf(predicted: set, gold: set) -> dict:
+    true_positive = len(predicted & gold)
+    false_positive = len(predicted - gold)
+    false_negative = len(gold - predicted)
+    precision = true_positive / len(predicted) if predicted else None
+    recall = true_positive / len(gold) if gold else None
+    f1 = (
+        2 * precision * recall / (precision + recall)
+        if precision is not None and recall is not None and precision + recall
+        else None
+    )
+    return {
+        "true_positive": true_positive,
+        "false_positive": false_positive,
+        "false_negative": false_negative,
+        "precision": precision,
+        "recall": recall,
+        "f1": f1,
+    }
+
+
+def evaluate_candidate_sets(predicted: list[dict], gold: list[dict]) -> dict:
+    if len(predicted) != len(gold):
+        raise ValueError("predicted and gold sentence counts differ")
+    predicted_full, gold_full = set(), set()
+    predicted_structural, gold_structural = set(), set()
+    pred_full_by_struct, gold_full_by_struct = defaultdict(set), defaultdict(set)
+    for sentence_index, (pred_sentence, gold_sentence) in enumerate(zip(predicted, gold)):
+        for item in _flatten_candidates(pred_sentence):
+            full = _signature(item, sentence_index)
+            structural = _structural_signature(item, sentence_index)
+            predicted_full.add(full)
+            predicted_structural.add(structural)
+            pred_full_by_struct[structural].add(full)
+        for item in _flatten_candidates(gold_sentence):
+            full = _signature(item, sentence_index)
+            structural = _structural_signature(item, sentence_index)
+            gold_full.add(full)
+            gold_structural.add(structural)
+            gold_full_by_struct[structural].add(full)
+
+    common_structural = predicted_structural & gold_structural
+    span_exact_edges = sum(
+        1 for edge in common_structural
+        if pred_full_by_struct[edge] & gold_full_by_struct[edge]
+    )
+    by_construction = {}
+    for construction in sorted({item[1] for item in predicted_full | gold_full}):
+        pred = {item for item in predicted_full if item[1] == construction}
+        expected = {item for item in gold_full if item[1] == construction}
+        by_construction[construction] = _prf(pred, expected)
+    return {
+        "predicted_candidate_count": len(predicted_full),
+        "gold_candidate_count": len(gold_full),
+        "structural_edge_metrics_ignoring_spans": _prf(predicted_structural, gold_structural),
+        "exact_candidate_and_span_metrics": _prf(predicted_full, gold_full),
+        "exact_span_rate_given_structural_match": (
+            span_exact_edges / len(common_structural) if common_structural else None
+        ),
+        "by_construction": by_construction,
+    }
 
 
 def run() -> dict:
