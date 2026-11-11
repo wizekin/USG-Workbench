@@ -110,6 +110,14 @@ jobs:
             --results "$RUNNER_TEMP/ow6-execution-results.jsonl" \
             --scores "$RUNNER_TEMP/ow6-score-results.jsonl" \
             --summary "$RUNNER_TEMP/ow6-score-summary.json"
+      - name: Build inventory-backed coverage ledger
+        run: |
+          python -m tools.open_world_evaluation.coverage_ledger \
+            --cases "$RUNNER_TEMP/ow6-all-cases.jsonl" \
+            --results "$RUNNER_TEMP/ow6-execution-results.jsonl" \
+            --history-root evaluations/open-world/campaigns \
+            --campaign-id "$CAMPAIGN_ID" \
+            --output "$RUNNER_TEMP/ow6-coverage-ledger.json"
       - name: Build immutable campaign report bundle
         run: |
           python -m tools.open_world_evaluation.campaign_pipeline \
@@ -118,6 +126,7 @@ jobs:
             --results "$RUNNER_TEMP/ow6-execution-results.jsonl" \
             --scores "$RUNNER_TEMP/ow6-score-results.jsonl" \
             --generation-manifest "$RUNNER_TEMP/ow6-combined-generation-manifest.json" \
+            --coverage-ledger "$RUNNER_TEMP/ow6-coverage-ledger.json" \
             --commit-sha "$GITHUB_SHA" \
             --output-root "$RUNNER_TEMP/ow6-campaigns"
           mkdir -p "evaluations/open-world/campaigns"
@@ -154,4 +163,9 @@ jobs:
         run: |
           echo "Campaign ID: $CAMPAIGN_ID"
           echo "Campaign report path: evaluations/open-world/campaigns/$CAMPAIGN_ID"
-          echo "Report PR number: ${{ steps.create-report-pr.outputs.pull-request-number }}"
+          if [ -n "${{ steps.create-report-pr.outputs.pull-request-number }}" ]; then
+            echo "Report PR number: ${{ steps.create-report-pr.outputs.pull-request-number }}" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "Report branch: reports/ow6-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" >> "$GITHUB_STEP_SUMMARY"
+            echo "Automatic PR creation is disabled by repository Actions settings; the campaign bundle and uploaded artifact are still preserved." >> "$GITHUB_STEP_SUMMARY"
+          fi
