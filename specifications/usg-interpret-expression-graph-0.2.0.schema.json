@@ -18,7 +18,7 @@
         "required": ["nodeId", "op", "sort", "operandRefs", "params", "sourceSpan", "derivationRefs"],
         "properties": {
           "nodeId": {"type": "string", "minLength": 1},
-          "op": {"enum": ["REF", "PREDICATE", "OPERATOR", "CLAUSE_GROUP"]},
+          "op": {"enum": ["REF", "PREDICATE", "OPERATOR", "COORDINATION", "CLAUSE_GROUP"]},
           "sort": {"enum": ["ENTITY", "PROPOSITION", "PROPOSITION_SET"]},
           "operandRefs": {"type": "array", "items": {"type": "string"}},
           "params": {"type": "object"},
@@ -42,6 +42,28 @@
                     "scopeTargetTokenRef": {"type": "string", "minLength": 1},
                     "scopeSourceSpan": {"type": "array", "prefixItems": [{"type": "integer", "minimum": 0}, {"type": "integer", "minimum": 1}], "minItems": 2, "maxItems": 2},
                     "surfaceOrder": {"type": "integer", "minimum": 0}
+                  }
+                }
+              }
+            }
+          },
+          {
+            "if": {"properties": {"op": {"const": "COORDINATION"}}, "required": ["op"]},
+            "then": {
+              "properties": {
+                "sort": {"const": "PROPOSITION_SET"},
+                "operandRefs": {"type": "array", "minItems": 2},
+                "params": {
+                  "type": "object",
+                  "required": ["operatorValue", "relation", "markerText", "markerSpan", "leftClauseRef", "rightClauseRef", "grouping"],
+                  "properties": {
+                    "operatorValue": {"enum": ["AND", "OR", "CONTRAST"]},
+                    "relation": {"enum": ["COORDINATION_AND", "COORDINATION_OR", "CONTRAST"]},
+                    "markerText": {"type": "string", "minLength": 1},
+                    "markerSpan": {"type": "array", "prefixItems": [{"type": "integer", "minimum": 0}, {"type": "integer", "minimum": 1}], "minItems": 2, "maxItems": 2},
+                    "leftClauseRef": {"type": "string", "minLength": 1},
+                    "rightClauseRef": {"type": "string", "minLength": 1},
+                    "grouping": {"const": "LEFT_ASSOCIATIVE"}
                   }
                 }
               }
