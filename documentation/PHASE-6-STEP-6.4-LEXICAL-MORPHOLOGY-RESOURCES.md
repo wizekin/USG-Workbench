@@ -9,7 +9,7 @@
 
 This step adds a bounded English/MSA Arabic lexical inventory grounded in the positive fixtures of the frozen `USG-INTERPRET-GOLD/0.3.0` corpus. Each entry records its language profile, surface form, lemma, part of speech, candidate sense link, features, candidate status, and one or more exact source fixture spans. The earlier Phase 5 lexical resource is not modified.
 
-The resource separates lexical realizations from semantic participant roles. Predicate heads and grammatical markers may be lexical entries, but they are not semantic-role definitions. Lexical sense links remain candidates and do not by themselves select a frame.
+The resource separates lexical realizations from semantic participant roles. Predicate heads and grammatical markers may be lexical entries, but they are not semantic-role definitions. Lexical sense links remain candidates and do not by themselves select a frame. A surface form may have multiple sense-specific entries; the validator preserves rather than collapses these candidates.
 
 ## Morphology policy
 
