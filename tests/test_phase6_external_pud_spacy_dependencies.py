@@ -29,11 +29,11 @@ class TestSpacyDependencyEvaluation(unittest.TestCase):
         self.assertEqual(result["totals"]["raw_uas"], 1.0)
         self.assertEqual(result["totals"]["converted_uas"], 1.0)
         self.assertEqual(result["totals"]["root_tokens"], 1)
-        self.assertEqual(result["totals"]["root_attachment_accuracy"], 1.0)
+        self.assertEqual(result["totals"]["raw_root_attachment_accuracy"], 1.0)
 
 
     def test_preposition_arcs_are_reoriented_to_ud_head_convention(self):
-        heads = [1, 1, 2, 1]
+        heads = [1, 1, 1, 2]
         deprels = ["nsubj", "ROOT", "prep", "pobj"]
         self.assertEqual(
             convert_heads_to_ud_conventions(heads, deprels),
