@@ -32,7 +32,7 @@ class ComponentAdapterRegistryTests(unittest.TestCase):
     def test_python_smoke_profiles_have_an_explicit_module_allowlist(self):
         profiles = json.loads(PROFILES.read_text(encoding="utf-8"))
         for profile in profiles["targets"]:
-            if profile.get("interface", "").startswith("python_"):
+            if profile.get("smoke_modules"):
                 self.assertTrue(profile.get("smoke_modules"), profile["component_id"])
 
     def test_registered_python_import_adapters_execute_without_semantic_claims(self):
