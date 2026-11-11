@@ -130,6 +130,8 @@ class SQLiteResourceCatalogue:
         self._require_transaction()
         if not isinstance(descriptor, ResourceDescriptor):
             raise TypeError("descriptor must be a ResourceDescriptor")
+        if not math.isfinite(float(registered_at)):
+            raise ValueError("registered_at must be finite")
         try:
             self.connection.execute(
                 """INSERT INTO usg_resource_descriptor
@@ -149,6 +151,8 @@ class SQLiteResourceCatalogue:
             raise TypeError("association must be a SemanticAssociation")
         if association.status != "PROVISIONAL":
             raise ValueError("only provisional associations can be registered")
+        if not math.isfinite(float(created_at)):
+            raise ValueError("created_at must be finite")
         try:
             self.connection.execute(
                 """INSERT INTO usg_semantic_association
@@ -166,6 +170,8 @@ class SQLiteResourceCatalogue:
 
     def record_use(self, association_id: str, used_at: float, context_ref: str | None = None) -> None:
         self._require_transaction()
+        if not math.isfinite(float(used_at)):
+            raise ValueError("used_at must be finite")
         exists = self.connection.execute(
             "SELECT 1 FROM usg_semantic_association WHERE association_id=?", (association_id,)
         ).fetchone()
@@ -174,6 +180,26 @@ class SQLiteResourceCatalogue:
         self.connection.execute(
             "INSERT INTO usg_association_usage(association_id,used_at,context_ref) VALUES(?,?,?)",
             (association_id, float(used_at), context_ref),
+        )
+
+    def get_resource(self, resource_id: str) -> ResourceDescriptor | None:
+        row = self.connection.execute(
+            """SELECT resource_id,resource_type,version,sha256,language,provenance
+               FROM usg_resource_descriptor WHERE resource_id=?""",
+            (resource_id,),
+        ).fetchone()
+        return None if row is None else ResourceDescriptor(*row)
+
+    def get_association(self, association_id: str) -> SemanticAssociation | None:
+        row = self.connection.execute(
+            """SELECT association_id,source_ref,target_ref,relation,association_kind,weight,
+                      observation_count,provenance,status
+               FROM usg_semantic_association WHERE association_id=?""",
+            (association_id,),
+        ).fetchone()
+        return None if row is None else SemanticAssociation(
+            row[0], row[1], row[2], row[3], row[4], float(row[5]),
+            int(row[6]), row[7], row[8],
         )
 
     def manifest(self) -> dict:
@@ -219,8 +245,8 @@ class SQLiteResourceCatalogue:
         for name, value in (("active_limit", active_limit), ("secondary_limit", secondary_limit)):
             if isinstance(value, bool) or not isinstance(value, int) or value < 0:
                 raise ValueError(f"{name} must be a non-negative integer")
-        if half_life_seconds <= 0:
-            raise ValueError("half_life_seconds must be positive")
+        if not math.isfinite(float(now)) or not math.isfinite(float(half_life_seconds)) or half_life_seconds <= 0:
+            raise ValueError("now must be finite and half_life_seconds must be finite and positive")
         rows = self.connection.execute(
             """SELECT a.association_id,a.source_ref,a.target_ref,a.relation,a.association_kind,
                       a.weight,a.observation_count,a.provenance,a.status,a.created_at,
