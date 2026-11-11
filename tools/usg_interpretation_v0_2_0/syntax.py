@@ -74,6 +74,8 @@ class SyntaxAnalysis:
     clauses: tuple[ClauseSyntaxResult, ...]
     attachments: tuple[ClauseAttachment, ...]
     status: Literal["COMPLETE", "AMBIGUOUS", "PARTIAL", "UNSUPPORTED", "INCOMPLETE_RESOURCE_LIMIT"]
+    source_ref: str
+    source_sha256: str
     analyzer_version: str = SYNTAX_ANALYSIS_VERSION
 
 
@@ -189,7 +191,8 @@ class SyntaxAnalyzer:
             overall = "PARTIAL" if "RESOLVED" in statuses else "UNSUPPORTED"
         else:
             overall = "COMPLETE"
-        return SyntaxAnalysis(results, attachments, overall)
+        return SyntaxAnalysis(results, attachments, overall,
+                              segmented.source.source_id, segmented.source.sha256)
 
 
 __all__ = [
