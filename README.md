@@ -39,3 +39,6 @@ The archive inventory records fresh tests and limitations for the original packa
 
 
 Phase 6 Step 6.6 candidate benchmark: [v0.4.0 corpus and scope](documentation/PHASE-6-STEP-6.6-BENCHMARK-V0.4.0.md).
+
+
+Phase 6 Step 6.6 genitive semantics refinement: [candidate benchmark v0.4.1](documentation/PHASE-6-STEP-6.6-BENCHMARK-V0.4.1.md).
