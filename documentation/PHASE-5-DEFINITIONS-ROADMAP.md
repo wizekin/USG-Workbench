@@ -1,6 +1,6 @@
 # USG Phase 5 — Definitions and Roadmap
 
-**Status:** IN PROGRESS — Steps 5.1–5.10 accepted; Step 5.11 full-corpus execution, quality, and performance acceptance under implementation.  
+**Status:** COMPLETE — Steps 5.1–5.11 accepted and merged; integrated Phase 3/4 compatibility and Phase 5 exit acceptance passed on main commit `121283fc552b141bade430b3ca48f294fc89d20a`.  
 **Target interpretation contract:** `USG-INTERPRET/0.2.0` (independent of the semantic interchange profile).  
 **Current accepted baseline:** `USG-INTERPRET/0.1.0`, bounded offline demonstrator.  
 **Normative semantic interchange:** `USG-SEM/1.0` remains unchanged unless a separately versioned profile is justified by a demonstrated representation gap.  
@@ -249,8 +249,10 @@ Phase 5 is complete only when:
 
 Phase 5 completion will mean a broader, benchmarked interpreter for the explicitly enabled English and MSA Arabic constructions. It will not mean unrestricted language understanding, objective truth determination, human-equivalent reasoning, or AGI.
 
-## 11. Immediate next implementation step
+## 11. Phase 5 completion
 
-**Steps 5.1–5.10 are accepted and merged.** See the [Step 5.11 benchmark and exit-acceptance contract](PHASE-5-STEP-5.11-BENCHMARK-EXIT-ACCEPTANCE.md). Step 5.7 remains deliberately bounded to clause-level AND/OR/CONTRAST composition; coordinated predicates and coordinated arguments inside a single clause remain explicitly unsupported. Step 5.8 adds conservative multi-sentence mention/reference candidates without resolving entity identity. Step 5.9 adds the append-only SQLite resource catalogue and derived active/secondary association retrieval on the caller-owned canonical connection. Step 5.10 integrates the v0.2 pipeline, resource catalogue, immutable interpretation runs, replay, CLI, API, and Kernel Lab while preserving the Phase 4 and USG-SEM/1.0 contracts.
+**All Steps 5.1–5.11 are accepted and merged.** The complete [Phase 5 completion record](PHASE-5-COMPLETION-RECORD.md) lists the enabled constructions, benchmark measurements, compatibility workflows, exact accepted main commit, and remaining limitations.
 
-**Step 5.11 is the remaining Phase 5 gate:** run the real v0.2 interpreter across all 100 frozen benchmark fixtures; publish per-language construction precision/recall, exact role/span accuracy, unsupported/ambiguous abstention and false-assertion counts; record reproducible resource-manifest identity, runtime, and traced-memory measurements; and execute the complete Phase 1–4 compatibility and integrated acceptance suites. Benchmark fixture counts alone are not evidence of interpreter quality.
+Step 5.7 remains deliberately bounded to clause-level AND/OR/CONTRAST composition; coordinated predicates and coordinated arguments inside a single clause remain unsupported. Step 5.8 provides conservative multi-sentence mention/reference candidates without resolving entity identity. Step 5.9 provides the append-only SQLite resource catalogue and derived active/secondary association retrieval on the caller-owned canonical connection. Step 5.10 integrates the v0.2 pipeline, resource catalogue, immutable interpretation runs, replay, CLI, API, and Kernel Lab while preserving Phase 4 and USG-SEM/1.0 contracts. Step 5.11 passed the real 100-case v0.2.1 benchmark quality gate and the complete integrated compatibility matrix.
+
+Phase 5 completion means a benchmarked interpreter for the explicitly enabled English and MSA Arabic constructions. It does not mean unrestricted language understanding, objective truth determination, human-equivalent reasoning, or AGI.
