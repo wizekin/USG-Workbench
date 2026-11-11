@@ -55,6 +55,44 @@ def parse_dependency_conllu(payload: bytes) -> list[dict]:
     return sentences
 
 
+
+def convert_heads_to_ud_conventions(heads: list[int], deprels: list[str]) -> list[int]:
+    """Normalize common spaCy preposition and coordination head conventions."""
+    converted = list(heads)
+    children = defaultdict(list)
+    for index, head in enumerate(heads):
+        if index != head:
+            children[head].append(index)
+
+    # ClearNLP/spaCy: prep -> pobj. UD: nominal -> governor, adposition -> nominal.
+    for index, relation in enumerate(deprels):
+        if relation not in {"prep", "agent"}:
+            continue
+        objects = [
+            child for child in children.get(index, [])
+            if deprels[child] in {"pobj", "pcomp"}
+        ]
+        if objects:
+            obj = objects[0]
+            governor = heads[index]
+            converted[obj] = governor
+            converted[index] = obj
+
+    # ClearNLP/spaCy attaches cc to the first conjunct; UD attaches it to the
+    # following conjunct.
+    for index, relation in enumerate(deprels):
+        if relation != "cc":
+            continue
+        governor = heads[index]
+        conjuncts = [
+            child for child in children.get(governor, [])
+            if deprels[child] == "conj"
+        ]
+        if conjuncts:
+            converted[index] = conjuncts[0]
+    return converted
+
+
 def evaluate_predictions(sentences: list[dict], predictions: list[list[dict]]) -> dict:
     totals = Counter()
     by_upos = defaultdict(Counter)
@@ -68,6 +106,7 @@ def evaluate_predictions(sentences: list[dict], predictions: list[list[dict]]) -
                 totals["unscorable_tokens"] += 1
                 continue
             correct = int(predicted["head_index"] == gold_head)
+            converted_correct = int(predicted.get("converted_head_index", predicted["head_index"]) == gold_head)
             upos = gold["upos"].upper()
             deprel = gold["deprel"]
             totals["tokens"] += 1
@@ -78,30 +117,39 @@ def evaluate_predictions(sentences: list[dict], predictions: list[list[dict]]) -
             if upos != "PUNCT":
                 totals["nonpunct_tokens"] += 1
                 totals["nonpunct_uas_hits"] += correct
+                totals["converted_nonpunct_uas_hits"] += converted_correct
             if upos in CONTENT_UPOS:
                 totals["content_tokens"] += 1
                 totals["content_uas_hits"] += correct
+                totals["converted_content_uas_hits"] += converted_correct
             by_upos[upos]["tokens"] += 1
             by_upos[upos]["uas_hits"] += correct
+            by_upos[upos]["converted_uas_hits"] += converted_correct
             by_deprel[deprel]["tokens"] += 1
             by_deprel[deprel]["uas_hits"] += correct
+            by_deprel[deprel]["converted_uas_hits"] += converted_correct
 
     def ratio(n, d):
         return n / d if d else None
 
     totals_out = dict(totals)
     totals_out.update({
-        "uas": ratio(totals["uas_hits"], totals["tokens"]),
-        "nonpunct_uas": ratio(totals["nonpunct_uas_hits"], totals["nonpunct_tokens"]),
-        "content_uas": ratio(totals["content_uas_hits"], totals["content_tokens"]),
-        "root_attachment_accuracy": ratio(totals["root_hits"], totals["root_tokens"]),
+        "raw_uas": ratio(totals["uas_hits"], totals["tokens"]),
+        "converted_uas": ratio(totals["converted_uas_hits"], totals["tokens"]),
+        "raw_nonpunct_uas": ratio(totals["nonpunct_uas_hits"], totals["nonpunct_tokens"]),
+        "converted_nonpunct_uas": ratio(totals["converted_nonpunct_uas_hits"], totals["nonpunct_tokens"]),
+        "raw_content_uas": ratio(totals["content_uas_hits"], totals["content_tokens"]),
+        "converted_content_uas": ratio(totals["converted_content_uas_hits"], totals["content_tokens"]),
+        "raw_root_attachment_accuracy": ratio(totals["root_hits"], totals["root_tokens"]),
+        "converted_root_attachment_accuracy": ratio(totals["converted_root_hits"], totals["root_tokens"]),
     })
     return {
         "totals": totals_out,
         "by_upos": {
             upos: {
                 **dict(values),
-                "uas": ratio(values["uas_hits"], values["tokens"]),
+                "raw_uas": ratio(values["uas_hits"], values["tokens"]),
+                "converted_uas": ratio(values["converted_uas_hits"], values["tokens"]),
             }
             for upos, values in sorted(by_upos.items())
         },
@@ -131,9 +179,16 @@ def run() -> dict:
     ]
     predictions = []
     for doc in nlp.pipe(docs, batch_size=128):
+        heads = [token.head.i for token in doc]
+        deprels = [token.dep_ for token in doc]
+        converted_heads = convert_heads_to_ud_conventions(heads, deprels)
         predictions.append([
-            {"head_index": token.head.i, "deprel": token.dep_}
-            for token in doc
+            {
+                "head_index": heads[index],
+                "converted_head_index": converted_heads[index],
+                "deprel": deprels[index],
+            }
+            for index in range(len(doc))
         ])
     report = {
         "evaluation_type": "EXTERNAL_SPACY_ENGLISH_PUD_UNLABELED_DEPENDENCY_EVALUATION",
@@ -149,7 +204,11 @@ def run() -> dict:
             "sentences": len(sentences),
         },
         "tokenization": "PUD_GOLD_PRETOKENIZED_WORDS_PRESERVED",
-        "scoring": "UNLABELED_ATTACHMENT_UAS_ONLY",
+        "scoring": "RAW_AND_PARTIALLY_CONVERTED_UNLABELED_ATTACHMENT_UAS",
+        "head_convention_conversion": [
+            "spaCy prep/agent + pobj/pcomp arcs are rearranged to UD-style adposition case attachment",
+            "spaCy cc arcs are reattached to the following conj dependent",
+        ],
         "dependency_label_comparison": (
             "NOT_SCORED: spaCy ClearNLP-derived labels are not the UD relation inventory"
         ),
@@ -161,6 +220,7 @@ def run() -> dict:
         "results": evaluate_predictions(sentences, predictions),
         "limitations": [
             "UAS compares head indices only and does not validate dependency relation labels.",
+            "The conversion only normalizes common preposition and coordination conventions; it is not a complete ClearNLP-to-UD conversion.",
             "The model's published training sources include OntoNotes 5; training-data overlap with PUD is not claimed to be impossible.",
             "The model is evaluated without PUD fine-tuning.",
             "Dependency syntax is not equivalent to USG semantic roles or semantic relations.",
