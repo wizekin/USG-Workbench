@@ -7,7 +7,8 @@ This repository preserves the distinct implementation baselines and the specific
 - archives/: original, checksum-verified release ZIPs; preserved unchanged.
 - implementations/semantic-workbench-js/: JavaScript/browser Semantic Workbench releases.
 - implementations/python-kernel/: Python reference kernel releases.
-- specifications/: normative semantic contracts and schemas.\n- resources/: bundled, versioned lexical and operator assets packaged with the Python workbench.
+- specifications/: normative semantic contracts and schemas.
+- resources/: bundled, versioned lexical and operator assets packaged with the Python workbench.
 - documentation/: architecture decisions, design notes, and project documentation.
 - interoperability/: adapters and conformance work connecting implementations through explicit contracts.
 - tests/: cross-implementation fixtures and conformance tests.
