@@ -367,6 +367,7 @@ headwords: 1
             "type": "file",
             "name": "batch-000001.jsonl.gz",
             "download_url": shard_url,
+            "size": 123,
         }]
         urls[shard_url] = gzip.compress(
             (json.dumps(event) + "\n").encode("utf-8")
@@ -387,6 +388,7 @@ headwords: 1
         checkpoint_out = publisher.calls[0]["checkpoint"]
         self.assertEqual(checkpoint_out["processed_headwords"], 1)
         self.assertEqual(checkpoint_out["recovered_headwords"], 1)
+        self.assertEqual(checkpoint_out["stored_bytes"], 123)
         self.assertEqual(checkpoint_out["retry_queue"], [])
         records = [
             json.loads(line)
