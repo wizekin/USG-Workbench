@@ -1,0 +1,24 @@
+{
+  "policy_version": "1.0.0",
+  "description": "Target-specific volatile-field exclusions for deterministic replay comparison. Only explicitly listed paths are excluded; all other target-result fields are compared.",
+  "profiles": {
+    "phase4-bounded-interpreter": {
+      "pipeline_contract": "USG-INTERPRET/0.1.0",
+      "pipeline_version": "usg-interpretation/0.1.0",
+      "volatile_json_paths": [
+        "document.documentId",
+        "document.createdAt"
+      ]
+    },
+    "phase5-bounded-interpreter": {
+      "pipeline_contract": "USG-INTERPRET/0.2.0",
+      "pipeline_version": "phase5-interpretation-integration/0.3.0",
+      "volatile_json_paths": []
+    }
+  },
+  "limitations": [
+    "Replay comparison is available only for targets with an explicit stability profile.",
+    "Only listed volatile paths are removed. New volatile fields require a reviewed policy update.",
+    "A matching target-result projection demonstrates deterministic replay for the selected case, target, code commit, and bundled resource versions; it does not establish semantic correctness."
+  ]
+}
