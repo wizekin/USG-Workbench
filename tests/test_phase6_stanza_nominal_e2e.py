@@ -85,9 +85,9 @@ class TestStanzaNominalE2E(unittest.TestCase):
             adapt_sentence, parse_ud_conllu,
         )
         payload = (
-            "# text = الكتاب الجديد\\n"
-            "1\\tالكتاب\\tكتاب\\tNOUN\\t_\\t_\\t0\\troot\\t_\\t_\\n"
-            "2\\tالجديد\\tجديد\\tADJ\\t_\\t_\\t1\\tamod\\t_\\t_\\n"
+            "# text = الكتاب الجديد\n"
+            "1\tالكتاب\tكتاب\tNOUN\t_\t_\t0\troot\t_\t_\n"
+            "2\tالجديد\tجديد\tADJ\t_\t_\t1\tamod\t_\t_\n"
         ).encode("utf-8")
         sentence = parse_ud_conllu(payload)[0]
         self.assertEqual(
