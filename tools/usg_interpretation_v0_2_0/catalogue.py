@@ -92,6 +92,8 @@ class SQLiteResourceCatalogue:
             raise TypeError("connection must be a caller-owned sqlite3.Connection")
         if not registry_id or not isinstance(registry_id, str):
             raise ValueError("registry_id must be non-empty")
+        if not connection.in_transaction:
+            raise RuntimeError("catalogue installation requires a caller-owned SQLite transaction")
         self.connection = connection
         for statement in _SCHEMA:
             connection.execute(statement)
