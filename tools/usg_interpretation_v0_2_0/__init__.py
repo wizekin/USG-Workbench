@@ -10,8 +10,8 @@ from .segmentation import (
     SegmentedDocument, segment_document,
 )
 from .syntax import (
-    SYNTAX_ANALYSIS_VERSION, SyntaxCandidate, ClauseSyntaxResult,
-    SyntaxAnalysis, SyntaxAnalyzer,
+    SYNTAX_ANALYSIS_VERSION, ConstituentNode, DependencyEdge, SyntaxCandidate,
+    ClauseSyntaxResult, ClauseAttachment, SyntaxAnalysis, SyntaxAnalyzer,
 )
 
 __all__ = [
@@ -20,6 +20,7 @@ __all__ = [
     "LexicalAnalysis", "LexicalAnalyzer", "load_lexical_resource",
     "bundled_lexical_resource", "SEGMENTATION_VERSION", "SentenceSegment",
     "ClauseSegment", "ClauseBoundary", "SegmentedDocument", "segment_document",
-    "SYNTAX_ANALYSIS_VERSION", "SyntaxCandidate", "ClauseSyntaxResult",
+    "SYNTAX_ANALYSIS_VERSION", "ConstituentNode", "DependencyEdge",
+    "SyntaxCandidate", "ClauseSyntaxResult", "ClauseAttachment",
     "SyntaxAnalysis", "SyntaxAnalyzer",
 ]
