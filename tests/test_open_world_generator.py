@@ -97,6 +97,16 @@ class OpenWorldScenarioGeneratorTests(unittest.TestCase):
                     requested_count=4, target_matrix=False,
                 )
 
+    def test_arabic_only_requests_are_generated_and_language_tagged(self):
+        cases = self.generator().generate(500)
+        arabic_cases = [
+            case for case in cases
+            if case["input"].get("language_hint") == "ar"
+        ]
+        self.assertGreaterEqual(len(arabic_cases), 15)
+        self.assertTrue(all(any("\u0600" <= char <= "\u06ff" for char in case["input"]["text"]) for case in arabic_cases))
+        self.assertTrue(all(validate_instance("scenario", case) == [] for case in arabic_cases))
+
     def test_unknown_target_and_invalid_count_are_rejected(self):
         with self.assertRaises(ValueError):
             ScenarioGenerator(seed=SEED, target_ids=["not-a-real-target"])
