@@ -79,6 +79,16 @@ SUITES: dict[str, dict[str, Any]] = {
             "implementations/python-kernel/v1.4.0/usg_definitions_v14",
         ],
     },
+    "kernel-lab-local-api-cli": {
+        "tests": ["test_phase3_local_api_cli.py"],
+        "oracle": "HTTP dispatch contracts, SQLite persistence/revision semantics, query snapshot behavior, interpretation persistence, route validation, and loopback-only server binding",
+        "claim": "local_api_and_cli_contract_conformance",
+    },
+    "workbench-to-canonical-adapter": {
+        "tests": ["test_workbench_source_adapter.py"],
+        "oracle": "source-aligned Unicode offset conversion, USG-SEM/1.0 schema validation, explicit predicate/operator structure, unresolved-reference preservation, and acceptance-boundary archival",
+        "claim": "fixture_backed_adapter_contract_conformance",
+    },
 }
 
 
