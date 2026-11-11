@@ -1,0 +1,44 @@
+{
+  "append_only": true,
+  "campaign_id": "OWC-OW6-43119492989-1",
+  "created_at": "2026-11-11T23:48:01Z",
+  "files": [
+    {
+      "name": "campaign-report.json",
+      "sha256": "9ab375eb9614dcd6eeeebb1e79c28c94f7279ea6df099d0515b403852ae97e13",
+      "size_bytes": 57833
+    },
+    {
+      "name": "campaign-report.md",
+      "sha256": "211c0494266cd52b73e7738d0e716edb577a609726e74ee5da99fdc98634e686",
+      "size_bytes": 11742
+    },
+    {
+      "name": "coverage-ledger.json",
+      "sha256": "f843de3bde67e11ee008e9a6923d1ce0ac9fc9a9b1aaeffb006aa5de090c441e",
+      "size_bytes": 25638
+    },
+    {
+      "name": "execution-results.jsonl",
+      "sha256": "094efb4040c6bc27698ff10a13bc91e12bf227f82bfe3308d189bf52900708a0",
+      "size_bytes": 43417582
+    },
+    {
+      "name": "generation-manifest.json",
+      "sha256": "85bbb7a7c8a4f0fafefe6b92cc2767c41b9eb5186f96c426b82f920c8e890981",
+      "size_bytes": 3321539
+    },
+    {
+      "name": "scenario-cases.jsonl",
+      "sha256": "ada99aa9b9dedfd5119189beab28d81fdf51c1944b9e51c40faa975e20fab5c8",
+      "size_bytes": 18480168
+    },
+    {
+      "name": "score-results.jsonl",
+      "sha256": "4ccbb385994ad97a1b5c6c6e95951d0c32bd2f45fd61511f9809a21830a913ab",
+      "size_bytes": 16086394
+    }
+  ],
+  "manifest_version": "1.0.0",
+  "tested_commit_sha": "5ec4fd2a19d45ec8240754d695306dc7ae97c89b"
+}
