@@ -84,7 +84,7 @@ class TestUDNominalAdapter(unittest.TestCase):
             "tokens": [
                 {"id": 1, "form": "book", "upos": "NOUN", "deprel": "root", "gold_head_index": 0},
                 {"id": 2, "form": "on", "upos": "ADP", "deprel": "case", "gold_head_index": 3},
-                {"id": 3, "form": "the", "upos": "DET", "deprel": "det", "gold_head_index": 4},
+                {"id": 3, "form": "the", "upos": "DET", "deprel": "det", "gold_head_index": 3},
                 {"id": 4, "form": "table", "upos": "NOUN", "deprel": "nmod", "gold_head_index": 0},
             ],
         }
