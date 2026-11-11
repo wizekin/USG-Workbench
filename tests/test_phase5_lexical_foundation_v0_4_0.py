@@ -49,12 +49,12 @@ class Phase5LexicalFoundationTests(unittest.TestCase):
 
     def test_introductory_science_vocabulary_and_regular_plural_are_supported(self):
         result = self.analyze(
-            "Chemistry studies atoms, molecules, elements, compounds, "
+            "Chemistry contains atoms, molecules, elements, compounds, "
             "chemical reactions, electrons, energy, and matter."
         )
         by_form = {item.token.surface_text.casefold(): item for item in result.tokens
                    if item.token.kind == "WORD"}
-        for form in ("chemistry", "studies", "atoms", "molecules", "elements",
+        for form in ("chemistry", "contains", "atoms", "molecules", "elements",
                      "compounds", "chemical", "reactions", "electrons", "energy", "matter"):
             with self.subTest(form=form):
                 self.assertGreater(len(by_form[form].candidates), 0)
@@ -73,7 +73,9 @@ class Phase5LexicalFoundationTests(unittest.TestCase):
         self.assertEqual(by_form["changing"].candidates[0].lemma, "change")
         self.assertEqual(by_form["changing"].candidates[0].derived_by_rule,
                          "en.verb.participle.ing")
-        self.assertEqual(by_form["chemically"].status, "UNRESOLVED")
+        self.assertEqual(by_form["chemically"].candidates[0].lemma, "chemical")
+        self.assertEqual(by_form["chemically"].candidates[0].derived_by_rule,
+                         "en.adverb.derived.ly")
 
     def test_ambiguity_is_preserved_instead_of_forced(self):
         result = self.analyze("The bank changes.")
