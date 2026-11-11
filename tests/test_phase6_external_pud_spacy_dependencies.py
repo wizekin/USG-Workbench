@@ -1,7 +1,7 @@
 import unittest
 
 from tools.phase6_external_pud_v0_8.spacy_dependencies import (
-    evaluate_predictions, parse_dependency_conllu,
+    evaluate_predictions, parse_dependency_conllu, convert_heads_to_ud_conventions,
 )
 
 
@@ -26,9 +26,27 @@ class TestSpacyDependencyEvaluation(unittest.TestCase):
         result = evaluate_predictions(sentences, predictions)
         self.assertEqual(result["totals"]["tokens"], 2)
         self.assertEqual(result["totals"]["uas_hits"], 2)
-        self.assertEqual(result["totals"]["uas"], 1.0)
+        self.assertEqual(result["totals"]["raw_uas"], 1.0)
+        self.assertEqual(result["totals"]["converted_uas"], 1.0)
         self.assertEqual(result["totals"]["root_tokens"], 1)
         self.assertEqual(result["totals"]["root_attachment_accuracy"], 1.0)
+
+
+    def test_preposition_arcs_are_reoriented_to_ud_head_convention(self):
+        heads = [1, 1, 2, 1]
+        deprels = ["nsubj", "ROOT", "prep", "pobj"]
+        self.assertEqual(
+            convert_heads_to_ud_conventions(heads, deprels),
+            [1, 1, 3, 1],
+        )
+
+    def test_coordination_cc_attaches_to_following_conjunct(self):
+        heads = [0, 0, 0]
+        deprels = ["ROOT", "cc", "conj"]
+        self.assertEqual(
+            convert_heads_to_ud_conventions(heads, deprels),
+            [0, 2, 0],
+        )
 
     def test_rejects_token_count_mismatch(self):
         sentences = [{"tokens": [{"form": "word", "upos": "NOUN", "deprel": "root", "gold_head_index": 0, "is_root": True}]}]
