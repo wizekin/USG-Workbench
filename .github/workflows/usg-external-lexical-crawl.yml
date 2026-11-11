@@ -116,27 +116,9 @@ jobs:
             echo "The next scheduled run resumes from state/checkpoint.json."
           } >> "$GITHUB_STEP_SUMMARY"
 
-
-  audit:
-    needs: crawl
-    if: needs.crawl.result == 'success'
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    permissions:
-      contents: read
-    env:
-      GITHUB_TOKEN: ${{ github.token }}
-      USG_LEXICAL_DATA_BRANCH: usg-external-lexical-data
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: main
-          fetch-depth: 1
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
       - name: Reconcile durable checkpoint, manifest and shard inventory
-        run: >-
-          python -m tools.usg_external_lexical_v0_1_0 audit-remote
-          --repository "${GITHUB_REPOSITORY}"
-          --branch "${USG_LEXICAL_DATA_BRANCH}"
+        if: success()
+        run: |
+          python -m tools.usg_external_lexical_v0_1_0 audit-remote \\
+            --repository "${GITHUB_REPOSITORY}" \\
+            --branch "${USG_LEXICAL_DATA_BRANCH}"
