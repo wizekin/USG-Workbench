@@ -42,3 +42,4 @@ The archive inventory records fresh tests and limitations for the original packa
 - [USG Open-World Randomized Evaluation Program](documentation/USG-OPEN-WORLD-RANDOMIZED-EVALUATION-PLAN.md) defines a continuously expanding, seed-reproducible test campaign for realistic, unconstrained, adversarial, and diagnostic requests. It separates the evaluation of the harness from claims about USG capability and specifies append-only reports stored in this repository.
 - [OW-0 repository inventory](documentation/USG-OPEN-WORLD-REPOSITORY-INVENTORY.md) records the actual implementation and capability boundaries.
 - [OW-1 evaluation protocol](documentation/USG-OPEN-WORLD-EVALUATION-PROTOCOL.md) defines versioned scenario, source-provenance, execution-result, and campaign-report contracts.
+- [OW-2 randomized scenario generator](documentation/USG-OPEN-WORLD-RANDOM-SCENARIO-GENERATOR.md) creates seeded, protocol-validated cases for the initial real evaluation targets.

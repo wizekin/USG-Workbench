@@ -1,0 +1,29 @@
+{
+  "schema_version":"1.0.0",
+  "targets":[
+    {
+      "component_id":"phase4-bounded-interpreter",
+      "component_version":"0.1.0",
+      "entry_point":"tools.usg_interpretation_v0_1_0.pipeline.InterpretationService.interpret",
+      "interface":"python_api",
+      "contract_versions":["USG-SEM/1.0"],
+      "inventory_path":"tools/usg_interpretation_v0_1_0/pipeline.py"
+    },
+    {
+      "component_id":"phase5-bounded-interpreter",
+      "component_version":"0.2.0",
+      "entry_point":"tools.usg_interpretation_v0_2_0.integration.Phase5InterpretationService.interpret",
+      "interface":"python_api",
+      "contract_versions":["USG-INTERPRET/0.2.0"],
+      "inventory_path":"tools/usg_interpretation_v0_2_0/integration.py"
+    },
+    {
+      "component_id":"js-semantic-workbench-v054",
+      "component_version":"0.5.4",
+      "entry_point":"implementations/semantic-workbench-js/v0.5.4/index.html",
+      "interface":"browser_ui",
+      "contract_versions":["USG-WB-SEM/1.0"],
+      "inventory_path":"implementations/semantic-workbench-js/v0.5.4/index.html"
+    }
+  ]
+}

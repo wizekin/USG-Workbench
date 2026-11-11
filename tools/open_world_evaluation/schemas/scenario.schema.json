@@ -45,6 +45,18 @@
         "case_seed": {
           "type": "string",
           "minLength": 16
+        },
+        "generation_trace": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "mutation_ops": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         }
       },
       "required": [
