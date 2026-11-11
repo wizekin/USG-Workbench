@@ -117,6 +117,14 @@ def prepare_sentences(sentences: list[dict], disambiguator, analyzer) -> list[di
             "meta": sentence.get("meta", {}),
             "tokens": tokens,
             "analyses": analyses,
+            "candidate_tags": [
+                sorted({
+                    str(row["analysis"].get("ud", "")).upper()
+                    for row in rows
+                    if row["analysis"].get("ud") not in (None, "", "_")
+                })
+                for rows in analyses
+            ],
             "mle_top1": mle_top1,
             "features": features,
             "gold": [token["upos"] for token in tokens],
@@ -140,35 +148,42 @@ class AveragedStructuredPerceptron:
             score += weights[(tag, feature)]
         return score
 
-    def predict(self, sequence: list[tuple[str, ...]]) -> list[str]:
+    def predict(self, sequence: list[tuple[str, ...]],
+                candidate_tags: list[list[str]] | None = None) -> list[str]:
         if not sequence:
             return []
         tags = self.tags
         weights = self.weights
-        # Compute emissions once per token/tag; only transitions vary in Viterbi.
+        if candidate_tags is None:
+            states = [tags for _ in sequence]
+        else:
+            states = []
+            for allowed in candidate_tags:
+                valid = sorted(set(allowed).intersection(tags))
+                states.append(valid or tags)
+        # Restrict each token to morphology-licensed UPOS candidates when possible.
         emissions = [
             {
                 tag: sum(weights[(tag, feature)] for feature in features)
-                for tag in tags
+                for tag in states[position]
             }
-            for features in sequence
+            for position, features in enumerate(sequence)
         ]
         scores = {
             tag: emissions[0][tag] + weights[(tag, f"TRANS={START}")]
-            for tag in tags
+            for tag in states[0]
         }
         backpointers = []
         for position in range(1, len(sequence)):
             next_scores = {}
             back = {}
-            for tag in tags:
-                best_previous = tags[0]
+            for tag in states[position]:
+                best_previous = states[position - 1][0]
                 best_score = float("-inf")
-                transition_base = f"TRANS="
-                for previous in tags:
+                for previous in states[position - 1]:
                     score = (
                         scores[previous]
-                        + weights[(tag, transition_base + previous)]
+                        + weights[(tag, f"TRANS={previous}")]
                         + emissions[position][tag]
                     )
                     if score > best_score:
@@ -178,7 +193,7 @@ class AveragedStructuredPerceptron:
                 back[tag] = best_previous
             scores = next_scores
             backpointers.append(back)
-        current = max(tags, key=lambda tag: scores[tag])
+        current = max(states[-1], key=lambda tag: scores[tag])
         output = [current]
         for back in reversed(backpointers):
             current = back[current]
@@ -198,7 +213,15 @@ class AveragedStructuredPerceptron:
                 self.step += 1
                 features = sample["features"]
                 gold = sample["gold"]
-                predicted = self.predict(features)
+                candidate_tags = sample.get("candidate_tags")
+                if candidate_tags is not None:
+                    allowed = [
+                        sorted(set(candidates) | {gold_tag})
+                        for candidates, gold_tag in zip(candidate_tags, gold)
+                    ]
+                else:
+                    allowed = None
+                predicted = self.predict(features, allowed)
                 if predicted == gold:
                     continue
                 previous_gold = START
@@ -250,7 +273,7 @@ def evaluate_fold(train: list[dict], test: list[dict], epochs: int = EPOCHS) -> 
     totals = defaultdict(int)
     by_upos = defaultdict(lambda: defaultdict(int))
     for sample in test:
-        predicted = model.predict(sample["features"])
+        predicted = model.predict(sample["features"], sample.get("candidate_tags"))
         for position, (token, candidates, gold, guess) in enumerate(zip(
             sample["tokens"], sample["analyses"], sample["gold"], predicted
         )):
