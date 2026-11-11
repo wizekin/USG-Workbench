@@ -90,6 +90,42 @@ class FakePublisher:
         return "b" * 40
 
 
+SIMPLE_ENTRY = """---
+kind: "dictionary-entry"
+schema_version: 1
+entry_id: "en-simple-fixture"
+headword: "A & A"
+language: "en"
+source_records: 1
+sense_count: 1
+source_id: "enwiktionary"
+source_url: "https://en.wiktionary.org/wiki/A%20%26%20A#English"
+history_url: "https://en.wiktionary.org/w/index.php?title=A%20%26%20A&action=history"
+license: "CC-BY-SA-4.0"
+snapshot_id: "fixture-snapshot-2026-11"
+---
+# A & A
+
+*English*
+
+## Noun
+
+### Senses
+
+<a id="r1-s1"></a>
+
+**Source sense R1.S1**
+
+1. Abbreviation of Aid and Attendance.
+
+## Source gaps
+
+Missing fields have not been generated or inferred.
+
+## Sources
+
+- License: CC BY-SA 4.0.
+"""
 def source_urls():
     base = f"https://raw.githubusercontent.com/figueirego/english-dictionary/{SHA}/"
     return {
@@ -185,6 +221,20 @@ headwords: 1
 """
         with self.assertRaises(Exception):
             parse_headword_page(unsafe, "dictionary/browse/c/0001.md", SNAPSHOT)
+
+    def test_parser_accepts_plain_part_of_speech_heading(self):
+        parsed = parse_english_dictionary_entry(
+            SIMPLE_ENTRY, "A & A",
+            "https://raw.githubusercontent.com/example/dictionary/a-a.md",
+        )
+        self.assertEqual(len(parsed["entries"]), 1)
+        self.assertEqual(parsed["entries"][0]["part_of_speech"], "Noun")
+        self.assertEqual(parsed["entries"][0]["source_record_id"], "1")
+        self.assertEqual(len(parsed["entries"][0]["senses"]), 1)
+        self.assertEqual(
+            parsed["entries"][0]["senses"][0]["definition"],
+            "Abbreviation of Aid and Attendance.",
+        )
 
     def test_compact_projection_keeps_relations_and_provenance_but_not_definition_text(self):
         parsed = parse_english_dictionary_entry(

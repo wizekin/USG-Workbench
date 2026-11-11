@@ -385,12 +385,21 @@ def parse_english_dictionary_entry(markdown: str, queried_word: str, entry_url: 
     license_name = metadata.get("license", "not_declared")
     body_start = markdown.find("\n---", 3)
     body = markdown[body_start + 4:] if body_start >= 0 else markdown
-    heading_matches = list(re.finditer(r"(?m)^##\s+(.+?)\s+·\s+Etymology\s+\d+\s+·\s+Record\s+(\d+)\s*$", body))
+    heading_matches = [
+        heading
+        for heading in re.finditer(
+            r"(?m)^##\s+(.+?)(?:\s+·\s+Etymology\s+\d+\s+·\s+Record\s+(\d+))?\s*$",
+            body,
+        )
+        if heading.group(1).strip().casefold() not in {"source gaps", "sources"}
+    ]
     normalized_entries = []
     for index, heading in enumerate(heading_matches):
         record_text = body[heading.end():heading_matches[index + 1].start() if index + 1 < len(heading_matches) else len(body)]
         pos = heading.group(1).strip()
-        record_number = heading.group(2)
+        # Older exports include explicit etymology/record numbers. Simpler
+        # source records use a plain POS heading, so assign a stable local order.
+        record_number = heading.group(2) or str(index + 1)
         sense_markers = list(re.finditer(r"(?m)^<a id=\"r(\d+)-s(\d+)\"></a>\s*$", record_text))
         forms = []
         forms_match = re.search(r"(?ms)^### Forms\s*\n(.*?)(?=^### |\Z)", record_text)
