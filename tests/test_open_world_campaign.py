@@ -65,7 +65,11 @@ def make_case(case_id, population, target="phase4-bounded-interpreter"):
             "interface": "python_api" if target.startswith("phase4") else "browser_ui",
         },
         "taxonomy": {"labels": ["fixture"], "unclassified": False},
-        "oracle": (\n            {"type": "structural", "independent": True, "oracle_id": "ow5-fixture-oracle"}\n            if population == "controlled_diagnostic"\n            else {"type": "none", "independent": False}\n        ),
+        "oracle": (
+            {"type": "structural", "independent": True, "oracle_id": "ow5-fixture-oracle"}
+            if population == "controlled_diagnostic"
+            else {"type": "none", "independent": False}
+        ),
         "resource_limits": {
             "wall_time_seconds": 5, "memory_megabytes": 256,
             "max_input_bytes": 10000, "network_access": False,
