@@ -182,7 +182,7 @@
     {
       "language": "ar",
       "form": "كتب",
-      "lemma": "write",
+      "lemma": "كتب",
       "part_of_speech": "VERB",
       "sense_id": "ar:verb.write",
       "concept_ref": "concept:verb.write",
@@ -196,7 +196,7 @@
     {
       "language": "ar",
       "form": "قرأ",
-      "lemma": "read",
+      "lemma": "قرأ",
       "part_of_speech": "VERB",
       "sense_id": "ar:verb.read",
       "concept_ref": "concept:verb.read",
@@ -210,7 +210,7 @@
     {
       "language": "ar",
       "form": "فحص",
-      "lemma": "examine",
+      "lemma": "فحص",
       "part_of_speech": "VERB",
       "sense_id": "ar:verb.examine",
       "concept_ref": "concept:verb.examine",
@@ -224,7 +224,7 @@
     {
       "language": "ar",
       "form": "بنى",
-      "lemma": "build",
+      "lemma": "بنى",
       "part_of_speech": "VERB",
       "sense_id": "ar:verb.build",
       "concept_ref": "concept:verb.build",
@@ -238,7 +238,7 @@
     {
       "language": "ar",
       "form": "طالب",
-      "lemma": "student",
+      "lemma": "طالب",
       "part_of_speech": "NOUN",
       "sense_id": "ar:noun.student",
       "concept_ref": "concept:noun.student",
@@ -249,7 +249,7 @@
     {
       "language": "ar",
       "form": "معلم",
-      "lemma": "teacher",
+      "lemma": "معلم",
       "part_of_speech": "NOUN",
       "sense_id": "ar:noun.teacher",
       "concept_ref": "concept:noun.teacher",
@@ -260,7 +260,7 @@
     {
       "language": "ar",
       "form": "طبيب",
-      "lemma": "doctor",
+      "lemma": "طبيب",
       "part_of_speech": "NOUN",
       "sense_id": "ar:noun.doctor",
       "concept_ref": "concept:noun.doctor",
@@ -271,7 +271,7 @@
     {
       "language": "ar",
       "form": "مهندس",
-      "lemma": "engineer",
+      "lemma": "مهندس",
       "part_of_speech": "NOUN",
       "sense_id": "ar:noun.engineer",
       "concept_ref": "concept:noun.engineer",
@@ -282,7 +282,7 @@
     {
       "language": "ar",
       "form": "باحث",
-      "lemma": "researcher",
+      "lemma": "باحث",
       "part_of_speech": "NOUN",
       "sense_id": "ar:noun.researcher",
       "concept_ref": "concept:noun.researcher",
@@ -293,7 +293,7 @@
     {
       "language": "ar",
       "form": "رسالة",
-      "lemma": "letter",
+      "lemma": "رسالة",
       "part_of_speech": "NOUN",
       "sense_id": "ar:noun.letter",
       "concept_ref": "concept:noun.letter",
@@ -304,7 +304,7 @@
     {
       "language": "ar",
       "form": "كتاب",
-      "lemma": "book",
+      "lemma": "كتاب",
       "part_of_speech": "NOUN",
       "sense_id": "ar:noun.book",
       "concept_ref": "concept:noun.book",
@@ -315,7 +315,7 @@
     {
       "language": "ar",
       "form": "عينة",
-      "lemma": "sample",
+      "lemma": "عينة",
       "part_of_speech": "NOUN",
       "sense_id": "ar:noun.sample",
       "concept_ref": "concept:noun.sample",
@@ -326,7 +326,7 @@
     {
       "language": "ar",
       "form": "نموذج",
-      "lemma": "model",
+      "lemma": "نموذج",
       "part_of_speech": "NOUN",
       "sense_id": "ar:noun.model",
       "concept_ref": "concept:noun.model",
