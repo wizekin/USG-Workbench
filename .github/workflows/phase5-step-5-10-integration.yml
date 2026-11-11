@@ -47,6 +47,12 @@ jobs:
           python -m compileall -q tools/usg_local_api_v1_0_0
           python -m compileall -q tools/semantic_graph_store_v1_0_0
           python -m compileall -q tools/usg-kernel-lab
+      - name: Build and smoke-test the installable wheel
+        run: |
+          python -m pip wheel . --no-deps --wheel-dir dist
+          python -m pip install --no-deps --target /tmp/usg-wheel-test dist/*.whl
+          cd /tmp
+          PYTHONPATH=/tmp/usg-wheel-test python -c "from tools.usg_interpretation_v0_2_0 import bundled_lexical_resource_v0_3_0, bundled_resource_descriptors; assert bundled_lexical_resource_v0_3_0().entries; assert any(x.resource_id == 'usg-en-ar-discourse-lexicon' for x in bundled_resource_descriptors())"
       - name: Run Step 5.10 API, transaction, and replay tests
         run: python -m unittest discover -s tests -p "test_phase5_integrated_api.py" -v
       - name: Run Step 5.10 Kernel Lab HTTP/UI tests
