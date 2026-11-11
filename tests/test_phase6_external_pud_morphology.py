@@ -28,7 +28,7 @@ class TestPUDMorphology(unittest.TestCase):
     def test_consonant_doubling_rule_is_stem_conditioned(self):
         token = {"form": "running", "lemma": "run", "upos": "VERB", "feats": (("VerbForm", "Ger"),)}
         rule = _rule_for(token, "en")
-        self.assertEqual(rule[2:], ("n", "ning", (("VerbForm", "Ger"),)))
+        self.assertEqual(rule[2:], ("n", "nning", (("VerbForm", "Ger"),)))
         candidates = analyze_token("running", "en", {rule: 3})
         self.assertIn(("run", "VERB", (("VerbForm", "Ger"),), "MORPHOLOGY_RULE"), candidates)
         self.assertNotIn(("walk", "VERB", (("VerbForm", "Ger"),), "MORPHOLOGY_RULE"), candidates)
