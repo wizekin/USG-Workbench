@@ -15,6 +15,7 @@ class TestSpacyDependencyEvaluation(unittest.TestCase):
         parsed = parse_dependency_conllu(payload)
         self.assertEqual(parsed[0]["tokens"][0]["gold_head_index"], 1)
         self.assertEqual(parsed[0]["tokens"][1]["gold_head_index"], 1)
+        self.assertTrue(parsed[0]["tokens"][1]["is_root"])
 
     def test_unlabeled_attachment_accuracy(self):
         sentences = [{"tokens": [
@@ -26,6 +27,8 @@ class TestSpacyDependencyEvaluation(unittest.TestCase):
         self.assertEqual(result["totals"]["tokens"], 2)
         self.assertEqual(result["totals"]["uas_hits"], 2)
         self.assertEqual(result["totals"]["uas"], 1.0)
+        self.assertEqual(result["totals"]["root_tokens"], 1)
+        self.assertEqual(result["totals"]["root_attachment_accuracy"], 1.0)
 
     def test_rejects_token_count_mismatch(self):
         sentences = [{"tokens": [{"form": "word", "upos": "NOUN", "deprel": "root", "gold_head_index": 0}]}]
