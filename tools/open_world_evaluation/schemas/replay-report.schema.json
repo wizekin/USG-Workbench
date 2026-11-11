@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "USG Deterministic Replay Report v1.0.0",
+  "type": "object",
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "replay_version": {"type": "string"},
+    "created_at": {"type": "string", "format": "date-time"},
+    "repository": {"type": "string"},
+    "tested_commit_sha": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+    "replay_policy_version": {"type": "string"},
+    "status": {"enum": ["complete", "partial", "differences_found", "no_cases"]},
+    "selected_case_count": {"type": "integer", "minimum": 0},
+    "selected_result_record_count": {"type": "integer", "minimum": 0},
+    "replayed_record_count": {"type": "integer", "minimum": 0},
+    "skipped_not_executed_record_count": {"type": "integer", "minimum": 0},
+    "not_replayed_due_to_budget_count": {"type": "integer", "minimum": 0},
+    "counts": {
+      "type": "object",
+      "properties": {
+        "exact_match": {"type": "integer", "minimum": 0},
+        "outcome_mismatch": {"type": "integer", "minimum": 0},
+        "target_result_mismatch": {"type": "integer", "minimum": 0},
+        "not_comparable": {"type": "integer", "minimum": 0}
+      },
+      "required": ["exact_match", "outcome_mismatch", "target_result_mismatch", "not_comparable"],
+      "additionalProperties": false
+    },
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "case_id": {"type": "string"},
+          "target_id": {"type": "string"},
+          "tested_commit_sha": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+          "input_sha256": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+          "original_attempt_id": {"type": "string"},
+          "replay_attempt_id": {"type": "string"},
+          "original_outcome": {"type": "string"},
+          "replay_outcome": {"type": "string"},
+          "outcome_matches": {"type": "boolean"},
+          "original_target_result_sha256": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+          "replay_target_result_sha256": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+          "target_result_matches": {"type": ["boolean", "null"]},
+          "original_pipeline_version": {"type": ["string", "null"]},
+          "replay_pipeline_version": {"type": ["string", "null"]},
+          "status": {"enum": ["exact_match", "outcome_mismatch", "target_result_mismatch", "not_comparable"]}
+        },
+        "required": [
+          "case_id", "target_id", "tested_commit_sha", "input_sha256",
+          "original_attempt_id", "replay_attempt_id", "original_outcome",
+          "replay_outcome", "outcome_matches", "original_target_result_sha256",
+          "replay_target_result_sha256", "target_result_matches",
+          "original_pipeline_version", "replay_pipeline_version", "status"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "limitations": {"type": "array", "items": {"type": "string"}, "minItems": 1}
+  },
+  "required": [
+    "schema_version", "replay_version", "created_at", "repository",
+    "tested_commit_sha", "replay_policy_version", "status", "selected_case_count",
+    "selected_result_record_count", "replayed_record_count",
+    "skipped_not_executed_record_count", "not_replayed_due_to_budget_count",
+    "counts", "entries", "limitations"
+  ],
+  "additionalProperties": false
+}
