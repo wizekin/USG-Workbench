@@ -13,13 +13,14 @@ on:
       - "tools/open_world_evaluation/schemas/coverage-ledger.schema.json"
       - "tools/open_world_evaluation/execute_cases.py"
       - "tools/open_world_evaluation/worker.py"
+      - "tools/open_world_evaluation/target_profiles.json"
       - "tools/open_world_evaluation/schemas/scenario.schema.json"
       - "benchmarks/phase4-interpretation/v0.1.0/fixtures.json"
       - "benchmarks/phase5-interpretation-v0.2.1/corpus.json"
   workflow_dispatch:
     inputs:
       prompt_count:
-        description: "Number of base random prompts; target-matrix mode multiplies this by three"
+        description: "Number of base random prompts; target-matrix mode tests every registered target"
         required: true
         default: "1000"
         type: string
@@ -57,6 +58,7 @@ jobs:
               raise SystemExit("PROMPT_COUNT must be between 1 and 2000")
           PY
           python -m unittest discover -s tests -p "test_open_world_diagnostics.py" -v
+          python -m unittest discover -s tests -p "test_open_world_component_adapters.py" -v
       - name: Generate unconstrained-random target matrix
         run: |
           python -m tools.open_world_evaluation.generate_scenarios \
@@ -98,7 +100,7 @@ jobs:
           rows = [json.loads(line) for line in (root / "ow6-all-cases.jsonl").read_text(encoding="utf-8").splitlines()]
           assert len(rows) == random["case_count"] + diagnostic["case_count"]
           PY
-      - name: Execute real Phase 4 and Phase 5 interpreters; record JS target as not executed
+      - name: Execute registered Python entry points; record browser-only targets as not executed
         run: |
           python -m tools.open_world_evaluation.execute_cases \
             --input "$RUNNER_TEMP/ow6-all-cases.jsonl" \
