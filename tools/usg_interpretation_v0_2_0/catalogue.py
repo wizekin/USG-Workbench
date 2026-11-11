@@ -253,6 +253,14 @@ class SQLiteResourceCatalogue:
         return tuple(result)
 
 
+def register_bundled_resources(catalogue: SQLiteResourceCatalogue, registered_at: float) -> tuple[str, ...]:
+    """Register every bundled resource in the caller's current transaction."""
+    descriptors = bundled_resource_descriptors()
+    for descriptor in descriptors:
+        catalogue.register_resource(descriptor, registered_at)
+    return tuple(x.resource_id for x in descriptors)
+
+
 def verify_resource_file(descriptor: ResourceDescriptor, path: str | Path) -> bool:
     """Verify a registered descriptor against the exact bytes of a resource file."""
     digest = sha256(Path(path).read_bytes()).hexdigest()
@@ -317,4 +325,5 @@ def bundled_resource_descriptors() -> tuple[ResourceDescriptor, ...]:
 __all__ = [
     "SQLITE_RESOURCE_CATALOGUE_VERSION", "AssociationRetrieval",
     "SQLiteResourceCatalogue", "verify_resource_file", "bundled_resource_descriptors",
+    "register_bundled_resources",
 ]
