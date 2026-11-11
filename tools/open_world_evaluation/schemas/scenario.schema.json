@@ -250,6 +250,45 @@
         },
         "oracle_id": {
           "type": "string"
+        },
+        "expected": {
+          "type": "object",
+          "properties": {
+            "expected_completion_status": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "expected_expression_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "gold_class": {
+              "enum": [
+                "POSITIVE",
+                "NEGATIVE",
+                "AMBIGUOUS",
+                "OTHER"
+              ]
+            },
+            "expected_construction": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "expected_roles": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "expected_role_spans": {
+              "type": "object"
+            }
+          },
+          "additionalProperties": false
         }
       },
       "required": [
