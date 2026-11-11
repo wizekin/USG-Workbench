@@ -277,6 +277,7 @@ def build_stage_attribution(
     analyzed = without_payload = without_blocker = not_executed = 0
     unmapped: Counter[str] = Counter()
     unconfigured_targets: Counter[str] = Counter()
+    pipeline_version_mismatches: Counter[str] = Counter()
     multiple_first_blocker_records = 0
     records_with_blockers = 0
 
@@ -302,6 +303,15 @@ def build_stage_attribution(
             unconfigured_targets[target_id] += 1
             for stage in blockers:
                 unmapped[stage] += 1
+            continue
+        observed_version = target_result.get("pipeline_version")
+        observed_contract = target_result.get("pipeline_contract")
+        if (
+            observed_version != profile["pipeline_version"]
+            or observed_contract != profile["pipeline_contract"]
+        ):
+            version_label = str(observed_version or "missing")
+            pipeline_version_mismatches[target_id + ":" + version_label] += 1
             continue
 
         stages = profile["stages"]
@@ -362,6 +372,7 @@ def build_stage_attribution(
         "records_with_blocking_diagnostics": records_with_blockers,
         "records_with_multiple_parallel_first_blockers": multiple_first_blocker_records,
         "unconfigured_target_record_counts": dict(sorted(unconfigured_targets.items())),
+        "pipeline_version_mismatch_record_counts": dict(sorted(pipeline_version_mismatches.items())),
         "unmapped_blocking_stage_counts": dict(sorted(unmapped.items())),
         "first_blocking_stage_counts": dict(sorted(first_counts.items())),
         "first_blocking_diagnostic_counts": {
