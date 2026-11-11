@@ -133,19 +133,33 @@ class AveragedStructuredPerceptron:
         if not sequence:
             return []
         tags = self.tags
+        weights = self.weights
+        # Compute emissions once per token/tag; only transitions vary in Viterbi.
+        emissions = [
+            {
+                tag: sum(weights[(tag, feature)] for feature in features)
+                for tag in tags
+            }
+            for features in sequence
+        ]
         scores = {
-            tag: self._score(tag, sequence[0], START)
+            tag: emissions[0][tag] + weights[(tag, f"TRANS={START}")]
             for tag in tags
         }
         backpointers = []
-        for features in sequence[1:]:
+        for position in range(1, len(sequence)):
             next_scores = {}
             back = {}
             for tag in tags:
                 best_previous = tags[0]
                 best_score = float("-inf")
+                transition_base = f"TRANS="
                 for previous in tags:
-                    score = scores[previous] + self._score(tag, features, previous)
+                    score = (
+                        scores[previous]
+                        + weights[(tag, transition_base + previous)]
+                        + emissions[position][tag]
+                    )
                     if score > best_score:
                         best_score = score
                         best_previous = previous
