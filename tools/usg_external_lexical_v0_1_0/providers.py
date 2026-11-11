@@ -120,6 +120,7 @@ def _relation_items(values: Any, relation_type: str, provider: str, sense_id: st
 def _walk_freedict_senses(
     senses: Any, provider: str, word: str, entry_index: int, part_of_speech: str,
     parent_path: str = "",
+    parent_sense_id: str | None = None,
 ) -> list[dict[str, Any]]:
     result: list[dict[str, Any]] = []
     if not isinstance(senses, list):
@@ -142,10 +143,10 @@ def _walk_freedict_senses(
             "examples": _as_strings(raw.get("examples")),
             "tags": _as_strings(raw.get("tags")),
             "relations": relations,
-            "parent_sense_id": None,
+            "parent_sense_id": parent_sense_id,
         })
         result.extend(_walk_freedict_senses(
-            raw.get("subsenses"), provider, word, entry_index, part_of_speech, path
+            raw.get("subsenses"), provider, word, entry_index, part_of_speech, path, sense_id
         ))
     return result
 
@@ -391,6 +392,33 @@ def parse_english_dictionary_entry(markdown: str, queried_word: str, entry_url: 
         pos = heading.group(1).strip()
         record_number = heading.group(2)
         sense_markers = list(re.finditer(r"(?m)^<a id=\"r(\d+)-s(\d+)\"></a>\s*$", record_text))
+        forms = []
+        forms_match = re.search(r"(?ms)^### Forms\s*\n(.*?)(?=^### |\\Z)", record_text)
+        if forms_match:
+            for form_line in forms_match.group(1).splitlines():
+                form_match = re.match(r"^\\s*-\\s+(.+?)(?:\\s+[—–]\\s+(.+))?\\s*$", form_line)
+                if form_match:
+                    forms.append({"form": form_match.group(1).strip(), "tags": [form_match.group(2).strip()] if form_match.group(2) else []})
+        record_relations = []
+        related_match = re.search(r"(?ms)^### Related words\\s*\\n(.*?)(?=^### |\\Z)", record_text)
+        if related_match:
+            for relation_line in related_match.group(1).splitlines():
+                relation_match = re.search(r"\\*\\*Source (synonyms|antonyms):\\*\\*\\s*(.*)$", relation_line)
+                if not relation_match:
+                    continue
+                relation_type = "synonym" if relation_match.group(1) == "synonyms" else "antonym"
+                for label, target in _markdown_links(relation_line):
+                    if target.startswith("../../entries/"):
+                        record_relations.append({
+                            "relation_id": "rel-" + stable_id(entry_id, record_number, relation_type, label),
+                            "type": relation_type,
+                            "target_lemma": label,
+                            "scope": "entry",
+                            "source_sense_id": None,
+                            "target_sense_id": None,
+                            "evidence": "Source explicitly labels this related-word link; source metadata says relation scope is entry-level, not sense-resolved.",
+                            "status": "source_asserted_unvalidated",
+                        })
         senses = []
         for sense_index, marker in enumerate(sense_markers):
             block_end = sense_markers[sense_index + 1].start() if sense_index + 1 < len(sense_markers) else len(record_text)
@@ -421,10 +449,10 @@ def parse_english_dictionary_entry(markdown: str, queried_word: str, entry_url: 
                 "lemma": metadata.get("headword", queried_word),
                 "language": "en",
                 "part_of_speech": pos,
-                "forms": [],
+                "forms": forms,
                 "pronunciations": [],
                 "senses": senses,
-                "relations": [],
+                "relations": record_relations,
                 "source_record_id": record_number,
             })
     if not normalized_entries:
@@ -459,9 +487,9 @@ class EnglishDictionaryGitHubProvider:
     repository = GITHUB_REPOSITORY
     branch = "main"
 
-    def __init__(self, client: HttpClient | None = None):
+    def __init__(self, client: HttpClient | None = None, commit_sha: str | None = None):
         self.client = client or HttpClient()
-        self._commit_sha: str | None = None
+        self._commit_sha: str | None = commit_sha
 
     def _raw_url(self, path: str) -> str:
         if not self._commit_sha:
@@ -475,7 +503,8 @@ class EnglishDictionaryGitHubProvider:
 
     @staticmethod
     def _initial(word: str) -> str:
-        first = word[:1].casefold()
+        import unicodedata
+        first = unicodedata.normalize("NFKD", word[:1]).encode("ascii", "ignore").decode("ascii").casefold()
         return first if len(first) == 1 and "a" <= first <= "z" else "_"
 
     @staticmethod
@@ -497,11 +526,9 @@ class EnglishDictionaryGitHubProvider:
         for filename, first, last in rows:
             if self._sort_key(first) <= key <= self._sort_key(last):
                 return f"dictionary/browse/{initial}/{filename}"
-        # Case-only variants and non-ASCII sort differences can sit on an adjacent page.
-        nearest = min(rows, key=lambda row: min(
-            abs(len(key[0]) - len(self._sort_key(row[1])[0])),
-            abs(len(key[0]) - len(self._sort_key(row[2])[0])),
-        ))
+        # If a spelling falls outside the exact interval, choose the nearest lexical page.
+        following = [row for row in rows if self._sort_key(row[1]) >= key]
+        nearest = following[0] if following else rows[-1]
         return f"dictionary/browse/{initial}/{nearest[0]}"
 
     def lookup(self, word: str) -> dict[str, Any]:
