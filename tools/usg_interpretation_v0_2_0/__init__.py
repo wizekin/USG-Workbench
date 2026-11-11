@@ -67,3 +67,17 @@ __all__ += [
     "SQLiteResourceCatalogue", "verify_resource_file",
     "bundled_resource_descriptors", "register_bundled_resources",
 ]
+
+from .integration import (
+    PHASE5_INTEGRATION_VERSION, PIPELINE_CONTRACT,
+    Phase5InterpretationService, canonical_result_bytes,
+)
+from .run_store import (
+    InterpretationRunIntegrityError, SQLiteInterpretationRunStore,
+)
+
+__all__ += [
+    "PHASE5_INTEGRATION_VERSION", "PIPELINE_CONTRACT",
+    "Phase5InterpretationService", "canonical_result_bytes",
+    "InterpretationRunIntegrityError", "SQLiteInterpretationRunStore",
+]
