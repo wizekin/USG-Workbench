@@ -293,6 +293,71 @@ class OpenWorldCampaignPipelineTests(unittest.TestCase):
             markdown = (saved / "campaign-report.md").read_text(encoding="utf-8")
             self.assertIn("Candidate-new clusters: 1", markdown)
 
+    def test_campaign_report_includes_inventory_coverage_ledger(self):
+        cases = [make_case("OW-CASE-00000021", "unconstrained_random")]
+        results = [make_result(cases[0], "completed", 21)]
+        coverage_ledger = {
+            "inventory_component_count": 11,
+            "registered_target_profile_count": 3,
+            "entrypoint_exercised_component_count": 1,
+            "unclassified_case_count": 1,
+            "not_registered_component_ids": ["phase6-candidate-expansion"],
+            "not_executed_only_component_ids": ["js-semantic-workbench-v054"],
+            "historical_comparison": {
+                "candidate_new_taxonomy_labels": ["candidate_label"],
+                "candidate_new_generator_families": ["new_family"],
+            },
+        }
+        report = build_campaign_report(
+            campaign_id="OWC-TEST-CAMPAIGN-0008",
+            cases=cases, results=results, scores=[],
+            tested_commit_sha=COMMIT,
+            coverage_ledger=coverage_ledger,
+        )
+        scope = report["coverage"]["scope_ledger"]
+        self.assertEqual(scope["inventory_component_count"], 11)
+        self.assertEqual(scope["entrypoint_exercised_component_count"], 1)
+        self.assertEqual(scope["not_registered_component_ids"], ["phase6-candidate-expansion"])
+        self.assertEqual(scope["candidate_new_taxonomy_labels"], ["candidate_label"])
+        markdown = render_markdown(report)
+        self.assertIn("Inventory-backed scope coverage", markdown)
+        self.assertIn("Components not registered as open-world targets: 1", markdown)
+
+    def test_campaign_bundle_stores_coverage_ledger_as_hashed_artifact(self):
+        cases = [make_case("OW-CASE-00000022", "unconstrained_random")]
+        results = [make_result(cases[0], "completed", 22)]
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            case_path, result_path, score_path = (
+                root / "cases.jsonl", root / "results.jsonl", root / "scores.jsonl"
+            )
+            coverage_path = root / "coverage-ledger.json"
+            write_jsonl(case_path, cases)
+            write_jsonl(result_path, results)
+            write_jsonl(score_path, [])
+            coverage_path.write_text(json.dumps({
+                "inventory_component_count": 11,
+                "registered_target_profile_count": 3,
+                "entrypoint_exercised_component_count": 1,
+                "unclassified_case_count": 0,
+                "not_registered_component_ids": [],
+                "not_executed_only_component_ids": [],
+                "historical_comparison": {
+                    "candidate_new_taxonomy_labels": [],
+                    "candidate_new_generator_families": [],
+                },
+            }), encoding="utf-8")
+            saved = store_campaign_bundle(
+                campaign_id="OWC-TEST-CAMPAIGN-0009",
+                cases_path=case_path, results_path=result_path, scores_path=score_path,
+                output_root=root / "stored", tested_commit_sha=COMMIT,
+                coverage_ledger_path=coverage_path,
+            )
+            manifest = json.loads((saved / "bundle-manifest.json").read_text(encoding="utf-8"))
+            self.assertIn("coverage-ledger.json", {item["name"] for item in manifest["files"]})
+            report = json.loads((saved / "campaign-report.json").read_text(encoding="utf-8"))
+            self.assertEqual(report["coverage"]["scope_ledger"]["inventory_component_count"], 11)
+
     def test_delta_debug_minimizer_reduces_text_only_while_failure_is_preserved(self):
         original = "REMOVE1 KEEP REMOVE2 REMOVE3"
         minimized, attempts = delta_debug_text(
