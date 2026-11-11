@@ -26,6 +26,12 @@ on:
       - "tests/test_open_world_component_adapters.py"
       - "tests/test_open_world_operation_oracles.py"
       - "tests/test_open_world_browser.py"
+      - "tests/test_phase3_local_api_cli.py"
+      - "tests/test_workbench_source_adapter.py"
+      - "tests/test_workbench_source_adapter.js"
+      - "tests/test_workbench_reconstruction_adapter.js"
+      - "interoperability/workbench_adapter/**"
+      - "tools/usg_local_api_v1_0_0/**"
       - "tests/test_python_kernel_v15_document_adapter.py"
       - "implementations/python-kernel/v0.6.0/**"
       - "implementations/python-kernel/v0.7.0/**"
@@ -45,6 +51,7 @@ on:
       - "documentation/USG-OPEN-WORLD-CONTINUOUS-EXPLORATION.md"
       - "documentation/OW-12-NATIVE-AND-BROWSER-ORACLES.md"
       - "documentation/OW-13-FULL-GENERATION-AND-REASONING-COVERAGE.md"
+      - "documentation/OW-14-LOCAL-API-AND-WORKBENCH-ADAPTERS.md"
 
 permissions:
   contents: write
@@ -85,6 +92,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
       - name: Install pinned Playwright runtime
         run: |
           python -m pip install "playwright>=1.48,<2"
@@ -103,6 +113,8 @@ jobs:
         env:
           USG_WORKBENCH_URL: http://127.0.0.1:8765/
         run: python -m unittest discover -s tests -p "test_open_world_browser.py" -v
+      - name: Exercise Workbench-to-canonical adapter in Node.js
+        run: node --test tests/test_workbench_source_adapter.js tests/test_workbench_reconstruction_adapter.js
       - name: Stop static server
         if: always()
         run: |
