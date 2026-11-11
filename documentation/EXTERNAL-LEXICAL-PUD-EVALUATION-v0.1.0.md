@@ -29,7 +29,7 @@ PUD text is downloaded at evaluation time and verified against the pinned Git bl
 
 Workflow: `.github/workflows/external-lexical-pud-evaluation.yml`
 
-It runs evaluator tests on pull requests and evaluates the latest durable lexical-data branch after a successful crawl or by manual dispatch. Non-PR runs upload a JSON artifact named `external-lexical-pud-evaluation`.
+It runs evaluator tests on pull requests. After evaluator changes are merged to `main`, it evaluates the latest durable lexical-data branch; it also evaluates after successful crawler runs and by manual dispatch. Non-PR runs upload a JSON artifact named `external-lexical-pud-evaluation`.
 
 ## Run locally
 
