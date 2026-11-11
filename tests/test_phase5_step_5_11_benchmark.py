@@ -42,6 +42,18 @@ class Phase5Step511BenchmarkTests(unittest.TestCase):
             self.assertIn("negative_abstention_rate", metrics)
             self.assertIn("ambiguous_abstention_rate", metrics)
 
+    def test_interrogative_force_is_not_misreported_as_a_complete_assertion(self):
+        from tools.usg_interpretation_v0_2_0 import Phase5InterpretationService
+        service = Phase5InterpretationService()
+        digest = self.performance["resource_manifest_digest"]
+        for text, language in (("Ada writes code?", "en"), ("كتب الطالب الرسالة؟", "ar")):
+            with self.subTest(text=text):
+                result = service.interpret(text, language, resource_manifest_digest=digest)
+                self.assertEqual(result["completion_status"], "UNSUPPORTED")
+                self.assertIn("UNSUPPORTED_INTERROGATIVE_FORCE", {
+                    item["code"] for item in result["diagnostics"]
+                })
+
     def test_ambiguous_and_unsupported_cases_never_receive_guessed_role_graphs(self):
         gold = {item["id"]: item for item in self.corpus["cases"]}
         for prediction in self.predictions["predictions"]:
