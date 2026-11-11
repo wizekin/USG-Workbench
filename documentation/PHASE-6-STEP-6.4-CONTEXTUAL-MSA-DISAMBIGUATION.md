@@ -14,8 +14,8 @@ from the CAMeL candidate analyses.
 - Use the pinned Arabic PUD treebank with ten stable sentence-ID-hash folds.
 - Obtain the full morphological candidate set from the CAMeL Analyzer and the
   separate MLE top-1 word-based selection for the baseline.
-- Train an averaged structured perceptron on nine folds and evaluate on the
-  held-out fold.
+- Train an averaged structured perceptron for three deterministic epochs on
+  nine folds and evaluate on the held-out fold.
 - Features include current/neighboring forms, prefixes/suffixes, sentence
   boundaries, candidate UPOS/POS sets, and CAMeL morphological features.
 - Predict UPOS from sentence context, then select the highest-ranked CAMeL
