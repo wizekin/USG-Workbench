@@ -67,6 +67,22 @@ class Phase5BenchmarkTests(unittest.TestCase):
         self.assertLess(metrics["construction_precision"], 1.0)
         self.assertLess(metrics["construction_recall"], 1.0)
 
+    def test_unknown_and_duplicate_prediction_ids_are_rejected(self):
+        with self.assertRaisesRegex(ValueError, "unknown or missing case_id"):
+            evaluate(self.corpus, {"predictions": [{"case_id": "not-a-case"}]})
+        first = self.corpus["cases"][0]
+        duplicate = {"case_id": first["id"]}
+        with self.assertRaisesRegex(ValueError, "duplicate prediction"):
+            evaluate(self.corpus, {"predictions": [duplicate, duplicate]})
+
+    def test_missing_predictions_are_counted_without_perfect_score(self):
+        report = evaluate(self.corpus, {"predictions": []})
+        for language in ("en", "ar"):
+            metrics = report["by_language"][language]
+            self.assertEqual(metrics["missing_predictions"], 50)
+            self.assertEqual(metrics["completion_status_accuracy"], 0.0)
+            self.assertEqual(metrics["construction_recall"], 0.0)
+
     def test_invalid_prediction_span_is_not_counted_as_valid(self):
         case = next(x for x in self.corpus["cases"] if x["id"] == "en.positive.01")
         predictions = {"predictions": [{
