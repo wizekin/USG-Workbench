@@ -42,7 +42,7 @@ def download_dataset(language: str) -> bytes:
     )
     with urlopen(url, timeout=60) as response:
         payload = response.read()
-    actual = sha1(f"blob {len(payload)}\\0".encode("ascii") + payload).hexdigest()
+    actual = sha1(f"blob {len(payload)}\0".encode("ascii") + payload).hexdigest()
     if actual != spec["blob_sha"]:
         raise ValueError(f"{language} PUD Git blob hash mismatch: {actual}")
     return payload
@@ -51,7 +51,7 @@ def download_dataset(language: str) -> bytes:
 def parse_conllu(payload: bytes) -> list[dict]:
     source = payload.decode("utf-8")
     sentences = []
-    for block in source.strip().split("\\n\\n"):
+    for block in source.strip().split("\n\n"):
         meta, tokens = {}, []
         for line in block.splitlines():
             if line.startswith("# "):
@@ -61,7 +61,7 @@ def parse_conllu(payload: bytes) -> list[dict]:
                 continue
             if not line or line.startswith("#"):
                 continue
-            cols = line.split("\\t")
+            cols = line.split("\t")
             # Multiword-token and empty-node rows are not syntactic words.
             if len(cols) != 10 or not cols[0].isdigit():
                 continue
@@ -234,7 +234,7 @@ def run() -> dict:
         "All outputs remain candidate-only; this report cannot satisfy semantic benchmark acceptance by itself.",
     ]
     OUT.parent.mkdir(parents=True, exist_ok=True)
-    OUT.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\\n", encoding="utf-8")
+    OUT.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     return report
 
 
