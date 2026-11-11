@@ -393,17 +393,17 @@ def parse_english_dictionary_entry(markdown: str, queried_word: str, entry_url: 
         record_number = heading.group(2)
         sense_markers = list(re.finditer(r"(?m)^<a id=\"r(\d+)-s(\d+)\"></a>\s*$", record_text))
         forms = []
-        forms_match = re.search(r"(?ms)^### Forms\s*\n(.*?)(?=^### |\\Z)", record_text)
+        forms_match = re.search(r"(?ms)^### Forms\s*\n(.*?)(?=^### |\Z)", record_text)
         if forms_match:
             for form_line in forms_match.group(1).splitlines():
-                form_match = re.match(r"^\\s*-\\s+(.+?)(?:\\s+[—–]\\s+(.+))?\\s*$", form_line)
+                form_match = re.match(r"^\s*-\s+(.+?)(?:\s+[—–]\s+(.+))?\s*$", form_line)
                 if form_match:
                     forms.append({"form": form_match.group(1).strip(), "tags": [form_match.group(2).strip()] if form_match.group(2) else []})
         record_relations = []
-        related_match = re.search(r"(?ms)^### Related words\\s*\\n(.*?)(?=^### |\\Z)", record_text)
+        related_match = re.search(r"(?ms)^### Related words\s*\n(.*?)(?=^### |\Z)", record_text)
         if related_match:
             for relation_line in related_match.group(1).splitlines():
-                relation_match = re.search(r"\\*\\*Source (synonyms|antonyms):\\*\\*\\s*(.*)$", relation_line)
+                relation_match = re.search(r"\*\*Source (synonyms|antonyms):\*\*\s*(.*)$", relation_line)
                 if not relation_match:
                     continue
                 relation_type = "synonym" if relation_match.group(1) == "synonyms" else "antonym"
