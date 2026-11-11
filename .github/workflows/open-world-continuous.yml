@@ -29,6 +29,11 @@ on:
       - "tests/test_phase3_local_api_cli.py"
       - "tests/test_phase4_integrated_api.py"
       - "tests/test_phase5_integrated_api.py"
+      - "tests/test_open_world_reference_kernel_v04.py"
+      - "tests/test_python_kernel_v05_adapter.py"
+      - "tests/test_python_kernel_v05_document_adapter.py"
+      - "implementations/python-kernel/v0.4.0/**"
+      - "implementations/python-kernel/v0.5.0/**"
       - "tools/usg_interpretation_v0_1_0/**"
       - "tools/usg_interpretation_v0_2_0/**"
       - "tests/test_workbench_source_adapter.py"
@@ -57,6 +62,7 @@ on:
       - "documentation/OW-13-FULL-GENERATION-AND-REASONING-COVERAGE.md"
       - "documentation/OW-14-LOCAL-API-AND-WORKBENCH-ADAPTERS.md"
       - "documentation/OW-15-PHASE4-PHASE5-INTERPRETER-ORACLES.md"
+      - "documentation/OW-16-REFERENCE-KERNEL-AND-JS-SUITE.md"
 
 permissions:
   contents: write
@@ -120,6 +126,8 @@ jobs:
         run: python -m unittest discover -s tests -p "test_open_world_browser.py" -v
       - name: Exercise Workbench-to-canonical adapter in Node.js
         run: node --test tests/test_workbench_source_adapter.js tests/test_workbench_reconstruction_adapter.js
+      - name: Run complete Workbench JavaScript regression suite
+        run: bash implementations/semantic-workbench-js/v0.5.4/tests/run_all_tests.sh
       - name: Stop static server
         if: always()
         run: |
