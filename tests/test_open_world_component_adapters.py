@@ -2,6 +2,7 @@
 from __future__ import annotations
 import json
 import unittest
+from tools.open_world_evaluation.worker import _run_import_smoke
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -33,6 +34,15 @@ class ComponentAdapterRegistryTests(unittest.TestCase):
         for profile in profiles["targets"]:
             if profile.get("interface", "").startswith("python_"):
                 self.assertTrue(profile.get("smoke_modules"), profile["component_id"])
+
+    def test_registered_python_import_adapters_execute_without_semantic_claims(self):
+        profiles = json.loads(PROFILES.read_text(encoding="utf-8"))
+        for profile in profiles["targets"]:
+            if profile.get("smoke_modules"):
+                with self.subTest(component=profile["component_id"]):
+                    result = _run_import_smoke(profile["component_id"])
+                    self.assertEqual(result["outcome"], "partial")
+                    self.assertFalse(result["execution_metadata"]["semantic_accuracy_assessed"])
 
 if __name__ == "__main__":
     unittest.main()
