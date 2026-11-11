@@ -45,3 +45,6 @@ Phase 6 Step 6.6 genitive semantics refinement: [candidate benchmark v0.4.1](doc
 
 
 Phase 6 Step 6.6 now has a closed-profile candidate interpreter (not benchmark-enabled): [implementation and evaluation boundary](documentation/PHASE-6-STEP-6.6-CANDIDATE-INTERPRETER.md).
+
+
+Phase 6 Step 6.6 benchmark v0.4.2 corrects a grammatical-marker token boundary and is used by the candidate interpreter's development check.
