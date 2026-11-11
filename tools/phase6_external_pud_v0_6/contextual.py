@@ -35,7 +35,8 @@ def _bucket(value: int) -> str:
     return "8+"
 
 
-def token_features(tokens: list[dict], analyses: list[list[dict]], index: int) -> tuple[str, ...]:
+def token_features(tokens: list[dict], analyses: list[list[dict]], index: int,
+                   mle_top: dict | None = None) -> tuple[str, ...]:
     token = tokens[index]
     word = normalize_arabic(token["form"])
     previous = normalize_arabic(tokens[index - 1]["form"]) if index else "__BOS__"
@@ -77,36 +78,46 @@ def token_features(tokens: list[dict], analyses: list[list[dict]], index: int) -
             value = top.get(key)
             if value not in (None, "", "_"):
                 feats.add(f"CAMEL_TOP_{key.upper()}={value}")
+    if mle_top:
+        top_lemma = mle_top.get("lex")
+        if isinstance(top_lemma, str) and top_lemma:
+            feats.add(f"MLE_TOP_LEMMA={normalize_arabic(top_lemma)}")
+        top_upos = mle_top.get("ud")
+        if isinstance(top_upos, str) and top_upos:
+            feats.add(f"MLE_TOP_UD={top_upos}")
     return tuple(sorted(feats))
 
 
-def prepare_sentences(sentences: list[dict], disambiguator) -> list[dict]:
+def prepare_sentences(sentences: list[dict], disambiguator, analyzer) -> list[dict]:
     prepared = []
     for sentence in sentences:
         tokens = sentence["tokens"]
         forms = [token["form"] for token in tokens]
         disambiguated = disambiguator.disambiguate(forms)
         analyses = []
-        for item in disambiguated:
+        mle_top1 = []
+        for item, form in zip(disambiguated, forms):
+            top = item.analyses[0].analysis if item.analyses else None
+            mle_top1.append(top)
             rows = []
-            for scored in item.analyses:
-                analysis = scored.analysis
+            for analysis in analyzer.analyze(form):
                 if not isinstance(analysis, dict):
                     continue
                 rows.append({
                     "analysis": analysis,
-                    "pos_lex_logprob": scored.pos_lex_logprob,
-                    "lex_logprob": scored.lex_logprob,
+                    "pos_lex_logprob": analysis.get("pos_lex_logprob"),
+                    "lex_logprob": analysis.get("lex_logprob"),
                 })
             analyses.append(rows)
         features = [
-            token_features(tokens, analyses, i)
+            token_features(tokens, analyses, i, mle_top1[i])
             for i in range(len(tokens))
         ]
         prepared.append({
             "meta": sentence.get("meta", {}),
             "tokens": tokens,
             "analyses": analyses,
+            "mle_top1": mle_top1,
             "features": features,
             "gold": [token["upos"] for token in tokens],
         })
@@ -240,9 +251,9 @@ def evaluate_fold(train: list[dict], test: list[dict], epochs: int = EPOCHS) -> 
     by_upos = defaultdict(lambda: defaultdict(int))
     for sample in test:
         predicted = model.predict(sample["features"])
-        for token, candidates, gold, guess in zip(
+        for position, (token, candidates, gold, guess) in enumerate(zip(
             sample["tokens"], sample["analyses"], sample["gold"], predicted
-        ):
+        )):
             gold_lemma = normalize_arabic(token["lemma"])
             gold_upos = gold.upper()
             rows = [
@@ -251,11 +262,11 @@ def evaluate_fold(train: list[dict], test: list[dict], epochs: int = EPOCHS) -> 
                 for c in candidates
             ]
             candidate_hit = (gold_lemma, gold_upos) in rows
-            mle_top = candidates[0] if candidates else None
+            mle_top = sample["mle_top1"][position]
             mle_correct = bool(
                 mle_top
-                and normalize_arabic(str(mle_top["analysis"].get("lex", ""))) == gold_lemma
-                and str(mle_top["analysis"].get("ud", "")).upper() == gold_upos
+                and normalize_arabic(str(mle_top.get("lex", ""))) == gold_lemma
+                and str(mle_top.get("ud", "")).upper() == gold_upos
             )
             selected = _best_for_upos(candidates, guess)
             selected_correct = bool(
@@ -358,15 +369,19 @@ def cross_validate(prepared: list[dict], folds: int = 10, epochs: int = EPOCHS) 
 
 def run() -> dict:
     from camel_tools.disambig.mle import MLEDisambiguator
+    from camel_tools.morphology.analyzer import Analyzer
+    from camel_tools.morphology.database import MorphologyDB
 
+    db = MorphologyDB.builtin_db("calima-msa-r13", flags="a")
+    analyzer = Analyzer(db, backoff="NONE", cache_size=100000)
     mle = MLEDisambiguator.pretrained(
-        "calima-msa-r13", top=0, cache_size=100000
+        "calima-msa-r13", analyzer=analyzer, top=1, cache_size=100000
     )
     spec = DATASETS["ar"]
     sentences = parse_morph_conllu(download_dataset("ar"))
     if len(sentences) != spec["sentences"]:
         raise ValueError(f"expected {spec['sentences']} Arabic PUD sentences, got {len(sentences)}")
-    prepared = prepare_sentences(sentences, mle)
+    prepared = prepare_sentences(sentences, mle, analyzer)
     result = cross_validate(prepared, folds=10, epochs=EPOCHS)
     report = {
         "evaluation_type": "EXTERNAL_PUD_CONTEXTUAL_MORPHOLOGY_CANDIDATE_DISAMBIGUATION",
@@ -395,6 +410,7 @@ def run() -> dict:
             "CAMeL candidate analyses and MLE scores come from an external pretrained resource; overlap with PUD training data is unknown.",
             "The contextual model predicts UPOS and selects only among existing CAMeL analyses; it cannot recover a missing gold lemma.",
             "The MLE top-1 baseline is word-based/out-of-context; the perceptron is the contextual comparison.",
+            "The candidate upper bound is calculated from the full Analyzer output, not the MLE top-1 result.",
             "This experiment does not evaluate semantic roles, dependencies, or USG construction interpretation.",
             "The GPL-2.0 morphology and MLE data are installed only in the ephemeral CI runner.",
         ],
