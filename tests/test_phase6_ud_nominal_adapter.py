@@ -50,6 +50,50 @@ class TestUDNominalAdapter(unittest.TestCase):
         self.assertEqual(len(candidate["alternatives"]), 2)
         self.assertTrue(all(item["semantic_status"] == "UNSPECIFIED" for item in candidate["alternatives"]))
 
+
+    def test_noun_compound_uses_head_and_compound_modifier_roles(self):
+        sentence = {
+            "meta": {"text": "school bus"},
+            "tokens": [
+                {"id": 1, "form": "school", "upos": "NOUN", "deprel": "compound", "gold_head_index": 1},
+                {"id": 2, "form": "bus", "upos": "NOUN", "deprel": "root", "gold_head_index": 1},
+            ],
+        }
+        result = adapt_sentence(sentence, "en")
+        candidate = result["candidates"][0]
+        self.assertEqual(candidate["relation_type"], "NOUN_COMPOUND")
+        self.assertEqual(candidate["role_bindings"], {"HEAD": "bus", "COMPOUND_MODIFIER": "school"})
+
+    def test_prepositional_modifier_preserves_case_marker(self):
+        sentence = {
+            "meta": {"text": "book on the table"},
+            "tokens": [
+                {"id": 1, "form": "book", "upos": "NOUN", "deprel": "root", "gold_head_index": 0},
+                {"id": 2, "form": "on", "upos": "ADP", "deprel": "case", "gold_head_index": 3},
+                {"id": 3, "form": "the", "upos": "DET", "deprel": "det", "gold_head_index": 4},
+                {"id": 4, "form": "table", "upos": "NOUN", "deprel": "nmod", "gold_head_index": 0},
+            ],
+        }
+        result = adapt_sentence(sentence, "en")
+        candidate = result["candidates"][0]
+        self.assertEqual(candidate["relation_type"], "PREPOSITIONAL_NOMINAL_MODIFIER")
+        self.assertEqual(candidate["role_bindings"]["MODIFIER"], "on the table")
+        self.assertEqual(candidate["grammatical_markers"][0]["surface"], "on")
+
+    def test_temporal_adverb_has_modified_head_and_time_roles(self):
+        sentence = {
+            "meta": {"text": "arrived yesterday"},
+            "tokens": [
+                {"id": 1, "form": "arrived", "upos": "VERB", "deprel": "root", "gold_head_index": 0},
+                {"id": 2, "form": "yesterday", "upos": "ADV", "deprel": "advmod", "gold_head_index": 0},
+            ],
+        }
+        result = adapt_sentence(sentence, "en")
+        candidate = result["candidates"][0]
+        self.assertEqual(candidate["relation_type"], "TEMPORAL_MODIFIER")
+        self.assertEqual(candidate["derivation"]["head_token_id"], 1)
+        self.assertEqual(candidate["role_bindings"], {"MODIFIED": "arrived", "TIME": "yesterday"})
+
     def test_arabic_diacritics_align_to_original_codepoint_spans(self):
         text = "كِتاب الطّالب"
         tokens = [{"id": 1, "form": "كتاب"}, {"id": 2, "form": "الطالب"}]
@@ -62,7 +106,7 @@ class TestUDNominalAdapter(unittest.TestCase):
         possession = {
             "meta": {"text": "the teacher's book"},
             "tokens": [
-                {"id": 1, "form": "teacher", "upos": "NOUN", "deprel": "nmod:poss", "gold_head_index": 2},
+                {"id": 1, "form": "teacher", "upos": "NOUN", "deprel": "nmod:poss", "gold_head_index": 1},
                 {"id": 2, "form": "book", "upos": "NOUN", "deprel": "root", "gold_head_index": 1},
             ],
         }
