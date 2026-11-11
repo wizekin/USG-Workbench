@@ -14,7 +14,7 @@
 
 ## 2. Canonical database boundary
 
-The catalogue accepts a caller-owned sqlite3 connection and never opens a database file, creates a second connection, commits, or rolls back. The host must pass the same SQLite connection used by the canonical store and owns all transaction boundaries. Installation and writes require an already-open caller transaction. This adapter adds tables to the supplied database; it is not a new database backend.
+The catalogue accepts a caller-owned sqlite3 connection and never opens a database file, creates a second connection, commits, or rolls back. The host must pass the same SQLite connection used by the canonical store and owns all transaction boundaries. Installation and writes require an already-open caller transaction. This adapter adds tables to the supplied database; it is not a new database backend. The current Python Kernel Database wrapper does not expose its connection as a public API, so integration must not use its test-only raw connection escape hatch. Step 5.10 must provide a safe, role-checked adapter/migration before the Kernel Lab uses this catalogue.
 
 ## 3. Immutability and versioning
 
