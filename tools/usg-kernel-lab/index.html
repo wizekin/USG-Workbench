@@ -451,7 +451,7 @@ $("phase5ReplayBtn").onclick=async()=>{
   if(!runId)throw new Error("Enter or create an interpretation run ID first");
   const result=await apiRequest("POST","/v2/interpretations/"+encodeURIComponent(runId)+"/replay",{});
   $("phase5Output").textContent=JSON.stringify(result,null,2);
-  setStatus(result.deterministic_match?"Phase 5 replay matched the stored digest":"Replay digest mismatch","ok"===result.deterministic_match?"ok":"err");
+  setStatus(result.deterministic_match?"Phase 5 replay matched the stored digest":"Replay digest mismatch",result.deterministic_match?"ok":"err");
  }catch(e){$("phase5Output").textContent=JSON.stringify({error:e.message},null,2);setStatus(e.message,"err")}
 };
 $("phase5ResourcesBtn").onclick=async()=>{
