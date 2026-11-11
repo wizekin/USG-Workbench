@@ -75,9 +75,10 @@ class Phase5KernelLabTests(unittest.TestCase):
         self.assertEqual(exported["source"]["text"], "Ada writes code.")
 
     def test_kernel_lab_page_exposes_phase5_controls(self):
-        status, payload = self.request("GET", "/")
+        with urlopen(self.base + "/", timeout=10) as response:
+            status = response.status
+            html = response.read().decode("utf-8")
         self.assertEqual(status, 200)
-        html = (SERVER_PATH.parent / "index.html").read_text(encoding="utf-8")
         self.assertIn("phase5InterpretBtn", html)
         self.assertIn("phase5ResourcesBtn", html)
         self.assertIn("phase5ReplayBtn", html)
