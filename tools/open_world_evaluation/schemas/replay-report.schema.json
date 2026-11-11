@@ -43,6 +43,7 @@
           "original_target_result_sha256": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
           "replay_target_result_sha256": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
           "target_result_matches": {"type": ["boolean", "null"]},
+          "differing_json_paths": {"type": "array", "items": {"type": "string"}},
           "original_pipeline_version": {"type": ["string", "null"]},
           "replay_pipeline_version": {"type": ["string", "null"]},
           "status": {"enum": ["exact_match", "outcome_mismatch", "target_result_mismatch", "not_comparable"]}
@@ -51,7 +52,7 @@
           "case_id", "target_id", "tested_commit_sha", "input_sha256",
           "original_attempt_id", "replay_attempt_id", "original_outcome",
           "replay_outcome", "outcome_matches", "original_target_result_sha256",
-          "replay_target_result_sha256", "target_result_matches",
+          "replay_target_result_sha256", "target_result_matches", "differing_json_paths",
           "original_pipeline_version", "replay_pipeline_version", "status"
         ],
         "additionalProperties": false
