@@ -106,20 +106,23 @@ class Phase5LexicalFoundationTests(unittest.TestCase):
                       {item["resource_id"] for item in result["resource_versions"]})
 
 
-    def test_scoped_negation_and_modality_do_not_become_bare_svo_assertions(self):
-        service = Phase5InterpretationService()
-        for text in (
-            "Ada does not write code.",
-            "Ada may write code.",
-            "Ada will write code.",
-        ):
-            with self.subTest(text=text):
-                result = service.interpret(
-                    text, "en", resource_manifest_digest="b" * 64
-                )
-                syntax = result["stages"]["syntax"]
-                self.assertEqual(syntax["artifact"]["clauses"][0]["candidates"], [])
-                self.assertNotEqual(result["completion_status"], "COMPLETE")
+    def test_scoped_negation_and_modality_are_not_projected_as_bare_svo(self):
+        from tools.phase5_interpretation_benchmark_v0_2_0.run import run_pipeline
+
+        cases = [
+            {"id": "negative.negation", "language": "en",
+             "text": "Ada does not write code."},
+            {"id": "negative.modality", "language": "en",
+             "text": "Ada may write code."},
+            {"id": "negative.future", "language": "en",
+             "text": "Ada will write code."},
+        ]
+        predictions, _ = run_pipeline({"cases": cases})
+        for prediction in predictions["predictions"]:
+            with self.subTest(case=prediction["case_id"]):
+                self.assertIsNone(prediction["construction_id"])
+                self.assertEqual(prediction["role_bindings"], {})
+                self.assertEqual(prediction["role_spans"], {})
 
     def test_resource_catalogue_contains_starter_asset(self):
         descriptors = bundled_resource_descriptors()
