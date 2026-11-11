@@ -29,7 +29,7 @@ jobs:
         with:
           python-version: "3.11"
       - name: Validate frozen Phase 5 contract
-        run: python -m unittest tests.test_phase5_contract -v
+        run: python -m unittest discover -s tests -p 'test_phase5_contract.py' -v
       - name: Verify semantic schema, Phase 4 interpreter, and historical implementations are unchanged
         run: |
           git diff --exit-code origin/main...HEAD -- specifications/USG-SEM-1.0.md specifications/usg-sem-1.0.schema.json tools/usg_interpretation_v0_1_0 archives/ implementations/
