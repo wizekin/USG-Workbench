@@ -111,9 +111,10 @@ class SyntaxAnalyzer:
                             (patient.start, patient.end)),
         )
 
-    def _analyze_clause(self, lexical: LexicalAnalysis, clause: ClauseSegment) -> ClauseSyntaxResult:
+    def _analyze_clause(self, lexical: LexicalAnalysis, clause: ClauseSegment,
+                        excluded_token_ids: set[str]) -> ClauseSyntaxResult:
         items = [item for item in lexical.tokens
-                 if item.token.kind == "WORD"
+                 if item.token.kind == "WORD" and item.token.token_id not in excluded_token_ids
                  and clause.start <= item.token.start and item.token.end <= clause.end]
         if not items:
             return ClauseSyntaxResult(clause.segment_id, "UNSUPPORTED", ())
@@ -168,12 +169,20 @@ class SyntaxAnalyzer:
         status = "RESOLVED" if len(candidates) == 1 else "AMBIGUOUS"
         return ClauseSyntaxResult(clause.segment_id, status, tuple(candidates))
 
-    def analyze(self, lexical: LexicalAnalysis, segmented: SegmentedDocument) -> SyntaxAnalysis:
+    def analyze(self, lexical: LexicalAnalysis, segmented: SegmentedDocument,
+                operator_analysis=None) -> SyntaxAnalysis:
         if not isinstance(lexical, LexicalAnalysis) or not isinstance(segmented, SegmentedDocument):
             raise TypeError("lexical and segmented inputs must be versioned analysis artifacts")
         if lexical.source != segmented.source:
             raise ValueError("lexical and segmentation artifacts must share the exact source snapshot")
-        results = tuple(self._analyze_clause(lexical, clause) for clause in segmented.clauses)
+        excluded_token_ids = set()
+        if operator_analysis is not None:
+            if (operator_analysis.source_ref != segmented.source.source_id
+                    or operator_analysis.source_sha256 != segmented.source.sha256):
+                raise ValueError("operator analysis must reference the exact source snapshot")
+            excluded_token_ids = set(operator_analysis.recognized_token_ids)
+        results = tuple(self._analyze_clause(lexical, clause, excluded_token_ids)
+                        for clause in segmented.clauses)
         attachments = tuple(ClauseAttachment(
             boundary.boundary_id, boundary.left_clause_ref, boundary.right_clause_ref,
             boundary.relation, boundary.marker_text, boundary.marker_span,
