@@ -92,8 +92,17 @@ class Phase5SemanticCompositionTests(unittest.TestCase):
 
     def test_unknown_word_returns_partial_without_inventing_a_predicate(self):
         _, _, _, _, result = self.compose("Ada writes flibbertigibbet.", "en")
-        self.assertEqual(result.status, "UNSUPPORTED")
+        self.assertEqual(result.status, "PARTIAL")
         self.assertEqual(result.candidates, ())
+
+    def test_supported_clause_is_retained_when_a_neighbor_clause_is_unresolved(self):
+        _, _, _, _, result = self.compose(
+            "Ada writes code, and Mira reads flibbertigibbet.", "en"
+        )
+        self.assertEqual(result.status, "PARTIAL")
+        self.assertEqual(len(result.candidates), 1)
+        self.assertTrue(result.unresolved_clause_refs)
+        self.assertEqual(result.candidates[0].status, "PARTIAL")
 
     def test_known_but_unsupported_order_does_not_compose(self):
         _, _, _, _, result = self.compose("Ada code writes.", "en")
