@@ -3,218 +3,164 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#f5f7fc">
-<title>USG Kernel Lab — Explore how USG reads text</title>
+<title>USG Kernel Lab</title>
 <style>
-:root{color-scheme:light;--bg:#f5f7fc;--surface:#fff;--surface2:#f8faff;--ink:#1b2940;--muted:#61718a;--line:#dce4f0;--blue:#315eaa;--blue2:#eaf1ff;--green:#14734f;--green-bg:#eaf7f0;--amber:#8b5b10;--amber-bg:#fff5df;--red:#a33b3b;--red-bg:#fff0ef;--shadow:0 8px 30px rgba(31,52,87,.07)}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.58 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
-header{background:linear-gradient(120deg,#fafdff,#edf3ff);border-bottom:1px solid var(--line);padding:25px clamp(18px,4vw,56px)}
-.header-inner{max-width:1240px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:18px}
-.brand{display:flex;align-items:center;gap:14px}.mark{width:48px;height:48px;border-radius:15px;background:linear-gradient(145deg,#4678c5,#244b8a);display:grid;place-items:center;color:#fff;font-weight:850;font-size:23px;box-shadow:0 5px 16px #315eaa38}
-h1{font-size:24px;line-height:1.2;letter-spacing:-.6px;margin:0}.subtitle{margin:5px 0 0;color:var(--muted);font-size:13px}
-.local-tag{border:1px solid #c9d8ef;background:#fff;border-radius:99px;padding:7px 12px;color:#365985;font-size:12px;font-weight:700;white-space:nowrap}
-main{max-width:1240px;margin:auto;padding:25px clamp(14px,3vw,34px) 55px}
-.intro{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px 21px;margin-bottom:19px;box-shadow:var(--shadow)}
-.intro h2{font-size:17px;margin:0 0 6px}.intro p{margin:5px 0;color:var(--muted);font-size:13px}
-.notice{background:#f0f5ff;border:1px solid #d4e1f7;border-radius:11px;padding:11px 14px;color:#425a7b;font-size:13px;margin-top:11px}
-.panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden;margin:0 0 18px;box-shadow:var(--shadow)}
-.panel-head{padding:16px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px}
-.panel-head h2{font-size:17px;margin:2px 0 0;letter-spacing:-.2px}.step{font-size:11px;color:var(--blue);font-weight:800;letter-spacing:.7px;text-transform:uppercase}
-.panel-body{padding:18px 20px}
-.hint{font-size:13px;color:var(--muted);margin:0 0 13px}.microcopy{font-size:12px;color:var(--muted);margin:6px 0 0}
-.grid{display:grid;grid-template-columns:minmax(0,1fr) 210px;gap:14px;align-items:start}
-textarea{width:100%;min-height:130px;resize:vertical;background:#fbfcff;color:var(--ink);border:1px solid #cbd6e5;border-radius:10px;padding:13px 14px;font:inherit;line-height:1.6;outline:none}
-textarea:focus,input:focus,select:focus{border-color:#6c94d5;box-shadow:0 0 0 3px #4779c51b;outline:none}
-.controls{display:flex;flex-direction:column;gap:10px}
-select,input{font:inherit;color:var(--ink)}
-.controls select,.field input,.field select{width:100%;background:#fff;border:1px solid #cbd6e5;border-radius:9px;padding:9px 10px;min-width:0}
-.check{display:flex;align-items:flex-start;gap:8px;color:var(--muted);font-size:12px;line-height:1.45}.check input{margin:3px 0 0}
-button{border:1px solid #c4d2e6;background:#fff;color:#29456e;border-radius:9px;padding:9px 13px;font-weight:700;cursor:pointer;font-size:13px}
-button.primary{background:var(--blue);border-color:var(--blue);color:#fff}
-button:hover:not(:disabled){filter:brightness(.97);box-shadow:0 3px 10px #264c7a15}
-button:disabled{opacity:.48;cursor:not-allowed}
-.toolbar{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
-.status{font-size:12px;color:var(--muted);align-self:center}.status.ok{color:var(--green)}.status.err{color:var(--red)}
-.result{margin-top:15px;border:1px solid var(--line);border-radius:12px;background:#fbfcff;padding:15px;min-height:55px}
-.result:empty{display:none}
-.result h3{font-size:15px;margin:0 0 9px}.result h4{font-size:13px;margin:15px 0 7px}
-.result-summary{border-radius:10px;background:#f0f5ff;border:1px solid #d8e4f8;padding:11px 13px;margin-bottom:12px;color:#395578;font-size:13px}
-.result-summary.good{background:var(--green-bg);border-color:#c8e7d6;color:#236649}
-.result-summary.caution{background:var(--amber-bg);border-color:#f0dfb6;color:#76551b}
-.result-summary.bad{background:var(--red-bg);border-color:#f0cdca;color:#8b3535}
-.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin:11px 0}
-.metric{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-width:0}
-.metric b{display:block;font-size:19px;line-height:1.3;overflow-wrap:anywhere}.metric span{display:block;color:var(--muted);font-size:11px;margin-top:3px}
-.table-wrap{width:100%;overflow-x:auto;border:1px solid var(--line);border-radius:10px;margin:8px 0 13px;background:#fff}
-table{width:100%;border-collapse:collapse;font-size:12px;min-width:520px}
-th{text-align:left;background:#f1f5fb;color:#52637d;font-weight:750}
-td,th{padding:9px 11px;border-bottom:1px solid #e8edf5;vertical-align:top}
-tr:last-child td{border-bottom:0}
-td:first-child{font-weight:650;color:#334967}
-.explain{display:block;color:var(--muted);font-weight:400;font-size:11px;margin-top:2px}
-.value-pill{display:inline-block;border-radius:99px;background:#edf2fa;color:#415876;padding:3px 8px;font-size:11px;font-weight:700}
-.value-pill.good{background:var(--green-bg);color:var(--green)}.value-pill.warn{background:var(--amber-bg);color:var(--amber)}.value-pill.bad{background:var(--red-bg);color:var(--red)}
-.subresult{margin:10px 0;border:1px solid var(--line);border-radius:10px;background:#fff;padding:11px 12px}
-.subresult summary{cursor:pointer;font-weight:700;font-size:13px;color:#314d75}
-.subresult summary .explain{font-weight:400}
-.empty{border:1px dashed #ccd7e6;border-radius:10px;padding:17px;color:var(--muted);font-size:13px;text-align:center;background:#fff}
-.field-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:10px}
-.field{display:flex;flex-direction:column;gap:4px;min-width:0}.field label{font-size:11px;color:#5d6e86;font-weight:650}.field input,.field select{font-size:12px}
-.mention-card{border:1px solid var(--line);border-radius:11px;padding:12px;margin:10px 0;background:#fff}
-.mention-top{display:flex;justify-content:space-between;gap:8px;align-items:center}.mention-title{font-weight:750}.mention-id{font-size:10px;color:#8090a7;overflow-wrap:anywhere}
-details.advanced{border:1px solid var(--line);border-radius:12px;background:#fbfcff;margin:12px 0}
-details.advanced>summary{cursor:pointer;padding:13px 15px;font-weight:750;color:#344f78;list-style-position:inside}
-.advanced-body{padding:0 15px 15px}
-.advanced-badge{font-size:10px;color:#667992;border:1px solid #d8e1ee;border-radius:99px;padding:4px 8px;font-weight:700;white-space:nowrap}
+:root{color-scheme:dark;--bg:#0b1020;--panel:#121a2c;--panel2:#182238;--line:#26344d;--text:#e9eef8;--muted:#9baac1;--accent:#86b7ff;--green:#8bd9b2;--amber:#f1c879;--red:#ff9696}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 15% -10%,#1d3150 0,transparent 42%),var(--bg);color:var(--text);font:14px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif}
+header{padding:26px clamp(18px,4vw,56px) 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{display:flex;gap:13px;align-items:center}.mark{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,#a3caff,#647fce);display:grid;place-items:center;color:#091326;font-weight:900;font-size:19px}
+h1{font-size:21px;margin:0;letter-spacing:-.4px}header p{margin:2px 0 0;color:var(--muted);font-size:12px}.version{border:1px solid #36516f;border-radius:99px;padding:6px 11px;color:#bdd8ff;font-size:11px;white-space:nowrap}
+main{max-width:1500px;margin:auto;padding:24px clamp(14px,3vw,42px) 50px}
+.notice{background:#17263a;border:1px solid #314a68;border-radius:12px;padding:13px 16px;margin-bottom:20px;color:#c5d5e9}.notice strong{color:#fff}
+.toolbar{display:flex;flex-wrap:wrap;gap:9px;align-items:center;margin-bottom:15px}
+button{border:1px solid #3c5475;background:#20334f;color:#eaf2ff;border-radius:9px;padding:9px 14px;font-weight:650;cursor:pointer;font-size:13px}
+button.primary{background:#8ab9ff;color:#09172b;border-color:#8ab9ff}button.subtle{background:#121b2c;border-color:var(--line);color:#c4d1e4}button:disabled{opacity:.5;cursor:wait}
+.status{margin-left:auto;color:var(--muted);font-size:12px}.status.ok{color:var(--green)}.status.err{color:var(--red)}
+.layout{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:16px;align-items:start}
+.panel{background:linear-gradient(180deg,#141e31,#111a2b);border:1px solid var(--line);border-radius:14px;overflow:hidden;min-width:0}
+.panel-head{padding:15px 17px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px}
+.panel-head h2{font-size:14px;margin:0}.eyebrow{font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
+.panel-body{padding:15px 17px}.hint{font-size:12px;color:var(--muted);margin:0 0 12px}
+textarea{width:100%;min-height:540px;resize:vertical;background:#090f1d;color:#dbe7f7;border:1px solid #2a3a55;border-radius:10px;padding:13px;font:12px/1.55 ui-monospace,SFMono-Regular,Consolas,monospace;tab-size:2;outline:none}
+textarea:focus{border-color:#78aef4;box-shadow:0 0 0 2px #78aef422}
+.output{min-height:540px;display:flex;flex-direction:column;gap:13px}
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.metric{background:#0c1525;border:1px solid var(--line);border-radius:10px;padding:11px}.metric b{font-size:22px;display:block}.metric span{color:var(--muted);font-size:11px}
+.pill{display:inline-flex;border-radius:99px;padding:3px 8px;font-size:10px;font-weight:700;letter-spacing:.4px}.pill.partial{background:#44351c;color:#f5d18a}.pill.lossless{background:#183d32;color:#a2e6c5}.pill.unmapped{background:#3d2830;color:#ffb5b5}
+details{border:1px solid var(--line);border-radius:10px;background:#0d1626}summary{cursor:pointer;padding:11px 13px;font-weight:650}pre{white-space:pre-wrap;overflow-wrap:anywhere;margin:0;padding:12px 14px;border-top:1px solid var(--line);font:11px/1.55 ui-monospace,Consolas,monospace;color:#c5d7ef;max-height:300px;overflow:auto}
+.mention-card{border:1px solid var(--line);background:#0c1524;border-radius:11px;padding:12px;margin:10px 0}.mention-top{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:9px}.mention-id{font:11px ui-monospace,Consolas;color:#a9caff;overflow-wrap:anywhere}
+.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.field{display:flex;flex-direction:column;gap:4px}.field label{font-size:10px;color:var(--muted)}.field input,.field select{width:100%;background:#111e31;border:1px solid #30415d;border-radius:7px;padding:7px 8px;color:#e6eef9;font-size:12px;min-width:0}.field.full{grid-column:1/-1}
+.empty{border:1px dashed #3a4b67;border-radius:12px;padding:26px;text-align:center;color:var(--muted);font-size:13px}
 .query-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:12px 0}
-.query-grid .field input,.query-grid .field select{min-height:38px}
-.section-note{background:#f7f9fd;border:1px solid #e0e7f1;border-radius:9px;padding:10px 12px;color:#5b6b82;font-size:12px;margin:10px 0}
-.footer{text-align:center;color:#8491a4;font-size:11px;padding:14px 8px}
-@media(max-width:850px){.grid{grid-template-columns:1fr}.controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.controls button{grid-column:1/-1}.query-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:560px){header{padding:18px}.header-inner{align-items:flex-start}.local-tag{font-size:10px}.mark{width:40px;height:40px}h1{font-size:20px}.panel-head,.panel-body{padding:14px}.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.controls{grid-template-columns:1fr}.query-grid,.field-grid{grid-template-columns:1fr}.intro{padding:15px}}
+.query-grid .field input,.query-grid .field select{min-height:36px}
+.query-actions{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.query-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}
+.query-summary .metric b{font-size:18px}
+.query-trace{max-height:560px;min-height:300px}
+.query-note{background:#0d1c2e;border:1px solid #304764;border-radius:9px;padding:10px 12px;color:#b9cce5;font-size:12px;margin:10px 0}.interpret-grid{display:grid;grid-template-columns:minmax(0,1fr) 170px;gap:10px;align-items:start}.interpret-grid textarea{min-height:110px;height:110px}.interpret-controls{display:flex;flex-direction:column;gap:9px}.interpret-controls select{background:#111e31;border:1px solid #30415d;border-radius:7px;padding:9px;color:#e6eef9}.interpret-result{max-height:360px;min-height:90px}.phase5-result{max-height:460px;min-height:120px}.phase5-tools{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;margin-top:14px}.phase5-tools input{background:#111e31;border:1px solid #30415d;border-radius:7px;padding:8px;color:#e6eef9;width:100%}
+.footer{margin-top:18px;color:#8394ad;font-size:11px;text-align:center}
+@media(max-width:950px){.layout{grid-template-columns:1fr}textarea,.output{min-height:360px}.status{width:100%;margin-left:0}}
+@media(max-width:950px){.query-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.query-summary{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:540px){.phase5-tools{grid-template-columns:1fr}header{align-items:flex-start}.version{display:none}.field-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.metrics{grid-template-columns:repeat(3,1fr)}.metric b{font-size:18px}.query-grid{grid-template-columns:1fr}.query-summary{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
 <body>
-<header><div class="header-inner"><div class="brand"><div class="mark">U</div><div><h1>USG Kernel Lab</h1><p class="subtitle">USG means Universal Semantic Grammar — explore how it reads and organizes text</p></div></div><span class="local-tag">Runs on this computer</span></div></header>
+<header><div class="brand"><div class="mark">U</div><div><h1>USG Kernel Lab</h1><p>Interactive semantic contract, persistent graph, and reasoning lab</p></div></div><div class="version">LOCAL LAB · SQLITE · PHASE 5</div></header>
 <main>
-<section class="intro">
-<h2>Welcome — you do not need a programming background</h2>
-<p>Type a sentence, choose a language, and select an analysis button. The tables will explain what USG noticed in everyday English.</p>
-<p>USG is an experimental system. It can recognize only some language patterns, so it may miss meanings, misunderstand a sentence, or leave parts unanswered. A result means “this is what the current system found,” not “this is definitely true.”</p>
-<div class="notice"><strong>Your information stays here:</strong> this lab runs on your computer. It does not upload your text to a cloud service.</div>
-</section>
-
-<section class="panel">
-<div class="panel-head"><div><div class="step">1 · Start here</div><h2>Try a sentence with the basic reader</h2></div><span class="advanced-badge">Simpler analysis</span></div>
-<div class="panel-body">
-<p class="hint">Write a short sentence or paragraph. For the first try, use a simple sentence such as “Ada writes code.” The reader will show the structured information it could create.</p>
-<div class="grid">
-<textarea id="rawTextInput" aria-label="Write text to analyze" spellcheck="false">Ada writes code.</textarea>
-<div class="controls">
-<select id="rawTextLanguage" aria-label="Choose language"><option value="en">English</option><option value="ar">Modern Standard Arabic</option></select>
-<label class="check"><input id="rawTextPersist" type="checkbox" checked> Save this result so I can open it later</label>
-<button class="primary" id="interpretTextBtn">Analyze my text</button>
-<span class="status" id="status">Ready when you are.</span>
-</div>
-</div>
-<div id="interpretOutput" class="result" aria-live="polite"><div class="empty">Your result will appear here after you select “Analyze my text.”</div></div>
-</div>
-</section>
-
-<section class="panel">
-<div class="panel-head"><div><div class="step">2 · Look more closely</div><h2>See the detailed reading, step by step</h2></div><span class="advanced-badge">More analysis stages</span></div>
-<div class="panel-body">
-<p class="hint">This version examines the text in several stages. It may identify words, split the text into sentence parts, notice grammar-like patterns, combine possible meanings, and suggest what later words may refer to. Each result is a possibility unless it is clearly marked as confirmed by a specific rule.</p>
-<div class="grid">
-<textarea id="phase5TextInput" aria-label="Text for detailed analysis" spellcheck="false">Ada writes code. She reads code.</textarea>
-<div class="controls">
-<select id="phase5Language" aria-label="Choose language for detailed analysis"><option value="en">English</option><option value="ar">Modern Standard Arabic</option></select>
-<label class="check"><input id="phase5Persist" type="checkbox" checked> Save this analysis so I can compare it later</label>
-<button class="primary" id="phase5InterpretBtn">Analyze in more detail</button>
-<span class="status" id="phase5Status">Ready when you are.</span>
-</div>
-</div>
-<div id="phase5Output" class="result" aria-live="polite"><div class="empty">Your detailed result will appear here after you select “Analyze in more detail.”</div></div>
-<details class="advanced">
-<summary>More detailed tools (optional)</summary>
-<div class="advanced-body">
-<p class="hint">These tools are for inspecting saved analysis data and the small reference library used by this version of USG. You can ignore them during normal use.</p>
-<div class="field-grid">
-<div class="field"><label>Saved analysis reference (created after analysis)</label><input id="phase5RunId" placeholder="Filled in automatically"></div>
-<div class="field"><label>&nbsp;</label><button class="subtle" id="phase5ReplayBtn">Run it again and compare the result</button></div>
-<div class="field"><label>Exact item reference (advanced)</label><input id="phase5SourceRef" placeholder="Use a reference shown in a result"></div>
-<div class="field"><label>&nbsp;</label><button class="subtle" id="phase5AssociationsBtn">Find related suggestions</button></div>
-</div>
-<div class="toolbar"><button class="subtle" id="phase5ResourcesBtn">Show the built-in reference library</button></div>
-<div id="phase5CatalogueOutput" class="result"></div>
-<div id="phase5AssociationsOutput" class="result"></div>
-</div>
-</details>
-</div>
-</section>
-
-<section class="panel">
-<div class="panel-head"><div><div class="step">3 · Try a prepared example</div><h2>Ask USG a question about information it already knows</h2></div><span class="advanced-badge">Rule-based reasoning</span></div>
-<div class="panel-body">
-<p class="hint">Choose an example prepared for this system. USG will use the example's stored facts and rules to see whether it can support the requested conclusion. This section does not accept a question written in ordinary language.</p>
-<div class="field" style="max-width:680px"><label for="queryFixtureSelect">Choose a prepared example</label><select id="queryFixtureSelect"><option value="">Loading examples…</option></select><p class="microcopy">The examples are test cases, not a measure of how well USG understands every kind of question.</p></div>
+<div class="notice"><strong>Scope:</strong> This local lab combines the canonical SQLite workspace with the bounded Phase 4 interpreter and the integrated Phase 5 v0.2 analysis pipeline. Phase 5 stage graphs and interpretation runs are separate from canonical USG-SEM/1.0 document revisions.</div>
 <div class="toolbar">
-<button class="primary" id="runQueryBtn">Run this example</button>
-<button class="subtle" id="loadQueryFixtureBtn">Open its information in the advanced editor</button>
-<button class="subtle" id="runQueryBenchmarkBtn">Run all examples</button>
-<button class="subtle" id="downloadQueryBtn" disabled>Download this result</button>
-<span class="status" id="queryStatus"></span>
+<button class="subtle" id="sampleBtn">Load sample document</button>
+<button class="primary" id="inspectBtn">Import & inspect</button>
+<button id="exportBtn" disabled>Export native edits</button>
+<button class="subtle" id="downloadBtn" disabled>Download exported JSON</button>
+<span class="status" id="status">Waiting for a document</span>
 </div>
-<div id="querySummary" class="metrics"></div>
-<div id="queryOutput" class="result" aria-live="polite"><div class="empty">Choose a prepared example and select “Run this example” to see the result.</div></div>
-<details class="advanced">
-<summary>Advanced question settings (optional)</summary>
-<div class="advanced-body">
-<p class="hint">These fields use internal reference codes. Most users should use the prepared examples above. A reference code connects one item in a structured document to another item.</p>
+<section class="panel" style="margin-bottom:16px">
+<div class="panel-head"><div><div class="eyebrow">00 / phase 4 raw-text interpretation</div><h2>Interpret source text</h2></div><span class="eyebrow">USG-INTERPRET/0.1.0</span></div>
+<div class="panel-body">
+<p class="hint">Try the bounded offline examples below. The interpreter preserves the original source, reports unresolved or unsupported material, and can save the resulting USG-SEM/1.0 document in the shared SQLite store.</p>
+<div class="interpret-grid">
+<textarea id="rawTextInput" aria-label="Raw source text" spellcheck="false">Ada writes code.</textarea>
+<div class="interpret-controls">
+<select id="rawTextLanguage" aria-label="Source language"><option value="en">English</option><option value="ar">Modern Standard Arabic</option></select>
+<label style="display:flex;gap:7px;align-items:center;color:var(--muted);font-size:12px"><input id="rawTextPersist" type="checkbox" checked> Save to SQLite</label>
+<button class="primary" id="interpretTextBtn">Interpret raw text</button>
+</div>
+</div>
+<details open style="margin-top:12px"><summary>Interpretation envelope and stage diagnostics</summary><pre id="interpretOutput" class="interpret-result">Enter text and choose Interpret raw text. Results and diagnostics will appear here.</pre></details>
+</div>
+</section>
+<section class="panel" style="margin-bottom:16px">
+<div class="panel-head"><div><div class="eyebrow">00B / phase 5 integrated interpretation</div><h2>Interpret source text · USG-INTERPRET/0.2.0</h2></div><span class="eyebrow">STAGES · RESOURCES · REPLAY</span></div>
+<div class="panel-body">
+<p class="hint">Runs the existing lexical, segmentation, operator, syntax, semantic-composition, and discourse stages. The result preserves candidates and diagnostics. It is an interpretation envelope, not a canonical USG-SEM/1.0 document and does not establish truth or resolve identity.</p>
+<div class="interpret-grid">
+<textarea id="phase5TextInput" aria-label="Phase 5 source text" spellcheck="false">Ada writes code. She reads code.</textarea>
+<div class="interpret-controls">
+<select id="phase5Language" aria-label="Phase 5 source language"><option value="en">English</option><option value="ar">Modern Standard Arabic</option></select>
+<label style="display:flex;gap:7px;align-items:center;color:var(--muted);font-size:12px"><input id="phase5Persist" type="checkbox" checked> Save immutable run</label>
+<button class="primary" id="phase5InterpretBtn">Interpret with Phase 5</button>
+</div>
+</div>
+<div class="phase5-tools">
+<div class="field"><label>Stored interpretation run ID</label><input id="phase5RunId" placeholder="run:..."></div>
+<div class="field" style="justify-content:end"><label>&nbsp;</label><button class="subtle" id="phase5ReplayBtn">Replay and compare deterministic output</button></div>
+</div>
+<details open style="margin-top:12px"><summary>Phase 5 stages, composition, alternatives, and diagnostics</summary><pre id="phase5Output" class="phase5-result">Enter text and choose Interpret with Phase 5.</pre></details>
+<div class="phase5-tools">
+<div>
+<div class="query-actions"><button class="subtle" id="phase5ResourcesBtn">Load resource catalogue</button></div>
+<details><summary>Versioned resource manifest</summary><pre id="phase5CatalogueOutput" class="phase5-result">Resource manifest has not been loaded.</pre></details>
+</div>
+<div>
+<div class="field"><label>Exact association source reference</label><input id="phase5SourceRef" placeholder="concept:source"></div>
+<div class="query-actions"><button class="subtle" id="phase5AssociationsBtn">Retrieve provisional associations</button></div>
+<details><summary>Active / secondary association candidates</summary><pre id="phase5AssociationsOutput" class="phase5-result">No association retrieval has been requested.</pre></details>
+</div>
+</div>
+</div>
+</section>
+<div class="layout">
+<section class="panel">
+<div class="panel-head"><div><div class="eyebrow">01 / canonical input</div><h2>USG-SEM/1.0 document</h2></div><span class="eyebrow">JSON</span></div>
+<div class="panel-body"><p class="hint">Paste a complete USG-SEM/1.0 document or load the sample. Import runs schema validation before creating native Mention projections.</p><textarea id="documentInput" spellcheck="false" aria-label="Canonical document JSON" placeholder="Paste a USG-SEM/1.0 JSON document here..."></textarea></div>
+</section>
+<section class="panel">
+<div class="panel-head"><div><div class="eyebrow">02 / native projection</div><h2>Inspection & editable Mentions</h2></div><span class="eyebrow" id="modelTag">Not loaded</span></div>
+<div class="panel-body output" id="output">
+<div class="empty">Load or paste a canonical document, then choose <b>Import & inspect</b>. The mapping report and editable native Mention records will appear here.</div>
+</div>
+</section>
+</div>
+<section class="panel" style="margin-top:16px">
+<div class="panel-head"><div><div class="eyebrow">03 / phase 2 reasoning</div><h2>Kernel Lab · Query & Explanation</h2></div><span class="eyebrow">USG-QUERY/1.0.0</span></div>
+<div class="panel-body">
+<div class="query-note"><strong>Structured reasoning only:</strong> select a versioned fixture or enter exact expression/context references. This interface does not interpret free text, and an absent result is not treated as false.</div>
 <div class="query-grid">
-<div class="field"><label>Statement to check (internal reference)</label><input id="queryExpression" placeholder="Example: expr-b"></div>
-<div class="field"><label>Situation or context (internal reference)</label><input id="queryContext" value="ctx-world"></div>
-<div class="field"><label>Context category</label><input id="queryContextKind" value="WORLD"></div>
-<div class="field"><label>Who is making the statement?</label><select id="queryCommitment"><option value="AUTHOR">The document's author</option><option value="ATTRIBUTED">A person mentioned in the document</option><option value="NONE">No speaker is assigned</option></select></div>
-<div class="field"><label>Person reference (only when needed)</label><input id="queryAttribution" placeholder="Person reference code"></div>
-<div class="field"><label>Reasoning rule names</label><input id="queryRules" value="benchmark-rule:modus-ponens"></div>
-<div class="field"><label>Maximum rule uses (leave blank for no limit)</label><input id="queryBudget" type="number" min="0" placeholder="No limit"></div>
+ <div class="field"><label>Versioned query fixture</label><select id="queryFixtureSelect"><option value="">Loading fixtures…</option></select></div>
+ <div class="field"><label>Goal expression reference</label><input id="queryExpression" placeholder="e.g. expr-b"></div>
+ <div class="field"><label>Context reference</label><input id="queryContext" value="ctx-world"></div>
+ <div class="field"><label>Context kind</label><input id="queryContextKind" value="WORLD"></div>
+ <div class="field"><label>Commitment</label><select id="queryCommitment"><option>AUTHOR</option><option>ATTRIBUTED</option><option>NONE</option></select></div>
+ <div class="field"><label>Attributed referent ref</label><input id="queryAttribution" placeholder="required only for ATTRIBUTED"></div>
+ <div class="field"><label>Rule IDs (comma-separated)</label><input id="queryRules" value="benchmark-rule:modus-ponens"></div>
+ <div class="field"><label>Maximum rule applications (optional)</label><input id="queryBudget" type="number" min="0" placeholder="unbounded"></div>
 </div>
-<button class="subtle" id="downloadQueryAdvancedBtn" disabled>Download the full result data</button>
+<div class="query-actions">
+ <button class="subtle" id="loadQueryFixtureBtn">Load selected fixture</button>
+ <button class="primary" id="runQueryBtn">Run structured query</button>
+ <button class="subtle" id="runQueryBenchmarkBtn">Run all query fixtures</button>
+ <button class="subtle" id="downloadQueryBtn" disabled>Download query trace</button>
 </div>
-</details>
+<div class="query-summary" id="querySummary"><div class="empty" style="grid-column:1/-1">No query has been run yet.</div></div>
+<details open><summary>Grounding, derivation, evidence, conflict & explanation trace</summary><pre class="query-trace" id="queryOutput">Select a fixture and run a query to inspect the complete structured result.</pre></details>
 </div>
 </section>
 
-<section class="panel">
-<div class="panel-head"><div><div class="step">4 · Keep your work</div><h2>Save, reopen, and check your documents</h2></div><span class="advanced-badge">Stored on this computer</span></div>
+<section class="panel" style="margin-top:16px">
+<div class="panel-head"><div><div class="eyebrow">04 / persistent semantic workspace</div><h2>SQLite documents · conditions · conflicts</h2></div><span class="eyebrow">USG-LOCAL-API/1.0.0</span></div>
 <div class="panel-body">
-<p class="hint">You can save the structured information created by USG, reopen an earlier saved version, or check whether the saved information is still intact.</p>
+<p class="hint">Save complete canonical documents to the local SQLite store. Load immutable revisions, verify integrity, inspect conditions and exact-scope conflicts, run queries against stored snapshots, and export the complete canonical graph.</p>
 <div class="query-grid">
-<div class="field"><label for="persistentDocumentId">Name for this saved document</label><input id="persistentDocumentId" placeholder="For example: my-first-test"></div>
-<div class="field"><label for="persistentRevision">Saved version number (leave blank for newest)</label><input id="persistentRevision" type="number" min="1" placeholder="Newest version"></div>
+ <div class="field"><label>Document ID</label><input id="persistentDocumentId" placeholder="document id"></div>
+ <div class="field"><label>Expected / selected revision</label><input id="persistentRevision" type="number" min="1" placeholder="current revision / blank for latest"></div>
 </div>
-<div class="toolbar">
-<button class="primary" id="savePersistentBtn">Save this document</button>
-<button class="subtle" id="loadPersistentBtn">Open a saved document</button>
-<button class="subtle" id="checkPersistentBtn">Check that it is intact</button>
-<button class="subtle" id="conditionsPersistentBtn">Show when statements apply</button>
-<button class="subtle" id="conflictsPersistentBtn">Show statements that disagree</button>
-<button class="subtle" id="queryPersistentBtn">Ask a prepared question about this saved version</button>
-<button class="subtle" id="exportPersistentBtn">Download the structured document</button>
+<div class="query-actions">
+ <button class="primary" id="savePersistentBtn">Save current document</button>
+ <button class="subtle" id="loadPersistentBtn">Load stored document</button>
+ <button class="subtle" id="checkPersistentBtn">Verify integrity</button>
+ <button class="subtle" id="conditionsPersistentBtn">Inspect conditions</button>
+ <button class="subtle" id="conflictsPersistentBtn">Inspect contradictions</button>
+ <button class="subtle" id="exportPersistentBtn">Export canonical JSON</button>
+ <button class="subtle" id="queryPersistentBtn">Run query on stored revision</button>
 </div>
-<div id="persistentOutput" class="result" aria-live="polite"><div class="empty">Saved-document information and checks will appear here.</div></div>
-</div>
-</section>
-
-<section class="panel">
-<div class="panel-head"><div><div class="step">5 · Advanced tools</div><h2>Import or edit an existing USG document</h2></div><span class="advanced-badge">For existing structured files</span></div>
-<div class="panel-body">
-<p class="hint">You do not need this section to try ordinary text. Use it only when you already have a USG-SEM/1.0 document. This file format is intended for software tools, so it looks different from normal writing.</p>
-<details class="advanced">
-<summary>Open the structured document editor</summary>
-<div class="advanced-body">
-<div class="toolbar">
-<button class="subtle" id="sampleBtn">Load the example document</button>
-<button class="primary" id="inspectBtn">Check and inspect this document</button>
-<button id="exportBtn" disabled>Apply edits and check the document</button>
-<button class="subtle" id="downloadBtn" disabled>Download the structured document</button>
-<span class="status" id="documentStatus">No document loaded</span>
-</div>
-<div class="field"><label for="documentInput">Structured document data (JSON format)</label><textarea id="documentInput" spellcheck="false" style="min-height:250px;font-family:ui-monospace,Consolas,monospace" placeholder="Load the example document or paste a complete USG-SEM/1.0 document here."></textarea></div>
-<div id="modelTag" class="microcopy"></div>
-<div id="output" class="result"><div class="empty">Load or paste a structured document, then choose “Check and inspect this document.”</div></div>
-</div>
-</details>
+<details open><summary>Persistent store response</summary><pre id="persistentOutput" class="query-trace">No document has been saved or loaded yet.</pre></details>
 </div>
 </section>
-
-<div class="footer">USG Kernel Lab · Experimental research software · Local-only operation · Results can be incomplete or mistaken</div>
+<div class="footer">Runs locally on this computer · no cloud upload · canonical document remains the preservation envelope</div>
 </main>
 <script>
 const $=id=>document.getElementById(id);
-let latestExport=null, imported=false, latestQueryExport=null, selectedQueryExpected=null, selectedQueryPayload=null, persistentRevision=null;
+let latestExport=null, imported=false;
 const sample={
  "profileId":"USG-SEM/1.0","documentId":"lab:demo-document",
  "sources":[{"id":"lab:source:1","text":"😀Alex met Alex. Later, she smiled.","language":"en","sourceType":"SENTENCE","trustTier":"STANDARD","sensitivity":"INTERNAL","offsetUnit":"unicode_code_point"}],
@@ -231,405 +177,298 @@ const sample={
  "mapping":{"sourceProfile":"USG Kernel Lab sample","sourceVersion":"1.0","status":"LOSSLESS","unmappedRefs":[]},
  "extensions":{"org.usg.kernel-lab":{"sample":true}}
 };
-const keyNames={
- completion_status:"How much of the requested operation this version could complete",goal_status:"What the available information says about the requested conclusion",
- candidate_count:"Possible answers found",derivation_count:"Rule-based explanations produced",source_assertion_count:"Statements used from the source",conflict_count:"Disagreements detected",
- inference_candidates:"Possible conclusions",derivations:"How a conclusion was reached",source_assertions:"Statements found in the document",conflicts:"Statements that may disagree",
- resolutionStatus:"How clearly this word or phrase is connected to what it refers to",surfaceText:"Original word or phrase",mentionType:"Kind of word or phrase",
- referentRef:"Item this word or phrase points to",antecedentMentionRef:"Earlier word or phrase it may refer back to",antecedentReferentRef:"Person, thing, or idea it may refer back to",
- sourceRef:"Where the original text came from",sourceSpan:"Position of the word or phrase in the original text",mappingReport:"How information was transferred into the working model",
- canonicalRecordCounts:"How many items of each kind are in the document",nativeMentions:"Words and phrases identified in the text",
- diagnostics:"Warnings or notes about parts the system could not process",unmappedRefs:"Items that could not be connected during the transfer",
- mapped:"Items transferred into the working model",status:"Overall result",modelVersion:"Version of the internal reading model",
- fixture_id:"Internal code for this prepared example",benchmark_id:"Name of the prepared test collection",benchmark_version:"Version of the prepared test collection",profile_id:"Name and version of the result format",policy_id:"Name of the safety rules used",policy_version:"Version of the safety rules",query_id:"Internal code for this question",
- goal:"The exact statement and situation being checked",expression_ref:"Statement reference used by this prepared example",context_ref:"Situation reference used by this prepared example",context_kind:"Type of situation being checked",commitment:"Who the statement is attributed to",attributed_to_ref:"Person reference used by this prepared example",inference_task:"The reasoning task and rules allowed for this example",rule_ids:"Names of the reasoning rules allowed for this example",world_assumption:"How the system treats information it cannot find",max_rule_applications:"Maximum number of times a rule may be used",allow_inferred_premises:"Whether a conclusion may be reused as a starting fact",inferred_premise_chaining:"Whether the system may keep building new conclusions from earlier conclusions",truth_promotion:"Whether a suggested conclusion is automatically treated as true",absence_means_false:"Whether missing information is treated as proof that something is false",free_text_inference:"Whether this test allows free-form guesses from ordinary text",canonical_document_mutated:"Whether the saved source document was changed by this question",
- explanation:"Steps showing how the system reached its result",step:"Step number",code:"Internal label for this check",input_refs:"Items used in this step",output_refs:"Items produced in this step",epistemic_status:"How the source describes the statement",origin:"Where the statement came from",evidence_refs:"References to supporting information",scope_assertions:"Other statements in the same situation",relation_claims:"Possible relationships between statements",unresolved_questions:"Questions that could not be answered",unsupported_portions:"Parts this version could not handle",assumptions:"Rules or limits used during the check",source_independence_policy:"How the test treats evidence from different sources",conflict_policy:"How the test decides whether two statements disagree",computed_alignment_status:"How closely the evidence matches the statement",pending_work:"Work that remains unfinished",recordMapping:"How original records were carried into the working model",
- manifest:"List of reference information used for the analysis",resources:"Built-in reference information",
- deterministic_match:"Whether the new run produced the same result as the saved run",run_id:"Saved analysis reference",
- revision:"Saved version number",document_id:"Name of the saved document",document_revision:"Version of the saved document",
- sha256:"Digital check value used to detect unexpected changes",hash:"Digital check value used to detect unexpected changes",
- expected:"Expected result for this prepared test",actual:"Result produced by USG",mismatches:"Differences between the expected and actual results",
- passed:"Whether this prepared test matched its expected result",accepted:"Whether every prepared test passed",
- total:"Number of prepared tests",failed:"Number of tests that did not match",
- exportedDocument:"Structured document created from the edits",persistence:"Information about saving this result",
- completion:"How much of the input was processed",language:"Language selected for the text",text:"Original text",
- lexical:"Word recognition",segmentation:"Splitting text into parts",operator:"Words that change how a statement works",
- syntax:"How words are arranged",semantic_composition:"How word meanings are combined",discourse:"How one part of the text may relate to another",
-};
-const valueNames={
- LOSSLESS:"All supported information was transferred",PARTIAL:"Some information was transferred; some could not be carried over",
- UNMAPPED:"This item could not be transferred",LINKED:"Connected to an item",RESOLVED:"A matching item was found",
- UNRESOLVED:"No matching item was found",AMBIGUOUS:"More than one possible match was found",UNKNOWN:"Not enough information to decide",
- COMPLETE:"Finished for the parts this version supports",COMPLETED:"Finished for the parts this version supports",
- PARTIALLY_COMPLETED:"Some parts were processed; other parts were left unfinished",UNSUPPORTED:"This version does not know how to process this part",
- NOT_SUPPORTED:"This version does not support this operation",NOT_CHECKED:"Not checked yet",PASS:"Check passed",FAIL:"Check failed",
- PASSED:"Test matched the expected result",FAILED:"Test did not match the expected result",
- PROVEN:"The available rules support this conclusion",DISPROVEN:"The available rules support the opposite conclusion",
- UNKNOWN_GOAL:"The system could not decide",INCOMPLETE:"More information or processing is needed",CONFLICT:"Statements disagree",
- INVALID_INPUT:"The document or requested item could not be used because it did not pass a check",
- SOURCE_ASSERTED:"The document contains this statement, but the statement has not been independently checked",
- SOURCE_ASSERTED_NOT_VERIFIED:"A source states this, but the lab has not independently checked it",
- DERIVED_NOT_VERIFIED:"A rule produced this possible conclusion, but it has not been independently checked",
- DISPUTED:"The source itself marks this statement as disputed",
- UNKNOWN:"The document marks this information as unknown",
-
- CONFLICTING:"Statements disagree about this conclusion under the same conditions",
- DISPUTED:"The source itself marks this statement as disputed",
- SOURCE_ASSERTED_NOT_VERIFIED:"A source states this, but the lab has not independently checked it",
- DERIVED_NOT_VERIFIED:"A rule produced this possible conclusion, but it has not been independently checked",
- NOT_ESTABLISHED:"The available information and allowed rules do not establish this conclusion. This does not mean it is false",
- UNVERIFIED:"The available information has not confirmed this",MISMATCH:"The evidence does not match the statement",MATCHED:"The required information was found",NO_MATCH:"No matching statement was found",
- AUTHOR:"The document's author",ATTRIBUTED:"A person named in the document",NONE:"No speaker assigned",
- YES:"Yes",NO:"No",true:"Yes",false:"No"
-};
-const glossary={
- "mention":"A word or phrase found in the text.",
- "referent":"The person, thing, or idea that a word or phrase points to.",
- "antecedent":"An earlier word or phrase that a later word may refer back to.",
- "source span":"The exact position of text in the original writing.",
- "canonical document":"The complete structured record saved by USG.",
- "immutable revision":"A saved version that is kept as it was, even after a newer version is saved.",
- "discourse":"How different parts of a text may relate to each other.",
- "inference":"A possible conclusion reached by applying a rule to information.",
- "derivation":"The steps showing how a rule led to a conclusion.",
- "candidate":"A possible answer suggested by the system; it is not automatically confirmed.",
- "evidence":"Information that supports or challenges a statement.",
- "contradiction":"Two statements that disagree about the same thing under the same conditions.",
- "condition":"A situation that must be true for a statement or rule to apply.",
- "exception":"A special case where a normal rule should not be applied.",
- "resource manifest":"A list of the reference materials and their versions used by the system.",
- "association":"A possible connection between two items. It is only a suggestion until checked.",
- "replay":"Run the same saved analysis again and compare the results.",
- "integrity":"A check that saved information has not unexpectedly changed."
-};
-function esc(v){return String(v??"").replace(/[&<>\"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-function labelFor(k){if(keyNames[k])return k.replace(/([A-Z])/g," $1").replace(/^./,c=>c.toUpperCase()).replace(/_/g," ");return String(k).replace(/([A-Z])/g," $1").replace(/[_-]/g," ").replace(/\s+/g," ").replace(/^./,c=>c.toUpperCase())}
-function explainFor(k){return keyNames[k]||glossary[String(k).replace(/([A-Z])/g," $1").toLowerCase()]||""}
-function prettyValue(v){
- if(v===null||v===undefined||v==="")return "Not provided";
- if(typeof v==="boolean")return v?"Yes":"No";
- if(typeof v==="string"){
-  if(Object.prototype.hasOwnProperty.call(valueNames,v))return valueNames[v];
-  if(/^[A-Z][A-Z0-9_]{2,}$/.test(v))return labelFor(v);
-  return v;
- }
- if(typeof v==="number")return String(v);
- return String(v);
-}
-const codeMeanings={
- OPEN_WORLD:"Not finding a statement does not mean the statement is false.",
- EXPLICIT_RULE_ALLOWLIST:"Only the rules listed for this example may be used.",
- INFERRED_PREMISES_DISABLED:"A conclusion cannot be reused as a new starting fact in this test.",
- EXACT_GOAL_SCOPE:"Only this exact statement in this exact situation is being checked.",
- GOAL_GROUNDED:"The system found the statement and situation it was asked to check.",
- EXACT_SOURCE_ASSERTION_MATCH:"The system checked whether the document already states this exact conclusion.",
- DETERMINISTIC_INFERENCE:"The system applied the allowed reasoning rules in a fixed, repeatable way.",
- EVIDENCE_AND_CONFLICT_ASSESSMENT:"The system checked supporting information and looked for disagreements.",
- QUERY_CONCLUSION:"The system summarized what the available information supports.",
- NO_EXACT_ASSERTION_OR_DERIVATION_MATCH:"No exact statement or rule-based conclusion was found. Missing information is not treated as proof that the statement is false.",
- DOCUMENT_SCHEMA_INVALID:"The document does not follow the required structure.",
- QUERY_GOAL_AMBIGUOUS:"The statement has more than one possible meaning.",
- QUERY_GOAL_NOT_RESOLVED:"The system could not determine which statement the reference points to.",
- QUERY_GOAL_SORT_UNSUPPORTED:"This kind of statement is not supported by the current reasoning tool.",
- QUERY_CONTEXT_KIND_MISMATCH:"The situation category does not match the selected example.",
- DERIVATION_PREMISE_CONFLICTED:"A starting statement disagrees with another statement, so this reasoning step was not used.",
- INFERENCE_RULE_UNSUPPORTED:"The current reasoning tool does not support one of the requested rules.",
- GOAL_ASSERTION_UNKNOWN:"The document itself marks this statement as unknown.",
- EVIDENCE_ALIGNMENT_UNRESOLVED:"The system could not connect this evidence to the statement.",
- EVIDENCE_ALIGNMENT_UNVERIFIED:"The evidence has not been checked enough to confirm the statement.",
- EVIDENCE_ALIGNMENT_MISMATCH:"The evidence does not match the statement."
-};
-function statusClass(v){const s=String(v??"").toUpperCase();if(["PASS","PASSED","COMPLETE","COMPLETED","LOSSLESS","LINKED","RESOLVED","PROVEN","TRUE","MATCHED"].includes(s))return "good";if(["FAIL","FAILED","UNSUPPORTED","UNRESOLVED","AMBIGUOUS","CONFLICT","CONFLICTING","PARTIAL","INCOMPLETE","DISPUTED","NOT_ESTABLISHED"].includes(s))return "warn";if(["ERROR","INVALID","INVALID_INPUT"].includes(s))return "bad";return ""}
-function valueHtml(v){
- if(v===null||v===undefined||v==="")return '<span class="value-pill">Not provided</span>';
- if(typeof v==="boolean")return '<span class="value-pill '+(v?'good':'warn')+'">'+(v?'Yes':'No')+'</span>';
- if(typeof v==="string"&&/^[A-Z][A-Z0-9_]{2,}$/.test(v)){
-  const known=Object.prototype.hasOwnProperty.call(valueNames,v);
-  const explanation=codeMeanings[v]||(!known?"This is an internal label used by this check. In everyday words: "+labelFor(v)+".":"");
-  return '<span class="value-pill '+statusClass(v)+'">'+esc(prettyValue(v))+'</span>'+(explanation?'<span class="explain">'+esc(explanation)+'</span>':"");
- }
- if(typeof v==="string")return esc(v)+(codeMeanings[v]?'<span class="explain">'+esc(codeMeanings[v])+'</span>':"");
- if(typeof v==="number")return esc(v);
- return renderAny(v,1);
-}
-function renderArray(arr,depth){
- if(!arr.length)return '<p class="microcopy">No items were reported.</p>';
- if(arr.every(x=>x&&typeof x==="object"&&!Array.isArray(x))){
-  const keys=[...new Set(arr.flatMap(x=>Object.keys(x)))];
-  return '<div class="table-wrap"><table><thead><tr>'+keys.map(k=>'<th>'+esc(labelFor(k))+(explainFor(k)?'<span class="explain">'+esc(explainFor(k))+'</span>':'')+'</th>').join("")+'</tr></thead><tbody>'+arr.map(row=>'<tr>'+keys.map(k=>'<td>'+valueHtml(row[k])+'</td>').join("")+'</tr>').join("")+'</tbody></table></div>';
- }
- return '<ul>'+arr.map(x=>'<li>'+valueHtml(x)+'</li>').join("")+'</ul>';
-}
-function renderAny(value,depth=0){
- if(Array.isArray(value))return renderArray(value,depth);
- if(value&&typeof value==="object"){
-  const entries=Object.entries(value);
-  if(!entries.length)return '<p class="microcopy">No information was returned.</p>';
-  const rows=entries.map(([k,v])=>{
-   const nested=v&&typeof v==="object";
-   const value=nested?renderAny(v,depth+1):valueHtml(v);
-   return '<tr><td>'+esc(labelFor(k))+(explainFor(k)?'<span class="explain">'+esc(explainFor(k))+'</span>':'')+'</td><td>'+value+'</td></tr>';
-  }).join("");
-  return '<div class="table-wrap"><table><thead><tr><th>What USG reported</th><th>Result</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
- }
- return valueHtml(value);
-}
-function topStatus(data){
- const s=data?.completion_status||data?.status||data?.result?.completion_status||data?.query_result?.completion_status||data?.mappingReport?.status;
- if(s==="COMPLETE"||s==="COMPLETED"||s==="PASS"||s==="LOSSLESS")return {text:"The operation completed for the parts this version supports.",kind:"good"};
- if(s==="PARTIAL"||s==="PARTIALLY_COMPLETED"||s==="INCOMPLETE"||s==="UNSUPPORTED")return {text:"The result is incomplete. Some parts may not have been understood or processed.",kind:"caution"};
- if(s==="FAIL"||s==="FAILED"||s==="ERROR")return {text:"The operation did not pass. Review the explanation below.",kind:"bad"};
- return {text:"The tables below show the information returned by USG. A suggested answer is not automatically a confirmed fact.",kind:""};
-}
-function renderResult(target,data,title){
- const state=topStatus(data);
- $(target).innerHTML='<h3>'+esc(title||"What USG found")+'</h3><div class="result-summary '+state.kind+'">'+esc(state.text)+'</div>'+renderAny(data);
-}
-function friendlyError(message){
- let m=String(message||"Something went wrong.");
- if(/Unexpected token|JSON at position|is not valid JSON/i.test(m))return "The document text is not in the expected format. If you are just trying USG, use the text boxes at the top of the page. The structured document editor is for advanced use.";
- if(/nativeMentions must be a JSON array|must contain exactly the imported Mention IDs/i.test(m))return "The list of words or phrases was changed in a way this editor cannot match to the original document. Reload the example or original document, then try again.";
- if(/sourceSpan/i.test(m))return "The text position is incomplete or incorrectly entered. Enter a start and end position as whole numbers.";
- if(/Content-Length/i.test(m))return "The request did not contain usable document information. Check the advanced document editor and try again.";
- if(/Enter a document ID/i.test(m))return "Enter a name for the saved document first.";
- if(/required only for ATTRIBUTED/i.test(m))return "Choose a person reference when asking what a named person said or believed.";
- return m;
-}
-function showError(target,error,title){
- $(target).innerHTML='<h3>'+esc(title||"This action could not be completed")+'</h3><div class="result-summary bad">'+esc(friendlyError(error))+'</div>';
-}
-function setStatus(message,kind="",target="status"){const el=$(target);if(!el)return;el.textContent=message;el.className="status "+kind}
-async function apiRequest(method,path,payload){
- const response=await fetch(path,{method,headers:payload?{"Content-Type":"application/json"}:{},body:payload?JSON.stringify(payload):undefined});
- let data;try{data=await response.json()}catch{throw new Error("The local server returned a response the interface could not read.")}
- if(!response.ok||data.ok===false)throw new Error(data.message||data.error||("Request failed ("+response.status+")"));
- return data;
-}
-function downloadData(data,name){
- const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
- const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
-}
-function setQuerySummary(data){
- const summary=$("querySummary");
- const metrics=data.benchmark
-  ? [["Examples",data.benchmark.total],["Matched expected result",data.benchmark.passed],["Did not match",data.benchmark.failed],["All passed",data.benchmark.accepted?"Yes":"No"]]
-  : [["How much was processed",prettyValue(data.result?.completion_status)],["Conclusion status",prettyValue(data.result?.goal_status)],["Possible conclusions",(data.result?.inference_candidates||[]).length],["Disagreements",(data.result?.conflicts||[]).length]];
- summary.innerHTML=metrics.map(([label,value])=>'<div class="metric"><b>'+esc(value)+'</b><span>'+esc(label)+'</span></div>').join("");
-}
-function setQueryOutput(value){latestQueryExport=value;renderResult("queryOutput",value,"Question result and explanation");$("downloadQueryBtn").disabled=false;$("downloadQueryAdvancedBtn").disabled=false}
-function friendlyFixture(item,index){
- const status=item.expected?.goal_status||item.expected?.completion_status||"";
- return "Prepared example "+(index+1)+(status?" — expected result: "+prettyValue(status):"");
-}
-async function loadQueryFixtureList(){
- try{
-  const response=await fetch("/api/fixtures"),data=await response.json();
-  if(!response.ok||!data.ok)throw new Error(data.error||"Could not load prepared examples");
-  $("queryFixtureSelect").innerHTML=data.fixtures.map((item,index)=>'<option value="'+esc(item.id)+'">'+esc(friendlyFixture(item,index))+'</option>').join("");
-  setStatus(data.fixtures.length+" prepared examples available","ok","queryStatus");
- }catch(e){$("queryFixtureSelect").innerHTML='<option value="">Examples could not be loaded</option>';setStatus(friendlyError(e.message),"err","queryStatus")}
-}
-async function loadSelectedFixture(){
- const fixtureId=$("queryFixtureSelect").value;if(!fixtureId)throw new Error("Choose a prepared example first.");
- const data=await apiRequest("POST","/api/fixture",{fixture_id:fixtureId});
- selectedQueryPayload=data;selectedQueryExpected=data.expected;
- $("documentInput").value=JSON.stringify(data.document,null,2);
- $("persistentDocumentId").value=data.document.documentId;
- const q=data.query,g=q.goal,t=q.inference_task;
- $("queryExpression").value=g.expression_ref;$("queryContext").value=g.context_ref;$("queryContextKind").value=g.context_kind;
- $("queryCommitment").value=g.commitment;$("queryAttribution").value=g.attributed_to_ref||"";
- $("queryRules").value=t.rule_ids.join(", ");$("queryBudget").value=t.max_rule_applications??"";
- return data;
-}
-$("loadQueryFixtureBtn").onclick=async()=>{
- try{await loadSelectedFixture();setStatus("The example's prepared information is now loaded in the advanced editor.","ok","queryStatus");renderResult("queryOutput",{example:$("queryFixtureSelect").selectedOptions[0].textContent,message:"The example is ready. Select “Run this example” to see what the reasoning rules can support."},"Example loaded");}
- catch(e){showError("queryOutput",e.message);setStatus(friendlyError(e.message),"err","queryStatus")}
-};
-$("runQueryBtn").onclick=async()=>{
- try{
-  $("runQueryBtn").disabled=true;setStatus("Checking the prepared information and rules…","","queryStatus");
-  const fixture=selectedQueryPayload&&selectedQueryPayload.fixture_id===$("queryFixtureSelect").value?selectedQueryPayload:await loadSelectedFixture();
-  const data=await apiRequest("POST","/api/query",{document:fixture.document,query:fixture.query,expected:fixture.expected});
-  setQuerySummary(data);setQueryOutput(data);
-  setStatus("Example completed: "+prettyValue(data.result.goal_status),"ok","queryStatus");
- }catch(e){showError("queryOutput",e.message);setStatus(friendlyError(e.message),"err","queryStatus")}
- finally{$("runQueryBtn").disabled=false}
-};
-$("runQueryBenchmarkBtn").onclick=async()=>{
- try{
-  $("runQueryBenchmarkBtn").disabled=true;setStatus("Running all prepared examples…","","queryStatus");
-  const data=await apiRequest("POST","/api/benchmark",{});
-  setQuerySummary({benchmark:data});setQueryOutput(data);
-  setStatus(data.accepted?"Every prepared example matched its expected result.":"Some prepared examples did not match their expected result.",""+(data.accepted?"ok":"err"),"queryStatus");
- }catch(e){showError("queryOutput",e.message);setStatus(friendlyError(e.message),"err","queryStatus")}
- finally{$("runQueryBenchmarkBtn").disabled=false}
-};
-$("downloadQueryBtn").onclick=()=>{if(latestQueryExport)downloadData(latestQueryExport,"usg-reasoning-result.json")};
-$("downloadQueryAdvancedBtn").onclick=()=>{if(latestQueryExport)downloadData(latestQueryExport,"usg-reasoning-full-data.json")};
-
-$("interpretTextBtn").onclick=async()=>{
- try{
-  $("interpretTextBtn").disabled=true;setStatus("Reading your text…","","status");
-  const result=await apiRequest("POST","/v1/interpret",{text:$("rawTextInput").value,language:$("rawTextLanguage").value,persist:$("rawTextPersist").checked});
-  renderResult("interpretOutput",result,"What the basic reader found");
-  if(result.document)$("documentInput").value=JSON.stringify(result.document,null,2);
-  if(result.persistence){$("persistentDocumentId").value=result.persistence.document_id;$("persistentRevision").value=String(result.persistence.revision);persistentRevision=result.persistence.revision;setStatus("Analysis finished and saved as version "+result.persistence.revision,"ok");}
-  else setStatus("Analysis finished. Review the result table below.","ok");
- }catch(e){showError("interpretOutput",e.message);setStatus(friendlyError(e.message),"err")}
- finally{$("interpretTextBtn").disabled=false}
-};
-$("phase5InterpretBtn").onclick=async()=>{
- try{
-  $("phase5InterpretBtn").disabled=true;setStatus("Looking at the text in several stages…","","phase5Status");
-  const result=await apiRequest("POST","/v2/interpret",{text:$("phase5TextInput").value,language:$("phase5Language").value,persist:$("phase5Persist").checked});
-  renderResult("phase5Output",result,"Detailed reading — stage-by-stage results");
-  if(result.persistence){$("phase5RunId").value=result.persistence.run_id;setStatus("Analysis finished. A saved copy is ready for comparison.","ok","phase5Status");}
-  else setStatus("Analysis finished. This result was not saved.","ok","phase5Status");
- }catch(e){showError("phase5Output",e.message);setStatus(friendlyError(e.message),"err","phase5Status")}
- finally{$("phase5InterpretBtn").disabled=false}
-};
-$("phase5ReplayBtn").onclick=async()=>{
- try{
-  const runId=$("phase5RunId").value.trim();if(!runId)throw new Error("Run a detailed analysis first so there is a saved analysis to compare.");
-  const result=await apiRequest("POST","/v2/interpretations/"+encodeURIComponent(runId)+"/replay",{});
-  renderResult("phase5Output",result,"Comparison with the saved analysis");
-  setStatus(result.deterministic_match?"The new result matches the saved result.":"The new result is different from the saved result.",""+(result.deterministic_match?"ok":"err"),"phase5Status");
- }catch(e){showError("phase5Output",e.message);setStatus(friendlyError(e.message),"err","phase5Status")}
-};
-$("phase5ResourcesBtn").onclick=async()=>{
- try{const result=await apiRequest("GET","/v2/resources");renderResult("phase5CatalogueOutput",result,"Reference information available to this version");}
- catch(e){showError("phase5CatalogueOutput",e.message)}
-};
-$("phase5AssociationsBtn").onclick=async()=>{
- try{
-  const sourceRef=$("phase5SourceRef").value.trim();if(!sourceRef)throw new Error("Enter an exact item reference from an earlier result first.");
-  const result=await apiRequest("GET","/v2/associations?source_ref="+encodeURIComponent(sourceRef));
-  renderResult("phase5AssociationsOutput",result,"Possible related items — suggestions only");
- }catch(e){showError("phase5AssociationsOutput",e.message)}
-};
-
-function field(label,key,value,full=false,help=""){
- return '<div class="field '+(full?"full":"")+'"><label>'+esc(label)+(help?'<span class="explain">'+esc(help)+'</span>':"")+'</label><input data-key="'+esc(key)+'" value="'+esc(value??"")+'"></div>';
+function setStatus(message,kind=""){const el=$("status");el.textContent=message;el.className="status "+kind}
+function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function field(label,key,value,full=false,placeholder=""){
+ return '<div class="field '+(full?'full':'')+'"><label>'+label+'</label><input data-key="'+key+'" value="'+esc(value??"")+'" placeholder="'+placeholder+'"></div>'
 }
 function renderReport(data){
- const r=data.mappingReport||{}, rm=r.recordMapping||{}, m=rm.mentions||{},counts=data.canonicalRecordCounts||{};
- const mapped=(m.mapped||[]).length,partial=(m.unmappedRefs||[]).length;
- let html='<h3>What the document check found</h3><div class="metrics"><div class="metric"><b>'+esc(counts.mentions||0)+'</b><span>Words or phrases found</span></div><div class="metric"><b>'+esc(mapped)+'</b><span>Matched to the working model</span></div><div class="metric"><b>'+esc(partial)+'</b><span>Not fully matched</span></div><div class="metric"><b>'+esc(data.modelVersion||"—")+'</b><span>Reading model version</span></div></div>';
- html+='<div class="result-summary '+(r.status==="LOSSLESS"?"good":"caution")+'">'+esc(prettyValue(r.status||"UNKNOWN"))+'. This describes the transfer into the working model; it does not mean the text has been fully understood.</div>';
- html+='<h4>Information transfer report</h4>'+renderAny(r);
- html+='<h4>Edit the words or phrases USG identified</h4><p class="hint">A word or phrase may point to a person, thing, or idea. Leave a reference blank when you are unsure. The small reference codes are internal links used to connect items.</p>';
- for(const item of (data.nativeMentions||[])){
-  const span=Array.isArray(item.sourceSpan)?item.sourceSpan:["",""];
-  html+='<div class="mention-card" data-mention="'+esc(item.id)+'"><div class="mention-top"><div><div class="mention-title">'+esc(item.surfaceText||"Text item")+'</div><div class="mention-id">Internal item code: '+esc(item.id)+'</div></div><span class="value-pill '+statusClass(item.resolutionStatus)+'">'+esc(prettyValue(item.resolutionStatus))+'</span></div><div class="field-grid">';
-  html+=field("Original word or phrase","surfaceText",item.surfaceText,true,"You may correct the text shown here.");
-  html+='<div class="field"><label>Does this word point to something already known?</label><select data-key="resolutionStatus">'+[["LINKED","Connected to a known item"],["RESOLVED","A matching item was found"],["UNRESOLVED","No match found yet"],["AMBIGUOUS","More than one possible match"],["UNKNOWN","Not enough information"]].map(([v,l])=>'<option value="'+v+'" '+(v===item.resolutionStatus?"selected":"")+'>'+l+'</option>').join("")+'</select></div>';
-  html+=field("Type of word or phrase","mentionType",item.mentionType,false,"For example: name, pronoun, or noun (advanced field).");
-  html+=field("Item this word points to","referentRef",item.referentRef,false,"Internal reference code; leave blank if you do not know it.");
-  html+=field("Earlier word this may refer to","antecedentMentionRef",item.antecedentMentionRef,false,"Internal reference code; leave blank if unsure.");
-  html+=field("Item that earlier word points to","antecedentReferentRef",item.antecedentReferentRef,false,"Internal reference code; leave blank if unsure.");
-  html+=field("Where the original text came from","sourceRef",item.sourceRef,false,"Internal source code; normally leave unchanged.");
-  html+='<div class="field"><label>Start position in the original text</label><input data-key="sourceStart" type="number" min="0" value="'+esc(span[0]??"")+'"></div><div class="field"><label>End position in the original text</label><input data-key="sourceEnd" type="number" min="0" value="'+esc(span[1]??"")+'"></div>';
+ const r=data.mappingReport, rm=r.recordMapping||{}, m=rm.mentions||{};
+ const counts=data.canonicalRecordCounts||{};
+ const mapped=(m.mapped||[]).length, partial=(m.unmappedRefs||[]).length;
+ let html='<div class="metrics"><div class="metric"><b>'+counts.mentions+'</b><span>Canonical Mentions</span></div><div class="metric"><b>'+mapped+'</b><span>Fully mapped</span></div><div class="metric"><b>'+partial+'</b><span>Partial</span></div></div>';
+ html+='<div><span class="pill '+(r.status==="LOSSLESS"?'lossless':'partial')+'">'+esc(r.status)+'</span> <span class="hint">Mapping status · target model '+esc(data.modelVersion)+'</span></div>';
+ html+='<details open><summary>Mapping report</summary><pre>'+esc(JSON.stringify(r,null,2))+'</pre></details>';
+ html+='<div><div class="eyebrow">Native Mention records · editable</div><p class="hint">Edit these native fields, then export. Links are opaque IDs; their types are fixed by their field.</p></div>';
+ for(const item of data.nativeMentions){
+  html+='<div class="mention-card" data-mention="'+esc(item.id)+'"><div class="mention-top"><span class="mention-id">'+esc(item.id)+'</span><span class="pill '+(item.referentRef?'lossless':'partial')+'">'+esc(item.resolutionStatus)+'</span></div><div class="field-grid">';
+  html+=field("Surface text","surfaceText",item.surfaceText,true);
+  html+='<div class="field"><label>Resolution status</label><select data-key="resolutionStatus">'+["LINKED","RESOLVED","UNRESOLVED","AMBIGUOUS","UNKNOWN"].map(x=>'<option '+(x===item.resolutionStatus?'selected':'')+'>'+x+'</option>').join("")+'</select></div>';
+  html+=field("Mention type","mentionType",item.mentionType);
+  html+=field("Referent ref","referentRef",item.referentRef);
+  html+=field("Antecedent Mention ref","antecedentMentionRef",item.antecedentMentionRef);
+  html+=field("Antecedent Referent ref","antecedentReferentRef",item.antecedentReferentRef);
+  html+=field("Source ref","sourceRef",item.sourceRef);
+  html+=field("Source span [start,end]","sourceSpan",item.sourceSpan?JSON.stringify(item.sourceSpan):"");
   html+='</div></div>';
  }
- if(!(data.nativeMentions||[]).length)html+='<div class="empty">No word or phrase records were found in this document. Other document information has been kept.</div>';
- html+='<details class="subresult"><summary>Warnings and notes ('+(data.diagnostics||[]).length+')</summary>'+renderAny(data.diagnostics||[])+'</details>';
- $("output").innerHTML=html;$("modelTag").textContent="Reading model "+(data.modelVersion||"");
- $("exportBtn").disabled=false;imported=true;
+ if(!data.nativeMentions.length) html+='<div class="empty">This document contains no Mention records. Other record families are retained canonically and are not projected by Step 5J.</div>';
+ html+='<details><summary>Diagnostics ('+(data.diagnostics||[]).length+')</summary><pre>'+esc(JSON.stringify(data.diagnostics||[],null,2))+'</pre></details>';
+ $("output").innerHTML=html;
+ $("modelTag").textContent="MODEL "+data.modelVersion;
+ $("exportBtn").disabled=false;
+ imported=true;
 }
 function readNativeEdits(){
  return [...document.querySelectorAll(".mention-card")].map(card=>{
   const row={id:card.dataset.mention};
   card.querySelectorAll("[data-key]").forEach(el=>{
    let v=el.value;
-   if(el.dataset.key==="sourceStart"||el.dataset.key==="sourceEnd")return;
-   if(["mentionType","referentRef","antecedentMentionRef","antecedentReferentRef","sourceRef"].includes(el.dataset.key))v=v.trim()||null;
+   if(el.dataset.key==="sourceSpan"){
+    if(!v.trim()) v=null;
+    else {try{v=JSON.parse(v)}catch{throw new Error(card.dataset.mention+": Source span must be JSON [start, end]")}}
+   } else if(["mentionType","referentRef","antecedentMentionRef","antecedentReferentRef","sourceRef"].includes(el.dataset.key)){
+    v=v.trim()||null;
+   }
    row[el.dataset.key]=v;
   });
-  const start=card.querySelector('[data-key="sourceStart"]').value.trim(),end=card.querySelector('[data-key="sourceEnd"]').value.trim();
-  row.sourceSpan=(start!==""&&end!=="")?[Number(start),Number(end)]:null;
   return row;
  });
 }
-$("sampleBtn").onclick=()=>{
- $("documentInput").value=JSON.stringify(sample,null,2);$("persistentDocumentId").value=sample.documentId;
- $("persistentRevision").value="";persistentRevision=null;latestExport=null;imported=false;
- $("exportBtn").disabled=true;$("downloadBtn").disabled=true;
- $("output").innerHTML='<div class="empty">Example loaded. Choose “Check and inspect this document” to see what USG can transfer and edit.</div>';
- setStatus("Example document loaded","ok","documentStatus");
-};
+async function post(path,payload){
+ const response=await fetch(path,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+ const data=await response.json();
+ if(!response.ok||!data.ok) throw new Error(data.error||"Request failed");
+ return data;
+}
+$("sampleBtn").onclick=()=>{$("documentInput").value=JSON.stringify(sample,null,2);$("persistentDocumentId").value=sample.documentId;$("persistentRevision").value="";persistentRevision=null;latestExport=null;imported=false;$("exportBtn").disabled=true;$("downloadBtn").disabled=true;$("output").innerHTML='<div class="empty">Sample loaded. Choose <b>Import & inspect</b> to run the native adapter.</div>';setStatus("Sample document loaded","ok")};
 $("inspectBtn").onclick=async()=>{
- try{$("inspectBtn").disabled=true;setStatus("Checking the document…","","documentStatus");const doc=JSON.parse($("documentInput").value);const data=await apiRequest("POST","/api/inspect",{document:doc});renderReport(data);latestExport=null;$("downloadBtn").disabled=true;setStatus("Document checked","ok","documentStatus");}
- catch(e){showError("output",e.message);setStatus(friendlyError(e.message),"err","documentStatus");imported=false;$("exportBtn").disabled=true}
+ try{$("inspectBtn").disabled=true;setStatus("Validating and projecting...");const doc=JSON.parse($("documentInput").value);const data=await post("/api/inspect",{document:doc});renderReport(data);latestExport=null;$("downloadBtn").disabled=true;setStatus("Import and inspection passed","ok")}
+ catch(e){setStatus(e.message,"err");$("output").innerHTML='<div class="empty" style="color:#ffaaaa">'+esc(e.message)+'</div>';imported=false;$("exportBtn").disabled=true}
  finally{$("inspectBtn").disabled=false}
 };
 $("exportBtn").onclick=async()=>{
- try{
-  $("exportBtn").disabled=true;setStatus("Applying your edits and checking the full document…","","documentStatus");
-  const doc=JSON.parse($("documentInput").value),nativeMentions=readNativeEdits();
-  const data=await apiRequest("POST","/api/export",{document:doc,nativeMentions});
-  latestExport=data.exportedDocument;$("downloadBtn").disabled=false;
-  $("output").insertAdjacentHTML("afterbegin",'<div class="result-summary good">'+esc(data.message||"Your edits were applied and the document passed its structure check.")+'</div>');
-  setStatus("Edits applied and document checked","ok","documentStatus");
- }catch(e){showError("output",e.message);setStatus(friendlyError(e.message),"err","documentStatus")}
+ try{$("exportBtn").disabled=true;setStatus("Applying native edits and validating full document...");const doc=JSON.parse($("documentInput").value);const nativeMentions=readNativeEdits();const data=await post("/api/export",{document:doc,nativeMentions});latestExport=data.exportedDocument;$("downloadBtn").disabled=false;setStatus(data.message,"ok");const note=document.createElement("div");note.className="notice";note.textContent=data.message;$("output").prepend(note)}
+ catch(e){setStatus(e.message,"err");const note=document.createElement("div");note.className="notice";note.style.color="#ffaaaa";note.textContent="Export rejected: "+e.message;$("output").prepend(note)}
  finally{$("exportBtn").disabled=false}
 };
-$("downloadBtn").onclick=()=>{if(latestExport)downloadData(latestExport,"usg-structured-document.json")};
+$("downloadBtn").onclick=()=>{
+ if(!latestExport)return;
+ const blob=new Blob([JSON.stringify(latestExport,null,2)],{type:"application/json"});
+ const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="usg-sem-1.0-export.json";a.click();URL.revokeObjectURL(url)
+};
+let latestQueryExport=null, selectedQueryExpected=null;
+function setQuerySummary(data){
+ const summary=$("querySummary");
+ const metrics=data.benchmark
+  ? [["Fixtures",data.benchmark.total],["Passed",data.benchmark.passed],["Failed",data.benchmark.failed],["Accepted",data.benchmark.accepted?"YES":"NO"]]
+  : [["Completion",data.result.completion_status],["Goal status",data.result.goal_status],["Candidates",data.result.inference_candidates.length],["Conflicts",data.result.conflicts.length]];
+ summary.innerHTML=metrics.map(([label,value])=>'<div class="metric"><b>'+esc(value)+'</b><span>'+esc(label)+'</span></div>').join("");
+}
+function setQueryOutput(value){
+ latestQueryExport=value;
+ $("queryOutput").textContent=JSON.stringify(value,null,2);
+ $("downloadQueryBtn").disabled=false;
+}
+async function loadQueryFixtureList(){
+ try{
+  const response=await fetch("/api/fixtures");const data=await response.json();
+  if(!response.ok||!data.ok)throw new Error(data.error||"Could not load query fixtures");
+  $("queryFixtureSelect").innerHTML=data.fixtures.map(item=>'<option value="'+esc(item.id)+'">'+esc(item.id)+' · '+esc(item.expected.goal_status||item.expected.completion_status)+'</option>').join("");
+  setStatus("Phase 2 query fixtures loaded","ok");
+ }catch(e){$("queryFixtureSelect").innerHTML='<option value="">Fixture list unavailable</option>';setStatus(e.message,"err")}
+}
+$("loadQueryFixtureBtn").onclick=async()=>{
+ try{
+  const fixtureId=$("queryFixtureSelect").value;if(!fixtureId)throw new Error("Select a query fixture first");
+  $("loadQueryFixtureBtn").disabled=true;
+  const data=await post("/api/fixture",{fixture_id:fixtureId});
+  $("documentInput").value=JSON.stringify(data.document,null,2);$("persistentDocumentId").value=data.document.documentId;$("persistentRevision").value="";persistentRevision=null;
+  const q=data.query,g=q.goal,t=q.inference_task;
+  $("queryExpression").value=g.expression_ref;$("queryContext").value=g.context_ref;$("queryContextKind").value=g.context_kind;
+  $("queryCommitment").value=g.commitment;$("queryAttribution").value=g.attributed_to_ref||"";
+  $("queryRules").value=t.rule_ids.join(", ");$("queryBudget").value=t.max_rule_applications??"";
+  selectedQueryExpected=data.expected;
+  setQueryOutput({fixture_id:fixtureId,expected:data.expected,message:"Canonical fixture loaded into the document editor. Run the structured query to compare actual and expected results."});
+  setQuerySummary({result:{completion_status:"READY",goal_status:"READY",inference_candidates:[],conflicts:[]}});
+  setStatus("Query fixture loaded","ok");
+ }catch(e){setStatus(e.message,"err")}
+ finally{$("loadQueryFixtureBtn").disabled=false}
+};
+$("runQueryBtn").onclick=async()=>{
+ try{
+  $("runQueryBtn").disabled=true;setStatus("Running grounding, inference, evidence and conflict assessment...");
+  const document=JSON.parse($("documentInput").value);
+  const ruleIds=$("queryRules").value.split(",").map(x=>x.trim()).filter(Boolean);
+  const commitment=$("queryCommitment").value;
+  const query={query_id:"kernel-lab-query",goal:{expression_ref:$("queryExpression").value.trim(),context_ref:$("queryContext").value.trim(),context_kind:$("queryContextKind").value.trim(),commitment,...(commitment==="ATTRIBUTED"?{attributed_to_ref:$("queryAttribution").value.trim()}:{})},
+   inference_task:{task_id:"kernel-lab-query:inference",rule_ids:ruleIds,world_assumption:"OPEN",allow_inferred_premises:false,evidence_assessment:false}};
+  const budget=$("queryBudget").value.trim();if(budget!=="")query.inference_task.max_rule_applications=Number(budget);
+  const data=await post("/api/query",{document,query,expected:selectedQueryExpected||undefined});
+  setQuerySummary(data);setQueryOutput(data);setStatus("Structured query completed: "+data.result.goal_status,"ok");
+ }catch(e){setStatus(e.message,"err");$("queryOutput").textContent=e.message}
+ finally{$("runQueryBtn").disabled=false}
+};
+$("runQueryBenchmarkBtn").onclick=async()=>{
+ try{
+  $("runQueryBenchmarkBtn").disabled=true;setStatus("Running the complete versioned query benchmark...");
+  const data=await post("/api/benchmark",{});
+  setQuerySummary({benchmark:data});setQueryOutput(data);
+  setStatus(data.accepted?"All query benchmark fixtures passed":"Some query benchmark fixtures failed",""+(data.accepted?"ok":"err"));
+ }catch(e){setStatus(e.message,"err");$("queryOutput").textContent=e.message}
+ finally{$("runQueryBenchmarkBtn").disabled=false}
+};
+$("downloadQueryBtn").onclick=()=>{
+ if(!latestQueryExport)return;
+ const blob=new Blob([JSON.stringify(latestQueryExport,null,2)],{type:"application/json"});
+ const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="usg-kernel-lab-query-trace.json";a.click();URL.revokeObjectURL(url)
+};
 
+
+let persistentRevision = null;
+async function apiRequest(method,path,payload){
+ const response=await fetch(path,{method,headers:payload?{"Content-Type":"application/json"}:{},body:payload?JSON.stringify(payload):undefined});
+ const data=await response.json();
+ if(!response.ok) throw new Error(data.message||data.error||"Persistent API request failed (HTTP "+response.status+")");
+ return data;
+}
 function persistentTarget(suffix=""){
- const id=$("persistentDocumentId").value.trim();if(!id)throw new Error("Enter a name for the saved document first.");
+ const id=$("persistentDocumentId").value.trim();
+ if(!id) throw new Error("Enter a document ID first");
  const revision=$("persistentRevision").value.trim();
  return "/v1/documents/"+encodeURIComponent(id)+suffix+(revision?"?revision="+encodeURIComponent(revision):"");
 }
-function showPersistent(data,title){renderResult("persistentOutput",data,title||"Saved document information")}
+function showPersistent(data){$("persistentOutput").textContent=JSON.stringify(data,null,2)}
 $("savePersistentBtn").onclick=async()=>{
  try{
-  const document=JSON.parse($("documentInput").value);$("persistentDocumentId").value=document.documentId;
-  const rawRevision=$("persistentRevision").value.trim(),expected=rawRevision===""?undefined:Number(rawRevision);
-  const result=await apiRequest("POST","/v1/documents",{document,...(expected!==undefined?{expected_revision:expected}:{})});
-  persistentRevision=result.revision;$("persistentRevision").value=String(result.revision);
-  showPersistent(result,"Saved document — new version created");setStatus("Saved as version "+result.revision,"ok");
- }catch(e){showError("persistentOutput",e.message);setStatus(friendlyError(e.message),"err")}
+  const document=JSON.parse($("documentInput").value);
+  $("persistentDocumentId").value=document.documentId;
+  const rawRevision=$("persistentRevision").value.trim();
+  const expected=rawRevision===""?undefined:Number(rawRevision);
+  const payload={document,...(expected!==undefined?{expected_revision:expected}:{})};
+  const result=await apiRequest("POST","/v1/documents",payload);
+  persistentRevision=result.revision;
+  $("persistentRevision").value=String(result.revision);
+  showPersistent(result);setStatus("Saved canonical SQLite revision "+result.revision,"ok");
+ }catch(e){showPersistent({error:e.message});setStatus(e.message,"err")}
 };
 $("loadPersistentBtn").onclick=async()=>{
  try{
   const result=await apiRequest("GET",persistentTarget());
-  $("documentInput").value=JSON.stringify(result.document,null,2);persistentRevision=result.revision;
-  $("persistentRevision").value=String(result.revision);$("persistentDocumentId").value=result.document_id;
-  showPersistent({document_id:result.document_id,revision:result.revision,document:result.document},"Saved document opened");
-  setStatus("Opened saved version "+result.revision,"ok");
- }catch(e){showError("persistentOutput",e.message);setStatus(friendlyError(e.message),"err")}
+  $("documentInput").value=JSON.stringify(result.document,null,2);
+  persistentRevision=result.revision;
+  $("persistentRevision").value=String(result.revision);
+  $("persistentDocumentId").value=result.document_id;
+  showPersistent(result);setStatus("Loaded and verified SQLite revision "+result.revision,"ok");
+ }catch(e){showPersistent({error:e.message});setStatus(e.message,"err")}
 };
 $("checkPersistentBtn").onclick=async()=>{
- try{const result=await apiRequest("GET",persistentTarget("/check"));showPersistent(result,"Saved information check");setStatus(result.status==="PASS"?"Saved information passed the check.":"The check found something to review.",result.status==="PASS"?"ok":"err");}
- catch(e){showError("persistentOutput",e.message);setStatus(friendlyError(e.message),"err")}
+ try{const result=await apiRequest("GET",persistentTarget("/check"));showPersistent(result);setStatus("Integrity report: "+result.status,result.status==="PASS"?"ok":"err")}
+ catch(e){showPersistent({error:e.message});setStatus(e.message,"err")}
 };
 $("conditionsPersistentBtn").onclick=async()=>{
- try{const result=await apiRequest("GET",persistentTarget("/conditions"));showPersistent(result,"When the saved statements apply");setStatus("Condition information loaded","ok");}
- catch(e){showError("persistentOutput",e.message);setStatus(friendlyError(e.message),"err")}
+ try{const result=await apiRequest("GET",persistentTarget("/conditions"));showPersistent(result);setStatus("Condition and exception inspection completed","ok")}
+ catch(e){showPersistent({error:e.message});setStatus(e.message,"err")}
 };
 $("conflictsPersistentBtn").onclick=async()=>{
- try{const result=await apiRequest("GET",persistentTarget("/contradictions"));showPersistent(result,"Statements that may disagree");setStatus("Disagreement check completed","ok");}
- catch(e){showError("persistentOutput",e.message);setStatus(friendlyError(e.message),"err")}
+ try{const result=await apiRequest("GET",persistentTarget("/contradictions"));showPersistent(result);setStatus("Exact-scope contradiction inspection completed","ok")}
+ catch(e){showPersistent({error:e.message});setStatus(e.message,"err")}
 };
 $("exportPersistentBtn").onclick=async()=>{
  try{
   const result=await apiRequest("GET",persistentTarget("/export"));
-  downloadData(result,($("persistentDocumentId").value||"usg-document")+".json");
-  showPersistent({downloaded:true,document_id:result.documentId,record_families:Object.keys(result)},"Structured document downloaded");
-  setStatus("Downloaded the structured document","ok");
- }catch(e){showError("persistentOutput",e.message);setStatus(friendlyError(e.message),"err")}
+  const blob=new Blob([JSON.stringify(result,null,2)],{type:"application/json"});
+  const url=URL.createObjectURL(blob),a=document.createElement("a");
+  a.href=url;a.download=($("persistentDocumentId").value||"usg-document")+".json";a.click();URL.revokeObjectURL(url);
+  showPersistent({exported:true,document_id:result.documentId,record_families:Object.keys(result)});
+  setStatus("Complete canonical document exported","ok");
+ }catch(e){showPersistent({error:e.message});setStatus(e.message,"err")}
 };
 $("queryPersistentBtn").onclick=async()=>{
  try{
-  if(!selectedQueryPayload)await loadSelectedFixture();
-  const id=$("persistentDocumentId").value.trim();if(!id)throw new Error("Save or open a document first.");
+  const id=$("persistentDocumentId").value.trim();if(!id)throw new Error("Save or load a document first");
   const revision=$("persistentRevision").value.trim();
-  const payload={document_id:id,query:selectedQueryPayload.query,...(revision?{revision:Number(revision)}:{})};
+  const commitment=$("queryCommitment").value;
+  const query={query_id:"kernel-lab-persistent-query",goal:{
+   expression_ref:$("queryExpression").value.trim(),context_ref:$("queryContext").value.trim(),
+   context_kind:$("queryContextKind").value.trim(),commitment,
+   ...(commitment==="ATTRIBUTED"?{attributed_to_ref:$("queryAttribution").value.trim()}:{}),
+  },inference_task:{
+   task_id:"kernel-lab-persistent-query:inference",
+   rule_ids:$("queryRules").value.split(",").map(x=>x.trim()).filter(Boolean),
+   world_assumption:"OPEN",allow_inferred_premises:false,evidence_assessment:false,
+  }};
+  const budget=$("queryBudget").value.trim();if(budget!=="")query.inference_task.max_rule_applications=Number(budget);
+  const payload={document_id:id,query,...(revision?{revision:Number(revision)}:{})};
   const result=await apiRequest("POST","/v1/query",payload);
   setQuerySummary({result:result.query_result});setQueryOutput(result);
-  showPersistent({document_revision:result.document_revision,query_result:result.query_result},"Question result using the saved version");
-  setStatus("Question checked against the saved version","ok");
- }catch(e){showError("persistentOutput",e.message);setStatus(friendlyError(e.message),"err")}
+  showPersistent({query_completed:true,document_revision:result.document_revision,document_sha256:result.document_sha256});
+  setStatus("Stored-revision query completed: "+result.query_result.goal_status,"ok");
+ }catch(e){showPersistent({error:e.message});setStatus(e.message,"err")}
+};
+$("interpretTextBtn").onclick=async()=>{
+ try{
+  $("interpretTextBtn").disabled=true;
+  setStatus("Interpreting raw source text...");
+  const result=await apiRequest("POST","/v1/interpret",{
+   text:$("rawTextInput").value,
+   language:$("rawTextLanguage").value,
+   persist:$("rawTextPersist").checked
+  });
+  $("interpretOutput").textContent=JSON.stringify(result,null,2);
+  if(result.document){
+   $("documentInput").value=JSON.stringify(result.document,null,2);
+  }
+  if(result.persistence){
+   $("persistentDocumentId").value=result.persistence.document_id;
+   $("persistentRevision").value=String(result.persistence.revision);
+   persistentRevision=result.persistence.revision;
+   setStatus("Interpretation "+result.completion_status+" · saved SQLite revision "+result.persistence.revision,"ok");
+  }else{
+   setStatus("Interpretation completed: "+result.completion_status,"ok");
+  }
+ }catch(e){
+  $("interpretOutput").textContent=JSON.stringify({error:e.message},null,2);
+  setStatus(e.message,"err");
+ }finally{
+  $("interpretTextBtn").disabled=false;
+ }
+};
+$("phase5InterpretBtn").onclick=async()=>{
+ try{
+  $("phase5InterpretBtn").disabled=true;
+  setStatus("Running Phase 5 interpretation stages...");
+  const result=await apiRequest("POST","/v2/interpret",{
+   text:$("phase5TextInput").value,
+   language:$("phase5Language").value,
+   persist:$("phase5Persist").checked
+  });
+  $("phase5Output").textContent=JSON.stringify(result,null,2);
+  if(result.persistence){
+   $("phase5RunId").value=result.persistence.run_id;
+   setStatus("Phase 5 "+result.completion_status+" · run saved "+result.persistence.run_id,"ok");
+  }else{
+   setStatus("Phase 5 "+result.completion_status+" · not persisted","ok");
+  }
+ }catch(e){
+  $("phase5Output").textContent=JSON.stringify({error:e.message},null,2);
+  setStatus(e.message,"err");
+ }finally{$("phase5InterpretBtn").disabled=false}
+};
+$("phase5ReplayBtn").onclick=async()=>{
+ try{
+  const runId=$("phase5RunId").value.trim();
+  if(!runId)throw new Error("Enter or create an interpretation run ID first");
+  const result=await apiRequest("POST","/v2/interpretations/"+encodeURIComponent(runId)+"/replay",{});
+  $("phase5Output").textContent=JSON.stringify(result,null,2);
+  setStatus(result.deterministic_match?"Phase 5 replay matched the stored digest":"Replay digest mismatch",result.deterministic_match?"ok":"err");
+ }catch(e){$("phase5Output").textContent=JSON.stringify({error:e.message},null,2);setStatus(e.message,"err")}
+};
+$("phase5ResourcesBtn").onclick=async()=>{
+ try{
+  const result=await apiRequest("GET","/v2/resources");
+  $("phase5CatalogueOutput").textContent=JSON.stringify(result,null,2);
+  setStatus("Loaded "+result.manifest.resources.length+" versioned resource descriptors","ok");
+ }catch(e){$("phase5CatalogueOutput").textContent=JSON.stringify({error:e.message},null,2);setStatus(e.message,"err")}
+};
+$("phase5AssociationsBtn").onclick=async()=>{
+ try{
+  const sourceRef=$("phase5SourceRef").value.trim();
+  if(!sourceRef)throw new Error("Enter an exact source reference");
+  const result=await apiRequest("GET","/v2/associations?source_ref="+encodeURIComponent(sourceRef));
+  $("phase5AssociationsOutput").textContent=JSON.stringify(result,null,2);
+  setStatus("Retrieved "+result.count+" provisional association candidates","ok");
+ }catch(e){$("phase5AssociationsOutput").textContent=JSON.stringify({error:e.message},null,2);setStatus(e.message,"err")}
 };
 $("sampleBtn").click();
 loadQueryFixtureList();
