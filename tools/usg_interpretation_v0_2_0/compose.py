@@ -1,4 +1,4 @@
-"""Nested, source-grounded semantic composition over accepted syntax candidates."""
+"""Nested semantic composition with explicit operator nodes and scope references."""
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -10,6 +10,7 @@ from typing import Any, Literal
 from .lexical import LexicalAnalysis, LexicalCandidate
 from .segmentation import SegmentedDocument
 from .syntax import SyntaxAnalysis, SyntaxCandidate, ClauseSyntaxResult
+from .operators import OperatorAnalysis, OperatorCandidate
 
 SEMANTIC_COMPOSITION_VERSION = "semantic-composition/0.2.0"
 
@@ -53,7 +54,7 @@ class SemanticFrameRegistry:
 @dataclass(frozen=True)
 class SemanticNode:
     node_id: str
-    op: Literal["REF", "PREDICATE", "CLAUSE_GROUP"]
+    op: Literal["REF", "PREDICATE", "OPERATOR", "CLAUSE_GROUP"]
     sort: Literal["ENTITY", "PROPOSITION", "PROPOSITION_SET"]
     operand_refs: tuple[str, ...]
     params: tuple[tuple[str, Any], ...]
@@ -65,8 +66,8 @@ class SemanticNode:
             raise ValueError("semantic node identity and derivation provenance are required")
         if self.op == "REF" and self.sort != "ENTITY":
             raise ValueError("REF nodes must have ENTITY sort")
-        if self.op == "PREDICATE" and self.sort != "PROPOSITION":
-            raise ValueError("PREDICATE nodes must have PROPOSITION sort")
+        if self.op in {"PREDICATE", "OPERATOR"} and self.sort != "PROPOSITION":
+            raise ValueError("PREDICATE and OPERATOR nodes must have PROPOSITION sort")
         if self.op == "CLAUSE_GROUP" and self.sort != "PROPOSITION_SET":
             raise ValueError("CLAUSE_GROUP nodes must have PROPOSITION_SET sort")
         if self.source_span[0] < 0 or self.source_span[1] <= self.source_span[0]:
@@ -97,6 +98,14 @@ class SemanticCandidate:
             raise ValueError("semantic roots must reference existing nodes")
         if any(ref not in known for node in self.nodes for ref in node.operand_refs):
             raise ValueError("semantic operands must reference existing nodes")
+        for node in self.nodes:
+            params = dict(node.params)
+            if node.op == "OPERATOR" and params.get("scopeTargetRef") not in known:
+                raise ValueError("operator scope target must reference an existing graph node")
+            if node.op == "PREDICATE":
+                bindings = params.get("roleBindings", {})
+                if any(ref not in known for ref in bindings.values()):
+                    raise ValueError("predicate role bindings must reference existing graph nodes")
         if self.source_span[0] < 0 or self.source_span[1] <= self.source_span[0]:
             raise ValueError("candidate source span must be non-empty")
 
@@ -151,7 +160,7 @@ def initial_semantic_frame_registry() -> SemanticFrameRegistry:
 
 
 class SemanticComposer:
-    """Compose typed proposition graphs while preserving every licensed alternative."""
+    """Compose typed proposition graphs while preserving syntax and scope alternatives."""
 
     def __init__(self, registry: SemanticFrameRegistry | None = None, max_candidates: int = 64):
         if isinstance(max_candidates, bool) or not isinstance(max_candidates, int) or max_candidates < 1:
@@ -167,7 +176,7 @@ class SemanticComposer:
         return prefix + ":" + sha256(raw).hexdigest()[:20]
 
     @staticmethod
-    def _lexical_choice(lexical: LexicalAnalysis, token_id: str, sense_ref: str) -> tuple[Any, LexicalCandidate]:
+    def _lexical_choice(lexical: LexicalAnalysis, token_id: str, sense_ref: str):
         item = next((x for x in lexical.tokens if x.token.token_id == token_id), None)
         if item is None:
             raise ValueError(f"syntax references unknown token {token_id}")
@@ -175,6 +184,13 @@ class SemanticComposer:
         if candidate is None:
             raise ValueError(f"syntax references unknown lexical sense {sense_ref}")
         return item.token, candidate
+
+    @staticmethod
+    def _token_by_id(lexical: LexicalAnalysis, token_id: str):
+        item = next((x for x in lexical.tokens if x.token.token_id == token_id), None)
+        if item is None:
+            raise ValueError(f"operator references unknown token {token_id}")
+        return item.token
 
     def _candidate_options(
         self, lexical: LexicalAnalysis, result: ClauseSyntaxResult,
@@ -187,7 +203,6 @@ class SemanticComposer:
             predicate_sense = sense_refs.get(action_token)
             frame = self._frames.get(predicate_sense)
             if frame is not None:
-                # Verify every role/sense pair before a graph can be emitted.
                 for role in ("AGENT", "ACTION", "PATIENT"):
                     self._lexical_choice(lexical, role_refs[role], sense_refs[role_refs[role]])
                 options.append((syntax_candidate, frame))
@@ -195,13 +210,22 @@ class SemanticComposer:
 
     def _compose_candidate(
         self, lexical: LexicalAnalysis,
-        selected: tuple[tuple[SyntaxCandidate, PredicateFrame], ...],
+        selected: tuple[tuple[SyntaxCandidate, PredicateFrame, tuple[str, ...]], ...],
         attachments, unresolved_refs: tuple[str, ...],
+        operator_analysis: OperatorAnalysis | None,
     ) -> SemanticCandidate:
         nodes = []
         clause_roots = []
         clause_spans = []
-        for syntax_candidate, frame in selected:
+        operator_by_token = {}
+        if operator_analysis is not None:
+            operator_by_token = {
+                item.token_ref: item
+                for clause_result in operator_analysis.clauses
+                for item in clause_result.candidates
+            }
+
+        for syntax_candidate, frame, operator_order in selected:
             role_refs = dict(syntax_candidate.role_token_refs)
             sense_refs = dict(syntax_candidate.lexical_sense_refs)
             ref_nodes = {}
@@ -210,10 +234,8 @@ class SemanticComposer:
                 token, entry = self._lexical_choice(lexical, token_id, sense_refs[token_id])
                 ref_id = self._stable_id("ref", [syntax_candidate.candidate_id, role, entry.sense_id])
                 params = {
-                    "role": role,
-                    "surfaceText": token.surface_text,
-                    "senseRef": entry.sense_id,
-                    "conceptRef": entry.concept_ref,
+                    "role": role, "surfaceText": token.surface_text,
+                    "senseRef": entry.sense_id, "conceptRef": entry.concept_ref,
                     "features": dict(entry.features),
                 }
                 nodes.append(SemanticNode(
@@ -221,6 +243,7 @@ class SemanticComposer:
                     (token.start, token.end), (syntax_candidate.candidate_id, token_id, entry.sense_id),
                 ))
                 ref_nodes[role] = ref_id
+
             action_token_id = role_refs["ACTION"]
             action_token, action_entry = self._lexical_choice(
                 lexical, action_token_id, sense_refs[action_token_id]
@@ -240,7 +263,44 @@ class SemanticComposer:
                 (action_token.start, action_token.end),
                 (syntax_candidate.candidate_id, action_token_id, action_entry.sense_id),
             ))
-            clause_roots.append(predicate_id)
+
+            current_root = predicate_id
+            for scope_index, operator_token_id in enumerate(reversed(operator_order)):
+                operator = operator_by_token[operator_token_id]
+                if operator.operator_type == "AUXILIARY":
+                    continue
+                operator_token = self._token_by_id(lexical, operator.token_ref)
+                if operator.scope_kind == "ARGUMENT":
+                    target_role = next((role for role, token_id in role_refs.items()
+                                        if token_id == operator.scope_target_token_ref), None)
+                    if target_role is None:
+                        raise ValueError("quantifier scope target is not a bound semantic argument")
+                    scope_target_ref = ref_nodes[target_role]
+                else:
+                    scope_target_ref = predicate_id
+                scope_id = self._stable_id("op", [
+                    syntax_candidate.candidate_id, operator.token_ref, current_root, operator.value
+                ])
+                scope_params = {
+                    "operatorType": operator.operator_type,
+                    "operatorValue": operator.value,
+                    "surfaceText": operator_token.surface_text,
+                    "scopeTargetRef": scope_target_ref,
+                    "scopeTargetKind": operator.scope_kind,
+                    "scopeTargetTokenRef": operator.scope_target_token_ref,
+                    "scopeSourceSpan": list(operator.scope_span),
+                    "surfaceOrder": scope_index,
+                }
+                nodes.append(SemanticNode(
+                    scope_id, "OPERATOR", "PROPOSITION", (current_root,),
+                    tuple(sorted(scope_params.items())),
+                    operator.source_span,
+                    (syntax_candidate.candidate_id, operator.token_ref,
+                     operator.scope_target_token_ref, "operator:" + operator.operator_type),
+                ))
+                current_root = scope_id
+
+            clause_roots.append(current_root)
             clause_spans.append(syntax_candidate.source_span)
 
         if len(clause_roots) == 1:
@@ -248,24 +308,27 @@ class SemanticComposer:
         else:
             root_ref = self._stable_id("group", clause_roots)
             source_span = (min(x[0] for x in clause_spans), max(x[1] for x in clause_spans))
+            selected_clause_refs = {x.clause_ref for x, _, _ in selected}
             attachment_payload = [{
-                "relation": item.relation,
-                "markerText": item.marker_text,
+                "relation": item.relation, "markerText": item.marker_text,
                 "markerSpan": list(item.marker_span),
                 "sourceClauseRef": item.source_clause_ref,
-                "targetClauseRef": item.target_clause_ref,
-                "status": item.status,
+                "targetClauseRef": item.target_clause_ref, "status": item.status,
             } for item in attachments
-                if item.source_clause_ref in {x.clause_ref for x, _ in selected}
-                and item.target_clause_ref in {x.clause_ref for x, _ in selected}]
-            group_params = {"attachmentCandidates": attachment_payload,
-                            "unresolvedClauseRefs": list(unresolved_refs)}
+                if item.source_clause_ref in selected_clause_refs
+                and item.target_clause_ref in selected_clause_refs]
+            group_params = {
+                "attachmentCandidates": attachment_payload,
+                "unresolvedClauseRefs": list(unresolved_refs),
+            }
             nodes.append(SemanticNode(
                 root_ref, "CLAUSE_GROUP", "PROPOSITION_SET", tuple(clause_roots),
                 tuple(sorted(group_params.items())), source_span,
-                tuple(x.candidate_id for x, _ in selected),
+                tuple(x.candidate_id for x, _, _ in selected),
             ))
-        candidate_id = self._stable_id("sem", [x.candidate_id for x, _ in selected])
+        candidate_id = self._stable_id("sem", [
+            [x.candidate_id, list(order)] for x, _, order in selected
+        ])
         candidate_status = "PARTIAL" if unresolved_refs else "RESOLVED"
         return SemanticCandidate(
             candidate_id, lexical.source.source_id, lexical.source.sha256,
@@ -275,29 +338,56 @@ class SemanticComposer:
 
     def compose(
         self, lexical: LexicalAnalysis, segmented: SegmentedDocument, syntax: SyntaxAnalysis,
+        operator_analysis: OperatorAnalysis | None = None,
     ) -> SemanticComposition:
         if lexical.source != segmented.source:
             raise ValueError("lexical and segmentation artifacts must share the same source")
         if lexical.source != syntax_source(segmented, syntax):
             raise ValueError("syntax and segmentation artifacts must share the same source")
+        if operator_analysis is not None and (
+            operator_analysis.source_ref != lexical.source.source_id
+            or operator_analysis.source_sha256 != lexical.source.sha256
+        ):
+            raise ValueError("operator analysis must reference the exact source snapshot")
+
+        operator_results = ({x.clause_ref: x for x in operator_analysis.clauses}
+                            if operator_analysis is not None else {})
         options_by_clause = []
         unresolved = []
         ambiguous = False
         resource_limited = False
+        partial_required = False
         for result in syntax.clauses:
+            operator_result = operator_results.get(result.clause_ref)
+            if operator_result is not None and operator_result.status == "INCOMPLETE":
+                unresolved.append(result.clause_ref)
+                partial_required = True
+                continue
+            if operator_result is not None and operator_result.status == "INCOMPLETE_RESOURCE_LIMIT":
+                unresolved.append(result.clause_ref)
+                resource_limited = True
+                continue
             if result.status == "AMBIGUOUS":
                 ambiguous = True
+            if result.status == "INCOMPLETE":
+                partial_required = True
             if result.status == "INCOMPLETE_RESOURCE_LIMIT":
                 resource_limited = True
+            if operator_result is not None and operator_result.status == "AMBIGUOUS":
+                ambiguous = True
+            orders = operator_result.scope_alternatives if operator_result is not None else ((),)
             options = self._candidate_options(lexical, result)
             if options:
-                options_by_clause.append(options)
+                options_by_clause.append(tuple(
+                    (syntax_candidate, frame, order)
+                    for syntax_candidate, frame in options for order in orders
+                ))
             else:
                 unresolved.append(result.clause_ref)
         if not options_by_clause:
             if resource_limited:
                 status = "INCOMPLETE_RESOURCE_LIMIT"
-            elif any(x.status == "INCOMPLETE" for x in syntax.clauses):
+            elif partial_required:
                 status = "PARTIAL"
             else:
                 status = "UNSUPPORTED"
@@ -311,7 +401,7 @@ class SemanticComposer:
                 overflow = True
                 break
             candidates.append(self._compose_candidate(
-                lexical, selected, syntax.attachments, tuple(unresolved)
+                lexical, selected, syntax.attachments, tuple(unresolved), operator_analysis
             ))
         if overflow or resource_limited:
             status = "INCOMPLETE_RESOURCE_LIMIT"
@@ -340,7 +430,7 @@ class SemanticComposer:
 
 
 def syntax_source(segmented: SegmentedDocument, syntax: SyntaxAnalysis):
-    """Return the source snapshot only after confirming clause refs are in this segmentation."""
+    """Return source only after verifying clause refs, source ID, and digest."""
     clause_ids = {x.segment_id for x in segmented.clauses}
     if any(x.clause_ref not in clause_ids for x in syntax.clauses):
         raise ValueError("syntax references a clause outside the supplied segmentation")
