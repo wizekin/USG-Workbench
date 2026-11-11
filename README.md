@@ -35,16 +35,8 @@ The archive inventory records fresh tests and limitations for the original packa
 - **Phase 3:** COMPLETE for the defined and tested scope. Steps 3.1–3.9 are merged; SQLite remains the sole authoritative canonical backend. See the [Phase 3 roadmap](documentation/PHASE-3-ROADMAP.md), [completion record](documentation/PHASE-3-COMPLETION-RECORD.md), and [storage backend decision](documentation/STORAGE-BACKEND-EVALUATIONS.md).
 - **Phase 4:** COMPLETE for the v0.1.0 bounded offline demonstrator. Steps 4.1–4.13 are merged. See the [Phase 4 roadmap](documentation/PHASE-4-DEFINITIONS-ROADMAP.md), [completion record](documentation/PHASE-4-COMPLETION-RECORD.md), and [Step 4.13 exit gate](documentation/PHASE-4-STEP-4.13-EXIT-ACCEPTANCE.md). This is not unrestricted English/Arabic understanding.
 - **Phase 5:** COMPLETE for its documented and benchmarked scope. Steps 5.1–5.11 are accepted. The v0.2.1 benchmark measured 100% precision/recall, role/span accuracy, and negative/ambiguous target abstention for the three simple-transitive English/MSA Arabic target constructions; it does not establish broad language coverage. See the [Phase 5 roadmap](documentation/PHASE-5-DEFINITIONS-ROADMAP.md), [completion record](documentation/PHASE-5-COMPLETION-RECORD.md), and [Step 5.11 acceptance report](documentation/PHASE-5-STEP-5.11-BENCHMARK-EXIT-ACCEPTANCE.md).
-- **Phase 6:** IN PROGRESS. Steps 6.1–6.5 are accepted for their bounded, benchmarked scope. Step 6.5 achieved 100% precision, recall, role/span accuracy, and abstention across all eight English/MSA Arabic construction profiles. Step 6.6 definitions and candidate benchmark v0.4.0 are now being added; implementation and benchmark acceptance remain pending. The interpreter remains separate from the unified service pending Step 6.13. The additive corrected gold profiles v0.3.1 and v0.3.2 preserve predicate/marker distinctions and repeated participant spans. See the [Phase 6 roadmap](documentation/PHASE-6-DEFINITIONS-ROADMAP.md), [Step 6.5 implementation](documentation/PHASE-6-STEP-6.5-PREDICATE-ARGUMENT-STRUCTURES.md), [Step 6.5 acceptance](documentation/PHASE-6-STEP-6.5-ACCEPTANCE.md), [Step 6.6 definitions](documentation/PHASE-6-STEP-6.6-NOMINAL-MODIFIER-SEMANTICS.md), and [benchmark span correction v0.3.2](documentation/PHASE-6-BENCHMARK-ANNOTATION-CORRECTION-0.3.2.md).
+- **Phase 6:** IN PROGRESS. Steps 6.1–6.5 are accepted for their bounded, benchmarked scope. Step 6.6 remains in progress; external English/Arabic PUD syntax audits and parser baselines are structural proxies, not human-adjudicated semantic-role gold. Step 6.7 remains blocked pending Step 6.6 acceptance. See the [Phase 6 roadmap](documentation/PHASE-6-DEFINITIONS-ROADMAP.md).
 
+## Open-world randomized evaluation
 
-Phase 6 Step 6.6 candidate benchmark: [v0.4.0 corpus and scope](documentation/PHASE-6-STEP-6.6-BENCHMARK-V0.4.0.md).
-
-
-Phase 6 Step 6.6 genitive semantics refinement: [candidate benchmark v0.4.1](documentation/PHASE-6-STEP-6.6-BENCHMARK-V0.4.1.md).
-
-
-Phase 6 Step 6.6 now has a closed-profile candidate interpreter (not benchmark-enabled): [implementation and evaluation boundary](documentation/PHASE-6-STEP-6.6-CANDIDATE-INTERPRETER.md).
-
-
-Phase 6 Step 6.6 benchmark v0.4.2 corrects a grammatical-marker token boundary and is used by the candidate interpreter's development check.
+- [USG Open-World Randomized Evaluation Program](documentation/USG-OPEN-WORLD-RANDOMIZED-EVALUATION-PLAN.md) defines a continuously expanding, seed-reproducible test campaign for realistic, unconstrained, adversarial, and diagnostic requests. It separates the evaluation of the harness from claims about USG capability and specifies append-only reports stored in this repository.
