@@ -255,8 +255,6 @@ class SemanticComposer:
             ))
         candidate_id = self._stable_id("sem", [x.candidate_id for x, _ in selected])
         candidate_status = "PARTIAL" if unresolved_refs else "RESOLVED"
-        if len(selected) > 1 and any(len(x.candidates) > 1 for x in []):
-            candidate_status = "AMBIGUOUS"
         return SemanticCandidate(
             candidate_id, root_ref, tuple(clause_roots), tuple(nodes), candidate_status,
             (min(x[0] for x in clause_spans), max(x[1] for x in clause_spans)),
@@ -318,6 +316,9 @@ def syntax_source(segmented: SegmentedDocument, syntax: SyntaxAnalysis):
     clause_ids = {x.segment_id for x in segmented.clauses}
     if any(x.clause_ref not in clause_ids for x in syntax.clauses):
         raise ValueError("syntax references a clause outside the supplied segmentation")
+    if (syntax.source_ref != segmented.source.source_id
+            or syntax.source_sha256 != segmented.source.sha256):
+        raise ValueError("syntax artifact source identity/digest does not match segmentation")
     return segmented.source
 
 
