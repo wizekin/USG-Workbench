@@ -9,10 +9,10 @@ class TestUDNominalAdapter(unittest.TestCase):
 
     def test_conllu_parser_preserves_dependency_and_source_text(self):
         payload = (
-            "# sent_id = s1\\n"
-            "# text = red car\\n"
-            "1\\tred\\tred\\tADJ\\t_\\t_\\t2\\tamod\\t_\\t_\\n"
-            "2\\tcar\\tcar\\tNOUN\\t_\\t_\\t0\\troot\\t_\\t_\\n\\n"
+            "# sent_id = s1\n"
+            "# text = red car\n"
+            "1\tred\tred\tADJ\t_\t_\t2\tamod\t_\t_\n"
+            "2\tcar\tcar\tNOUN\t_\t_\t0\troot\t_\t_\n\n"
         ).encode()
         parsed = parse_ud_conllu(payload)
         self.assertEqual(parsed[0]["meta"]["text"], "red car")
