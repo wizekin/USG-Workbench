@@ -6,6 +6,7 @@ This measures exact-form POS candidate coverage, not USG semantics or parsing.
 from __future__ import annotations
 
 from collections import defaultdict
+from hashlib import sha256
 from pathlib import Path
 import json
 import unicodedata
@@ -22,9 +23,19 @@ def normalize(form: str, language: str) -> str:
     return value.casefold() if language == "en" else value
 
 
+def _fold_index(sentence: dict, index: int, folds: int) -> int:
+    sent_id = sentence.get("meta", {}).get("sent_id")
+    if not sent_id:
+        return index % folds
+    digest = sha256(sent_id.encode("utf-8")).digest()
+    return int.from_bytes(digest[:8], "big") % folds
+
+
 def cross_validate(sentences: list[dict], language: str, folds: int = 10) -> dict:
     if folds < 2 or len(sentences) < folds:
         raise ValueError("at least two folds and one sentence per fold are required")
+    fold_ids = [_fold_index(sentence, index, folds)
+                for index, sentence in enumerate(sentences)]
     totals = {
         "tokens": 0, "seen_tokens": 0, "oov_tokens": 0,
         "gold_tag_in_candidates": 0, "ambiguous_seen_tokens": 0,
@@ -35,8 +46,8 @@ def cross_validate(sentences: list[dict], language: str, folds: int = 10) -> dic
     fold_reports = []
 
     for fold in range(folds):
-        train = [s for i, s in enumerate(sentences) if i % folds != fold]
-        test = [s for i, s in enumerate(sentences) if i % folds == fold]
+        train = [s for i, s in enumerate(sentences) if fold_ids[i] != fold]
+        test = [s for i, s in enumerate(sentences) if fold_ids[i] == fold]
         lexicon = defaultdict(set)
         for sentence in train:
             for token in sentence["tokens"]:
@@ -79,7 +90,7 @@ def cross_validate(sentences: list[dict], language: str, folds: int = 10) -> dic
 
     return {
         "language": language,
-        "method": "DETERMINISTIC_10_FOLD_SENTENCE_LEVEL_CROSS_VALIDATION",
+        "method": "DETERMINISTIC_SENTENCE_ID_HASH_10_FOLD_CROSS_VALIDATION",
         "fold_count": folds,
         "totals": {
             **totals,
