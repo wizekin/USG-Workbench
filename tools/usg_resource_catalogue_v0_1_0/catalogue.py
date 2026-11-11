@@ -20,7 +20,7 @@ RESOURCE_CLASSES = frozenset({
     "DISCOURSE_RESOURCE",
     "PROVISIONAL_ASSOCIATION",
 })
-_VERSION_RE = re.compile(r"^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$")
+_VERSION_RE = re.compile(r"^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$")
 _ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:/-]{0,199}$")
 
 
@@ -128,10 +128,10 @@ def _validate_resource(
 ) -> dict[str, Any]:
     if not isinstance(resource_id, str) or not _ID_RE.fullmatch(resource_id):
         raise InvalidResourceError("resource_id must be a non-empty stable identifier")
-    _version_key(version) if isinstance(version, str) else (_ for _ in ()).throw(
-        InvalidResourceError("version must be a stable MAJOR.MINOR.PATCH version")
-    )
-    if resource_class not in RESOURCE_CLASSES:
+    if not isinstance(version, str):
+        raise InvalidResourceError("version must be a stable MAJOR.MINOR.PATCH version")
+    _version_key(version)
+    if not isinstance(resource_class, str) or resource_class not in RESOURCE_CLASSES:
         raise InvalidResourceError("resource_class is not a supported resource class")
     if not isinstance(provenance, dict) or not provenance:
         raise InvalidResourceError("provenance must be a non-empty object")
@@ -395,6 +395,10 @@ class SQLiteResourceCatalogue:
             raise ResourceIntegrityError("stored resource is not canonical JSON")
         if envelope.get("catalogue_contract") != RESOURCE_CATALOGUE_VERSION:
             raise ResourceIntegrityError("stored resource catalogue contract is unsupported")
+        if (envelope.get("resource_id") != row["resource_id"]
+                or envelope.get("version") != row["version"]
+                or envelope.get("resource_class") != row["resource_class"]):
+            raise ResourceIntegrityError("stored resource identity does not match its catalogue row")
         active = self._active_version(row["resource_id"]) == row["version"]
         return ResourceSnapshot(
             row["resource_id"], row["version"], row["resource_class"],
