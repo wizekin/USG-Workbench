@@ -113,7 +113,7 @@ class AdaptiveDiscoveryTests(unittest.TestCase):
         case = make_case()
         record = make_record(case)
         score = score_pair(case, record)
-        signature = ("crashed", case["target"]["component_id"])
+        signature = ("runtime_crashed", case["target"]["component_id"])
         from tools.open_world_evaluation.adaptive_discovery import cluster_id
         cluster, label = cluster_id(signature)
         with tempfile.TemporaryDirectory() as folder:
