@@ -1,0 +1,539 @@
+{
+  "registryId": "USG-FRAME-REGISTRY/0.3.0",
+  "registryVersion": "0.3.0",
+  "contract": "USG-INTERPRET/0.3.0",
+  "status": "CANDIDATE",
+  "roleDefinitions": [
+    {
+      "roleId": "usg.role.agent",
+      "label": "AGENT",
+      "definition": "Entity that intentionally or causally initiates an event.",
+      "compatibleFillerSorts": [
+        "ENTITY"
+      ],
+      "status": "CANDIDATE"
+    },
+    {
+      "roleId": "usg.role.patient",
+      "label": "PATIENT",
+      "definition": "Entity affected or changed by an event.",
+      "compatibleFillerSorts": [
+        "ENTITY"
+      ],
+      "status": "CANDIDATE"
+    },
+    {
+      "roleId": "usg.role.theme",
+      "label": "THEME",
+      "definition": "Entity transferred, moved, perceived, or otherwise involved without being the initiator.",
+      "compatibleFillerSorts": [
+        "ENTITY"
+      ],
+      "status": "CANDIDATE"
+    },
+    {
+      "roleId": "usg.role.recipient",
+      "label": "RECIPIENT",
+      "definition": "Entity that receives or is intended to receive a transferred theme.",
+      "compatibleFillerSorts": [
+        "ENTITY"
+      ],
+      "status": "CANDIDATE"
+    },
+    {
+      "roleId": "usg.role.experiencer",
+      "label": "EXPERIENCER",
+      "definition": "Entity that undergoes a mental, perceptual, or bodily state.",
+      "compatibleFillerSorts": [
+        "ENTITY"
+      ],
+      "status": "CANDIDATE"
+    },
+    {
+      "roleId": "usg.role.stimulus",
+      "label": "STIMULUS",
+      "definition": "Entity or event that elicits an experience or reaction.",
+      "compatibleFillerSorts": [
+        "ENTITY",
+        "PROPOSITION"
+      ],
+      "status": "CANDIDATE"
+    },
+    {
+      "roleId": "usg.role.entity",
+      "label": "ENTITY",
+      "definition": "Entity whose state, property, or relation is being described.",
+      "compatibleFillerSorts": [
+        "ENTITY"
+      ],
+      "status": "CANDIDATE"
+    },
+    {
+      "roleId": "usg.role.attribute",
+      "label": "ATTRIBUTE",
+      "definition": "Property or value predicated of an entity.",
+      "compatibleFillerSorts": [
+        "VALUE",
+        "PROPERTY"
+      ],
+      "status": "CANDIDATE"
+    },
+    {
+      "roleId": "usg.role.location",
+      "label": "LOCATION",
+      "definition": "Place or spatial region associated with an event or entity.",
+      "compatibleFillerSorts": [
+        "LOCATION",
+        "ENTITY"
+      ],
+      "status": "CANDIDATE"
+    },
+    {
+      "roleId": "usg.role.source",
+      "label": "SOURCE",
+      "definition": "Origin from which an entity moves or is transferred.",
+      "compatibleFillerSorts": [
+        "LOCATION",
+        "ENTITY"
+      ],
+      "status": "CANDIDATE"
+    },
+    {
+      "roleId": "usg.role.goal",
+      "label": "GOAL",
+      "definition": "Destination toward which an entity moves or is transferred.",
+      "compatibleFillerSorts": [
+        "LOCATION",
+        "ENTITY"
+      ],
+      "status": "CANDIDATE"
+    },
+    {
+      "roleId": "usg.role.instrument",
+      "label": "INSTRUMENT",
+      "definition": "Entity used to perform an event.",
+      "compatibleFillerSorts": [
+        "ENTITY"
+      ],
+      "status": "CANDIDATE"
+    },
+    {
+      "roleId": "usg.role.beneficiary",
+      "label": "BENEFICIARY",
+      "definition": "Entity for whose benefit an event occurs.",
+      "compatibleFillerSorts": [
+        "ENTITY"
+      ],
+      "status": "CANDIDATE"
+    },
+    {
+      "roleId": "usg.role.content",
+      "label": "CONTENT",
+      "definition": "Propositional or informational content communicated or represented.",
+      "compatibleFillerSorts": [
+        "PROPOSITION",
+        "VALUE"
+      ],
+      "status": "CANDIDATE"
+    },
+    {
+      "roleId": "usg.role.time",
+      "label": "TIME",
+      "definition": "Temporal value or interval associated with an event or state.",
+      "compatibleFillerSorts": [
+        "TIME"
+      ],
+      "status": "CANDIDATE"
+    },
+    {
+      "roleId": "usg.role.manner",
+      "label": "MANNER",
+      "definition": "Property describing how an event occurs.",
+      "compatibleFillerSorts": [
+        "VALUE",
+        "PROPERTY"
+      ],
+      "status": "CANDIDATE"
+    },
+    {
+      "roleId": "usg.role.cause",
+      "label": "CAUSE",
+      "definition": "Event or entity responsible for a resulting event or state.",
+      "compatibleFillerSorts": [
+        "PROPOSITION",
+        "ENTITY"
+      ],
+      "status": "CANDIDATE"
+    },
+    {
+      "roleId": "usg.role.possessor",
+      "label": "POSSESSOR",
+      "definition": "Entity that possesses or controls another entity.",
+      "compatibleFillerSorts": [
+        "ENTITY"
+      ],
+      "status": "CANDIDATE"
+    },
+    {
+      "roleId": "usg.role.possessed",
+      "label": "POSSESSED",
+      "definition": "Entity that is possessed or controlled.",
+      "compatibleFillerSorts": [
+        "ENTITY"
+      ],
+      "status": "CANDIDATE"
+    }
+  ],
+  "frames": [
+    {
+      "frameId": "usg.frame.event.intransitive",
+      "frameVersion": "0.3.0",
+      "status": "CANDIDATE",
+      "semanticClass": "EVENT",
+      "predicateSenseRef": "usg.sense.event.intransitive",
+      "slots": [
+        {
+          "slotId": "agent",
+          "roleRef": "usg.role.agent",
+          "minFillers": 1,
+          "maxFillers": 1,
+          "allowedFillerSorts": [
+            "ENTITY"
+          ],
+          "evidencePolicy": "SOURCE_GROUNDED"
+        },
+        {
+          "slotId": "location",
+          "roleRef": "usg.role.location",
+          "minFillers": 0,
+          "maxFillers": 1,
+          "allowedFillerSorts": [
+            "LOCATION",
+            "ENTITY"
+          ],
+          "evidencePolicy": "SOURCE_GROUNDED"
+        },
+        {
+          "slotId": "time",
+          "roleRef": "usg.role.time",
+          "minFillers": 0,
+          "maxFillers": 1,
+          "allowedFillerSorts": [
+            "TIME"
+          ],
+          "evidencePolicy": "SOURCE_GROUNDED"
+        }
+      ],
+      "constructionBindings": [
+        {
+          "language": "en",
+          "languageProfile": "en/standard-written-1.0",
+          "constructionId": "en.intransitive.basic",
+          "status": "CANDIDATE"
+        },
+        {
+          "language": "ar",
+          "languageProfile": "ar/modern-standard-1.0",
+          "constructionId": "ar.intransitive.basic",
+          "status": "CANDIDATE"
+        }
+      ],
+      "lexicalRealizations": [
+        {
+          "language": "en",
+          "languageProfile": "en/standard-written-1.0",
+          "lemmaCandidates": [
+            "sleep",
+            "arrive",
+            "laugh",
+            "wait"
+          ],
+          "senseRef": "usg.sense.event.intransitive",
+          "resourceRefs": [
+            "phase6.lexicon.en.candidate/0.3.0"
+          ]
+        },
+        {
+          "language": "ar",
+          "languageProfile": "ar/modern-standard-1.0",
+          "lemmaCandidates": [
+            "نام",
+            "وصل",
+            "ضحك",
+            "انتظر"
+          ],
+          "senseRef": "usg.sense.event.intransitive",
+          "resourceRefs": [
+            "phase6.lexicon.ar.candidate/0.3.0"
+          ]
+        }
+      ]
+    },
+    {
+      "frameId": "usg.frame.transfer.ditransitive",
+      "frameVersion": "0.3.0",
+      "status": "CANDIDATE",
+      "semanticClass": "EVENT",
+      "predicateSenseRef": "usg.sense.transfer",
+      "slots": [
+        {
+          "slotId": "agent",
+          "roleRef": "usg.role.agent",
+          "minFillers": 1,
+          "maxFillers": 1,
+          "allowedFillerSorts": [
+            "ENTITY"
+          ],
+          "evidencePolicy": "SOURCE_GROUNDED"
+        },
+        {
+          "slotId": "recipient",
+          "roleRef": "usg.role.recipient",
+          "minFillers": 1,
+          "maxFillers": 1,
+          "allowedFillerSorts": [
+            "ENTITY"
+          ],
+          "evidencePolicy": "SOURCE_GROUNDED"
+        },
+        {
+          "slotId": "theme",
+          "roleRef": "usg.role.theme",
+          "minFillers": 1,
+          "maxFillers": 1,
+          "allowedFillerSorts": [
+            "ENTITY"
+          ],
+          "evidencePolicy": "SOURCE_GROUNDED"
+        },
+        {
+          "slotId": "time",
+          "roleRef": "usg.role.time",
+          "minFillers": 0,
+          "maxFillers": 1,
+          "allowedFillerSorts": [
+            "TIME"
+          ],
+          "evidencePolicy": "SOURCE_GROUNDED"
+        }
+      ],
+      "constructionBindings": [
+        {
+          "language": "en",
+          "languageProfile": "en/standard-written-1.0",
+          "constructionId": "en.ditransitive.basic",
+          "status": "CANDIDATE"
+        },
+        {
+          "language": "ar",
+          "languageProfile": "ar/modern-standard-1.0",
+          "constructionId": "ar.ditransitive.basic",
+          "status": "CANDIDATE"
+        }
+      ],
+      "lexicalRealizations": [
+        {
+          "language": "en",
+          "languageProfile": "en/standard-written-1.0",
+          "lemmaCandidates": [
+            "give",
+            "send",
+            "show",
+            "hand"
+          ],
+          "senseRef": "usg.sense.transfer",
+          "resourceRefs": [
+            "phase6.lexicon.en.candidate/0.3.0"
+          ]
+        },
+        {
+          "language": "ar",
+          "languageProfile": "ar/modern-standard-1.0",
+          "lemmaCandidates": [
+            "أعطى",
+            "أرسل",
+            "عرض",
+            "ناول"
+          ],
+          "senseRef": "usg.sense.transfer",
+          "resourceRefs": [
+            "phase6.lexicon.ar.candidate/0.3.0"
+          ]
+        }
+      ]
+    },
+    {
+      "frameId": "usg.frame.predication.copular",
+      "frameVersion": "0.3.0",
+      "status": "CANDIDATE",
+      "semanticClass": "PROPERTY",
+      "predicateSenseRef": "usg.sense.property.predication",
+      "slots": [
+        {
+          "slotId": "entity",
+          "roleRef": "usg.role.entity",
+          "minFillers": 1,
+          "maxFillers": 1,
+          "allowedFillerSorts": [
+            "ENTITY"
+          ],
+          "evidencePolicy": "SOURCE_GROUNDED"
+        },
+        {
+          "slotId": "attribute",
+          "roleRef": "usg.role.attribute",
+          "minFillers": 1,
+          "maxFillers": 1,
+          "allowedFillerSorts": [
+            "VALUE",
+            "PROPERTY"
+          ],
+          "evidencePolicy": "SOURCE_GROUNDED"
+        },
+        {
+          "slotId": "time",
+          "roleRef": "usg.role.time",
+          "minFillers": 0,
+          "maxFillers": 1,
+          "allowedFillerSorts": [
+            "TIME"
+          ],
+          "evidencePolicy": "SOURCE_GROUNDED"
+        }
+      ],
+      "constructionBindings": [
+        {
+          "language": "en",
+          "languageProfile": "en/standard-written-1.0",
+          "constructionId": "en.copular.predicative",
+          "status": "CANDIDATE"
+        },
+        {
+          "language": "ar",
+          "languageProfile": "ar/modern-standard-1.0",
+          "constructionId": "ar.copular.predicative",
+          "status": "CANDIDATE"
+        }
+      ],
+      "lexicalRealizations": [
+        {
+          "language": "en",
+          "languageProfile": "en/standard-written-1.0",
+          "lemmaCandidates": [
+            "be"
+          ],
+          "senseRef": "usg.sense.property.predication",
+          "resourceRefs": [
+            "phase6.lexicon.en.candidate/0.3.0"
+          ]
+        },
+        {
+          "language": "ar",
+          "languageProfile": "ar/modern-standard-1.0",
+          "lemmaCandidates": [
+            "هادئ",
+            "مستعد",
+            "فضولي",
+            "متعب"
+          ],
+          "senseRef": "usg.sense.property.predication",
+          "resourceRefs": [
+            "phase6.lexicon.ar.candidate/0.3.0"
+          ]
+        }
+      ]
+    },
+    {
+      "frameId": "usg.frame.relation.location",
+      "frameVersion": "0.3.0",
+      "status": "CANDIDATE",
+      "semanticClass": "RELATION",
+      "predicateSenseRef": "usg.sense.spatial.location",
+      "slots": [
+        {
+          "slotId": "entity",
+          "roleRef": "usg.role.entity",
+          "minFillers": 1,
+          "maxFillers": 1,
+          "allowedFillerSorts": [
+            "ENTITY"
+          ],
+          "evidencePolicy": "SOURCE_GROUNDED"
+        },
+        {
+          "slotId": "location",
+          "roleRef": "usg.role.location",
+          "minFillers": 1,
+          "maxFillers": 1,
+          "allowedFillerSorts": [
+            "LOCATION",
+            "ENTITY"
+          ],
+          "evidencePolicy": "SOURCE_GROUNDED"
+        },
+        {
+          "slotId": "time",
+          "roleRef": "usg.role.time",
+          "minFillers": 0,
+          "maxFillers": 1,
+          "allowedFillerSorts": [
+            "TIME"
+          ],
+          "evidencePolicy": "SOURCE_GROUNDED"
+        }
+      ],
+      "constructionBindings": [
+        {
+          "language": "en",
+          "languageProfile": "en/standard-written-1.0",
+          "constructionId": "en.prepositional.location",
+          "status": "CANDIDATE"
+        },
+        {
+          "language": "ar",
+          "languageProfile": "ar/modern-standard-1.0",
+          "constructionId": "ar.prepositional.location",
+          "status": "CANDIDATE"
+        }
+      ],
+      "lexicalRealizations": [
+        {
+          "language": "en",
+          "languageProfile": "en/standard-written-1.0",
+          "lemmaCandidates": [
+            "wait",
+            "rest",
+            "work",
+            "stay"
+          ],
+          "senseRef": "usg.sense.spatial.location",
+          "resourceRefs": [
+            "phase6.lexicon.en.candidate/0.3.0"
+          ]
+        },
+        {
+          "language": "ar",
+          "languageProfile": "ar/modern-standard-1.0",
+          "lemmaCandidates": [
+            "جلس",
+            "انتظر",
+            "عمل",
+            "بقي"
+          ],
+          "senseRef": "usg.sense.spatial.location",
+          "resourceRefs": [
+            "phase6.lexicon.ar.candidate/0.3.0"
+          ]
+        }
+      ]
+    }
+  ],
+  "policy": {
+    "wordOrderDeterminesSemanticRole": false,
+    "unknownRoleBehavior": "RETAIN_UNRESOLVED",
+    "unmetRequiredSlotBehavior": "PARTIAL_OR_ABSTAIN",
+    "ambiguousFrameBehavior": "RETAIN_ALTERNATIVES",
+    "resourcePromotion": "EXPLICIT_VERSIONED_REGISTRY_UPDATE",
+    "benchmarkEnablement": "PER_LANGUAGE_PER_CONSTRUCTION_GATE"
+  }
+}

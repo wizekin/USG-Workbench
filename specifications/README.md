@@ -7,5 +7,6 @@ This directory contains normative, versioned USG contracts, schemas, and semanti
 - [Predicate-to-frame registry schema 1.0](predicate-frame-registry-1.0.schema.json) validates the versioned cross-implementation predicate/frame registry.
 - [Phase 6 interpretation envelope schema 0.3.0](usg-interpret-0.3.0.schema.json) defines the versioned processing result envelope.
 - [Phase 6 interpretation graph schema 0.3.0](usg-interpret-expression-graph-0.3.0.schema.json) defines source-grounded graph nodes, edges, and span records.
+- [Phase 6 predicate-frame and semantic-role registry schema 0.3.0](usg-frame-registry-0.3.0.schema.json) defines versioned role definitions, frame slots, valency, and language-specific realization links.
 
 The canonical semantic interchange contract and schema are maintained separately. Do not infer that an absent specification has already been implemented by either runtime.

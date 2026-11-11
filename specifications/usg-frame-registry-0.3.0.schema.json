@@ -1,0 +1,326 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wizekin.github.io/USG-Workbench/specifications/usg-frame-registry-0.3.0.schema.json",
+  "title": "USG Predicate Frame and Semantic Role Registry 0.3.0",
+  "type": "object",
+  "required": [
+    "registryId",
+    "registryVersion",
+    "contract",
+    "status",
+    "roleDefinitions",
+    "frames",
+    "policy"
+  ],
+  "properties": {
+    "registryId": {
+      "const": "USG-FRAME-REGISTRY/0.3.0"
+    },
+    "registryVersion": {
+      "const": "0.3.0"
+    },
+    "contract": {
+      "const": "USG-INTERPRET/0.3.0"
+    },
+    "status": {
+      "enum": [
+        "CANDIDATE",
+        "APPROVED",
+        "DEPRECATED"
+      ]
+    },
+    "roleDefinitions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/role"
+      }
+    },
+    "frames": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/frame"
+      }
+    },
+    "policy": {
+      "type": "object",
+      "required": [
+        "wordOrderDeterminesSemanticRole",
+        "unknownRoleBehavior",
+        "unmetRequiredSlotBehavior",
+        "ambiguousFrameBehavior",
+        "resourcePromotion",
+        "benchmarkEnablement"
+      ],
+      "properties": {
+        "wordOrderDeterminesSemanticRole": {
+          "const": false
+        },
+        "unknownRoleBehavior": {
+          "const": "RETAIN_UNRESOLVED"
+        },
+        "unmetRequiredSlotBehavior": {
+          "enum": [
+            "PARTIAL_OR_ABSTAIN"
+          ]
+        },
+        "ambiguousFrameBehavior": {
+          "const": "RETAIN_ALTERNATIVES"
+        },
+        "resourcePromotion": {
+          "const": "EXPLICIT_VERSIONED_REGISTRY_UPDATE"
+        },
+        "benchmarkEnablement": {
+          "const": "PER_LANGUAGE_PER_CONSTRUCTION_GATE"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$defs": {
+    "role": {
+      "type": "object",
+      "required": [
+        "roleId",
+        "label",
+        "definition",
+        "compatibleFillerSorts",
+        "status"
+      ],
+      "properties": {
+        "roleId": {
+          "type": "string",
+          "pattern": "^usg\\.role\\.[a-z_]+$"
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "definition": {
+          "type": "string",
+          "minLength": 1
+        },
+        "compatibleFillerSorts": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "ENTITY",
+              "EVENT",
+              "STATE",
+              "PROPOSITION",
+              "VALUE",
+              "PROPERTY",
+              "LOCATION",
+              "TIME"
+            ]
+          }
+        },
+        "status": {
+          "enum": [
+            "CANDIDATE",
+            "APPROVED",
+            "DEPRECATED"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "slot": {
+      "type": "object",
+      "required": [
+        "slotId",
+        "roleRef",
+        "minFillers",
+        "maxFillers",
+        "allowedFillerSorts",
+        "evidencePolicy"
+      ],
+      "properties": {
+        "slotId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "roleRef": {
+          "type": "string",
+          "pattern": "^usg\\.role\\.[a-z_]+$"
+        },
+        "minFillers": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "maxFillers": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "allowedFillerSorts": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "ENTITY",
+              "EVENT",
+              "STATE",
+              "PROPOSITION",
+              "VALUE",
+              "PROPERTY",
+              "LOCATION",
+              "TIME"
+            ]
+          }
+        },
+        "evidencePolicy": {
+          "const": "SOURCE_GROUNDED"
+        }
+      },
+      "additionalProperties": false
+    },
+    "binding": {
+      "type": "object",
+      "required": [
+        "language",
+        "languageProfile",
+        "constructionId",
+        "status"
+      ],
+      "properties": {
+        "language": {
+          "enum": [
+            "en",
+            "ar"
+          ]
+        },
+        "languageProfile": {
+          "type": "string",
+          "minLength": 1
+        },
+        "constructionId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "enum": [
+            "CANDIDATE",
+            "BENCHMARK_ENABLED",
+            "DISABLED"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "realization": {
+      "type": "object",
+      "required": [
+        "language",
+        "languageProfile",
+        "lemmaCandidates",
+        "senseRef",
+        "resourceRefs"
+      ],
+      "properties": {
+        "language": {
+          "enum": [
+            "en",
+            "ar"
+          ]
+        },
+        "languageProfile": {
+          "type": "string",
+          "minLength": 1
+        },
+        "lemmaCandidates": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "senseRef": {
+          "type": "string",
+          "minLength": 1
+        },
+        "resourceRefs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "frame": {
+      "type": "object",
+      "required": [
+        "frameId",
+        "frameVersion",
+        "status",
+        "semanticClass",
+        "predicateSenseRef",
+        "slots",
+        "constructionBindings",
+        "lexicalRealizations"
+      ],
+      "properties": {
+        "frameId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "frameVersion": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$"
+        },
+        "status": {
+          "enum": [
+            "CANDIDATE",
+            "APPROVED",
+            "DEPRECATED"
+          ]
+        },
+        "semanticClass": {
+          "enum": [
+            "EVENT",
+            "STATE",
+            "RELATION",
+            "PROPERTY"
+          ]
+        },
+        "predicateSenseRef": {
+          "type": "string",
+          "minLength": 1
+        },
+        "slots": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/slot"
+          }
+        },
+        "constructionBindings": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/binding"
+          }
+        },
+        "lexicalRealizations": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/realization"
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
