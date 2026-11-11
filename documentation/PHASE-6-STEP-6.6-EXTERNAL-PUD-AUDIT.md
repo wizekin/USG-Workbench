@@ -59,3 +59,24 @@ python -m tools.phase6_external_pud_v0_1.run
 
 The generated report is written to
 `artifacts/phase6-step-6.6-pud-report.json`.
+
+## Observed external run (2026-11-11)
+
+The pinned run processed 1,000 sentences per language (21,180 English and
+20,747 Arabic syntactic words) and extracted 393 eligible structural cases:
+254 English and 139 Arabic. The current closed-lexicon analyzer produced
+**0 exact candidate matches and abstained on all 393 cases**. No complete
+phrase was covered by the current lexical inventory. Across the extracted
+phrase tokens, only 223 of 1,144 token occurrences (19.5%) had any exact-form
+entry in that inventory; this is simple form coverage, not POS/sense coverage.
+
+This result shows that the current candidate lexicon does not transfer to this
+external corpus. Because no complete phrase was lexically covered, it does not
+isolate the grammar rules' performance from vocabulary coverage. The next
+technical dependency is a separately evaluated, versioned lexical-generalization
+track (with held-out sentence folds and explicit OOV reporting), not promotion
+of the current interpreter. Step 6.6 remains unaccepted and Step 6.7 remains
+blocked.
+
+The CI report artifact is available from
+[workflow run 42987700671](https://github.com/wizekin/USG-Workbench/actions/runs/42987700671).
