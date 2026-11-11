@@ -31,7 +31,7 @@ def cluster_signature(case: dict[str, Any], score: dict[str, Any]) -> tuple[str,
     target = case.get("target", {}).get("component_id", "unknown")
     if base[0] == "structural_invalid":
         return ("structural_invalid", target, *base[1:])
-    return (base[0], target)
+    return (f"runtime_{base[0]}", target)
 
 
 def cluster_id(signature: tuple[str, ...]) -> tuple[str, str]:
