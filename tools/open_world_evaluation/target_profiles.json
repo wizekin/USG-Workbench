@@ -35,7 +35,7 @@
       "component_id": "python-native-semantic-models-v06-v14",
       "component_version": "0.6.0-1.4.0",
       "entry_point": "versioned native model package import smoke suite",
-      "interface": "python_model_api",
+      "interface": "model_api",
       "contract_versions": [
         "Python extension model contracts"
       ],
@@ -83,7 +83,7 @@
       "component_id": "python-usg-sem-document-adapters-v15",
       "component_version": "1.5.1",
       "entry_point": "interoperability.python_adapter.document_v15",
-      "interface": "python_adapter",
+      "interface": "adapter",
       "contract_versions": [
         "USG-SEM/1.0"
       ],
@@ -103,7 +103,7 @@
       "component_id": "phase2-structured-semantic-reasoning",
       "component_version": "1.0.0",
       "entry_point": "registered structured reasoning service import suite",
-      "interface": "python_service_api",
+      "interface": "python_api",
       "contract_versions": [
         "semantic-reasoning/v1.0.0"
       ],
@@ -139,7 +139,7 @@
       "component_id": "phase3-canonical-sqlite-store",
       "component_version": "1.0.0",
       "entry_point": "canonical SQLite store and persistent query imports",
-      "interface": "python_service_api",
+      "interface": "python_api",
       "contract_versions": [
         "USG-SEM/1.0"
       ],
@@ -163,7 +163,7 @@
       "component_id": "phase6-candidate-expansion",
       "component_version": "0.3.0-0.4.1",
       "entry_point": "Phase 6 predicate and nominal candidate import suite",
-      "interface": "python_candidate_api",
+      "interface": "python_api",
       "contract_versions": [
         "USG-INTERPRET/0.3.0"
       ],
@@ -195,7 +195,7 @@
       "component_id": "kernel-lab-local-api-cli",
       "component_version": "1.0.0",
       "entry_point": "tools.usg_local_api_v1_0_0.application",
-      "interface": "python_service_api",
+      "interface": "python_api",
       "contract_versions": [
         "USG-LOCAL-API/1.0.0"
       ],
@@ -215,7 +215,7 @@
       "component_id": "workbench-to-canonical-adapter",
       "component_version": "1.0.0",
       "entry_point": "interoperability.workbench_adapter adapter module load",
-      "interface": "javascript_adapter",
+      "interface": "adapter",
       "contract_versions": [
         "USG-WB-SEM/1.0"
       ],
@@ -226,7 +226,7 @@
       "component_id": "python-reference-kernel-v04-v05",
       "component_version": "0.4.0",
       "entry_point": "implementations/python-kernel/v0.4.0/usg package import smoke",
-      "interface": "python_package_api",
+      "interface": "model_api",
       "contract_versions": [
         "Python reference kernel v0.4.0"
       ],
