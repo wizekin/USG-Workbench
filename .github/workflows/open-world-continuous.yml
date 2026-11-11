@@ -151,14 +151,14 @@ jobs:
           branch: reports/ow7-${{ github.run_id }}-${{ github.run_attempt }}
           base: main
           add-paths: evaluations/open-world/campaigns/${{ env.CAMPAIGN_ID }}/**
-          commit-message: "OW-7: publish ${{ env.OW_CADENCE }} campaign ${{ env.CAMPAIGN_ID }}"
-          title: "OW-7 ${{ env.OW_CADENCE }} campaign report: ${{ env.CAMPAIGN_ID }}"
+          commit-message: "OW-7: publish ${{ steps.profile.outputs.cadence }} campaign ${{ env.CAMPAIGN_ID }}"
+          title: "OW-7 ${{ steps.profile.outputs.cadence }} campaign report: ${{ env.CAMPAIGN_ID }}"
           body: |
             Automated continuous-exploration campaign report.
 
-            - Cadence: ${{ env.OW_CADENCE }}
+            - Cadence: ${{ steps.profile.outputs.cadence }}
             - Tested commit: ${{ github.sha }}
-            - Random base prompts: ${{ env.PROMPT_COUNT }} x 3 registered targets
+            - Random base prompts: ${{ steps.profile.outputs.prompt_count }} x 3 registered targets
             - Controlled diagnostics: 106 repository fixtures
             - Naturalistic population: not yet populated; status remains partial
             - Complete JSONL cases/results/scores, Markdown/JSON report, and SHA-256 manifest are attached
