@@ -117,21 +117,73 @@ jobs:
             --output "$RUNNER_TEMP/ow7-execution-results.jsonl" \
             --commit-sha "$GITHUB_SHA" \
             --max-wall-seconds 30
-      - name: Score structural behavior and controlled diagnostic gold separately
+      - name: Score primary outcomes for adaptive analysis
         run: |
           python -m tools.open_world_evaluation.score_cases \
             --cases "$RUNNER_TEMP/ow7-all-cases.jsonl" \
             --results "$RUNNER_TEMP/ow7-execution-results.jsonl" \
-            --scores "$RUNNER_TEMP/ow7-score-results.jsonl" \
-            --summary "$RUNNER_TEMP/ow7-score-summary.json"
+            --scores "$RUNNER_TEMP/ow7-primary-score-results.jsonl" \
+            --summary "$RUNNER_TEMP/ow7-primary-score-summary.json"
+      - name: Compare with history and generate bounded adaptive follow-ups
+        run: |
+          python -m tools.open_world_evaluation.adaptive_discovery \
+            --campaign-id "$CAMPAIGN_ID" \
+            --cases "$RUNNER_TEMP/ow7-all-cases.jsonl" \
+            --results "$RUNNER_TEMP/ow7-execution-results.jsonl" \
+            --scores "$RUNNER_TEMP/ow7-primary-score-results.jsonl" \
+            --history-root evaluations/open-world/campaigns \
+            --output-cases "$RUNNER_TEMP/ow7-adaptive-followup-cases.jsonl" \
+            --output-report "$RUNNER_TEMP/ow7-adaptive-discovery.json" \
+            --max-cases 150 --variants-per-case 3
+      - name: Execute adaptive follow-ups and assemble complete campaign inputs
+        run: |
+          : > "$RUNNER_TEMP/ow7-adaptive-followup-results.jsonl"
+          if [ -s "$RUNNER_TEMP/ow7-adaptive-followup-cases.jsonl" ]; then
+            python -m tools.open_world_evaluation.execute_cases \
+              --input "$RUNNER_TEMP/ow7-adaptive-followup-cases.jsonl" \
+              --output "$RUNNER_TEMP/ow7-adaptive-followup-results.jsonl" \
+              --commit-sha "$GITHUB_SHA" --max-wall-seconds 30
+          fi
+          cat "$RUNNER_TEMP/ow7-all-cases.jsonl" \
+              "$RUNNER_TEMP/ow7-adaptive-followup-cases.jsonl" \
+              > "$RUNNER_TEMP/ow7-final-cases.jsonl"
+          cat "$RUNNER_TEMP/ow7-execution-results.jsonl" \
+              "$RUNNER_TEMP/ow7-adaptive-followup-results.jsonl" \
+              > "$RUNNER_TEMP/ow7-final-results.jsonl"
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          root = Path(os.environ["RUNNER_TEMP"])
+          manifest = json.loads((root / "ow7-combined-generation-manifest.json").read_text(encoding="utf-8"))
+          discovery = json.loads((root / "ow7-adaptive-discovery.json").read_text(encoding="utf-8"))
+          manifest["adaptive_followup_case_count"] = discovery["adaptive_followup_case_count"]
+          manifest["adaptive_discovery_version"] = discovery["discovery_version"]
+          manifest["adaptive_history_campaign_count"] = discovery["history_campaign_count"]
+          (root / "ow7-combined-generation-manifest.json").write_text(
+              json.dumps(manifest, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+              encoding="utf-8",
+          )
+          cases = [json.loads(line) for line in (root / "ow7-final-cases.jsonl").read_text(encoding="utf-8").splitlines()]
+          results = [json.loads(line) for line in (root / "ow7-final-results.jsonl").read_text(encoding="utf-8").splitlines()]
+          assert len(cases) == len(results)
+          PY
+      - name: Score primary and adaptive campaign outcomes
+        run: |
+          python -m tools.open_world_evaluation.score_cases \
+            --cases "$RUNNER_TEMP/ow7-final-cases.jsonl" \
+            --results "$RUNNER_TEMP/ow7-final-results.jsonl" \
+            --scores "$RUNNER_TEMP/ow7-final-score-results.jsonl" \
+            --summary "$RUNNER_TEMP/ow7-final-score-summary.json"
       - name: Build and retain immutable campaign report
         run: |
           python -m tools.open_world_evaluation.campaign_pipeline \
             --campaign-id "$CAMPAIGN_ID" \
-            --cases "$RUNNER_TEMP/ow7-all-cases.jsonl" \
-            --results "$RUNNER_TEMP/ow7-execution-results.jsonl" \
-            --scores "$RUNNER_TEMP/ow7-score-results.jsonl" \
+            --cases "$RUNNER_TEMP/ow7-final-cases.jsonl" \
+            --results "$RUNNER_TEMP/ow7-final-results.jsonl" \
+            --scores "$RUNNER_TEMP/ow7-final-score-results.jsonl" \
             --generation-manifest "$RUNNER_TEMP/ow7-combined-generation-manifest.json" \
+            --adaptive-followups "$RUNNER_TEMP/ow7-adaptive-followup-cases.jsonl" \
+            --adaptive-discovery-report "$RUNNER_TEMP/ow7-adaptive-discovery.json" \
             --commit-sha "$GITHUB_SHA" \
             --output-root "$RUNNER_TEMP/ow7-campaigns"
           mkdir -p "evaluations/open-world/campaigns"

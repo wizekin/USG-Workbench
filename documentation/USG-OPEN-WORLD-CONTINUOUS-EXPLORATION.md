@@ -33,7 +33,10 @@ The naturalistic population remains empty until a dataset passes source-license,
 - Manual runs are limited to 2,000 base prompts.
 - Each case has its own wall-time and memory limit; the runner also applies the per-job ceiling.
 - Test content is passed as JSON data, not shell code.
+- The workflow compares target-specific failure signatures with prior campaign reports. Structural/runtime failures can produce up to 150 formatting-only follow-up cases per campaign; unsupported/ambiguous/partial/not-executed outcomes do not automatically trigger mutations. The follow-up cases are executed and rescored before the final report is created.
 - The workflow does not tune USG from test failures or alter grammar/resources.
+- The adaptive comparison labels a cluster candidate-new only when it is absent from the scanned history directory; this is not proof of global novelty.
+- Hidden seed rotation is not yet implemented because public manifests/artifacts cannot safely hold a hidden seed or hidden corpus.
 - The workflow cannot prove unrestricted coverage; it keeps an expanding sample and exposes untested areas.
 
 ## OW-7 acceptance
