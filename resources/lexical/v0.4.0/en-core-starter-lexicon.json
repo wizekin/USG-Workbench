@@ -1069,28 +1069,6 @@
     },
     {
       "language": "en",
-      "form": "system",
-      "lemma": "system",
-      "part_of_speech": "NOUN",
-      "sense_id": "en:noun.system.generic",
-      "concept_ref": "concept:noun.system.generic",
-      "features": {
-        "Number": "Singular"
-      }
-    },
-    {
-      "language": "en",
-      "form": "model",
-      "lemma": "model",
-      "part_of_speech": "NOUN",
-      "sense_id": "en:noun.model.generic",
-      "concept_ref": "concept:noun.model.generic",
-      "features": {
-        "Number": "Singular"
-      }
-    },
-    {
-      "language": "en",
       "form": "energy",
       "lemma": "energy",
       "part_of_speech": "NOUN",
