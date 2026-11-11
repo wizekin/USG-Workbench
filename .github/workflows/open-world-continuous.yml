@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
     inputs:
       prompt_count:
-        description: "Base random prompt count (each prompt is tested against three targets)"
+        description: "Base random prompt count (each prompt is tested against every registered target)"
         required: false
         default: "100"
         type: string
@@ -227,7 +227,7 @@ jobs:
 
             - Cadence: ${{ steps.profile.outputs.cadence }}
             - Tested commit: ${{ github.sha }}
-            - Random base prompts: ${{ steps.profile.outputs.prompt_count }} x 3 registered targets
+            - Random base prompts: ${{ steps.profile.outputs.prompt_count }} x all registered target profiles
             - Controlled diagnostics: 106 repository fixtures
             - Naturalistic population: not yet populated; status remains partial
             - Complete JSONL cases/results/scores, Markdown/JSON report, and SHA-256 manifest are attached
