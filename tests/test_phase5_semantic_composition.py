@@ -72,13 +72,12 @@ class Phase5SemanticCompositionTests(unittest.TestCase):
         source, _, _, _, result = self.compose(text, "en")
         self.assertEqual(result.status, "COMPOSED")
         graph = self.assert_graph_integrity(source, result.candidates[0])
-        group = next(x for x in graph["nodes"] if x["op"] == "CLAUSE_GROUP")
+        group = next(x for x in graph["nodes"] if x["op"] == "COORDINATION")
         self.assertEqual(len(group["operandRefs"]), 2)
         self.assertEqual(len(graph["clauseRootRefs"]), 2)
-        attachments = group["params"]["attachmentCandidates"]
-        self.assertEqual(len(attachments), 1)
-        self.assertEqual(attachments[0]["relation"], "COORDINATION_AND")
-        self.assertEqual(attachments[0]["status"], "CANDIDATE")
+        self.assertEqual(group["params"]["operatorValue"], "AND")
+        self.assertEqual(group["params"]["relation"], "COORDINATION_AND")
+        self.assertEqual(group["params"]["markerText"], "and")
 
     def test_lexical_ambiguity_creates_multiple_graph_candidates(self):
         source, _, _, _, result = self.compose("Ada writes bank.", "en")
