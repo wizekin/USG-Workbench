@@ -42,6 +42,38 @@ This is a completeness classification, not a quality score. A campaign can be co
 
 Clusters are deterministic groupings of the same observed outcome/structural failure signature within one campaign. They are marked unreviewed. A cluster is not called a newly discovered failure family until it has been compared with prior reports and reviewed by a person.
 
+## Explicit execution accounting (additive to report v1.0.0)
+
+The historical report field attempted is retained for compatibility and counts all execution-result records, including records whose outcome is not_executed. It must not be interpreted as the number of target invocations.
+
+New reports add coverage.execution_accounting with:
+- scenario_count: scenario records in the input bundle;
+- result_record_count: all execution-result records (must equal legacy attempted);
+- actual_attempt_count: result records whose outcome is not not_executed;
+- not_executed_record_count: target records explicitly marked not_executed;
+- scenario counts with any result, with an actual attempt, with only not-executed records, with no result record, and with multiple result records;
+- per-target versions of the same result/attempt/not-executed accounting.
+
+Per-population rows carry the same accounting object. These counts must reconcile across target, population, and campaign levels. The legacy coverage.unexecuted_case_count means scenarios with no result record; it does not count not_executed result records.
+
+Campaign status now follows actual execution:
+- **complete** requires at least one actual attempt for every scenario and non-empty coverage of all three populations;
+- **partial** means at least one actual attempt occurred, but scenario or population coverage is incomplete;
+- **failed** means no actual target invocation occurred, even if not_executed result records were written.
+
+## First-blocking-stage attribution
+
+New reports include coverage.stage_attribution. The analyzer uses explicit blocking diagnostics or blocking stage statuses, normalized to a declared pipeline order. It reports:
+- counts by earliest observed blocking stage;
+- later-stage blocking diagnostic co-occurrences;
+- breakdowns by target, population, and language;
+- representative case IDs;
+- records without a target-result payload, without a blocking diagnostic, and with unmapped stage names.
+
+This is deliberately called **first observed blocking stage**, not proven root cause. A later diagnostic may be independent rather than caused by the earlier one. Unknown stages are reported instead of being forced into a guessed order. Missing diagnostics are not silently assigned to lexical or any other stage.
+
+The accounting and attribution are reporting/diagnostic improvements only. They do not change interpreter behavior or establish semantic correctness.
+
 ## Bounded failure minimization
 
 The delta-debug utility attempts to remove token chunks while preserving the same failure signature:
