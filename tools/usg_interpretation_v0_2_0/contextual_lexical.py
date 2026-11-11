@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from typing import Literal
 
 from .lexical import LexicalAnalysis, LexicalCandidate
+from .segmentation import SegmentedDocument
 
 
 CONTEXTUAL_LEXICAL_VERSION = "contextual-lexical-ranking/0.1.0"
@@ -78,20 +79,29 @@ class ContextualLexicalRanker:
                 evidence.append("RIGHT_NOMINAL_SUPPORTS_TRANSITIVE_VERB")
         return score, tuple(evidence)
 
-    def analyze(self, lexical: LexicalAnalysis) -> ContextualLexicalAnalysis:
+    def analyze(
+        self, lexical: LexicalAnalysis, segmented: SegmentedDocument
+    ) -> ContextualLexicalAnalysis:
         if not isinstance(lexical, LexicalAnalysis):
             raise TypeError("lexical must be a LexicalAnalysis artifact")
-        word_positions = [
-            index for index, item in enumerate(lexical.tokens)
-            if item.token.kind == "WORD"
-        ]
+        if not isinstance(segmented, SegmentedDocument):
+            raise TypeError("segmented must be a SegmentedDocument artifact")
+        if lexical.source != segmented.source:
+            raise ValueError("lexical and segmentation inputs must share the exact source")
         previous_word = {}
         next_word = {}
-        for offset, index in enumerate(word_positions):
-            if offset:
-                previous_word[index] = word_positions[offset - 1]
-            if offset + 1 < len(word_positions):
-                next_word[index] = word_positions[offset + 1]
+        for clause in segmented.clauses:
+            word_positions = [
+                index for index, item in enumerate(lexical.tokens)
+                if item.token.kind == "WORD"
+                and clause.start <= item.token.start
+                and item.token.end <= clause.end
+            ]
+            for offset, index in enumerate(word_positions):
+                if offset:
+                    previous_word[index] = word_positions[offset - 1]
+                if offset + 1 < len(word_positions):
+                    next_word[index] = word_positions[offset + 1]
 
         results = []
         for index, item in enumerate(lexical.tokens):
