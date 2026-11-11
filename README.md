@@ -49,3 +49,4 @@ The archive inventory records fresh tests and limitations for the original packa
 - [OW-6 first pilot](documentation/USG-OPEN-WORLD-FIRST-PILOT.md) runs a broad seeded random target matrix plus separately annotated Phase 4/5 diagnostic fixtures, and publishes the report with explicit missing-population gaps.
 - [OW-7 continuous exploration](documentation/USG-OPEN-WORLD-CONTINUOUS-EXPLORATION.md) schedules bounded daily, weekly, release, and manual campaigns and publishes each report as a new append-only PR.
 - [OW-8 adaptive discovery](documentation/USG-OPEN-WORLD-ADAPTIVE-DISCOVERY.md) compares failure clusters with prior campaigns and generates capped formatting-only follow-ups for reproducible structural/runtime failures.
+- [OW-9+ expanding coverage ledger](documentation/USG-OPEN-WORLD-EXPANDING-COVERAGE.md) maps evaluated entry points against every inventoried USG component and keeps untested scope visible.

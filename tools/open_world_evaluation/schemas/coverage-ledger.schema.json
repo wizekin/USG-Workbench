@@ -1,0 +1,295 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "USG Open-World Coverage Ledger v1.0.0",
+  "type": "object",
+  "properties": {
+    "ledger_version": {
+      "const": "1.0.0"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "campaign_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "inventory_snapshot_commit": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "inventory_version": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "case_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "execution_result_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "population_counts": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "integer",
+        "minimum": 0
+      }
+    },
+    "language_hint_counts": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "integer",
+        "minimum": 0
+      }
+    },
+    "unclassified_case_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "observed_taxonomy_labels": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "taxonomy_label_counts": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "integer",
+        "minimum": 0
+      }
+    },
+    "observed_generator_families": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "generator_family_counts": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "integer",
+        "minimum": 0
+      }
+    },
+    "target_component_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "entrypoint_coverage": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "component_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "inventory_status": {
+            "type": "string"
+          },
+          "registered_target": {
+            "type": "boolean"
+          },
+          "targeted_case_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "attempt_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "attempted_case_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "target_versions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "interfaces": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "outcome_counts": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "entrypoint_coverage_status": {
+            "enum": [
+              "not_registered_in_open_world_target_profiles",
+              "registered_but_not_sampled",
+              "sampled_but_not_executed",
+              "not_executed_only",
+              "entrypoint_exercised"
+            ]
+          },
+          "inventory_capability_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "capability_assessment": {
+            "const": "not_assessed_by_entrypoint_sampling"
+          },
+          "uncovered_entry_points": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "component_id",
+          "name",
+          "inventory_status",
+          "registered_target",
+          "targeted_case_count",
+          "attempt_count",
+          "attempted_case_count",
+          "target_versions",
+          "interfaces",
+          "outcome_counts",
+          "entrypoint_coverage_status",
+          "inventory_capability_count",
+          "capability_assessment",
+          "uncovered_entry_points"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "registered_target_profile_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "inventory_component_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "entrypoint_exercised_component_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "not_registered_component_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "registered_but_not_sampled_component_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "not_executed_only_component_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "historical_comparison": {
+      "type": "object",
+      "properties": {
+        "history_taxonomy_label_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "candidate_new_taxonomy_labels": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "history_target_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "candidate_new_targets": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "history_generator_family_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "candidate_new_generator_families": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "classification": {
+          "const": "candidate_new_means_not_found_in_scanned_coverage_ledgers_only"
+        }
+      },
+      "required": [
+        "history_taxonomy_label_count",
+        "candidate_new_taxonomy_labels",
+        "history_target_count",
+        "candidate_new_targets",
+        "history_generator_family_count",
+        "candidate_new_generator_families",
+        "classification"
+      ],
+      "additionalProperties": false
+    },
+    "interpretation_limits": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    }
+  },
+  "required": [
+    "ledger_version",
+    "created_at",
+    "campaign_id",
+    "inventory_snapshot_commit",
+    "inventory_version",
+    "case_count",
+    "execution_result_count",
+    "population_counts",
+    "language_hint_counts",
+    "unclassified_case_count",
+    "observed_taxonomy_labels",
+    "taxonomy_label_counts",
+    "observed_generator_families",
+    "generator_family_counts",
+    "target_component_ids",
+    "entrypoint_coverage",
+    "registered_target_profile_count",
+    "inventory_component_count",
+    "entrypoint_exercised_component_count",
+    "not_registered_component_ids",
+    "registered_but_not_sampled_component_ids",
+    "not_executed_only_component_ids",
+    "historical_comparison",
+    "interpretation_limits"
+  ],
+  "additionalProperties": false
+}
