@@ -79,7 +79,7 @@ class FirstBlockingStageTests(unittest.TestCase):
         group = report["breakdown_by_target_population_language"][0]
         self.assertEqual(group["language"], "en-ar")
         self.assertEqual(group["first_blocking_stage_counts"], {"lexical": 1})
-        self.assertIn("not proven root cause", report["causality_warning"])
+        self.assertIn("not proof that an upstream failure caused them", report["causality_warning"])
 
     def test_parallel_phase5_blockers_are_both_retained_as_first_blockers(self):
         output = {"target_result": {"diagnostics": [
