@@ -2,7 +2,7 @@
 import unittest
 
 from tools.phase5_interpretation_benchmark_v0_2_0.run import (
-    CORPUS, corpus_summary, evaluate, load_and_validate, run_pipeline,
+    CORPUS, corpus_summary, evaluate, load_and_validate, quality_gate, run_pipeline,
 )
 
 
@@ -29,6 +29,10 @@ class Phase5Step511BenchmarkTests(unittest.TestCase):
         self.assertGreaterEqual(self.performance["total_elapsed_ms"], 0)
         self.assertGreaterEqual(self.performance["peak_traced_memory_bytes"], 0)
         self.assertEqual(len(self.performance["resource_manifest_digest"]), 64)
+        self.assertEqual(len(self.performance["corpus_sha256"]), 64)
+        self.assertEqual(self.performance["enabled_constructions_observed"], [
+            "ar.simple_transitive.svo", "ar.simple_transitive.vso", "en.simple_transitive.svo"
+        ])
 
     def test_evaluation_reports_language_specific_precision_recall_and_abstention(self):
         for language in ("en", "ar"):
@@ -42,6 +46,12 @@ class Phase5Step511BenchmarkTests(unittest.TestCase):
             self.assertIn("construction_recall", metrics)
             self.assertIn("negative_abstention_rate", metrics)
             self.assertIn("ambiguous_abstention_rate", metrics)
+
+    def test_quality_gates_pass_independently_for_both_languages(self):
+        gate = quality_gate(self.report)
+        self.assertTrue(gate["passed"], gate)
+        for language in ("en", "ar"):
+            self.assertTrue(gate["by_language"][language]["passed"])
 
     def test_interrogative_force_is_not_misreported_as_a_complete_assertion(self):
         from tools.usg_interpretation_v0_2_0 import Phase5InterpretationService
