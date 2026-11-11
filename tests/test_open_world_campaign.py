@@ -233,6 +233,65 @@ class OpenWorldCampaignPipelineTests(unittest.TestCase):
                     output_root=output_root, tested_commit_sha=COMMIT,
                 )
 
+    def test_campaign_bundle_keeps_adaptive_cases_and_historical_report(self):
+        original = make_case("OW-CASE-00000011", "unconstrained_random")
+        adaptive = copy.deepcopy(original)
+        adaptive["case_id"] = "OW-ADAPT-000000000000000000000001"
+        adaptive["input"]["text"] = " Ada writes code. "
+        adaptive["input"]["utf8_sha256"] = hashlib.sha256(
+            adaptive["input"]["text"].encode("utf-8")
+        ).hexdigest()
+        adaptive["generator"]["id"] = "usg-open-world-adaptive-discovery"
+        adaptive["generator"]["generation_trace"] = ["origin_case_id=OW-CASE-00000011"]
+        adaptive["generator"]["mutation_ops"] = ["leading_trailing_whitespace"]
+        cases = [original, adaptive]
+        results = [
+            make_result(original, "completed", 11),
+            make_result(adaptive, "completed", 12),
+        ]
+        discovery = {
+            "discovery_version": "1.0.0",
+            "campaign_id": "OWC-TEST-CAMPAIGN-0007",
+            "history_campaign_count": 2,
+            "current_failure_cluster_count": 1,
+            "candidate_new_cluster_count": 1,
+            "adaptive_followup_case_count": 1,
+            "clusters": [],
+            "limitations": ["Test fixture only."],
+        }
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            cases_path, results_path, scores_path = (
+                root / "cases.jsonl", root / "results.jsonl", root / "scores.jsonl"
+            )
+            adaptive_path, discovery_path = (
+                root / "adaptive.jsonl", root / "discovery.json"
+            )
+            write_jsonl(cases_path, cases)
+            write_jsonl(results_path, results)
+            write_jsonl(scores_path, [])
+            write_jsonl(adaptive_path, [adaptive])
+            discovery_path.write_text(json.dumps(discovery), encoding="utf-8")
+            saved = store_campaign_bundle(
+                campaign_id="OWC-TEST-CAMPAIGN-0007",
+                cases_path=cases_path,
+                results_path=results_path,
+                scores_path=scores_path,
+                output_root=root / "stored",
+                tested_commit_sha=COMMIT,
+                adaptive_followups_path=adaptive_path,
+                adaptive_discovery_path=discovery_path,
+            )
+            manifest = json.loads((saved / "bundle-manifest.json").read_text(encoding="utf-8"))
+            names = {item["name"] for item in manifest["files"]}
+            self.assertIn("adaptive-followup-cases.jsonl", names)
+            self.assertIn("adaptive-discovery.json", names)
+            report = json.loads((saved / "campaign-report.json").read_text(encoding="utf-8"))
+            self.assertEqual(report["coverage"]["adaptive_followup_case_count"], 1)
+            self.assertEqual(report["coverage"]["adaptive_candidate_new_cluster_count"], 1)
+            markdown = (saved / "campaign-report.md").read_text(encoding="utf-8")
+            self.assertIn("Candidate-new clusters: 1", markdown)
+
     def test_delta_debug_minimizer_reduces_text_only_while_failure_is_preserved(self):
         original = "REMOVE1 KEEP REMOVE2 REMOVE3"
         minimized, attempts = delta_debug_text(
