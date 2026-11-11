@@ -1,6 +1,6 @@
 """Phase 6 Step 6.5 predicate and argument structure acceptance."""
 import unittest
-from tools.phase6_interpretation_benchmark_v0_3_1.run import load_corpus,evaluate,quality_gate
+from tools.phase6_interpretation_benchmark_v0_3_2.run import load_corpus,evaluate,quality_gate
 from tools.phase6_predicate_argument_v0_3_0.analyzer import analyze,predict_corpus
 class Phase6Step65Tests(unittest.TestCase):
  @classmethod
