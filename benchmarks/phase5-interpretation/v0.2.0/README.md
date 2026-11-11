@@ -10,7 +10,7 @@ The initial measured construction family is simple transitive declaratives:
 
 The corpus contains 100 cases: 20 positive, 20 negative/adversarial, and 10 ambiguous/boundary cases for each language. Positive cases annotate AGENT, ACTION, and PATIENT with exact source spans. Negative and ambiguous cases deliberately do not invent a unique semantic role graph.
 
-These are gold evaluation fixtures, not a claim that the current v0.1.0 interpreter supports all 40 positive examples. The benchmark reports `NOT_EVALUATED_NO_PREDICTIONS_SUPPLIED` unless actual predictions are provided. Synthetic perfect predictions in unit tests verify evaluator arithmetic only and MUST NOT be reported as model performance.
+These are gold evaluation fixtures, not a claim that the current v0.1.0 interpreter supports all 40 positive examples. The benchmark runner can now execute the actual `USG-INTERPRET/0.2.0` service over every fixture with `--run-pipeline`; the report includes real per-language metrics and a resource-pinned runtime/memory profile. No synthetic or gold-derived predictions are used. Synthetic perfect predictions in unit tests verify evaluator arithmetic only and MUST NOT be reported as model performance.
 
 ## Run
 
@@ -30,6 +30,6 @@ Each row in the top-level `predictions` array has `case_id`, `completion_status`
 
 ## Metrics
 
-The evaluator reports per-language construction precision/recall, completion-status accuracy, exact role-binding accuracy, exact and source-valid role-span accuracy, confusion counts, and missing predictions. Corpus fixture counts and gold span validity are checked before scoring.
+The evaluator reports per-language construction precision/recall, completion-status accuracy, exact role-binding accuracy, exact and source-valid role-span accuracy, false unique constructions on negative/ambiguous cases, abstention rates, confusion counts, and missing predictions. The real pipeline run additionally reports total/mean/median/p95 latency, peak traced Python memory, and the exact resource-manifest digest. Corpus fixture counts and gold span validity are checked before scoring.
 
 No aggregate metric substitutes for per-language results. An empty prediction set is not interpreted as 100% accuracy. A construction must remain disabled until the benchmark and its adversarial acceptance gate pass.
