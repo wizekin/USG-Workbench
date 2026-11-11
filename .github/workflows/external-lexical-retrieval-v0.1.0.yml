@@ -1,0 +1,36 @@
+name: External Lexical Retrieval and Analysis v0.1.0
+
+on:
+  pull_request:
+    paths:
+      - "tools/usg_external_lexical_v0_1_0/**"
+      - "tests/test_external_lexical_retrieval.py"
+      - "documentation/EXTERNAL-LEXICAL-RETRIEVAL-AND-INCREMENTAL-LEARNING-v0.1.0.md"
+      - ".github/workflows/external-lexical-retrieval-v0.1.0.yml"
+  push:
+    branches: [main]
+    paths:
+      - "tools/usg_external_lexical_v0_1_0/**"
+      - "tests/test_external_lexical_retrieval.py"
+      - "documentation/EXTERNAL-LEXICAL-RETRIEVAL-AND-INCREMENTAL-LEARNING-v0.1.0.md"
+      - ".github/workflows/external-lexical-retrieval-v0.1.0.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lexical-contract-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Compile lexical subsystem
+        run: python -m compileall -q tools/usg_external_lexical_v0_1_0
+      - name: Run lexical retrieval tests
+        run: python -m unittest discover -s tests -p "test_external_lexical_retrieval.py" -v
+      - name: Run offline structural benchmark
+        run: python -m tools.usg_external_lexical_v0_1_0 benchmark
