@@ -1,6 +1,6 @@
 # USG Phase 5 — Definitions and Roadmap
 
-**Status:** IN PROGRESS — Steps 5.1–5.7 accepted; Step 5.8 discourse and reference candidates under implementation.  
+**Status:** IN PROGRESS — Steps 5.1–5.8 accepted; Step 5.9 SQLite resource catalogue under implementation.  
 **Target interpretation contract:** `USG-INTERPRET/0.2.0` (independent of the semantic interchange profile).  
 **Current accepted baseline:** `USG-INTERPRET/0.1.0`, bounded offline demonstrator.  
 **Normative semantic interchange:** `USG-SEM/1.0` remains unchanged unless a separately versioned profile is justified by a demonstrated representation gap.  
@@ -251,4 +251,4 @@ Phase 5 completion will mean a broader, benchmarked interpreter for the explicit
 
 ## 11. Immediate next implementation step
 
-**Steps 5.1–5.7 are accepted.** Step 5.7 is deliberately bounded to clause-level AND/OR/CONTRAST composition. Coordinated predicates and coordinated arguments inside a single clause remain explicitly unsupported and are deferred beyond this Phase 5 profile rather than being represented as solved. Step 5.8 adds conservative multi-sentence mention/reference candidates and evidence-backed discourse links; it does not resolve entity identity. The benchmark remains an evaluation target, not a claim of full runtime coverage.
+**Steps 5.1–5.8 are accepted.** Step 5.7 is deliberately bounded to clause-level AND/OR/CONTRAST composition. Coordinated predicates and coordinated arguments inside a single clause remain explicitly unsupported and are deferred beyond this Phase 5 profile rather than being represented as solved. Step 5.8 adds conservative multi-sentence mention/reference candidates and evidence-backed discourse links; it does not resolve entity identity. Step 5.9 adds an append-only SQLite resource catalogue and derived active/secondary association retrieval on the caller-owned canonical connection. The benchmark remains an evaluation target, not a claim of full runtime coverage.
