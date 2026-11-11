@@ -192,9 +192,15 @@ class USGApplication:
                 except (TypeError, ValueError) as exc:
                     raise APIRequestError(400, "PHASE5_INTERPRET_REQUEST_INVALID", str(exc)) from exc
                 if persist:
-                    metadata = self._catalogue_write(
-                        lambda: self.interpretation_run_store.put(result)
-                    )
+                    def persist_if_manifest_unchanged():
+                        current_digest = self.resource_catalogue.digest()
+                        if current_digest != manifest_digest:
+                            raise APIRequestError(
+                                409, "RESOURCE_MANIFEST_CHANGED",
+                                "resource catalogue changed while interpretation was running; retry"
+                            )
+                        return self.interpretation_run_store.put(result)
+                    metadata = self._catalogue_write(persist_if_manifest_unchanged)
                     result = {**result, "persistence": metadata}
                 return 200, result
 
@@ -252,6 +258,8 @@ class USGApplication:
                     resource_manifest_digest=current_manifest,
                 )
                 replay_digest = sha256(canonical_result_bytes(replayed)).hexdigest()
+                if self._catalogue_read(lambda: self.resource_catalogue.digest()) != current_manifest:
+                    raise APIRequestError(409, "REPLAY_RESOURCE_CHANGED", "resource catalogue changed during replay")
                 return 200, {
                     "run_id": run_id,
                     "stored_result_sha256": stored["result_sha256"],
