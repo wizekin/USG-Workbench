@@ -54,7 +54,9 @@ The crawler pins one Git commit and its snapshot ID for the duration of a full c
 
 When the pinned snapshot is complete, subsequent runs compare the upstream source snapshot. If the source publishes a new snapshot, the crawler starts a new cycle while preserving prior shards and cumulative storage accounting.
 
-The worker records failed entry fetches and parser failures as compact failure events and continues where it can. A transient source rate limit stops the run without advancing past the current headword. A browse-page fetch or parse error is recorded separately and stops the batch without advancing the page/entry cursor; the next scheduled run retries that exact page so a temporary index failure cannot silently skip hundreds of headwords.\n\nOlder crawler versions recorded per-headword failures but did not retry them. On upgrade, the crawler scans the existing snapshot shards once, reconstructs a deduplicated retry queue from those failure events, and persists it in the checkpoint. Pending failures are retried before new headwords; recovered entries are published with an explicit `retrieval_event` marker. A failed retry is deferred to a later run and is moved to a dead-letter count after three attempts. Retry attempts, recoveries, failures, and pending queue size are reported separately from the original source-cursor counters.
+The worker records failed entry fetches and parser failures as compact failure events and continues where it can. A transient source rate limit stops the run without advancing past the current headword. A browse-page fetch or parse error is recorded separately and stops the batch without advancing the page/entry cursor; the next scheduled run retries that exact page so a temporary index failure cannot silently skip hundreds of headwords.
+
+Older crawler versions recorded per-headword failures but did not retry them. On upgrade, the crawler scans the existing snapshot shards once, reconstructs a deduplicated retry queue from those failure events, and persists it in the checkpoint. Pending failures are retried before new headwords; recovered entries are published with an explicit `retrieval_event` marker. A failed retry is deferred to a later run and is moved to a dead-letter count after three attempts. Retry attempts, recoveries, failures, and pending queue size are reported separately from the original source-cursor counters.
 
 ## Run manually
 
@@ -62,7 +64,8 @@ Open the repository's Actions tab, select **USG External Lexical Incremental Cra
 
 The manual default is a 200-headword / 15-minute pilot. To run a larger manual batch, supply:
 - max_headwords: up to 30,000.
-- max_runtime_minutes: up to 320.\n- validation_only: true to run the offline validation suite without starting a crawl.
+- max_runtime_minutes: up to 320.
+- validation_only: true to run the offline validation suite without starting a crawl.
 
 The scheduled cadence always uses 30,000 headwords / 320 minutes.
 
@@ -89,3 +92,37 @@ The crawler is a gradual lexical-evidence acquisition process. It is not an LLM 
 - GitHub Actions billing for public repositories: https://docs.github.com/en/actions/concepts/billing-and-usage
 - GitHub repository size recommendations: https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-large-files-on-github
 - English Dictionary source and rights: https://github.com/figueirego/english-dictionary
+
+
+## Recovery verification — 2026-11-11
+
+After the checkpoint freshness and failed-headword retry repair was merged, production recovery run [43102113033](https://github.com/wizekin/USG-Workbench/actions/runs/43102113033) completed successfully.
+
+Observed post-run checkpoint values on `usg-external-lexical-data`:
+
+- `processed_headwords`: 402 (the source cursor advanced from 400 to 402; this is distinct from retry recoveries).
+- `retried_headwords`: 198.
+- `recovered_headwords`: 198.
+- `retry_failed_headwords`: 0.
+- `retry_dead_letter_headwords`: 0.
+- `retry_queue`: empty.
+- `processed_entries`: 469.
+- `processed_senses`: 602.
+- `stored_bytes`: 185,234.
+- `batch_number`: 3.
+
+This is a successful recovery pilot, not proof that the entire 1.4-million-headword crawl is complete or that every future scheduled run is replay-safe. The next acceptance gate is a clean offline validation run, followed by at least one subsequent scheduled/manual resume run that demonstrates a strictly advancing cursor, a new batch identifier, and consistent checkpoint/manifest/shard accounting.
+
+## Operational acceptance gates
+
+A crawl batch is accepted only when all of the following are true:
+
+1. The workflow exits successfully and the crawler reports a published batch.
+2. The source cursor advances monotonically, unless the run explicitly records a retry-only batch.
+3. The batch identifier is new; no previously published batch is replayed.
+4. Retry queue counters reconcile: recovered + still pending + dead-lettered outcomes account for attempted historical failures.
+5. Manifest batch count, headword/entry/sense totals, and stored-byte total reconcile with the published shards.
+6. Storage remains below the configured budget, and the pinned source snapshot remains unchanged within a cycle.
+7. Offline crawler contract tests, lexical retrieval tests, compilation, and structural benchmark pass before code changes are merged.
+
+External lexical records remain candidate evidence only. Successful crawling does not authorize automatic promotion into USG's active lexical resource or grammar.
