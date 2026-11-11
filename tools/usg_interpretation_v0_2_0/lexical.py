@@ -280,10 +280,57 @@ def bundled_lexical_resource_v0_3_0() -> LexicalResource:
     return load_lexical_resource(Path(__file__).resolve().parents[2] / "resources" / "lexical" / "v0.3.0" / "en-ar-discourse-lexicon.json")
 
 
+def compose_lexical_resources(resources: tuple[LexicalResource, ...]) -> LexicalResource:
+    """Compose versioned lexical resources without silently hiding conflicts.
+
+    Exact duplicate entries/rules are retained once. If two resources assign
+    different records to the same lexical identity or rule ID, composition
+    fails explicitly instead of selecting an arbitrary winner.
+    """
+    if not isinstance(resources, tuple) or not resources:
+        raise ValueError("resources must be a non-empty tuple")
+    if any(not isinstance(item, LexicalResource) for item in resources):
+        raise TypeError("all resources must be LexicalResource instances")
+
+    entries_by_identity = {}
+    rules_by_id = {}
+    for resource in resources:
+        for entry in resource.entries:
+            key = (entry.language, _lookup(entry.language, entry.form), entry.sense_id)
+            previous = entries_by_identity.get(key)
+            if previous is not None and previous != entry:
+                raise ValueError(f"conflicting lexical entry for {key!r}")
+            entries_by_identity[key] = entry
+        for rule in resource.morphology_rules:
+            previous = rules_by_id.get(rule.rule_id)
+            if previous is not None and previous != rule:
+                raise ValueError(f"conflicting morphology rule {rule.rule_id!r}")
+            rules_by_id[rule.rule_id] = rule
+
+    return LexicalResource(
+        "usg-en-ar-composite-lexicon",
+        "0.4.0",
+        "Deterministic composition of: " + ", ".join(
+            f"{item.resource_id}@{item.version}#{item.digest()}" for item in resources
+        ),
+        tuple(entries_by_identity[key] for key in sorted(entries_by_identity)),
+        tuple(rules_by_id[key] for key in sorted(rules_by_id)),
+    )
+
+
+def bundled_lexical_resource_v0_4_0() -> LexicalResource:
+    """Return the Phase 5 composite lexicon, preserving component provenance."""
+    root = Path(__file__).resolve().parents[2] / "resources" / "lexical"
+    discourse = load_lexical_resource(root / "v0.3.0" / "en-ar-discourse-lexicon.json")
+    starter = load_lexical_resource(root / "v0.4.0" / "en-core-starter-lexicon.json")
+    return compose_lexical_resources((discourse, starter))
+
+
 __all__ = [
     "LEXICAL_ANALYSIS_VERSION", "MORPHOLOGY_RULESET_VERSION", "LexicalEntry",
     "MorphologyRule", "LexicalResource", "LexicalCandidate", "TokenAnalysis",
     "LexicalAnalysis", "LexicalAnalyzer", "load_lexical_resource",
     "bundled_lexical_resource", "bundled_lexical_resource_v0_2_0",
-    "bundled_lexical_resource_v0_3_0",
+    "bundled_lexical_resource_v0_3_0", "compose_lexical_resources",
+    "bundled_lexical_resource_v0_4_0",
 ]
