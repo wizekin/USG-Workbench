@@ -1,0 +1,32 @@
+name: Phase 6 Step 6.6 spaCy Nominal End-to-End
+on:
+  pull_request:
+    paths:
+      - "tools/phase6_spacy_nominal_e2e_v0_1/**"
+      - "tools/phase6_ud_nominal_candidate_v0_1/**"
+      - "tests/test_phase6_spacy_nominal_e2e.py"
+      - "requirements/phase6-spacy-english.txt"
+      - "documentation/PHASE-6-STEP-6.6-SPACY-NOMINAL-E2E.md"
+      - ".github/workflows/phase6-step-6-6-spacy-nominal-e2e.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  spacy-nominal-e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python -m pip install --upgrade pip
+      - run: python -m pip install -r requirements/phase6-spacy-english.txt
+      - run: python -m unittest discover -s tests -p 'test_phase6_spacy_nominal_e2e.py' -v
+      - run: python -m tools.phase6_spacy_nominal_e2e_v0_1.evaluation
+      - name: Upload end-to-end nominal candidate report
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase6-step-6-6-spacy-nominal-e2e
+          path: artifacts/phase6-step-6-6-spacy-nominal-e2e.json
