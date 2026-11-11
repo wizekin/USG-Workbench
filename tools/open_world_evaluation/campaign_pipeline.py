@@ -141,6 +141,7 @@ def build_campaign_report(
     artifact_entries: list[dict[str, str]] | None = None,
     minimized_reproducers: list[dict[str, Any]] | None = None,
     adaptive_discovery: dict[str, Any] | None = None,
+    coverage_ledger: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     campaign_id = _safe_campaign_id(campaign_id)
     if len(tested_commit_sha) != 40 or any(c not in "0123456789abcdef" for c in tested_commit_sha):
@@ -330,6 +331,16 @@ def build_campaign_report(
             "adaptive_history_campaign_count": int(
                 (adaptive_discovery or {}).get("history_campaign_count", 0)
             ),
+            "scope_ledger": {
+                "inventory_component_count": int((coverage_ledger or {}).get("inventory_component_count", 0)),
+                "registered_target_profile_count": int((coverage_ledger or {}).get("registered_target_profile_count", 0)),
+                "entrypoint_exercised_component_count": int((coverage_ledger or {}).get("entrypoint_exercised_component_count", 0)),
+                "unclassified_case_count": int((coverage_ledger or {}).get("unclassified_case_count", 0)),
+                "not_registered_component_ids": list((coverage_ledger or {}).get("not_registered_component_ids", [])),
+                "not_executed_only_component_ids": list((coverage_ledger or {}).get("not_executed_only_component_ids", [])),
+                "candidate_new_taxonomy_labels": list((coverage_ledger or {}).get("historical_comparison", {}).get("candidate_new_taxonomy_labels", [])),
+                "candidate_new_generator_families": list((coverage_ledger or {}).get("historical_comparison", {}).get("candidate_new_generator_families", [])),
+            },
         },
         "failure_families": failure_families,
         "novel_clusters": novel_clusters,
@@ -398,7 +409,18 @@ def render_markdown(report: dict[str, Any]) -> str:
     ]
     for target, count in report["coverage"]["target_case_counts"].items():
         lines.append(f"| {target} | {count} |")
+    scope = report.get("coverage", {}).get("scope_ledger", {})
     lines += [
+        "",
+        "## Inventory-backed scope coverage",
+        "",
+        f"- Inventory components: {scope.get('inventory_component_count', 0)}",
+        f"- Components with an exercised entry point: {scope.get('entrypoint_exercised_component_count', 0)}",
+        f"- Components not registered as open-world targets: {len(scope.get('not_registered_component_ids', []))}",
+        f"- Components with only not-executed attempts: {len(scope.get('not_executed_only_component_ids', []))}",
+        f"- Unclassified cases retained: {scope.get('unclassified_case_count', 0)}",
+        "",
+        "An exercised entry point does not mean every capability or interface in that component was tested.",
         "",
         "## Failure and diagnostic clusters",
         "",
@@ -470,6 +492,7 @@ def store_campaign_bundle(
     minimized_reproducers_path: Path | None = None,
     adaptive_followups_path: Path | None = None,
     adaptive_discovery_path: Path | None = None,
+    coverage_ledger_path: Path | None = None,
 ) -> Path:
     campaign_id = _safe_campaign_id(campaign_id)
     final_dir = output_root / campaign_id
@@ -491,6 +514,8 @@ def store_campaign_bundle(
             inputs.append(("adaptive-followup-cases.jsonl", adaptive_followups_path))
         if adaptive_discovery_path is not None:
             inputs.append(("adaptive-discovery.json", adaptive_discovery_path))
+        if coverage_ledger_path is not None:
+            inputs.append(("coverage-ledger.json", coverage_ledger_path))
 
         artifact_entries = []
         for name, source in inputs:
@@ -508,6 +533,7 @@ def store_campaign_bundle(
         manifest = _read_optional_json(temp_dir / "generation-manifest.json") if (temp_dir / "generation-manifest.json").exists() else None
         minimized = _read_jsonl(temp_dir / "minimized-reproducers.jsonl") if (temp_dir / "minimized-reproducers.jsonl").exists() else []
         adaptive = _read_optional_json(temp_dir / "adaptive-discovery.json") if (temp_dir / "adaptive-discovery.json").exists() else None
+        coverage_ledger = _read_optional_json(temp_dir / "coverage-ledger.json") if (temp_dir / "coverage-ledger.json").exists() else None
 
         report = build_campaign_report(
             campaign_id=campaign_id,
@@ -519,6 +545,7 @@ def store_campaign_bundle(
             artifact_entries=artifact_entries,
             minimized_reproducers=minimized,
             adaptive_discovery=adaptive,
+            coverage_ledger=coverage_ledger,
         )
         report_bytes = (json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True) + "\n").encode("utf-8")
         markdown_bytes = render_markdown(report).encode("utf-8")
@@ -571,6 +598,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--minimized-reproducers", type=Path)
     parser.add_argument("--adaptive-followups", type=Path)
     parser.add_argument("--adaptive-discovery-report", type=Path)
+    parser.add_argument("--coverage-ledger", type=Path)
     parser.add_argument("--commit-sha", required=True)
     parser.add_argument(
         "--output-root", type=Path,
@@ -589,6 +617,7 @@ def main(argv: list[str] | None = None) -> int:
             minimized_reproducers_path=args.minimized_reproducers,
             adaptive_followups_path=args.adaptive_followups,
             adaptive_discovery_path=args.adaptive_discovery_report,
+            coverage_ledger_path=args.coverage_ledger,
         )
     except (OSError, ValueError, RuntimeError) as exc:
         parser.error(str(exc))
