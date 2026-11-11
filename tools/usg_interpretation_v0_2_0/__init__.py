@@ -83,3 +83,15 @@ __all__ += [
     "Phase5InterpretationService", "canonical_result_bytes",
     "InterpretationRunIntegrityError", "SQLiteInterpretationRunStore",
 ]
+
+from .contextual_lexical import (
+    CONTEXTUAL_LEXICAL_VERSION, RankedLexicalCandidate,
+    ContextualTokenResult, ContextualLexicalAnalysis,
+    ContextualLexicalRanker,
+)
+
+__all__ += [
+    "CONTEXTUAL_LEXICAL_VERSION", "RankedLexicalCandidate",
+    "ContextualTokenResult", "ContextualLexicalAnalysis",
+    "ContextualLexicalRanker",
+]
