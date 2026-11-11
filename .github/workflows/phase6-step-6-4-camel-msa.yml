@@ -17,15 +17,11 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
-      - uses: dtolnay/rust-toolchain@stable
-      - name: Install CAMeL build prerequisites
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y build-essential cmake libboost-all-dev
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
       - run: python -m pip install --upgrade pip
+      - run: python -m pip install --no-deps camel-tools==1.6.0
       - run: python -m pip install -r requirements/phase6-camel-morphology.txt
       - run: camel_data -i morphology-db-msa-r13
       - run: python -m unittest discover -s tests -p 'test_phase6_external_pud_camel_msa.py' -v
