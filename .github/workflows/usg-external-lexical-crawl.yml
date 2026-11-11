@@ -1,0 +1,105 @@
+name: USG External Lexical Incremental Crawl
+
+on:
+  schedule:
+    - cron: "23 */6 * * *"
+  workflow_dispatch:
+    inputs:
+      max_headwords:
+        description: "Headword limit for a manual run (200 pilot; up to 30000)"
+        required: false
+        default: "200"
+        type: string
+      max_runtime_minutes:
+        description: "Manual run time budget in minutes (maximum 320)"
+        required: false
+        default: "15"
+        type: string
+  pull_request:
+    paths:
+      - "tools/usg_external_lexical_v0_1_0/**"
+      - "tests/test_external_lexical_crawl.py"
+      - "tests/test_external_lexical_retrieval.py"
+      - "documentation/USG-EXTERNAL-LEXICAL-SCHEDULED-CRAWLER-v0.1.0.md"
+      - ".github/workflows/usg-external-lexical-crawl.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: usg-external-lexical-crawl
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Compile lexical subsystem
+        run: python -m compileall -q tools/usg_external_lexical_v0_1_0
+      - name: Run crawler contract tests
+        run: python -m unittest discover -s tests -p "test_external_lexical_crawl.py" -v
+      - name: Run existing lexical retrieval tests
+        run: python -m unittest discover -s tests -p "test_external_lexical_retrieval.py" -v
+      - name: Run offline structural benchmark
+        run: python -m tools.usg_external_lexical_v0_1_0 benchmark
+
+  crawl:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    env:
+      GITHUB_TOKEN: ${{ github.token }}
+      USG_LEXICAL_DATA_BRANCH: usg-external-lexical-data
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Resolve safe run budget
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          INPUT_MAX_HEADWORDS: ${{ inputs.max_headwords || '200' }}
+          INPUT_MAX_RUNTIME_MINUTES: ${{ inputs.max_runtime_minutes || '15' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "$EVENT_NAME" == "schedule" ]]; then
+            words=30000
+            minutes=320
+          else
+            words="$INPUT_MAX_HEADWORDS"
+            minutes="$INPUT_MAX_RUNTIME_MINUTES"
+          fi
+          [[ "$words" =~ ^[0-9]+$ ]] || { echo "max_headwords must be an integer"; exit 2; }
+          [[ "$minutes" =~ ^[0-9]+$ ]] || { echo "max_runtime_minutes must be an integer"; exit 2; }
+          (( words >= 1 && words <= 30000 )) || { echo "max_headwords must be between 1 and 30000"; exit 2; }
+          (( minutes >= 1 && minutes <= 320 )) || { echo "max_runtime_minutes must be between 1 and 320"; exit 2; }
+          echo "MAX_HEADWORDS=$words" >> "$GITHUB_ENV"
+          echo "MAX_RUNTIME_SECONDS=$((minutes * 60))" >> "$GITHUB_ENV"
+          echo "Configured batch: $words headwords, $minutes minutes." >> "$GITHUB_STEP_SUMMARY"
+      - name: Run one resumable lexical-analysis batch
+        run: |
+          python -m tools.usg_external_lexical_v0_1_0.crawl \
+            --max-headwords "$MAX_HEADWORDS" \
+            --max-runtime-seconds "$MAX_RUNTIME_SECONDS" \
+            --max-shard-bytes 16777216 \
+            --storage-budget-mib 700 \
+            --delay-seconds 0.35 \
+            --run-id "${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+      - name: Publish run diagnostics
+        if: always()
+        run: |
+          {
+            echo ""
+            echo "Durable checkpoint and compressed shards are stored on branch: usg-external-lexical-data."
+            echo "The next scheduled run resumes from state/checkpoint.json."
+          } >> "$GITHUB_STEP_SUMMARY"
