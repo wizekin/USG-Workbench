@@ -72,7 +72,7 @@ def evaluate_predictions(sentences: list[dict], predictions: list[list[dict]]) -
             deprel = gold["deprel"]
             totals["tokens"] += 1
             totals["uas_hits"] += correct
-            if gold["is_root"]:
+            if gold.get("is_root", False):
                 totals["root_tokens"] += 1
                 totals["root_hits"] += correct
             if upos != "PUNCT":
