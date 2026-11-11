@@ -121,7 +121,9 @@ class LexicalResource:
             "morphology_rules": [
                 {"rule_id": x.rule_id, "language": x.language, "position": x.position,
                  "affix": x.affix, "target_part_of_speech": x.target_part_of_speech,
-                 "features": dict(x.features), "stem_operation": x.stem_operation}
+                 "features": dict(x.features),
+                 **({"stem_operation": x.stem_operation}
+                    if x.stem_operation != "IDENTITY" else {})}
                 for x in self.morphology_rules
             ],
         }
