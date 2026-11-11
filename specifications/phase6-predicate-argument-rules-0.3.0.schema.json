@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wizekin.github.io/USG-Workbench/specifications/phase6-predicate-argument-rules-0.3.0.schema.json",
+  "title": "USG Phase 6 Candidate Predicate and Argument Construction Rules 0.3.0",
+  "type": "object",
+  "required": [
+    "resource_id",
+    "version",
+    "contract",
+    "status",
+    "provenance",
+    "rules"
+  ],
+  "properties": {
+    "resource_id": {
+      "const": "phase6.predicate-argument-rules.candidate"
+    },
+    "version": {
+      "const": "0.3.0"
+    },
+    "contract": {
+      "const": "USG-INTERPRET/0.3.0"
+    },
+    "status": {
+      "const": "CANDIDATE"
+    },
+    "provenance": {
+      "type": "string",
+      "minLength": 1
+    },
+    "rules": {
+      "type": "array",
+      "minItems": 8,
+      "items": {
+        "type": "object",
+        "required": [
+          "rule_id",
+          "language",
+          "construction_id",
+          "frame_id",
+          "pattern",
+          "role_map",
+          "predicate_index",
+          "status"
+        ],
+        "properties": {
+          "rule_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "language": {
+            "enum": [
+              "en",
+              "ar"
+            ]
+          },
+          "construction_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "frame_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "pattern": {
+            "type": "string",
+            "minLength": 1
+          },
+          "role_map": {
+            "type": "object",
+            "minProperties": 1,
+            "additionalProperties": true
+          },
+          "predicate_index": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "marker_indices": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "status": {
+            "const": "CANDIDATE"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
