@@ -44,8 +44,8 @@ The evaluator accepts a prediction file keyed by unique `case_id`. It reports in
 - construction true/false positives and false negatives;
 - construction precision and recall;
 - completion-status accuracy;
-- exact role-binding accuracy;
-- exact, source-valid role-span accuracy;
+- exact role-binding accuracy on positive gold cases only;
+- exact, source-valid role-span accuracy on positive gold cases only;
 - missing prediction count.
 
 Unknown or duplicate prediction IDs are rejected. Missing predictions receive no credit. Predictions with source spans that do not slice to the exact surface are invalid for the span metric. The evaluator never fills missing predictions or treats an empty denominator as a perfect score.
