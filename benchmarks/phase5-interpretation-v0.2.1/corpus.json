@@ -1207,7 +1207,7 @@
       "expected_role_spans": {}
     },
     {
-      "id": "ar.negative.02",
+      "id": "ar.positive.svo.01",
       "language": "ar",
       "text": "الرسالة كتب الطالب.",
       "gold_class": "POSITIVE",
