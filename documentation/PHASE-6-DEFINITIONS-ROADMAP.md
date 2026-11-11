@@ -6,7 +6,7 @@
 **Canonical semantic interchange:** `USG-SEM/1.0` remains unchanged.  
 **Canonical persistence:** the existing Phase 3 SQLite store remains authoritative.  
 **Initial language profiles:** English and Modern Standard Arabic (MSA).  
-**Next gate:** Step 6.5 — expanded predicate and argument structures (Steps 6.1–6.4 accepted).
+**Next gate:** Step 6.6 — nominal, property, possession, and modifier semantics (Steps 6.1–6.5 accepted after benchmark acceptance).
 
 ## 1. Purpose and transition from Phase 5
 
