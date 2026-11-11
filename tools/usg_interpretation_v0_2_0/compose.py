@@ -236,7 +236,7 @@ class SemanticComposer:
         else:
             root_ref = self._stable_id("group", clause_roots)
             source_span = (min(x[0] for x in clause_spans), max(x[1] for x in clause_spans))
-            attachment_payload = tuple({
+            attachment_payload = [{
                 "relation": item.relation,
                 "markerText": item.marker_text,
                 "markerSpan": list(item.marker_span),
@@ -245,9 +245,9 @@ class SemanticComposer:
                 "status": item.status,
             } for item in attachments
                 if item.source_clause_ref in {x.clause_ref for x, _ in selected}
-                and item.target_clause_ref in {x.clause_ref for x, _ in selected})
+                and item.target_clause_ref in {x.clause_ref for x, _ in selected}]
             group_params = {"attachmentCandidates": attachment_payload,
-                            "unresolvedClauseRefs": unresolved_refs}
+                            "unresolvedClauseRefs": list(unresolved_refs)}
             nodes.append(SemanticNode(
                 root_ref, "CLAUSE_GROUP", "PROPOSITION_SET", tuple(clause_roots),
                 tuple(sorted(group_params.items())), source_span,
