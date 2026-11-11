@@ -49,6 +49,14 @@ class SQLiteInterpretationRunStore:
         required = ("source_ref", "source_sha256", "resource_manifest_digest", "pipeline_version")
         if any(not isinstance(result.get(key), str) or not result[key] for key in required):
             raise ValueError("interpretation envelope is missing required identity or digest fields")
+        source = result.get("source")
+        if not isinstance(source, dict) or not isinstance(source.get("text"), str):
+            raise ValueError("interpretation envelope must preserve its exact source text")
+        source_digest = sha256(source["text"].encode("utf-8")).hexdigest()
+        if source_digest != result["source_sha256"] or source.get("sha256") != source_digest:
+            raise ValueError("source text does not match the interpretation source digest")
+        if source.get("source_id") != result["source_ref"]:
+            raise ValueError("source identity does not match the interpretation envelope")
         raw = canonical_result_bytes(result)
         digest = sha256(raw).hexdigest()
         run_id = "run:" + digest[:32]
@@ -90,6 +98,10 @@ class SQLiteInterpretationRunStore:
             raise InterpretationRunIntegrityError("stored interpretation result is invalid JSON") from exc
         if canonical_result_bytes(result) != raw:
             raise InterpretationRunIntegrityError("stored interpretation result is not canonical JSON")
+        source = result.get("source")
+        if (not isinstance(source, dict) or not isinstance(source.get("text"), str)
+                or sha256(source["text"].encode("utf-8")).hexdigest() != result.get("source_sha256")):
+            raise InterpretationRunIntegrityError("stored interpretation source digest is invalid")
         if (
             result.get("pipeline_contract") != row["pipeline_contract"]
             or result.get("pipeline_version") != row["pipeline_version"]
