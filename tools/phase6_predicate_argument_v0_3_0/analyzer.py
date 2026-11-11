@@ -5,9 +5,6 @@ import json,re
 ROOT=Path(__file__).resolve().parents[2]
 LEXICON=ROOT/"resources/lexical/phase6-v0.3.0/en-ar-candidate.json"
 RULES=ROOT/"resources/constructions/phase6-v0.3.0/predicate-argument-rules.json"
-TOKEN_RE=re.compile(r"[\\p{L}\\p{M}]+",re.UNICODE)
-# Python's standard re has no Unicode property escapes; use a Unicode word tokenizer.
-TOKEN_RE=re.compile(r"[^\\W\\d_]+",re.UNICODE)
 FRAME_BY_FAMILY={"intransitive":"usg.frame.event.intransitive","ditransitive":"usg.frame.transfer.ditransitive","copular":"usg.frame.predication.copular","prepositional":"usg.frame.relation.location"}
 def _tokens(text):
  return [{"surface":m.group(0),"start":m.start(),"end":m.end()} for m in TOKEN_RE.finditer(text)]
