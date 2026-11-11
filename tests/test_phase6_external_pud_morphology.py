@@ -61,6 +61,8 @@ class TestPUDMorphology(unittest.TestCase):
         report = cross_validate(sentences, "en", folds=2)
         self.assertEqual(report["totals"]["tokens"], 4)
         self.assertIn("morphology_rescue", report["totals"])
+        self.assertIn("exact_lemma_pos_candidate_recall", report["totals"])
+        self.assertIn("morphology_gain_over_exact_lemma_pos", report["totals"])
         self.assertIn("lemma_pos_candidate_recall", report["totals"])
 
 
