@@ -114,7 +114,7 @@ class CoverageLedgerTests(unittest.TestCase):
             path.write_text(json.dumps({
                 "observed_taxonomy_labels": ["fixture_test"],
                 "target_component_ids": ["phase4-bounded-interpreter"],
-                "observed_generator_families": ["coverage_test"],
+                "observed_generator_families": ["contradiction", "coverage_test"],
             }), encoding="utf-8")
             ledger = build_coverage_ledger(
                 cases=[item], results=[], history_root=Path(folder), created_at=STAMP
