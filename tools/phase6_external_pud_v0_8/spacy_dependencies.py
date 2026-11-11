@@ -49,6 +49,7 @@ def parse_dependency_conllu(payload: bytes) -> list[dict]:
         id_to_index = {token["id"]: index for index, token in enumerate(tokens)}
         for index, token in enumerate(tokens):
             head_id = token.pop("head_id")
+            token["is_root"] = head_id == 0
             token["gold_head_index"] = index if head_id == 0 else id_to_index.get(head_id)
         sentences.append({"meta": meta, "tokens": tokens})
     return sentences
@@ -71,7 +72,7 @@ def evaluate_predictions(sentences: list[dict], predictions: list[list[dict]]) -
             deprel = gold["deprel"]
             totals["tokens"] += 1
             totals["uas_hits"] += correct
-            if gold["head_id"] == 0 if "head_id" in gold else gold_head == sentence["tokens"].index(gold):
+            if gold["is_root"]:
                 totals["root_tokens"] += 1
                 totals["root_hits"] += correct
             if upos != "PUNCT":
