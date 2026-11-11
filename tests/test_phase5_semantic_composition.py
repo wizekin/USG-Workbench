@@ -31,6 +31,8 @@ class Phase5SemanticCompositionTests(unittest.TestCase):
     def assert_graph_integrity(self, source, candidate):
         encoded = candidate.to_dict()
         Draft202012Validator(SCHEMA).validate(encoded)
+        self.assertEqual(encoded["sourceRef"], source.source_id)
+        self.assertEqual(encoded["sourceSha256"], source.sha256)
         nodes = {node["nodeId"]: node for node in encoded["nodes"]}
         self.assertIn(encoded["rootRef"], nodes)
         for node in nodes.values():
