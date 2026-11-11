@@ -157,8 +157,7 @@ class CanonicalDocumentStore:
                     self._connection.execute("ROLLBACK")
                 raise
             finally:
-                if not write:
-                    self._connection.execute(f"PRAGMA query_only={previous_query_only}")
+                self._connection.execute(f"PRAGMA query_only={previous_query_only}")
 
     def __enter__(self) -> "CanonicalDocumentStore":
         self._ensure_open()
