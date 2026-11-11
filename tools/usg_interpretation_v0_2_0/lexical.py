@@ -272,9 +272,13 @@ def bundled_lexical_resource() -> LexicalResource:
     return load_lexical_resource(Path(__file__).resolve().parents[2] / "resources" / "lexical" / "v0.1.0" / "en-ar-foundation-lexicon.json")
 
 
+def bundled_lexical_resource_v0_2_0() -> LexicalResource:
+    return load_lexical_resource(Path(__file__).resolve().parents[2] / "resources" / "lexical" / "v0.2.0" / "en-ar-operator-lexicon.json")
+
+
 __all__ = [
     "LEXICAL_ANALYSIS_VERSION", "MORPHOLOGY_RULESET_VERSION", "LexicalEntry",
     "MorphologyRule", "LexicalResource", "LexicalCandidate", "TokenAnalysis",
     "LexicalAnalysis", "LexicalAnalyzer", "load_lexical_resource",
-    "bundled_lexical_resource",
+    "bundled_lexical_resource", "bundled_lexical_resource_v0_2_0",
 ]
