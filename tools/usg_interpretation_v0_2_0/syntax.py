@@ -24,12 +24,29 @@ _PATTERNS = {
 
 
 @dataclass(frozen=True)
+class ConstituentNode:
+    constituent_id: str
+    constituent_type: Literal["CLAUSE", "NP", "VP"]
+    token_refs: tuple[str, ...]
+    source_span: tuple[int, int]
+
+
+@dataclass(frozen=True)
+class DependencyEdge:
+    head_token_ref: str
+    dependent_token_ref: str
+    relation: Literal["NSUBJ", "OBJ"]
+
+
+@dataclass(frozen=True)
 class SyntaxCandidate:
     candidate_id: str
     construction_id: str
     clause_ref: str
     role_token_refs: tuple[tuple[str, str], ...]
     lexical_sense_refs: tuple[tuple[str, str], ...]
+    constituents: tuple[ConstituentNode, ...]
+    dependencies: tuple[DependencyEdge, ...]
     source_span: tuple[int, int]
 
 
@@ -42,14 +59,26 @@ class ClauseSyntaxResult:
 
 
 @dataclass(frozen=True)
+class ClauseAttachment:
+    attachment_id: str
+    source_clause_ref: str
+    target_clause_ref: str
+    relation: str
+    marker_text: str
+    marker_span: tuple[int, int]
+    status: Literal["CANDIDATE"] = "CANDIDATE"
+
+
+@dataclass(frozen=True)
 class SyntaxAnalysis:
     clauses: tuple[ClauseSyntaxResult, ...]
+    attachments: tuple[ClauseAttachment, ...]
     status: Literal["COMPLETE", "AMBIGUOUS", "PARTIAL", "UNSUPPORTED", "INCOMPLETE_RESOURCE_LIMIT"]
     analyzer_version: str = SYNTAX_ANALYSIS_VERSION
 
 
 class SyntaxAnalyzer:
-    """Build explicit role candidates; never collapse lexical or syntax alternatives."""
+    """Build explicit role, constituent, dependency, and attachment candidates."""
 
     def __init__(self, max_candidates: int = 64):
         if isinstance(max_candidates, bool) or not isinstance(max_candidates, int) or max_candidates < 1:
@@ -61,6 +90,24 @@ class SyntaxAnalyzer:
         raw = json.dumps([clause_ref, construction, choices], ensure_ascii=False,
                          separators=(",", ":")).encode("utf-8")
         return "syn:" + sha256(raw).hexdigest()[:20]
+
+    @staticmethod
+    def _constituents(candidate_id, clause_ref, items, role_order):
+        by_role = {role: item for role, item in zip(role_order, items)}
+        agent = by_role["AGENT"].token
+        action = by_role["ACTION"].token
+        patient = by_role["PATIENT"].token
+        all_refs = tuple(item.token.token_id for item in items)
+        return (
+            ConstituentNode(candidate_id + ":clause", "CLAUSE", all_refs,
+                            (items[0].token.start, items[-1].token.end)),
+            ConstituentNode(candidate_id + ":np-agent", "NP", (agent.token_id,),
+                            (agent.start, agent.end)),
+            ConstituentNode(candidate_id + ":vp", "VP", (action.token_id, patient.token_id),
+                            (action.start, patient.end)),
+            ConstituentNode(candidate_id + ":np-patient", "NP", (patient.token_id,),
+                            (patient.start, patient.end)),
+        )
 
     def _analyze_clause(self, lexical: LexicalAnalysis, clause: ClauseSegment) -> ClauseSyntaxResult:
         items = [item for item in lexical.tokens
@@ -96,9 +143,18 @@ class SyntaxAnalyzer:
                 sense_refs = tuple((item.token.token_id, candidate.sense_id)
                                    for item, candidate in zip(items, combination))
                 candidate_id = self._candidate_id(clause.segment_id, construction_id, sense_refs)
+                by_role = {role: item for role, item in zip(role_order, items)}
+                action_token = by_role["ACTION"].token
+                agent_token = by_role["AGENT"].token
+                patient_token = by_role["PATIENT"].token
+                constituents = self._constituents(candidate_id, clause.segment_id, items, role_order)
+                dependencies = (
+                    DependencyEdge(action_token.token_id, agent_token.token_id, "NSUBJ"),
+                    DependencyEdge(action_token.token_id, patient_token.token_id, "OBJ"),
+                )
                 candidates.append(SyntaxCandidate(
                     candidate_id, construction_id, clause.segment_id,
-                    role_refs, sense_refs,
+                    role_refs, sense_refs, constituents, dependencies,
                     (items[0].token.start, items[-1].token.end),
                 ))
             if overflow:
@@ -116,6 +172,10 @@ class SyntaxAnalyzer:
         if lexical.source != segmented.source:
             raise ValueError("lexical and segmentation artifacts must share the exact source snapshot")
         results = tuple(self._analyze_clause(lexical, clause) for clause in segmented.clauses)
+        attachments = tuple(ClauseAttachment(
+            boundary.boundary_id, boundary.left_clause_ref, boundary.right_clause_ref,
+            boundary.relation, boundary.marker_text, boundary.marker_span,
+        ) for boundary in segmented.boundaries)
         statuses = {x.status for x in results}
         if not results:
             overall = "UNSUPPORTED"
@@ -129,10 +189,11 @@ class SyntaxAnalyzer:
             overall = "PARTIAL" if "RESOLVED" in statuses else "UNSUPPORTED"
         else:
             overall = "COMPLETE"
-        return SyntaxAnalysis(results, overall)
+        return SyntaxAnalysis(results, attachments, overall)
 
 
 __all__ = [
-    "SYNTAX_ANALYSIS_VERSION", "SyntaxCandidate", "ClauseSyntaxResult",
+    "SYNTAX_ANALYSIS_VERSION", "ConstituentNode", "DependencyEdge",
+    "SyntaxCandidate", "ClauseSyntaxResult", "ClauseAttachment",
     "SyntaxAnalysis", "SyntaxAnalyzer",
 ]
