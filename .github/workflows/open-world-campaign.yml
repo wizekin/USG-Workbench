@@ -90,4 +90,5 @@ jobs:
         run: |
           python -m py_compile tools/open_world_evaluation/campaign_pipeline.py
           python -m py_compile tools/open_world_evaluation/growth_diagnostics.py
+          python -m py_compile tools/open_world_evaluation/replay_cases.py
           python -m py_compile tools/open_world_evaluation/minimize_failures.py
