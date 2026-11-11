@@ -156,7 +156,8 @@ def build_coverage_ledger(
         family_counts.update(_family_hints(case))
 
     target_ids_observed = set(case_counts) | set(result_attempts)
-    unregistered_targets = sorted(target_ids_observed - set(inventory_by_id))
+    unknown_target_ids = sorted(target_ids_observed - set(inventory_by_id))
+    not_registered_component_ids = sorted(set(inventory_by_id) - set(profiles))
     entrypoint_rows = []
     for component_id, component in sorted(inventory_by_id.items()):
         profile = profiles.get(component_id)
@@ -227,7 +228,8 @@ def build_coverage_ledger(
             row["entrypoint_coverage_status"] == "entrypoint_exercised"
             for row in entrypoint_rows
         ),
-        "not_registered_component_ids": unregistered_targets,
+        "not_registered_component_ids": not_registered_component_ids,
+        "unknown_target_ids": unknown_target_ids,
         "registered_but_not_sampled_component_ids": [
             row["component_id"] for row in entrypoint_rows
             if row["entrypoint_coverage_status"] == "registered_but_not_sampled"
@@ -292,6 +294,7 @@ def main(argv: list[str] | None = None) -> int:
         "entrypoint_exercised_component_count": ledger["entrypoint_exercised_component_count"],
         "unclassified_case_count": ledger["unclassified_case_count"],
         "not_registered_component_ids": ledger["not_registered_component_ids"],
+        "unknown_target_ids": ledger["unknown_target_ids"],
     }, ensure_ascii=False, indent=2, sort_keys=True))
     return 0
 
