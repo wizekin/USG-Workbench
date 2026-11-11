@@ -16,7 +16,7 @@ from .operators import OperatorAnalyzer
 from .discourse import DiscourseAnalyzer
 from .catalogue import bundled_resource_descriptors
 
-PHASE5_INTEGRATION_VERSION = "phase5-interpretation-integration/0.1.0"
+PHASE5_INTEGRATION_VERSION = "phase5-interpretation-integration/0.2.0"
 PIPELINE_CONTRACT = "USG-INTERPRET/0.2.0"
 
 
