@@ -11,7 +11,7 @@ class OperationOracleRegistryTests(unittest.TestCase):
             "phase3-canonical-sqlite-store",
             "phase6-candidate-expansion",
             "python-usg-sem-document-adapters-v15",
-            "python-native-model-boundaries",
+            "python-native-semantic-models-v06-v14",
         })
         for target_id, suite in SUITES.items():
             with self.subTest(target=target_id):
@@ -31,7 +31,7 @@ class OperationOracleRegistryTests(unittest.TestCase):
         self.assertEqual(suite["claim"], "fixture_backed_adapter_contract_conformance")
 
     def test_native_model_suite_is_explicitly_version_bounded(self):
-        suite = SUITES["python-native-model-boundaries"]
+        suite = SUITES["python-native-semantic-models-v06-v14"]
         self.assertIn("versioned native model", suite["oracle"])
         self.assertEqual(len(suite["tests"]), 2)
 
