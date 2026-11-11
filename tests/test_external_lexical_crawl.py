@@ -298,8 +298,8 @@ headwords: 1
     def test_scheduled_batch_resumes_and_publishes_one_compressed_shard(self):
         urls = source_urls()
         data_branch_url = (
-            "https://raw.githubusercontent.com/wizekin/USG-Workbench/"
-            "usg-external-lexical-data/state/checkpoint.json"
+            "https://api.github.com/repos/wizekin/USG-Workbench/contents/"
+            "state/checkpoint.json?ref=usg-external-lexical-data"
         )
         urls[data_branch_url] = {"encoding": "base64", "content": base64.b64encode(json.dumps(initial_checkpoint()).encode()).decode()}
         client = FakeClient(urls)
@@ -325,8 +325,8 @@ headwords: 1
     def test_browse_page_error_is_recorded_without_advancing_cursor(self):
         urls = source_urls()
         data_branch_url = (
-            "https://raw.githubusercontent.com/wizekin/USG-Workbench/"
-            "usg-external-lexical-data/state/checkpoint.json"
+            "https://api.github.com/repos/wizekin/USG-Workbench/contents/"
+            "state/checkpoint.json?ref=usg-external-lexical-data"
         )
         urls[data_branch_url] = {"encoding": "base64", "content": base64.b64encode(json.dumps(initial_checkpoint()).encode()).decode()}
 
@@ -364,8 +364,8 @@ headwords: 1
     def test_resuming_legacy_checkpoint_adds_failed_pages_counter(self):
         urls = source_urls()
         data_branch_url = (
-            "https://raw.githubusercontent.com/wizekin/USG-Workbench/"
-            "usg-external-lexical-data/state/checkpoint.json"
+            "https://api.github.com/repos/wizekin/USG-Workbench/contents/"
+            "state/checkpoint.json?ref=usg-external-lexical-data"
         )
         legacy = initial_checkpoint()
         legacy.update({
