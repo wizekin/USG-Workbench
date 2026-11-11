@@ -28,6 +28,13 @@ on:
       - "tests/test_open_world_browser.py"
       - "tests/test_python_kernel_v15_document_adapter.py"
       - "implementations/python-kernel/v0.6.0/**"
+      - "implementations/python-kernel/v0.7.0/**"
+      - "implementations/python-kernel/v0.8.0/**"
+      - "implementations/python-kernel/v0.9.0/**"
+      - "implementations/python-kernel/v1.0.0/**"
+      - "implementations/python-kernel/v1.1.0/**"
+      - "implementations/python-kernel/v1.2.1/**"
+      - "implementations/python-kernel/v1.3.0/**"
       - "implementations/python-kernel/v1.4.0/**"
       - "implementations/semantic-workbench-js/v0.5.4/**"
       - "tests/test_phase2_inference_executor.py"
@@ -37,6 +44,7 @@ on:
       - "tests/test_phase6_nominal_candidate_v0_4_1.py"
       - "documentation/USG-OPEN-WORLD-CONTINUOUS-EXPLORATION.md"
       - "documentation/OW-12-NATIVE-AND-BROWSER-ORACLES.md"
+      - "documentation/OW-13-FULL-GENERATION-AND-REASONING-COVERAGE.md"
 
 permissions:
   contents: write
