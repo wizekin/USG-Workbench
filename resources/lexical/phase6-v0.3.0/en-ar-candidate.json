@@ -1,0 +1,4405 @@
+{
+  "resource_id": "phase6.lexicon.bilingual.candidate",
+  "version": "0.3.0",
+  "contract": "USG-INTERPRET/0.3.0",
+  "status": "CANDIDATE",
+  "provenance": {
+    "method": "Project-authored candidate lexical inventory extracted from exact positive fixture tokens in the immutable USG-INTERPRET-GOLD/0.3.0 corpus; no external dictionary claims; every entry carries source fixture spans.",
+    "benchmark": "benchmarks/phase6-interpretation-v0.3.0/corpus.json",
+    "language_profiles": {
+      "en": "en/standard-written-1.0",
+      "ar": "ar/modern-standard-1.0"
+    },
+    "limitations": [
+      "Only forms observed in positive benchmark fixtures are included.",
+      "Lexical senses are candidate links, not approved definitions or runtime disambiguation.",
+      "Predicate-head and grammatical-marker spans are lexical evidence, not semantic participant roles.",
+      "No root-pattern Arabic morphological generator is implied."
+    ]
+  },
+  "entries": [
+    {
+      "language": "ar",
+      "language_profile": "ar/modern-standard-1.0",
+      "form": "أرسل",
+      "lemma": "أرسل",
+      "part_of_speech": "VERB",
+      "sense_id": "usg.sense.transfer",
+      "features": {
+        "VerbForm": "PerfectiveOrLexicalized"
+      },
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.06",
+          "start": 0,
+          "end": 4,
+          "surface": "أرسل"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.07",
+          "start": 0,
+          "end": 4,
+          "surface": "أرسل"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.08",
+          "start": 0,
+          "end": 4,
+          "surface": "أرسل"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.09",
+          "start": 0,
+          "end": 4,
+          "surface": "أرسل"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.10",
+          "start": 0,
+          "end": 4,
+          "surface": "أرسل"
+        }
+      ]
+    },
+    {
+      "language": "ar",
+      "language_profile": "ar/modern-standard-1.0",
+      "form": "أعطى",
+      "lemma": "أعطى",
+      "part_of_speech": "VERB",
+      "sense_id": "usg.sense.transfer",
+      "features": {
+        "VerbForm": "PerfectiveOrLexicalized"
+      },
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.01",
+          "start": 0,
+          "end": 4,
+          "surface": "أعطى"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.02",
+          "start": 0,
+          "end": 4,
+          "surface": "أعطى"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.03",
+          "start": 0,
+          "end": 4,
+          "surface": "أعطى"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.04",
+          "start": 0,
+          "end": 4,
+          "surface": "أعطى"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.05",
+          "start": 0,
+          "end": 4,
+          "surface": "أعطى"
+        }
+      ]
+    },
+    {
+      "language": "ar",
+      "language_profile": "ar/modern-standard-1.0",
+      "form": "الأب",
+      "lemma": "الأب",
+      "part_of_speech": "NOUN",
+      "sense_id": "usg.sense.entity",
+      "features": {},
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.02",
+          "start": 5,
+          "end": 9,
+          "surface": "الأب"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.07",
+          "start": 5,
+          "end": 9,
+          "surface": "الأب"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.12",
+          "start": 4,
+          "end": 8,
+          "surface": "الأب"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.17",
+          "start": 5,
+          "end": 9,
+          "surface": "الأب"
+        }
+      ]
+    },
+    {
+      "language": "ar",
+      "language_profile": "ar/modern-standard-1.0",
+      "form": "البوابة",
+      "lemma": "البوابة",
+      "part_of_speech": "NOUN",
+      "sense_id": "usg.sense.spatial.location",
+      "features": {},
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "ar.prepositional.location.positive.11",
+          "start": 16,
+          "end": 23,
+          "surface": "البوابة"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.12",
+          "start": 17,
+          "end": 24,
+          "surface": "البوابة"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.13",
+          "start": 17,
+          "end": 24,
+          "surface": "البوابة"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.14",
+          "start": 16,
+          "end": 23,
+          "surface": "البوابة"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.15",
+          "start": 18,
+          "end": 25,
+          "surface": "البوابة"
+        }
+      ]
+    },
+    {
+      "language": "ar",
+      "language_profile": "ar/modern-standard-1.0",
+      "form": "الرجل",
+      "lemma": "الرجل",
+      "part_of_speech": "NOUN",
+      "sense_id": "usg.sense.entity",
+      "features": {},
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "ar.intransitive.basic.positive.03",
+          "start": 4,
+          "end": 9,
+          "surface": "الرجل"
+        },
+        {
+          "fixture_id": "ar.intransitive.basic.positive.08",
+          "start": 4,
+          "end": 9,
+          "surface": "الرجل"
+        },
+        {
+          "fixture_id": "ar.intransitive.basic.positive.13",
+          "start": 4,
+          "end": 9,
+          "surface": "الرجل"
+        },
+        {
+          "fixture_id": "ar.intransitive.basic.positive.18",
+          "start": 6,
+          "end": 11,
+          "surface": "الرجل"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.05",
+          "start": 5,
+          "end": 10,
+          "surface": "الرجل"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.10",
+          "start": 5,
+          "end": 10,
+          "surface": "الرجل"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.15",
+          "start": 4,
+          "end": 9,
+          "surface": "الرجل"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.20",
+          "start": 5,
+          "end": 10,
+          "surface": "الرجل"
+        },
+        {
+          "fixture_id": "ar.copular.predicative.positive.03",
+          "start": 0,
+          "end": 5,
+          "surface": "الرجل"
+        },
+        {
+          "fixture_id": "ar.copular.predicative.positive.08",
+          "start": 0,
+          "end": 5,
+          "surface": "الرجل"
+        },
+        {
+          "fixture_id": "ar.copular.predicative.positive.13",
+          "start": 0,
+          "end": 5,
+          "surface": "الرجل"
+        },
+        {
+          "fixture_id": "ar.copular.predicative.positive.18",
+          "start": 0,
+          "end": 5,
+          "surface": "الرجل"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.01",
+          "start": 4,
+          "end": 9,
+          "surface": "الرجل"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.06",
+          "start": 6,
+          "end": 11,
+          "surface": "الرجل"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.11",
+          "start": 4,
+          "end": 9,
+          "surface": "الرجل"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.16",
+          "start": 4,
+          "end": 9,
+          "surface": "الرجل"
+        }
+      ]
+    },
+    {
+      "language": "ar",
+      "language_profile": "ar/modern-standard-1.0",
+      "form": "الصديق",
+      "lemma": "الصديق",
+      "part_of_speech": "NOUN",
+      "sense_id": "usg.sense.entity",
+      "features": {},
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.04",
+          "start": 12,
+          "end": 18,
+          "surface": "الصديق"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.08",
+          "start": 12,
+          "end": 18,
+          "surface": "الصديق"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.12",
+          "start": 9,
+          "end": 15,
+          "surface": "الصديق"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.16",
+          "start": 12,
+          "end": 18,
+          "surface": "الصديق"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.20",
+          "start": 11,
+          "end": 17,
+          "surface": "الصديق"
+        }
+      ]
+    },
+    {
+      "language": "ar",
+      "language_profile": "ar/modern-standard-1.0",
+      "form": "الطالب",
+      "lemma": "الطالب",
+      "part_of_speech": "NOUN",
+      "sense_id": "usg.sense.entity",
+      "features": {},
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "ar.intransitive.basic.positive.01",
+          "start": 4,
+          "end": 10,
+          "surface": "الطالب"
+        },
+        {
+          "fixture_id": "ar.intransitive.basic.positive.06",
+          "start": 4,
+          "end": 10,
+          "surface": "الطالب"
+        },
+        {
+          "fixture_id": "ar.intransitive.basic.positive.11",
+          "start": 4,
+          "end": 10,
+          "surface": "الطالب"
+        },
+        {
+          "fixture_id": "ar.intransitive.basic.positive.16",
+          "start": 6,
+          "end": 12,
+          "surface": "الطالب"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.01",
+          "start": 12,
+          "end": 18,
+          "surface": "الطالب"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.04",
+          "start": 5,
+          "end": 11,
+          "surface": "الطالب"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.05",
+          "start": 11,
+          "end": 17,
+          "surface": "الطالب"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.09",
+          "start": 5,
+          "end": 11,
+          "surface": "الطالب"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.13",
+          "start": 11,
+          "end": 17,
+          "surface": "الطالب"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.14",
+          "start": 4,
+          "end": 10,
+          "surface": "الطالب"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.17",
+          "start": 10,
+          "end": 16,
+          "surface": "الطالب"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.19",
+          "start": 5,
+          "end": 11,
+          "surface": "الطالب"
+        },
+        {
+          "fixture_id": "ar.copular.predicative.positive.01",
+          "start": 0,
+          "end": 6,
+          "surface": "الطالب"
+        },
+        {
+          "fixture_id": "ar.copular.predicative.positive.06",
+          "start": 0,
+          "end": 6,
+          "surface": "الطالب"
+        },
+        {
+          "fixture_id": "ar.copular.predicative.positive.11",
+          "start": 0,
+          "end": 6,
+          "surface": "الطالب"
+        },
+        {
+          "fixture_id": "ar.copular.predicative.positive.16",
+          "start": 0,
+          "end": 6,
+          "surface": "الطالب"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.02",
+          "start": 4,
+          "end": 10,
+          "surface": "الطالب"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.07",
+          "start": 6,
+          "end": 12,
+          "surface": "الطالب"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.12",
+          "start": 4,
+          "end": 10,
+          "surface": "الطالب"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.17",
+          "start": 4,
+          "end": 10,
+          "surface": "الطالب"
+        }
+      ]
+    },
+    {
+      "language": "ar",
+      "language_profile": "ar/modern-standard-1.0",
+      "form": "الطفل",
+      "lemma": "الطفل",
+      "part_of_speech": "NOUN",
+      "sense_id": "usg.sense.entity",
+      "features": {},
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "ar.intransitive.basic.positive.04",
+          "start": 4,
+          "end": 9,
+          "surface": "الطفل"
+        },
+        {
+          "fixture_id": "ar.intransitive.basic.positive.09",
+          "start": 4,
+          "end": 9,
+          "surface": "الطفل"
+        },
+        {
+          "fixture_id": "ar.intransitive.basic.positive.14",
+          "start": 4,
+          "end": 9,
+          "surface": "الطفل"
+        },
+        {
+          "fixture_id": "ar.intransitive.basic.positive.19",
+          "start": 6,
+          "end": 11,
+          "surface": "الطفل"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.02",
+          "start": 10,
+          "end": 15,
+          "surface": "الطفل"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.06",
+          "start": 12,
+          "end": 17,
+          "surface": "الطفل"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.10",
+          "start": 11,
+          "end": 16,
+          "surface": "الطفل"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.14",
+          "start": 11,
+          "end": 16,
+          "surface": "الطفل"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.18",
+          "start": 12,
+          "end": 17,
+          "surface": "الطفل"
+        },
+        {
+          "fixture_id": "ar.copular.predicative.positive.04",
+          "start": 0,
+          "end": 5,
+          "surface": "الطفل"
+        },
+        {
+          "fixture_id": "ar.copular.predicative.positive.09",
+          "start": 0,
+          "end": 5,
+          "surface": "الطفل"
+        },
+        {
+          "fixture_id": "ar.copular.predicative.positive.14",
+          "start": 0,
+          "end": 5,
+          "surface": "الطفل"
+        },
+        {
+          "fixture_id": "ar.copular.predicative.positive.19",
+          "start": 0,
+          "end": 5,
+          "surface": "الطفل"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.04",
+          "start": 4,
+          "end": 9,
+          "surface": "الطفل"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.09",
+          "start": 6,
+          "end": 11,
+          "surface": "الطفل"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.14",
+          "start": 4,
+          "end": 9,
+          "surface": "الطفل"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.19",
+          "start": 4,
+          "end": 9,
+          "surface": "الطفل"
+        }
+      ]
+    },
+    {
+      "language": "ar",
+      "language_profile": "ar/modern-standard-1.0",
+      "form": "الغرفة",
+      "lemma": "الغرفة",
+      "part_of_speech": "NOUN",
+      "sense_id": "usg.sense.spatial.location",
+      "features": {},
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "ar.prepositional.location.positive.01",
+          "start": 13,
+          "end": 19,
+          "surface": "الغرفة"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.02",
+          "start": 14,
+          "end": 20,
+          "surface": "الغرفة"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.03",
+          "start": 14,
+          "end": 20,
+          "surface": "الغرفة"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.04",
+          "start": 13,
+          "end": 19,
+          "surface": "الغرفة"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.05",
+          "start": 15,
+          "end": 21,
+          "surface": "الغرفة"
+        }
+      ]
+    },
+    {
+      "language": "ar",
+      "language_profile": "ar/modern-standard-1.0",
+      "form": "القاعة",
+      "lemma": "القاعة",
+      "part_of_speech": "NOUN",
+      "sense_id": "usg.sense.spatial.location",
+      "features": {},
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "ar.prepositional.location.positive.16",
+          "start": 15,
+          "end": 21,
+          "surface": "القاعة"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.17",
+          "start": 16,
+          "end": 22,
+          "surface": "القاعة"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.18",
+          "start": 16,
+          "end": 22,
+          "surface": "القاعة"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.19",
+          "start": 15,
+          "end": 21,
+          "surface": "القاعة"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.20",
+          "start": 17,
+          "end": 23,
+          "surface": "القاعة"
+        }
+      ]
+    },
+    {
+      "language": "ar",
+      "language_profile": "ar/modern-standard-1.0",
+      "form": "المحطة",
+      "lemma": "المحطة",
+      "part_of_speech": "NOUN",
+      "sense_id": "usg.sense.spatial.location",
+      "features": {},
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "ar.prepositional.location.positive.06",
+          "start": 16,
+          "end": 22,
+          "surface": "المحطة"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.07",
+          "start": 17,
+          "end": 23,
+          "surface": "المحطة"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.08",
+          "start": 17,
+          "end": 23,
+          "surface": "المحطة"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.09",
+          "start": 16,
+          "end": 22,
+          "surface": "المحطة"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.10",
+          "start": 18,
+          "end": 24,
+          "surface": "المحطة"
+        }
+      ]
+    },
+    {
+      "language": "ar",
+      "language_profile": "ar/modern-standard-1.0",
+      "form": "المدير",
+      "lemma": "المدير",
+      "part_of_speech": "NOUN",
+      "sense_id": "usg.sense.entity",
+      "features": {},
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.03",
+          "start": 5,
+          "end": 11,
+          "surface": "المدير"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.08",
+          "start": 5,
+          "end": 11,
+          "surface": "المدير"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.13",
+          "start": 4,
+          "end": 10,
+          "surface": "المدير"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.18",
+          "start": 5,
+          "end": 11,
+          "surface": "المدير"
+        }
+      ]
+    },
+    {
+      "language": "ar",
+      "language_profile": "ar/modern-standard-1.0",
+      "form": "المسافر",
+      "lemma": "المسافر",
+      "part_of_speech": "NOUN",
+      "sense_id": "usg.sense.entity",
+      "features": {},
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "ar.intransitive.basic.positive.05",
+          "start": 4,
+          "end": 11,
+          "surface": "المسافر"
+        },
+        {
+          "fixture_id": "ar.intransitive.basic.positive.10",
+          "start": 4,
+          "end": 11,
+          "surface": "المسافر"
+        },
+        {
+          "fixture_id": "ar.intransitive.basic.positive.15",
+          "start": 4,
+          "end": 11,
+          "surface": "المسافر"
+        },
+        {
+          "fixture_id": "ar.intransitive.basic.positive.20",
+          "start": 6,
+          "end": 13,
+          "surface": "المسافر"
+        },
+        {
+          "fixture_id": "ar.copular.predicative.positive.05",
+          "start": 0,
+          "end": 7,
+          "surface": "المسافر"
+        },
+        {
+          "fixture_id": "ar.copular.predicative.positive.10",
+          "start": 0,
+          "end": 7,
+          "surface": "المسافر"
+        },
+        {
+          "fixture_id": "ar.copular.predicative.positive.15",
+          "start": 0,
+          "end": 7,
+          "surface": "المسافر"
+        },
+        {
+          "fixture_id": "ar.copular.predicative.positive.20",
+          "start": 0,
+          "end": 7,
+          "surface": "المسافر"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.05",
+          "start": 4,
+          "end": 11,
+          "surface": "المسافر"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.10",
+          "start": 6,
+          "end": 13,
+          "surface": "المسافر"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.15",
+          "start": 4,
+          "end": 11,
+          "surface": "المسافر"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.20",
+          "start": 4,
+          "end": 11,
+          "surface": "المسافر"
+        }
+      ]
+    },
+    {
+      "language": "ar",
+      "language_profile": "ar/modern-standard-1.0",
+      "form": "المعلم",
+      "lemma": "المعلم",
+      "part_of_speech": "NOUN",
+      "sense_id": "usg.sense.entity",
+      "features": {},
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "ar.intransitive.basic.positive.02",
+          "start": 4,
+          "end": 10,
+          "surface": "المعلم"
+        },
+        {
+          "fixture_id": "ar.intransitive.basic.positive.07",
+          "start": 4,
+          "end": 10,
+          "surface": "المعلم"
+        },
+        {
+          "fixture_id": "ar.intransitive.basic.positive.12",
+          "start": 4,
+          "end": 10,
+          "surface": "المعلم"
+        },
+        {
+          "fixture_id": "ar.intransitive.basic.positive.17",
+          "start": 6,
+          "end": 12,
+          "surface": "المعلم"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.01",
+          "start": 5,
+          "end": 11,
+          "surface": "المعلم"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.06",
+          "start": 5,
+          "end": 11,
+          "surface": "المعلم"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.11",
+          "start": 4,
+          "end": 10,
+          "surface": "المعلم"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.16",
+          "start": 5,
+          "end": 11,
+          "surface": "المعلم"
+        },
+        {
+          "fixture_id": "ar.copular.predicative.positive.02",
+          "start": 0,
+          "end": 6,
+          "surface": "المعلم"
+        },
+        {
+          "fixture_id": "ar.copular.predicative.positive.07",
+          "start": 0,
+          "end": 6,
+          "surface": "المعلم"
+        },
+        {
+          "fixture_id": "ar.copular.predicative.positive.12",
+          "start": 0,
+          "end": 6,
+          "surface": "المعلم"
+        },
+        {
+          "fixture_id": "ar.copular.predicative.positive.17",
+          "start": 0,
+          "end": 6,
+          "surface": "المعلم"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.03",
+          "start": 4,
+          "end": 10,
+          "surface": "المعلم"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.08",
+          "start": 6,
+          "end": 12,
+          "surface": "المعلم"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.13",
+          "start": 4,
+          "end": 10,
+          "surface": "المعلم"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.18",
+          "start": 4,
+          "end": 10,
+          "surface": "المعلم"
+        }
+      ]
+    },
+    {
+      "language": "ar",
+      "language_profile": "ar/modern-standard-1.0",
+      "form": "الموظف",
+      "lemma": "الموظف",
+      "part_of_speech": "NOUN",
+      "sense_id": "usg.sense.entity",
+      "features": {},
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.03",
+          "start": 12,
+          "end": 18,
+          "surface": "الموظف"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.07",
+          "start": 10,
+          "end": 16,
+          "surface": "الموظف"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.11",
+          "start": 11,
+          "end": 17,
+          "surface": "الموظف"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.15",
+          "start": 10,
+          "end": 16,
+          "surface": "الموظف"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.19",
+          "start": 12,
+          "end": 18,
+          "surface": "الموظف"
+        }
+      ]
+    },
+    {
+      "language": "ar",
+      "language_profile": "ar/modern-standard-1.0",
+      "form": "انتظر",
+      "lemma": "انتظر",
+      "part_of_speech": "VERB",
+      "sense_id": "usg.sense.event.intransitive",
+      "features": {
+        "VerbForm": "PerfectiveOrLexicalized"
+      },
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "ar.intransitive.basic.positive.16",
+          "start": 0,
+          "end": 5,
+          "surface": "انتظر"
+        },
+        {
+          "fixture_id": "ar.intransitive.basic.positive.17",
+          "start": 0,
+          "end": 5,
+          "surface": "انتظر"
+        },
+        {
+          "fixture_id": "ar.intransitive.basic.positive.18",
+          "start": 0,
+          "end": 5,
+          "surface": "انتظر"
+        },
+        {
+          "fixture_id": "ar.intransitive.basic.positive.19",
+          "start": 0,
+          "end": 5,
+          "surface": "انتظر"
+        },
+        {
+          "fixture_id": "ar.intransitive.basic.positive.20",
+          "start": 0,
+          "end": 5,
+          "surface": "انتظر"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.06",
+          "start": 0,
+          "end": 5,
+          "surface": "انتظر"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.07",
+          "start": 0,
+          "end": 5,
+          "surface": "انتظر"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.08",
+          "start": 0,
+          "end": 5,
+          "surface": "انتظر"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.09",
+          "start": 0,
+          "end": 5,
+          "surface": "انتظر"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.10",
+          "start": 0,
+          "end": 5,
+          "surface": "انتظر"
+        }
+      ]
+    },
+    {
+      "language": "ar",
+      "language_profile": "ar/modern-standard-1.0",
+      "form": "بجانب",
+      "lemma": "بجانب",
+      "part_of_speech": "ADP",
+      "sense_id": "usg.sense.spatial.marker",
+      "features": {},
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "ar.prepositional.location.positive.11",
+          "start": 10,
+          "end": 15,
+          "surface": "بجانب"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.12",
+          "start": 11,
+          "end": 16,
+          "surface": "بجانب"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.13",
+          "start": 11,
+          "end": 16,
+          "surface": "بجانب"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.14",
+          "start": 10,
+          "end": 15,
+          "surface": "بجانب"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.15",
+          "start": 12,
+          "end": 17,
+          "surface": "بجانب"
+        }
+      ]
+    },
+    {
+      "language": "ar",
+      "language_profile": "ar/modern-standard-1.0",
+      "form": "بقي",
+      "lemma": "بقي",
+      "part_of_speech": "VERB",
+      "sense_id": "usg.sense.spatial.location",
+      "features": {
+        "VerbForm": "PerfectiveOrLexicalized"
+      },
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "ar.prepositional.location.positive.16",
+          "start": 0,
+          "end": 3,
+          "surface": "بقي"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.17",
+          "start": 0,
+          "end": 3,
+          "surface": "بقي"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.18",
+          "start": 0,
+          "end": 3,
+          "surface": "بقي"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.19",
+          "start": 0,
+          "end": 3,
+          "surface": "بقي"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.20",
+          "start": 0,
+          "end": 3,
+          "surface": "بقي"
+        }
+      ]
+    },
+    {
+      "language": "ar",
+      "language_profile": "ar/modern-standard-1.0",
+      "form": "جلس",
+      "lemma": "جلس",
+      "part_of_speech": "VERB",
+      "sense_id": "usg.sense.spatial.location",
+      "features": {
+        "VerbForm": "PerfectiveOrLexicalized"
+      },
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "ar.prepositional.location.positive.01",
+          "start": 0,
+          "end": 3,
+          "surface": "جلس"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.02",
+          "start": 0,
+          "end": 3,
+          "surface": "جلس"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.03",
+          "start": 0,
+          "end": 3,
+          "surface": "جلس"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.04",
+          "start": 0,
+          "end": 3,
+          "surface": "جلس"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.05",
+          "start": 0,
+          "end": 3,
+          "surface": "جلس"
+        }
+      ]
+    },
+    {
+      "language": "ar",
+      "language_profile": "ar/modern-standard-1.0",
+      "form": "خريطةً",
+      "lemma": "خريطةً",
+      "part_of_speech": "NOUN",
+      "sense_id": "usg.sense.entity",
+      "features": {},
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.16",
+          "start": 19,
+          "end": 25,
+          "surface": "خريطةً"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.17",
+          "start": 17,
+          "end": 23,
+          "surface": "خريطةً"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.18",
+          "start": 18,
+          "end": 24,
+          "surface": "خريطةً"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.19",
+          "start": 19,
+          "end": 25,
+          "surface": "خريطةً"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.20",
+          "start": 18,
+          "end": 24,
+          "surface": "خريطةً"
+        }
+      ]
+    },
+    {
+      "language": "ar",
+      "language_profile": "ar/modern-standard-1.0",
+      "form": "داخل",
+      "lemma": "داخل",
+      "part_of_speech": "ADP",
+      "sense_id": "usg.sense.spatial.marker",
+      "features": {},
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "ar.prepositional.location.positive.16",
+          "start": 10,
+          "end": 14,
+          "surface": "داخل"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.17",
+          "start": 11,
+          "end": 15,
+          "surface": "داخل"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.18",
+          "start": 11,
+          "end": 15,
+          "surface": "داخل"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.19",
+          "start": 10,
+          "end": 14,
+          "surface": "داخل"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.20",
+          "start": 12,
+          "end": 16,
+          "surface": "داخل"
+        }
+      ]
+    },
+    {
+      "language": "ar",
+      "language_profile": "ar/modern-standard-1.0",
+      "form": "رسالةً",
+      "lemma": "رسالةً",
+      "part_of_speech": "NOUN",
+      "sense_id": "usg.sense.entity",
+      "features": {},
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.06",
+          "start": 18,
+          "end": 24,
+          "surface": "رسالةً"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.07",
+          "start": 17,
+          "end": 23,
+          "surface": "رسالةً"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.08",
+          "start": 19,
+          "end": 25,
+          "surface": "رسالةً"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.09",
+          "start": 19,
+          "end": 25,
+          "surface": "رسالةً"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.10",
+          "start": 17,
+          "end": 23,
+          "surface": "رسالةً"
+        }
+      ]
+    },
+    {
+      "language": "ar",
+      "language_profile": "ar/modern-standard-1.0",
+      "form": "ضحك",
+      "lemma": "ضحك",
+      "part_of_speech": "VERB",
+      "sense_id": "usg.sense.event.intransitive",
+      "features": {
+        "VerbForm": "PerfectiveOrLexicalized"
+      },
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "ar.intransitive.basic.positive.11",
+          "start": 0,
+          "end": 3,
+          "surface": "ضحك"
+        },
+        {
+          "fixture_id": "ar.intransitive.basic.positive.12",
+          "start": 0,
+          "end": 3,
+          "surface": "ضحك"
+        },
+        {
+          "fixture_id": "ar.intransitive.basic.positive.13",
+          "start": 0,
+          "end": 3,
+          "surface": "ضحك"
+        },
+        {
+          "fixture_id": "ar.intransitive.basic.positive.14",
+          "start": 0,
+          "end": 3,
+          "surface": "ضحك"
+        },
+        {
+          "fixture_id": "ar.intransitive.basic.positive.15",
+          "start": 0,
+          "end": 3,
+          "surface": "ضحك"
+        }
+      ]
+    },
+    {
+      "language": "ar",
+      "language_profile": "ar/modern-standard-1.0",
+      "form": "عرض",
+      "lemma": "عرض",
+      "part_of_speech": "VERB",
+      "sense_id": "usg.sense.transfer",
+      "features": {
+        "VerbForm": "PerfectiveOrLexicalized"
+      },
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.11",
+          "start": 0,
+          "end": 3,
+          "surface": "عرض"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.12",
+          "start": 0,
+          "end": 3,
+          "surface": "عرض"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.13",
+          "start": 0,
+          "end": 3,
+          "surface": "عرض"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.14",
+          "start": 0,
+          "end": 3,
+          "surface": "عرض"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.15",
+          "start": 0,
+          "end": 3,
+          "surface": "عرض"
+        }
+      ]
+    },
+    {
+      "language": "ar",
+      "language_profile": "ar/modern-standard-1.0",
+      "form": "عمل",
+      "lemma": "عمل",
+      "part_of_speech": "VERB",
+      "sense_id": "usg.sense.spatial.location",
+      "features": {
+        "VerbForm": "PerfectiveOrLexicalized"
+      },
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "ar.prepositional.location.positive.11",
+          "start": 0,
+          "end": 3,
+          "surface": "عمل"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.12",
+          "start": 0,
+          "end": 3,
+          "surface": "عمل"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.13",
+          "start": 0,
+          "end": 3,
+          "surface": "عمل"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.14",
+          "start": 0,
+          "end": 3,
+          "surface": "عمل"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.15",
+          "start": 0,
+          "end": 3,
+          "surface": "عمل"
+        }
+      ]
+    },
+    {
+      "language": "ar",
+      "language_profile": "ar/modern-standard-1.0",
+      "form": "فضولي",
+      "lemma": "فضولي",
+      "part_of_speech": "ADJ",
+      "sense_id": "usg.sense.property.attribute",
+      "features": {
+        "Degree": "Positive"
+      },
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "ar.copular.predicative.positive.11",
+          "start": 7,
+          "end": 12,
+          "surface": "فضولي"
+        },
+        {
+          "fixture_id": "ar.copular.predicative.positive.12",
+          "start": 7,
+          "end": 12,
+          "surface": "فضولي"
+        },
+        {
+          "fixture_id": "ar.copular.predicative.positive.13",
+          "start": 6,
+          "end": 11,
+          "surface": "فضولي"
+        },
+        {
+          "fixture_id": "ar.copular.predicative.positive.14",
+          "start": 6,
+          "end": 11,
+          "surface": "فضولي"
+        },
+        {
+          "fixture_id": "ar.copular.predicative.positive.15",
+          "start": 8,
+          "end": 13,
+          "surface": "فضولي"
+        }
+      ]
+    },
+    {
+      "language": "ar",
+      "language_profile": "ar/modern-standard-1.0",
+      "form": "في",
+      "lemma": "في",
+      "part_of_speech": "ADP",
+      "sense_id": "usg.sense.spatial.marker",
+      "features": {},
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "ar.prepositional.location.positive.01",
+          "start": 10,
+          "end": 12,
+          "surface": "في"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.02",
+          "start": 11,
+          "end": 13,
+          "surface": "في"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.03",
+          "start": 11,
+          "end": 13,
+          "surface": "في"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.04",
+          "start": 10,
+          "end": 12,
+          "surface": "في"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.05",
+          "start": 12,
+          "end": 14,
+          "surface": "في"
+        }
+      ]
+    },
+    {
+      "language": "ar",
+      "language_profile": "ar/modern-standard-1.0",
+      "form": "قرب",
+      "lemma": "قرب",
+      "part_of_speech": "ADP",
+      "sense_id": "usg.sense.spatial.marker",
+      "features": {},
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "ar.prepositional.location.positive.06",
+          "start": 12,
+          "end": 15,
+          "surface": "قرب"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.07",
+          "start": 13,
+          "end": 16,
+          "surface": "قرب"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.08",
+          "start": 13,
+          "end": 16,
+          "surface": "قرب"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.09",
+          "start": 12,
+          "end": 15,
+          "surface": "قرب"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.10",
+          "start": 14,
+          "end": 17,
+          "surface": "قرب"
+        }
+      ]
+    },
+    {
+      "language": "ar",
+      "language_profile": "ar/modern-standard-1.0",
+      "form": "كتابًا",
+      "lemma": "كتابًا",
+      "part_of_speech": "NOUN",
+      "sense_id": "usg.sense.entity",
+      "features": {},
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.01",
+          "start": 19,
+          "end": 25,
+          "surface": "كتابًا"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.02",
+          "start": 16,
+          "end": 22,
+          "surface": "كتابًا"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.03",
+          "start": 19,
+          "end": 25,
+          "surface": "كتابًا"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.04",
+          "start": 19,
+          "end": 25,
+          "surface": "كتابًا"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.05",
+          "start": 18,
+          "end": 24,
+          "surface": "كتابًا"
+        }
+      ]
+    },
+    {
+      "language": "ar",
+      "language_profile": "ar/modern-standard-1.0",
+      "form": "متعب",
+      "lemma": "متعب",
+      "part_of_speech": "ADJ",
+      "sense_id": "usg.sense.property.attribute",
+      "features": {
+        "Degree": "Positive"
+      },
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "ar.copular.predicative.positive.16",
+          "start": 7,
+          "end": 11,
+          "surface": "متعب"
+        },
+        {
+          "fixture_id": "ar.copular.predicative.positive.17",
+          "start": 7,
+          "end": 11,
+          "surface": "متعب"
+        },
+        {
+          "fixture_id": "ar.copular.predicative.positive.18",
+          "start": 6,
+          "end": 10,
+          "surface": "متعب"
+        },
+        {
+          "fixture_id": "ar.copular.predicative.positive.19",
+          "start": 6,
+          "end": 10,
+          "surface": "متعب"
+        },
+        {
+          "fixture_id": "ar.copular.predicative.positive.20",
+          "start": 8,
+          "end": 12,
+          "surface": "متعب"
+        }
+      ]
+    },
+    {
+      "language": "ar",
+      "language_profile": "ar/modern-standard-1.0",
+      "form": "مستعد",
+      "lemma": "مستعد",
+      "part_of_speech": "ADJ",
+      "sense_id": "usg.sense.property.attribute",
+      "features": {
+        "Degree": "Positive"
+      },
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "ar.copular.predicative.positive.06",
+          "start": 7,
+          "end": 12,
+          "surface": "مستعد"
+        },
+        {
+          "fixture_id": "ar.copular.predicative.positive.07",
+          "start": 7,
+          "end": 12,
+          "surface": "مستعد"
+        },
+        {
+          "fixture_id": "ar.copular.predicative.positive.08",
+          "start": 6,
+          "end": 11,
+          "surface": "مستعد"
+        },
+        {
+          "fixture_id": "ar.copular.predicative.positive.09",
+          "start": 6,
+          "end": 11,
+          "surface": "مستعد"
+        },
+        {
+          "fixture_id": "ar.copular.predicative.positive.10",
+          "start": 8,
+          "end": 13,
+          "surface": "مستعد"
+        }
+      ]
+    },
+    {
+      "language": "ar",
+      "language_profile": "ar/modern-standard-1.0",
+      "form": "مفتاحًا",
+      "lemma": "مفتاحًا",
+      "part_of_speech": "NOUN",
+      "sense_id": "usg.sense.entity",
+      "features": {},
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.11",
+          "start": 18,
+          "end": 25,
+          "surface": "مفتاحًا"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.12",
+          "start": 16,
+          "end": 23,
+          "surface": "مفتاحًا"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.13",
+          "start": 18,
+          "end": 25,
+          "surface": "مفتاحًا"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.14",
+          "start": 17,
+          "end": 24,
+          "surface": "مفتاحًا"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.15",
+          "start": 17,
+          "end": 24,
+          "surface": "مفتاحًا"
+        }
+      ]
+    },
+    {
+      "language": "ar",
+      "language_profile": "ar/modern-standard-1.0",
+      "form": "نام",
+      "lemma": "نام",
+      "part_of_speech": "VERB",
+      "sense_id": "usg.sense.event.intransitive",
+      "features": {
+        "VerbForm": "PerfectiveOrLexicalized"
+      },
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "ar.intransitive.basic.positive.01",
+          "start": 0,
+          "end": 3,
+          "surface": "نام"
+        },
+        {
+          "fixture_id": "ar.intransitive.basic.positive.02",
+          "start": 0,
+          "end": 3,
+          "surface": "نام"
+        },
+        {
+          "fixture_id": "ar.intransitive.basic.positive.03",
+          "start": 0,
+          "end": 3,
+          "surface": "نام"
+        },
+        {
+          "fixture_id": "ar.intransitive.basic.positive.04",
+          "start": 0,
+          "end": 3,
+          "surface": "نام"
+        },
+        {
+          "fixture_id": "ar.intransitive.basic.positive.05",
+          "start": 0,
+          "end": 3,
+          "surface": "نام"
+        }
+      ]
+    },
+    {
+      "language": "ar",
+      "language_profile": "ar/modern-standard-1.0",
+      "form": "ناول",
+      "lemma": "ناول",
+      "part_of_speech": "VERB",
+      "sense_id": "usg.sense.transfer",
+      "features": {
+        "VerbForm": "PerfectiveOrLexicalized"
+      },
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.16",
+          "start": 0,
+          "end": 4,
+          "surface": "ناول"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.17",
+          "start": 0,
+          "end": 4,
+          "surface": "ناول"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.18",
+          "start": 0,
+          "end": 4,
+          "surface": "ناول"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.19",
+          "start": 0,
+          "end": 4,
+          "surface": "ناول"
+        },
+        {
+          "fixture_id": "ar.ditransitive.basic.positive.20",
+          "start": 0,
+          "end": 4,
+          "surface": "ناول"
+        }
+      ]
+    },
+    {
+      "language": "ar",
+      "language_profile": "ar/modern-standard-1.0",
+      "form": "هادئ",
+      "lemma": "هادئ",
+      "part_of_speech": "ADJ",
+      "sense_id": "usg.sense.property.attribute",
+      "features": {
+        "Degree": "Positive"
+      },
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "ar.copular.predicative.positive.01",
+          "start": 7,
+          "end": 11,
+          "surface": "هادئ"
+        },
+        {
+          "fixture_id": "ar.copular.predicative.positive.02",
+          "start": 7,
+          "end": 11,
+          "surface": "هادئ"
+        },
+        {
+          "fixture_id": "ar.copular.predicative.positive.03",
+          "start": 6,
+          "end": 10,
+          "surface": "هادئ"
+        },
+        {
+          "fixture_id": "ar.copular.predicative.positive.04",
+          "start": 6,
+          "end": 10,
+          "surface": "هادئ"
+        },
+        {
+          "fixture_id": "ar.copular.predicative.positive.05",
+          "start": 8,
+          "end": 12,
+          "surface": "هادئ"
+        }
+      ]
+    },
+    {
+      "language": "ar",
+      "language_profile": "ar/modern-standard-1.0",
+      "form": "وصل",
+      "lemma": "وصل",
+      "part_of_speech": "VERB",
+      "sense_id": "usg.sense.event.intransitive",
+      "features": {
+        "VerbForm": "PerfectiveOrLexicalized"
+      },
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "ar.intransitive.basic.positive.06",
+          "start": 0,
+          "end": 3,
+          "surface": "وصل"
+        },
+        {
+          "fixture_id": "ar.intransitive.basic.positive.07",
+          "start": 0,
+          "end": 3,
+          "surface": "وصل"
+        },
+        {
+          "fixture_id": "ar.intransitive.basic.positive.08",
+          "start": 0,
+          "end": 3,
+          "surface": "وصل"
+        },
+        {
+          "fixture_id": "ar.intransitive.basic.positive.09",
+          "start": 0,
+          "end": 3,
+          "surface": "وصل"
+        },
+        {
+          "fixture_id": "ar.intransitive.basic.positive.10",
+          "start": 0,
+          "end": 3,
+          "surface": "وصل"
+        }
+      ]
+    },
+    {
+      "language": "en",
+      "language_profile": "en/standard-written-1.0",
+      "form": "a",
+      "lemma": "a",
+      "part_of_speech": "DET",
+      "sense_id": "usg.sense.determiner",
+      "features": {
+        "Definiteness": "Indefinite"
+      },
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "en.ditransitive.basic.positive.01",
+          "start": 16,
+          "end": 17,
+          "surface": "a"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.02",
+          "start": 16,
+          "end": 17,
+          "surface": "a"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.03",
+          "start": 16,
+          "end": 17,
+          "surface": "a"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.04",
+          "start": 16,
+          "end": 17,
+          "surface": "a"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.05",
+          "start": 16,
+          "end": 17,
+          "surface": "a"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.11",
+          "start": 16,
+          "end": 17,
+          "surface": "a"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.12",
+          "start": 16,
+          "end": 17,
+          "surface": "a"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.13",
+          "start": 16,
+          "end": 17,
+          "surface": "a"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.14",
+          "start": 16,
+          "end": 17,
+          "surface": "a"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.15",
+          "start": 16,
+          "end": 17,
+          "surface": "a"
+        }
+      ]
+    },
+    {
+      "language": "en",
+      "language_profile": "en/standard-written-1.0",
+      "form": "Ali",
+      "lemma": "Ali",
+      "part_of_speech": "PROPN",
+      "sense_id": "usg.sense.entity",
+      "features": {
+        "Number": "Singular"
+      },
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "en.prepositional.location.positive.01",
+          "start": 0,
+          "end": 3,
+          "surface": "Ali"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.06",
+          "start": 0,
+          "end": 3,
+          "surface": "Ali"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.11",
+          "start": 0,
+          "end": 3,
+          "surface": "Ali"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.16",
+          "start": 0,
+          "end": 3,
+          "surface": "Ali"
+        }
+      ]
+    },
+    {
+      "language": "en",
+      "language_profile": "en/standard-written-1.0",
+      "form": "arrives",
+      "lemma": "arrive",
+      "part_of_speech": "VERB",
+      "sense_id": "usg.sense.event.intransitive",
+      "features": {
+        "VerbForm": "Finite",
+        "Person": "3",
+        "Number": "Singular"
+      },
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "en.intransitive.basic.positive.06",
+          "start": 5,
+          "end": 12,
+          "surface": "arrives"
+        },
+        {
+          "fixture_id": "en.intransitive.basic.positive.07",
+          "start": 5,
+          "end": 12,
+          "surface": "arrives"
+        },
+        {
+          "fixture_id": "en.intransitive.basic.positive.08",
+          "start": 5,
+          "end": 12,
+          "surface": "arrives"
+        },
+        {
+          "fixture_id": "en.intransitive.basic.positive.09",
+          "start": 5,
+          "end": 12,
+          "surface": "arrives"
+        },
+        {
+          "fixture_id": "en.intransitive.basic.positive.10",
+          "start": 5,
+          "end": 12,
+          "surface": "arrives"
+        }
+      ]
+    },
+    {
+      "language": "en",
+      "language_profile": "en/standard-written-1.0",
+      "form": "beside",
+      "lemma": "beside",
+      "part_of_speech": "ADP",
+      "sense_id": "usg.sense.spatial.location",
+      "features": {},
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "en.prepositional.location.positive.11",
+          "start": 10,
+          "end": 16,
+          "surface": "beside"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.12",
+          "start": 11,
+          "end": 17,
+          "surface": "beside"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.13",
+          "start": 11,
+          "end": 17,
+          "surface": "beside"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.14",
+          "start": 11,
+          "end": 17,
+          "surface": "beside"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.15",
+          "start": 11,
+          "end": 17,
+          "surface": "beside"
+        }
+      ]
+    },
+    {
+      "language": "en",
+      "language_profile": "en/standard-written-1.0",
+      "form": "book",
+      "lemma": "book",
+      "part_of_speech": "NOUN",
+      "sense_id": "usg.sense.entity",
+      "features": {},
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "en.ditransitive.basic.positive.01",
+          "start": 18,
+          "end": 22,
+          "surface": "book"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.02",
+          "start": 18,
+          "end": 22,
+          "surface": "book"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.03",
+          "start": 18,
+          "end": 22,
+          "surface": "book"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.04",
+          "start": 18,
+          "end": 22,
+          "surface": "book"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.05",
+          "start": 18,
+          "end": 22,
+          "surface": "book"
+        }
+      ]
+    },
+    {
+      "language": "en",
+      "language_profile": "en/standard-written-1.0",
+      "form": "calm",
+      "lemma": "calm",
+      "part_of_speech": "ADJ",
+      "sense_id": "usg.sense.property.attribute",
+      "features": {
+        "Degree": "Positive"
+      },
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "en.copular.predicative.positive.01",
+          "start": 8,
+          "end": 12,
+          "surface": "calm"
+        },
+        {
+          "fixture_id": "en.copular.predicative.positive.02",
+          "start": 8,
+          "end": 12,
+          "surface": "calm"
+        },
+        {
+          "fixture_id": "en.copular.predicative.positive.03",
+          "start": 8,
+          "end": 12,
+          "surface": "calm"
+        },
+        {
+          "fixture_id": "en.copular.predicative.positive.04",
+          "start": 8,
+          "end": 12,
+          "surface": "calm"
+        },
+        {
+          "fixture_id": "en.copular.predicative.positive.05",
+          "start": 8,
+          "end": 12,
+          "surface": "calm"
+        }
+      ]
+    },
+    {
+      "language": "en",
+      "language_profile": "en/standard-written-1.0",
+      "form": "curious",
+      "lemma": "curious",
+      "part_of_speech": "ADJ",
+      "sense_id": "usg.sense.property.attribute",
+      "features": {
+        "Degree": "Positive"
+      },
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "en.copular.predicative.positive.11",
+          "start": 8,
+          "end": 15,
+          "surface": "curious"
+        },
+        {
+          "fixture_id": "en.copular.predicative.positive.12",
+          "start": 8,
+          "end": 15,
+          "surface": "curious"
+        },
+        {
+          "fixture_id": "en.copular.predicative.positive.13",
+          "start": 8,
+          "end": 15,
+          "surface": "curious"
+        },
+        {
+          "fixture_id": "en.copular.predicative.positive.14",
+          "start": 8,
+          "end": 15,
+          "surface": "curious"
+        },
+        {
+          "fixture_id": "en.copular.predicative.positive.15",
+          "start": 8,
+          "end": 15,
+          "surface": "curious"
+        }
+      ]
+    },
+    {
+      "language": "en",
+      "language_profile": "en/standard-written-1.0",
+      "form": "gate",
+      "lemma": "gate",
+      "part_of_speech": "NOUN",
+      "sense_id": "usg.sense.spatial.location",
+      "features": {},
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "en.prepositional.location.positive.11",
+          "start": 21,
+          "end": 25,
+          "surface": "gate"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.12",
+          "start": 22,
+          "end": 26,
+          "surface": "gate"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.13",
+          "start": 22,
+          "end": 26,
+          "surface": "gate"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.14",
+          "start": 22,
+          "end": 26,
+          "surface": "gate"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.15",
+          "start": 22,
+          "end": 26,
+          "surface": "gate"
+        }
+      ]
+    },
+    {
+      "language": "en",
+      "language_profile": "en/standard-written-1.0",
+      "form": "gives",
+      "lemma": "give",
+      "part_of_speech": "VERB",
+      "sense_id": "usg.sense.transfer",
+      "features": {
+        "VerbForm": "Finite",
+        "Person": "3",
+        "Number": "Singular"
+      },
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "en.ditransitive.basic.positive.01",
+          "start": 5,
+          "end": 10,
+          "surface": "gives"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.02",
+          "start": 5,
+          "end": 10,
+          "surface": "gives"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.03",
+          "start": 5,
+          "end": 10,
+          "surface": "gives"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.04",
+          "start": 5,
+          "end": 10,
+          "surface": "gives"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.05",
+          "start": 5,
+          "end": 10,
+          "surface": "gives"
+        }
+      ]
+    },
+    {
+      "language": "en",
+      "language_profile": "en/standard-written-1.0",
+      "form": "hall",
+      "lemma": "hall",
+      "part_of_speech": "NOUN",
+      "sense_id": "usg.sense.spatial.location",
+      "features": {},
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "en.prepositional.location.positive.16",
+          "start": 21,
+          "end": 25,
+          "surface": "hall"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.17",
+          "start": 22,
+          "end": 26,
+          "surface": "hall"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.18",
+          "start": 22,
+          "end": 26,
+          "surface": "hall"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.19",
+          "start": 22,
+          "end": 26,
+          "surface": "hall"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.20",
+          "start": 22,
+          "end": 26,
+          "surface": "hall"
+        }
+      ]
+    },
+    {
+      "language": "en",
+      "language_profile": "en/standard-written-1.0",
+      "form": "hands",
+      "lemma": "hand",
+      "part_of_speech": "VERB",
+      "sense_id": "usg.sense.transfer",
+      "features": {
+        "VerbForm": "Finite",
+        "Person": "3",
+        "Number": "Singular"
+      },
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "en.ditransitive.basic.positive.16",
+          "start": 5,
+          "end": 10,
+          "surface": "hands"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.17",
+          "start": 5,
+          "end": 10,
+          "surface": "hands"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.18",
+          "start": 5,
+          "end": 10,
+          "surface": "hands"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.19",
+          "start": 5,
+          "end": 10,
+          "surface": "hands"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.20",
+          "start": 5,
+          "end": 10,
+          "surface": "hands"
+        }
+      ]
+    },
+    {
+      "language": "en",
+      "language_profile": "en/standard-written-1.0",
+      "form": "in",
+      "lemma": "in",
+      "part_of_speech": "ADP",
+      "sense_id": "usg.sense.spatial.location",
+      "features": {},
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "en.prepositional.location.positive.01",
+          "start": 10,
+          "end": 12,
+          "surface": "in"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.02",
+          "start": 11,
+          "end": 13,
+          "surface": "in"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.03",
+          "start": 11,
+          "end": 13,
+          "surface": "in"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.04",
+          "start": 11,
+          "end": 13,
+          "surface": "in"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.05",
+          "start": 11,
+          "end": 13,
+          "surface": "in"
+        }
+      ]
+    },
+    {
+      "language": "en",
+      "language_profile": "en/standard-written-1.0",
+      "form": "inside",
+      "lemma": "inside",
+      "part_of_speech": "ADP",
+      "sense_id": "usg.sense.spatial.location",
+      "features": {},
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "en.prepositional.location.positive.16",
+          "start": 10,
+          "end": 16,
+          "surface": "inside"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.17",
+          "start": 11,
+          "end": 17,
+          "surface": "inside"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.18",
+          "start": 11,
+          "end": 17,
+          "surface": "inside"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.19",
+          "start": 11,
+          "end": 17,
+          "surface": "inside"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.20",
+          "start": 11,
+          "end": 17,
+          "surface": "inside"
+        }
+      ]
+    },
+    {
+      "language": "en",
+      "language_profile": "en/standard-written-1.0",
+      "form": "is",
+      "lemma": "is",
+      "part_of_speech": "VERB",
+      "sense_id": "usg.sense.copula",
+      "features": {
+        "VerbForm": "Finite",
+        "Person": "3",
+        "Number": "Singular",
+        "Tense": "Present"
+      },
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "en.copular.predicative.positive.01",
+          "start": 5,
+          "end": 7,
+          "surface": "is"
+        },
+        {
+          "fixture_id": "en.copular.predicative.positive.02",
+          "start": 5,
+          "end": 7,
+          "surface": "is"
+        },
+        {
+          "fixture_id": "en.copular.predicative.positive.03",
+          "start": 5,
+          "end": 7,
+          "surface": "is"
+        },
+        {
+          "fixture_id": "en.copular.predicative.positive.04",
+          "start": 5,
+          "end": 7,
+          "surface": "is"
+        },
+        {
+          "fixture_id": "en.copular.predicative.positive.05",
+          "start": 5,
+          "end": 7,
+          "surface": "is"
+        },
+        {
+          "fixture_id": "en.copular.predicative.positive.06",
+          "start": 5,
+          "end": 7,
+          "surface": "is"
+        },
+        {
+          "fixture_id": "en.copular.predicative.positive.07",
+          "start": 5,
+          "end": 7,
+          "surface": "is"
+        },
+        {
+          "fixture_id": "en.copular.predicative.positive.08",
+          "start": 5,
+          "end": 7,
+          "surface": "is"
+        },
+        {
+          "fixture_id": "en.copular.predicative.positive.09",
+          "start": 5,
+          "end": 7,
+          "surface": "is"
+        },
+        {
+          "fixture_id": "en.copular.predicative.positive.10",
+          "start": 5,
+          "end": 7,
+          "surface": "is"
+        },
+        {
+          "fixture_id": "en.copular.predicative.positive.11",
+          "start": 5,
+          "end": 7,
+          "surface": "is"
+        },
+        {
+          "fixture_id": "en.copular.predicative.positive.12",
+          "start": 5,
+          "end": 7,
+          "surface": "is"
+        },
+        {
+          "fixture_id": "en.copular.predicative.positive.13",
+          "start": 5,
+          "end": 7,
+          "surface": "is"
+        },
+        {
+          "fixture_id": "en.copular.predicative.positive.14",
+          "start": 5,
+          "end": 7,
+          "surface": "is"
+        },
+        {
+          "fixture_id": "en.copular.predicative.positive.15",
+          "start": 5,
+          "end": 7,
+          "surface": "is"
+        },
+        {
+          "fixture_id": "en.copular.predicative.positive.16",
+          "start": 5,
+          "end": 7,
+          "surface": "is"
+        },
+        {
+          "fixture_id": "en.copular.predicative.positive.17",
+          "start": 5,
+          "end": 7,
+          "surface": "is"
+        },
+        {
+          "fixture_id": "en.copular.predicative.positive.18",
+          "start": 5,
+          "end": 7,
+          "surface": "is"
+        },
+        {
+          "fixture_id": "en.copular.predicative.positive.19",
+          "start": 5,
+          "end": 7,
+          "surface": "is"
+        },
+        {
+          "fixture_id": "en.copular.predicative.positive.20",
+          "start": 5,
+          "end": 7,
+          "surface": "is"
+        }
+      ]
+    },
+    {
+      "language": "en",
+      "language_profile": "en/standard-written-1.0",
+      "form": "key",
+      "lemma": "key",
+      "part_of_speech": "NOUN",
+      "sense_id": "usg.sense.entity",
+      "features": {},
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "en.ditransitive.basic.positive.11",
+          "start": 18,
+          "end": 21,
+          "surface": "key"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.12",
+          "start": 18,
+          "end": 21,
+          "surface": "key"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.13",
+          "start": 18,
+          "end": 21,
+          "surface": "key"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.14",
+          "start": 18,
+          "end": 21,
+          "surface": "key"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.15",
+          "start": 18,
+          "end": 21,
+          "surface": "key"
+        }
+      ]
+    },
+    {
+      "language": "en",
+      "language_profile": "en/standard-written-1.0",
+      "form": "laughs",
+      "lemma": "laugh",
+      "part_of_speech": "VERB",
+      "sense_id": "usg.sense.event.intransitive",
+      "features": {
+        "VerbForm": "Finite",
+        "Person": "3",
+        "Number": "Singular"
+      },
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "en.intransitive.basic.positive.11",
+          "start": 5,
+          "end": 11,
+          "surface": "laughs"
+        },
+        {
+          "fixture_id": "en.intransitive.basic.positive.12",
+          "start": 5,
+          "end": 11,
+          "surface": "laughs"
+        },
+        {
+          "fixture_id": "en.intransitive.basic.positive.13",
+          "start": 5,
+          "end": 11,
+          "surface": "laughs"
+        },
+        {
+          "fixture_id": "en.intransitive.basic.positive.14",
+          "start": 5,
+          "end": 11,
+          "surface": "laughs"
+        },
+        {
+          "fixture_id": "en.intransitive.basic.positive.15",
+          "start": 5,
+          "end": 11,
+          "surface": "laughs"
+        }
+      ]
+    },
+    {
+      "language": "en",
+      "language_profile": "en/standard-written-1.0",
+      "form": "letter",
+      "lemma": "letter",
+      "part_of_speech": "NOUN",
+      "sense_id": "usg.sense.entity",
+      "features": {},
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "en.ditransitive.basic.positive.06",
+          "start": 20,
+          "end": 26,
+          "surface": "letter"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.07",
+          "start": 20,
+          "end": 26,
+          "surface": "letter"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.08",
+          "start": 20,
+          "end": 26,
+          "surface": "letter"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.09",
+          "start": 20,
+          "end": 26,
+          "surface": "letter"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.10",
+          "start": 20,
+          "end": 26,
+          "surface": "letter"
+        }
+      ]
+    },
+    {
+      "language": "en",
+      "language_profile": "en/standard-written-1.0",
+      "form": "Lina",
+      "lemma": "Lina",
+      "part_of_speech": "PROPN",
+      "sense_id": "usg.sense.entity",
+      "features": {
+        "Number": "Singular"
+      },
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "en.intransitive.basic.positive.03",
+          "start": 0,
+          "end": 4,
+          "surface": "Lina"
+        },
+        {
+          "fixture_id": "en.intransitive.basic.positive.08",
+          "start": 0,
+          "end": 4,
+          "surface": "Lina"
+        },
+        {
+          "fixture_id": "en.intransitive.basic.positive.13",
+          "start": 0,
+          "end": 4,
+          "surface": "Lina"
+        },
+        {
+          "fixture_id": "en.intransitive.basic.positive.18",
+          "start": 0,
+          "end": 4,
+          "surface": "Lina"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.01",
+          "start": 11,
+          "end": 15,
+          "surface": "Lina"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.03",
+          "start": 0,
+          "end": 4,
+          "surface": "Lina"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.05",
+          "start": 11,
+          "end": 15,
+          "surface": "Lina"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.08",
+          "start": 0,
+          "end": 4,
+          "surface": "Lina"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.09",
+          "start": 11,
+          "end": 15,
+          "surface": "Lina"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.13",
+          "start": 0,
+          "end": 4,
+          "surface": "Lina"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.17",
+          "start": 11,
+          "end": 15,
+          "surface": "Lina"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.18",
+          "start": 0,
+          "end": 4,
+          "surface": "Lina"
+        },
+        {
+          "fixture_id": "en.copular.predicative.positive.03",
+          "start": 0,
+          "end": 4,
+          "surface": "Lina"
+        },
+        {
+          "fixture_id": "en.copular.predicative.positive.08",
+          "start": 0,
+          "end": 4,
+          "surface": "Lina"
+        },
+        {
+          "fixture_id": "en.copular.predicative.positive.13",
+          "start": 0,
+          "end": 4,
+          "surface": "Lina"
+        },
+        {
+          "fixture_id": "en.copular.predicative.positive.18",
+          "start": 0,
+          "end": 4,
+          "surface": "Lina"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.04",
+          "start": 0,
+          "end": 4,
+          "surface": "Lina"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.09",
+          "start": 0,
+          "end": 4,
+          "surface": "Lina"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.14",
+          "start": 0,
+          "end": 4,
+          "surface": "Lina"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.19",
+          "start": 0,
+          "end": 4,
+          "surface": "Lina"
+        }
+      ]
+    },
+    {
+      "language": "en",
+      "language_profile": "en/standard-written-1.0",
+      "form": "map",
+      "lemma": "map",
+      "part_of_speech": "NOUN",
+      "sense_id": "usg.sense.entity",
+      "features": {},
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "en.ditransitive.basic.positive.16",
+          "start": 20,
+          "end": 23,
+          "surface": "map"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.17",
+          "start": 20,
+          "end": 23,
+          "surface": "map"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.18",
+          "start": 20,
+          "end": 23,
+          "surface": "map"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.19",
+          "start": 20,
+          "end": 23,
+          "surface": "map"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.20",
+          "start": 20,
+          "end": 23,
+          "surface": "map"
+        }
+      ]
+    },
+    {
+      "language": "en",
+      "language_profile": "en/standard-written-1.0",
+      "form": "Mina",
+      "lemma": "Mina",
+      "part_of_speech": "PROPN",
+      "sense_id": "usg.sense.entity",
+      "features": {
+        "Number": "Singular"
+      },
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "en.intransitive.basic.positive.01",
+          "start": 0,
+          "end": 4,
+          "surface": "Mina"
+        },
+        {
+          "fixture_id": "en.intransitive.basic.positive.06",
+          "start": 0,
+          "end": 4,
+          "surface": "Mina"
+        },
+        {
+          "fixture_id": "en.intransitive.basic.positive.11",
+          "start": 0,
+          "end": 4,
+          "surface": "Mina"
+        },
+        {
+          "fixture_id": "en.intransitive.basic.positive.16",
+          "start": 0,
+          "end": 4,
+          "surface": "Mina"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.02",
+          "start": 0,
+          "end": 4,
+          "surface": "Mina"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.03",
+          "start": 11,
+          "end": 15,
+          "surface": "Mina"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.07",
+          "start": 0,
+          "end": 4,
+          "surface": "Mina"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.11",
+          "start": 11,
+          "end": 15,
+          "surface": "Mina"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.12",
+          "start": 0,
+          "end": 4,
+          "surface": "Mina"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.15",
+          "start": 11,
+          "end": 15,
+          "surface": "Mina"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.17",
+          "start": 0,
+          "end": 4,
+          "surface": "Mina"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.19",
+          "start": 11,
+          "end": 15,
+          "surface": "Mina"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.02",
+          "start": 0,
+          "end": 4,
+          "surface": "Mina"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.07",
+          "start": 0,
+          "end": 4,
+          "surface": "Mina"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.12",
+          "start": 0,
+          "end": 4,
+          "surface": "Mina"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.17",
+          "start": 0,
+          "end": 4,
+          "surface": "Mina"
+        }
+      ]
+    },
+    {
+      "language": "en",
+      "language_profile": "en/standard-written-1.0",
+      "form": "Mira",
+      "lemma": "Mira",
+      "part_of_speech": "PROPN",
+      "sense_id": "usg.sense.entity",
+      "features": {
+        "Number": "Singular"
+      },
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "en.copular.predicative.positive.01",
+          "start": 0,
+          "end": 4,
+          "surface": "Mira"
+        },
+        {
+          "fixture_id": "en.copular.predicative.positive.06",
+          "start": 0,
+          "end": 4,
+          "surface": "Mira"
+        },
+        {
+          "fixture_id": "en.copular.predicative.positive.11",
+          "start": 0,
+          "end": 4,
+          "surface": "Mira"
+        },
+        {
+          "fixture_id": "en.copular.predicative.positive.16",
+          "start": 0,
+          "end": 4,
+          "surface": "Mira"
+        }
+      ]
+    },
+    {
+      "language": "en",
+      "language_profile": "en/standard-written-1.0",
+      "form": "near",
+      "lemma": "near",
+      "part_of_speech": "ADP",
+      "sense_id": "usg.sense.spatial.location",
+      "features": {},
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "en.prepositional.location.positive.06",
+          "start": 10,
+          "end": 14,
+          "surface": "near"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.07",
+          "start": 11,
+          "end": 15,
+          "surface": "near"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.08",
+          "start": 11,
+          "end": 15,
+          "surface": "near"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.09",
+          "start": 11,
+          "end": 15,
+          "surface": "near"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.10",
+          "start": 11,
+          "end": 15,
+          "surface": "near"
+        }
+      ]
+    },
+    {
+      "language": "en",
+      "language_profile": "en/standard-written-1.0",
+      "form": "Noah",
+      "lemma": "Noah",
+      "part_of_speech": "PROPN",
+      "sense_id": "usg.sense.entity",
+      "features": {
+        "Number": "Singular"
+      },
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "en.intransitive.basic.positive.04",
+          "start": 0,
+          "end": 4,
+          "surface": "Noah"
+        },
+        {
+          "fixture_id": "en.intransitive.basic.positive.09",
+          "start": 0,
+          "end": 4,
+          "surface": "Noah"
+        },
+        {
+          "fixture_id": "en.intransitive.basic.positive.14",
+          "start": 0,
+          "end": 4,
+          "surface": "Noah"
+        },
+        {
+          "fixture_id": "en.intransitive.basic.positive.19",
+          "start": 0,
+          "end": 4,
+          "surface": "Noah"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.04",
+          "start": 0,
+          "end": 4,
+          "surface": "Noah"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.09",
+          "start": 0,
+          "end": 4,
+          "surface": "Noah"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.14",
+          "start": 0,
+          "end": 4,
+          "surface": "Noah"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.19",
+          "start": 0,
+          "end": 4,
+          "surface": "Noah"
+        },
+        {
+          "fixture_id": "en.copular.predicative.positive.04",
+          "start": 0,
+          "end": 4,
+          "surface": "Noah"
+        },
+        {
+          "fixture_id": "en.copular.predicative.positive.09",
+          "start": 0,
+          "end": 4,
+          "surface": "Noah"
+        },
+        {
+          "fixture_id": "en.copular.predicative.positive.14",
+          "start": 0,
+          "end": 4,
+          "surface": "Noah"
+        },
+        {
+          "fixture_id": "en.copular.predicative.positive.19",
+          "start": 0,
+          "end": 4,
+          "surface": "Noah"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.05",
+          "start": 0,
+          "end": 4,
+          "surface": "Noah"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.10",
+          "start": 0,
+          "end": 4,
+          "surface": "Noah"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.15",
+          "start": 0,
+          "end": 4,
+          "surface": "Noah"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.20",
+          "start": 0,
+          "end": 4,
+          "surface": "Noah"
+        }
+      ]
+    },
+    {
+      "language": "en",
+      "language_profile": "en/standard-written-1.0",
+      "form": "Omar",
+      "lemma": "Omar",
+      "part_of_speech": "PROPN",
+      "sense_id": "usg.sense.entity",
+      "features": {
+        "Number": "Singular"
+      },
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "en.intransitive.basic.positive.02",
+          "start": 0,
+          "end": 4,
+          "surface": "Omar"
+        },
+        {
+          "fixture_id": "en.intransitive.basic.positive.07",
+          "start": 0,
+          "end": 4,
+          "surface": "Omar"
+        },
+        {
+          "fixture_id": "en.intransitive.basic.positive.12",
+          "start": 0,
+          "end": 4,
+          "surface": "Omar"
+        },
+        {
+          "fixture_id": "en.intransitive.basic.positive.17",
+          "start": 0,
+          "end": 4,
+          "surface": "Omar"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.01",
+          "start": 0,
+          "end": 4,
+          "surface": "Omar"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.02",
+          "start": 11,
+          "end": 15,
+          "surface": "Omar"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.06",
+          "start": 0,
+          "end": 4,
+          "surface": "Omar"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.10",
+          "start": 11,
+          "end": 15,
+          "surface": "Omar"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.11",
+          "start": 0,
+          "end": 4,
+          "surface": "Omar"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.14",
+          "start": 11,
+          "end": 15,
+          "surface": "Omar"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.16",
+          "start": 0,
+          "end": 4,
+          "surface": "Omar"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.18",
+          "start": 11,
+          "end": 15,
+          "surface": "Omar"
+        },
+        {
+          "fixture_id": "en.copular.predicative.positive.02",
+          "start": 0,
+          "end": 4,
+          "surface": "Omar"
+        },
+        {
+          "fixture_id": "en.copular.predicative.positive.07",
+          "start": 0,
+          "end": 4,
+          "surface": "Omar"
+        },
+        {
+          "fixture_id": "en.copular.predicative.positive.12",
+          "start": 0,
+          "end": 4,
+          "surface": "Omar"
+        },
+        {
+          "fixture_id": "en.copular.predicative.positive.17",
+          "start": 0,
+          "end": 4,
+          "surface": "Omar"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.03",
+          "start": 0,
+          "end": 4,
+          "surface": "Omar"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.08",
+          "start": 0,
+          "end": 4,
+          "surface": "Omar"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.13",
+          "start": 0,
+          "end": 4,
+          "surface": "Omar"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.18",
+          "start": 0,
+          "end": 4,
+          "surface": "Omar"
+        }
+      ]
+    },
+    {
+      "language": "en",
+      "language_profile": "en/standard-written-1.0",
+      "form": "ready",
+      "lemma": "ready",
+      "part_of_speech": "ADJ",
+      "sense_id": "usg.sense.property.attribute",
+      "features": {
+        "Degree": "Positive"
+      },
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "en.copular.predicative.positive.06",
+          "start": 8,
+          "end": 13,
+          "surface": "ready"
+        },
+        {
+          "fixture_id": "en.copular.predicative.positive.07",
+          "start": 8,
+          "end": 13,
+          "surface": "ready"
+        },
+        {
+          "fixture_id": "en.copular.predicative.positive.08",
+          "start": 8,
+          "end": 13,
+          "surface": "ready"
+        },
+        {
+          "fixture_id": "en.copular.predicative.positive.09",
+          "start": 8,
+          "end": 13,
+          "surface": "ready"
+        },
+        {
+          "fixture_id": "en.copular.predicative.positive.10",
+          "start": 8,
+          "end": 13,
+          "surface": "ready"
+        }
+      ]
+    },
+    {
+      "language": "en",
+      "language_profile": "en/standard-written-1.0",
+      "form": "rests",
+      "lemma": "rest",
+      "part_of_speech": "VERB",
+      "sense_id": "usg.sense.spatial.location",
+      "features": {
+        "VerbForm": "Finite",
+        "Person": "3",
+        "Number": "Singular"
+      },
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "en.prepositional.location.positive.06",
+          "start": 4,
+          "end": 9,
+          "surface": "rests"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.07",
+          "start": 5,
+          "end": 10,
+          "surface": "rests"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.08",
+          "start": 5,
+          "end": 10,
+          "surface": "rests"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.09",
+          "start": 5,
+          "end": 10,
+          "surface": "rests"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.10",
+          "start": 5,
+          "end": 10,
+          "surface": "rests"
+        }
+      ]
+    },
+    {
+      "language": "en",
+      "language_profile": "en/standard-written-1.0",
+      "form": "room",
+      "lemma": "room",
+      "part_of_speech": "NOUN",
+      "sense_id": "usg.sense.spatial.location",
+      "features": {},
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "en.prepositional.location.positive.01",
+          "start": 17,
+          "end": 21,
+          "surface": "room"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.02",
+          "start": 18,
+          "end": 22,
+          "surface": "room"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.03",
+          "start": 18,
+          "end": 22,
+          "surface": "room"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.04",
+          "start": 18,
+          "end": 22,
+          "surface": "room"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.05",
+          "start": 18,
+          "end": 22,
+          "surface": "room"
+        }
+      ]
+    },
+    {
+      "language": "en",
+      "language_profile": "en/standard-written-1.0",
+      "form": "Sara",
+      "lemma": "Sara",
+      "part_of_speech": "PROPN",
+      "sense_id": "usg.sense.entity",
+      "features": {
+        "Number": "Singular"
+      },
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "en.intransitive.basic.positive.05",
+          "start": 0,
+          "end": 4,
+          "surface": "Sara"
+        },
+        {
+          "fixture_id": "en.intransitive.basic.positive.10",
+          "start": 0,
+          "end": 4,
+          "surface": "Sara"
+        },
+        {
+          "fixture_id": "en.intransitive.basic.positive.15",
+          "start": 0,
+          "end": 4,
+          "surface": "Sara"
+        },
+        {
+          "fixture_id": "en.intransitive.basic.positive.20",
+          "start": 0,
+          "end": 4,
+          "surface": "Sara"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.04",
+          "start": 11,
+          "end": 15,
+          "surface": "Sara"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.05",
+          "start": 0,
+          "end": 4,
+          "surface": "Sara"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.08",
+          "start": 11,
+          "end": 15,
+          "surface": "Sara"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.10",
+          "start": 0,
+          "end": 4,
+          "surface": "Sara"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.12",
+          "start": 11,
+          "end": 15,
+          "surface": "Sara"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.15",
+          "start": 0,
+          "end": 4,
+          "surface": "Sara"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.16",
+          "start": 11,
+          "end": 15,
+          "surface": "Sara"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.20",
+          "start": 0,
+          "end": 4,
+          "surface": "Sara"
+        },
+        {
+          "fixture_id": "en.copular.predicative.positive.05",
+          "start": 0,
+          "end": 4,
+          "surface": "Sara"
+        },
+        {
+          "fixture_id": "en.copular.predicative.positive.10",
+          "start": 0,
+          "end": 4,
+          "surface": "Sara"
+        },
+        {
+          "fixture_id": "en.copular.predicative.positive.15",
+          "start": 0,
+          "end": 4,
+          "surface": "Sara"
+        },
+        {
+          "fixture_id": "en.copular.predicative.positive.20",
+          "start": 0,
+          "end": 4,
+          "surface": "Sara"
+        }
+      ]
+    },
+    {
+      "language": "en",
+      "language_profile": "en/standard-written-1.0",
+      "form": "sends",
+      "lemma": "send",
+      "part_of_speech": "VERB",
+      "sense_id": "usg.sense.transfer",
+      "features": {
+        "VerbForm": "Finite",
+        "Person": "3",
+        "Number": "Singular"
+      },
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "en.ditransitive.basic.positive.06",
+          "start": 5,
+          "end": 10,
+          "surface": "sends"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.07",
+          "start": 5,
+          "end": 10,
+          "surface": "sends"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.08",
+          "start": 5,
+          "end": 10,
+          "surface": "sends"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.09",
+          "start": 5,
+          "end": 10,
+          "surface": "sends"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.10",
+          "start": 5,
+          "end": 10,
+          "surface": "sends"
+        }
+      ]
+    },
+    {
+      "language": "en",
+      "language_profile": "en/standard-written-1.0",
+      "form": "shows",
+      "lemma": "show",
+      "part_of_speech": "VERB",
+      "sense_id": "usg.sense.transfer",
+      "features": {
+        "VerbForm": "Finite",
+        "Person": "3",
+        "Number": "Singular"
+      },
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "en.ditransitive.basic.positive.11",
+          "start": 5,
+          "end": 10,
+          "surface": "shows"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.12",
+          "start": 5,
+          "end": 10,
+          "surface": "shows"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.13",
+          "start": 5,
+          "end": 10,
+          "surface": "shows"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.14",
+          "start": 5,
+          "end": 10,
+          "surface": "shows"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.15",
+          "start": 5,
+          "end": 10,
+          "surface": "shows"
+        }
+      ]
+    },
+    {
+      "language": "en",
+      "language_profile": "en/standard-written-1.0",
+      "form": "sleeps",
+      "lemma": "sleep",
+      "part_of_speech": "VERB",
+      "sense_id": "usg.sense.event.intransitive",
+      "features": {
+        "VerbForm": "Finite",
+        "Person": "3",
+        "Number": "Singular"
+      },
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "en.intransitive.basic.positive.01",
+          "start": 5,
+          "end": 11,
+          "surface": "sleeps"
+        },
+        {
+          "fixture_id": "en.intransitive.basic.positive.02",
+          "start": 5,
+          "end": 11,
+          "surface": "sleeps"
+        },
+        {
+          "fixture_id": "en.intransitive.basic.positive.03",
+          "start": 5,
+          "end": 11,
+          "surface": "sleeps"
+        },
+        {
+          "fixture_id": "en.intransitive.basic.positive.04",
+          "start": 5,
+          "end": 11,
+          "surface": "sleeps"
+        },
+        {
+          "fixture_id": "en.intransitive.basic.positive.05",
+          "start": 5,
+          "end": 11,
+          "surface": "sleeps"
+        }
+      ]
+    },
+    {
+      "language": "en",
+      "language_profile": "en/standard-written-1.0",
+      "form": "station",
+      "lemma": "station",
+      "part_of_speech": "NOUN",
+      "sense_id": "usg.sense.spatial.location",
+      "features": {},
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "en.prepositional.location.positive.06",
+          "start": 19,
+          "end": 26,
+          "surface": "station"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.07",
+          "start": 20,
+          "end": 27,
+          "surface": "station"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.08",
+          "start": 20,
+          "end": 27,
+          "surface": "station"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.09",
+          "start": 20,
+          "end": 27,
+          "surface": "station"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.10",
+          "start": 20,
+          "end": 27,
+          "surface": "station"
+        }
+      ]
+    },
+    {
+      "language": "en",
+      "language_profile": "en/standard-written-1.0",
+      "form": "stays",
+      "lemma": "stay",
+      "part_of_speech": "VERB",
+      "sense_id": "usg.sense.spatial.location",
+      "features": {
+        "VerbForm": "Finite",
+        "Person": "3",
+        "Number": "Singular"
+      },
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "en.prepositional.location.positive.16",
+          "start": 4,
+          "end": 9,
+          "surface": "stays"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.17",
+          "start": 5,
+          "end": 10,
+          "surface": "stays"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.18",
+          "start": 5,
+          "end": 10,
+          "surface": "stays"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.19",
+          "start": 5,
+          "end": 10,
+          "surface": "stays"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.20",
+          "start": 5,
+          "end": 10,
+          "surface": "stays"
+        }
+      ]
+    },
+    {
+      "language": "en",
+      "language_profile": "en/standard-written-1.0",
+      "form": "the",
+      "lemma": "the",
+      "part_of_speech": "DET",
+      "sense_id": "usg.sense.determiner",
+      "features": {
+        "Definiteness": "Definite"
+      },
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "en.ditransitive.basic.positive.06",
+          "start": 16,
+          "end": 19,
+          "surface": "the"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.07",
+          "start": 16,
+          "end": 19,
+          "surface": "the"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.08",
+          "start": 16,
+          "end": 19,
+          "surface": "the"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.09",
+          "start": 16,
+          "end": 19,
+          "surface": "the"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.10",
+          "start": 16,
+          "end": 19,
+          "surface": "the"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.16",
+          "start": 16,
+          "end": 19,
+          "surface": "the"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.17",
+          "start": 16,
+          "end": 19,
+          "surface": "the"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.18",
+          "start": 16,
+          "end": 19,
+          "surface": "the"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.19",
+          "start": 16,
+          "end": 19,
+          "surface": "the"
+        },
+        {
+          "fixture_id": "en.ditransitive.basic.positive.20",
+          "start": 16,
+          "end": 19,
+          "surface": "the"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.01",
+          "start": 13,
+          "end": 16,
+          "surface": "the"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.02",
+          "start": 14,
+          "end": 17,
+          "surface": "the"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.03",
+          "start": 14,
+          "end": 17,
+          "surface": "the"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.04",
+          "start": 14,
+          "end": 17,
+          "surface": "the"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.05",
+          "start": 14,
+          "end": 17,
+          "surface": "the"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.06",
+          "start": 15,
+          "end": 18,
+          "surface": "the"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.07",
+          "start": 16,
+          "end": 19,
+          "surface": "the"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.08",
+          "start": 16,
+          "end": 19,
+          "surface": "the"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.09",
+          "start": 16,
+          "end": 19,
+          "surface": "the"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.10",
+          "start": 16,
+          "end": 19,
+          "surface": "the"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.11",
+          "start": 17,
+          "end": 20,
+          "surface": "the"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.12",
+          "start": 18,
+          "end": 21,
+          "surface": "the"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.13",
+          "start": 18,
+          "end": 21,
+          "surface": "the"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.14",
+          "start": 18,
+          "end": 21,
+          "surface": "the"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.15",
+          "start": 18,
+          "end": 21,
+          "surface": "the"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.16",
+          "start": 17,
+          "end": 20,
+          "surface": "the"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.17",
+          "start": 18,
+          "end": 21,
+          "surface": "the"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.18",
+          "start": 18,
+          "end": 21,
+          "surface": "the"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.19",
+          "start": 18,
+          "end": 21,
+          "surface": "the"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.20",
+          "start": 18,
+          "end": 21,
+          "surface": "the"
+        }
+      ]
+    },
+    {
+      "language": "en",
+      "language_profile": "en/standard-written-1.0",
+      "form": "tired",
+      "lemma": "tired",
+      "part_of_speech": "ADJ",
+      "sense_id": "usg.sense.property.attribute",
+      "features": {
+        "Degree": "Positive"
+      },
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "en.copular.predicative.positive.16",
+          "start": 8,
+          "end": 13,
+          "surface": "tired"
+        },
+        {
+          "fixture_id": "en.copular.predicative.positive.17",
+          "start": 8,
+          "end": 13,
+          "surface": "tired"
+        },
+        {
+          "fixture_id": "en.copular.predicative.positive.18",
+          "start": 8,
+          "end": 13,
+          "surface": "tired"
+        },
+        {
+          "fixture_id": "en.copular.predicative.positive.19",
+          "start": 8,
+          "end": 13,
+          "surface": "tired"
+        },
+        {
+          "fixture_id": "en.copular.predicative.positive.20",
+          "start": 8,
+          "end": 13,
+          "surface": "tired"
+        }
+      ]
+    },
+    {
+      "language": "en",
+      "language_profile": "en/standard-written-1.0",
+      "form": "waits",
+      "lemma": "wait",
+      "part_of_speech": "VERB",
+      "sense_id": "usg.sense.event.intransitive",
+      "features": {
+        "VerbForm": "Finite",
+        "Person": "3",
+        "Number": "Singular"
+      },
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "en.intransitive.basic.positive.16",
+          "start": 5,
+          "end": 10,
+          "surface": "waits"
+        },
+        {
+          "fixture_id": "en.intransitive.basic.positive.17",
+          "start": 5,
+          "end": 10,
+          "surface": "waits"
+        },
+        {
+          "fixture_id": "en.intransitive.basic.positive.18",
+          "start": 5,
+          "end": 10,
+          "surface": "waits"
+        },
+        {
+          "fixture_id": "en.intransitive.basic.positive.19",
+          "start": 5,
+          "end": 10,
+          "surface": "waits"
+        },
+        {
+          "fixture_id": "en.intransitive.basic.positive.20",
+          "start": 5,
+          "end": 10,
+          "surface": "waits"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.01",
+          "start": 4,
+          "end": 9,
+          "surface": "waits"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.02",
+          "start": 5,
+          "end": 10,
+          "surface": "waits"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.03",
+          "start": 5,
+          "end": 10,
+          "surface": "waits"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.04",
+          "start": 5,
+          "end": 10,
+          "surface": "waits"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.05",
+          "start": 5,
+          "end": 10,
+          "surface": "waits"
+        }
+      ]
+    },
+    {
+      "language": "en",
+      "language_profile": "en/standard-written-1.0",
+      "form": "works",
+      "lemma": "work",
+      "part_of_speech": "VERB",
+      "sense_id": "usg.sense.spatial.location",
+      "features": {
+        "VerbForm": "Finite",
+        "Person": "3",
+        "Number": "Singular"
+      },
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "en.prepositional.location.positive.11",
+          "start": 4,
+          "end": 9,
+          "surface": "works"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.12",
+          "start": 5,
+          "end": 10,
+          "surface": "works"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.13",
+          "start": 5,
+          "end": 10,
+          "surface": "works"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.14",
+          "start": 5,
+          "end": 10,
+          "surface": "works"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.15",
+          "start": 5,
+          "end": 10,
+          "surface": "works"
+        }
+      ]
+    }
+  ],
+  "morphology_rules": [
+    {
+      "rule_id": "en.present-third-person-singular-s",
+      "language": "en",
+      "language_profile": "en/standard-written-1.0",
+      "pattern": {
+        "kind": "suffix",
+        "value": "s",
+        "condition": "finite_present_3sg",
+        "example_forms": [
+          "sleeps",
+          "arrives",
+          "laughs",
+          "waits",
+          "gives",
+          "sends",
+          "shows",
+          "hands",
+          "rests",
+          "works",
+          "stays"
+        ]
+      },
+      "status": "CANDIDATE",
+      "evidence_fixture_ids": [
+        "en.intransitive.basic.positive.01",
+        "en.intransitive.basic.positive.02",
+        "en.intransitive.basic.positive.03",
+        "en.intransitive.basic.positive.04",
+        "en.intransitive.basic.positive.05",
+        "en.intransitive.basic.positive.06",
+        "en.intransitive.basic.positive.07",
+        "en.intransitive.basic.positive.08",
+        "en.intransitive.basic.positive.09",
+        "en.intransitive.basic.positive.10",
+        "en.intransitive.basic.positive.11",
+        "en.intransitive.basic.positive.12",
+        "en.intransitive.basic.positive.13",
+        "en.intransitive.basic.positive.14",
+        "en.intransitive.basic.positive.15",
+        "en.intransitive.basic.positive.16",
+        "en.intransitive.basic.positive.17",
+        "en.intransitive.basic.positive.18",
+        "en.intransitive.basic.positive.19",
+        "en.intransitive.basic.positive.20",
+        "en.ditransitive.basic.positive.01",
+        "en.ditransitive.basic.positive.02",
+        "en.ditransitive.basic.positive.03",
+        "en.ditransitive.basic.positive.04",
+        "en.ditransitive.basic.positive.05",
+        "en.ditransitive.basic.positive.06",
+        "en.ditransitive.basic.positive.07",
+        "en.ditransitive.basic.positive.08",
+        "en.ditransitive.basic.positive.09",
+        "en.ditransitive.basic.positive.10",
+        "en.ditransitive.basic.positive.11",
+        "en.ditransitive.basic.positive.12",
+        "en.ditransitive.basic.positive.13",
+        "en.ditransitive.basic.positive.14",
+        "en.ditransitive.basic.positive.15",
+        "en.ditransitive.basic.positive.16",
+        "en.ditransitive.basic.positive.17",
+        "en.ditransitive.basic.positive.18",
+        "en.ditransitive.basic.positive.19",
+        "en.ditransitive.basic.positive.20",
+        "en.prepositional.location.positive.01",
+        "en.prepositional.location.positive.02",
+        "en.prepositional.location.positive.03",
+        "en.prepositional.location.positive.04",
+        "en.prepositional.location.positive.05",
+        "en.prepositional.location.positive.06",
+        "en.prepositional.location.positive.07",
+        "en.prepositional.location.positive.08",
+        "en.prepositional.location.positive.09",
+        "en.prepositional.location.positive.10",
+        "en.prepositional.location.positive.11",
+        "en.prepositional.location.positive.12",
+        "en.prepositional.location.positive.13",
+        "en.prepositional.location.positive.14",
+        "en.prepositional.location.positive.15",
+        "en.prepositional.location.positive.16",
+        "en.prepositional.location.positive.17",
+        "en.prepositional.location.positive.18",
+        "en.prepositional.location.positive.19",
+        "en.prepositional.location.positive.20"
+      ]
+    },
+    {
+      "rule_id": "ar-definite-article-al",
+      "language": "ar",
+      "language_profile": "ar/modern-standard-1.0",
+      "pattern": {
+        "kind": "prefix",
+        "value": "ال",
+        "condition": "definite_nominal_article_attached_to_nominal_stem",
+        "example_forms": [
+          "الطالب",
+          "المعلم",
+          "الرجل",
+          "الطفل",
+          "المسافر",
+          "الغرفة",
+          "المحطة",
+          "البوابة",
+          "القاعة"
+        ]
+      },
+      "status": "CANDIDATE",
+      "evidence_fixture_ids": [
+        "ar.intransitive.basic.positive.01",
+        "ar.intransitive.basic.positive.02",
+        "ar.intransitive.basic.positive.03",
+        "ar.intransitive.basic.positive.04",
+        "ar.intransitive.basic.positive.05",
+        "ar.intransitive.basic.positive.06",
+        "ar.intransitive.basic.positive.07",
+        "ar.intransitive.basic.positive.08",
+        "ar.intransitive.basic.positive.09",
+        "ar.intransitive.basic.positive.10",
+        "ar.intransitive.basic.positive.11",
+        "ar.intransitive.basic.positive.12",
+        "ar.intransitive.basic.positive.13",
+        "ar.intransitive.basic.positive.14",
+        "ar.intransitive.basic.positive.15",
+        "ar.intransitive.basic.positive.16",
+        "ar.intransitive.basic.positive.17",
+        "ar.intransitive.basic.positive.18",
+        "ar.intransitive.basic.positive.19",
+        "ar.intransitive.basic.positive.20",
+        "ar.ditransitive.basic.positive.01",
+        "ar.ditransitive.basic.positive.02",
+        "ar.ditransitive.basic.positive.03",
+        "ar.ditransitive.basic.positive.04",
+        "ar.ditransitive.basic.positive.05",
+        "ar.ditransitive.basic.positive.06",
+        "ar.ditransitive.basic.positive.07",
+        "ar.ditransitive.basic.positive.08",
+        "ar.ditransitive.basic.positive.09",
+        "ar.ditransitive.basic.positive.10",
+        "ar.ditransitive.basic.positive.11",
+        "ar.ditransitive.basic.positive.12",
+        "ar.ditransitive.basic.positive.13",
+        "ar.ditransitive.basic.positive.14",
+        "ar.ditransitive.basic.positive.15",
+        "ar.ditransitive.basic.positive.16",
+        "ar.ditransitive.basic.positive.17",
+        "ar.ditransitive.basic.positive.18",
+        "ar.ditransitive.basic.positive.19",
+        "ar.ditransitive.basic.positive.20",
+        "ar.copular.predicative.positive.01",
+        "ar.copular.predicative.positive.02",
+        "ar.copular.predicative.positive.03",
+        "ar.copular.predicative.positive.04",
+        "ar.copular.predicative.positive.05",
+        "ar.copular.predicative.positive.06",
+        "ar.copular.predicative.positive.07",
+        "ar.copular.predicative.positive.08",
+        "ar.copular.predicative.positive.09",
+        "ar.copular.predicative.positive.10",
+        "ar.copular.predicative.positive.11",
+        "ar.copular.predicative.positive.12",
+        "ar.copular.predicative.positive.13",
+        "ar.copular.predicative.positive.14",
+        "ar.copular.predicative.positive.15",
+        "ar.copular.predicative.positive.16",
+        "ar.copular.predicative.positive.17",
+        "ar.copular.predicative.positive.18",
+        "ar.copular.predicative.positive.19",
+        "ar.copular.predicative.positive.20",
+        "ar.prepositional.location.positive.01",
+        "ar.prepositional.location.positive.02",
+        "ar.prepositional.location.positive.03",
+        "ar.prepositional.location.positive.04",
+        "ar.prepositional.location.positive.05",
+        "ar.prepositional.location.positive.06",
+        "ar.prepositional.location.positive.07",
+        "ar.prepositional.location.positive.08",
+        "ar.prepositional.location.positive.09",
+        "ar.prepositional.location.positive.10",
+        "ar.prepositional.location.positive.11",
+        "ar.prepositional.location.positive.12",
+        "ar.prepositional.location.positive.13",
+        "ar.prepositional.location.positive.14",
+        "ar.prepositional.location.positive.15",
+        "ar.prepositional.location.positive.16",
+        "ar.prepositional.location.positive.17",
+        "ar.prepositional.location.positive.18",
+        "ar.prepositional.location.positive.19",
+        "ar.prepositional.location.positive.20"
+      ]
+    }
+  ]
+}

@@ -1,12 +1,12 @@
 # USG Phase 6 — Definitions and Roadmap
 
-**Status:** PROPOSED — roadmap definition only; no Phase 6 implementation step is accepted yet.  
+**Status:** IN PROGRESS — Steps 6.1–6.4 accepted; construction implementation remains benchmark-gated.  
 **Proposed interpretation contract:** `USG-INTERPRET/0.3.0`, additive to the accepted Phase 5 contract.  
 **Accepted starting point:** Phase 5 `USG-INTERPRET/0.2.0`.  
 **Canonical semantic interchange:** `USG-SEM/1.0` remains unchanged.  
 **Canonical persistence:** the existing Phase 3 SQLite store remains authoritative.  
 **Initial language profiles:** English and Modern Standard Arabic (MSA).  
-**Next gate:** Step 6.1 — freeze the Phase 6 interpretation and semantic-projection contract.
+**Next gate:** Step 6.5 — expanded predicate and argument structures (Steps 6.1–6.4 accepted).
 
 ## 1. Purpose and transition from Phase 5
 
