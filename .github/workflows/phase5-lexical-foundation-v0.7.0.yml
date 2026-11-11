@@ -19,10 +19,11 @@ on:
       - "resources/lexical/**"
       - "tests/test_phase5_lexical_foundation_v0_5_0.py"
       - "tests/test_phase5_contextual_lexical.py"
+      - "tests/test_phase5_tokenization_normalization.py"
       - "tests/test_phase5_packaged_resources.py"
       - "tests/test_phase5_integrated_api.py"
-      - "documentation/PHASE5-LEXICAL-FOUNDATION-v0.6.0.md"
-      - ".github/workflows/phase5-lexical-foundation-v0.6.0.yml"
+      - "documentation/PHASE5-LEXICAL-FOUNDATION-BASELINE.md"
+      - ".github/workflows/phase5-lexical-foundation-v0.7.0.yml"
   workflow_dispatch:
 
 permissions:
