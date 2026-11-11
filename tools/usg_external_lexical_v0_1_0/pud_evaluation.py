@@ -13,6 +13,7 @@ from pathlib import Path
 import unicodedata
 
 from tools.phase6_external_pud_v0_1.run import DATASETS, download_dataset, parse_conllu
+from tools.phase6_external_pud_v0_4.morphology import parse_morph_conllu
 
 POS_TO_UPOS = {
     "noun": "NOUN", "proper noun": "PROPN", "verb": "VERB",
@@ -23,6 +24,12 @@ POS_TO_UPOS = {
     "auxiliary verb": "AUX", "auxiliary": "AUX", "adposition": "ADP",
 }
 CONTENT_UPOS = {"NOUN", "PROPN", "VERB", "ADJ", "ADV"}
+
+SOURCE_TAG_TO_UD_FEATURE = {
+    "plural": ("Number", "Plur"),
+    "comparative": ("Degree", "Cmp"),
+    "superlative": ("Degree", "Sup"),
+}
 
 
 def normalize(form: str, language: str = "en") -> str:
@@ -42,6 +49,8 @@ def load_candidate_evidence(data_dir: str | Path, language: str = "en") -> dict:
     entry_count = 0
     form_tag_counts: Counter[str] = Counter()
     tagged_form_records = 0
+    morphology_candidates: dict[str, set[tuple[str, str, str]]] = defaultdict(set)
+    mapped_morphology_tag_counts: Counter[str] = Counter()
     for shard in shards:
         try:
             with gzip.open(shard, "rt", encoding="utf-8") as stream:
@@ -87,11 +96,19 @@ def load_candidate_evidence(data_dir: str | Path, language: str = "en") -> dict:
                                 forms[key].add(upos)
                             raw_tags = item.get("tags", [])
                             if isinstance(raw_tags, list):
-                                tags = {tag.strip() for tag in raw_tags
-                                        if isinstance(tag, str) and tag.strip()}
+                                tags = {
+                                    part.strip().casefold()
+                                    for tag in raw_tags if isinstance(tag, str)
+                                    for part in tag.split(";") if part.strip()
+                                }
                                 if tags:
                                     tagged_form_records += 1
                                     form_tag_counts.update(tags)
+                                    for tag in tags:
+                                        feature = SOURCE_TAG_TO_UD_FEATURE.get(tag)
+                                        if feature:
+                                            morphology_candidates[key].add((upos, feature[0], feature[1]))
+                                            mapped_morphology_tag_counts[tag] += 1
         except (OSError, EOFError) as exc:
             raise ValueError(f"unable to read compressed shard {shard}: {exc}") from exc
     return {
@@ -102,6 +119,8 @@ def load_candidate_evidence(data_dir: str | Path, language: str = "en") -> dict:
         "shard_count": len(shards),
         "form_tag_counts": dict(sorted(form_tag_counts.items())),
         "tagged_form_records": tagged_form_records,
+        "morphology_candidates": dict(morphology_candidates),
+        "mapped_morphology_tag_counts": dict(sorted(mapped_morphology_tag_counts.items())),
     }
 
 
@@ -248,13 +267,84 @@ def evaluate(
     }
 
 
+def evaluate_morphology(sentences: list[dict], inventory: dict[str, set[tuple[str, str, str]]],
+                       language: str = "en") -> dict:
+    """Compare mapped source-tag candidates with pinned UD FEATS annotations."""
+    supported = set(SOURCE_TAG_TO_UD_FEATURE.values())
+    totals = Counter()
+    by_feature = defaultdict(Counter)
+    for sentence in sentences:
+        for token in sentence["tokens"]:
+            form = normalize(token["form"], language)
+            upos = token["upos"]
+            gold = {
+                (upos, feature, value)
+                for feature, value in token.get("feats", ())
+                if (feature, value) in supported
+            }
+            candidates = inventory.get(form, set())
+            hits = candidates & gold
+            totals["tokens"] += 1
+            totals["tokens_with_supported_gold_features"] += int(bool(gold))
+            totals["tokens_with_candidate_features"] += int(bool(candidates))
+            totals["tokens_with_any_gold_feature_hit"] += int(bool(hits))
+            totals["gold_feature_instances"] += len(gold)
+            totals["candidate_feature_instances"] += len(candidates)
+            totals["matched_feature_instances"] += len(hits)
+            for candidate_upos, feature, value in candidates:
+                row = by_feature[f"{feature}={value}"]
+                row["candidate_instances"] += 1
+                if (candidate_upos, feature, value) in gold:
+                    row["matched_instances"] += 1
+            for _gold_upos, feature, value in gold:
+                by_feature[f"{feature}={value}"]["gold_instances"] += 1
+
+    def ratio(n: int, d: int):
+        return n / d if d else None
+
+    return {
+        "method": "EXACT_SURFACE_UPOS_AND_MAPPED_SOURCE_TAG_VS_PINNED_UD_FEATS",
+        "supported_source_tag_mapping": {
+            tag: {"feature": feature, "value": value}
+            for tag, (feature, value) in sorted(SOURCE_TAG_TO_UD_FEATURE.items())
+        },
+        "totals": {
+            **dict(totals),
+            "candidate_pool_precision": ratio(totals["matched_feature_instances"], totals["candidate_feature_instances"]),
+            "candidate_recall": ratio(totals["matched_feature_instances"], totals["gold_feature_instances"]),
+            "gold_feature_token_recall": ratio(totals["tokens_with_any_gold_feature_hit"], totals["tokens_with_supported_gold_features"]),
+        },
+        "by_feature": {
+            key: {
+                **dict(counts),
+                "candidate_pool_precision": ratio(counts["matched_instances"], counts["candidate_instances"]),
+                "candidate_recall": ratio(counts["matched_instances"], counts["gold_instances"]),
+            }
+            for key, counts in sorted(by_feature.items())
+        },
+        "interpretation_boundary": (
+            "Candidate-pool precision is the fraction of emitted mapped feature labels matching "
+            "the gold token annotation; it is not contextual morphology prediction accuracy. "
+            "Only the explicitly mapped source tags and corresponding UD features are evaluated."
+        ),
+    }
+
+
 def run(data_dir: str | Path) -> dict:
     evidence = load_candidate_evidence(data_dir, "en")
     spec = DATASETS["en"]
-    sentences = parse_conllu(download_dataset("en"))
-    if len(sentences) != spec["sentences"]:
-        raise ValueError(f"English PUD expected {spec['sentences']} sentences, got {len(sentences)}")
+    payload = download_dataset("en")
+    sentences = parse_conllu(payload)
+    morphology_sentences = parse_morph_conllu(payload)
+    if len(sentences) != spec["sentences"] or len(morphology_sentences) != spec["sentences"]:
+        raise ValueError(
+            f"English PUD expected {spec['sentences']} sentences, got "
+            f"{len(sentences)} lexical and {len(morphology_sentences)} morphology sentences"
+        )
     result = evaluate(sentences, evidence["forms"], "en", evidence["lemmas"])
+    result["morphology_evaluation"] = evaluate_morphology(
+        morphology_sentences, evidence["morphology_candidates"], "en"
+    )
     result.update({
         "evaluation_type": "EXTERNAL_CRAWL_LEXICAL_GENERALIZATION_PUD",
         "lexical_source": "wizekin/USG-Workbench@usg-external-lexical-data",
@@ -265,6 +355,7 @@ def run(data_dir: str | Path) -> dict:
         "observed_form_tag_inventory": {
             "tagged_form_records": evidence["tagged_form_records"],
             "tag_counts": evidence["form_tag_counts"],
+            "mapped_morphology_tag_counts": evidence["mapped_morphology_tag_counts"],
             "interpretation": (
                 "Raw source form tags are reported for morphology-mapping research only; "
                 "they are not treated as UD FEATS or as verified morphological predictions."
@@ -283,7 +374,8 @@ def run(data_dir: str | Path) -> dict:
             "Exact surface and lemma matching do not use sentence context or infer unseen inflections.",
             "PUD is one English domain snapshot and does not establish broad language coverage.",
             "UPOS mapping is a conservative label normalization, not a trained POS tagger.",
-            "Morphological feature accuracy and precision are not measured.",
+            "Morphology is evaluated only for the explicitly mapped plural, comparative, and superlative source tags; other tags and UD features are excluded.",
+            "Candidate-pool morphology precision is not contextual morphology prediction accuracy.",
             "Results do not authorize promotion into the active USG lexicon or interpreter.",
         ],
     })
