@@ -60,7 +60,7 @@ Arabic PUD sentences (20,747 tokens), using the pinned treebank snapshots.
 | Measure | English PUD | Arabic PUD |
 |---|---:|---:|
 | Candidate outputs | 3,295 | 4,714 |
-| Sentences with at least one clear candidate | 903 | 155 |
+| Sentence status: CANDIDATE | 903 | 155 |
 | Sentences containing an ambiguous relation | 8 | 807 |
 | Sentences with no supported candidate | 89 | 38 |
 | Token span alignment success | 100.00% | 99.92% |
