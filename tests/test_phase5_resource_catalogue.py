@@ -93,6 +93,29 @@ class ResourceCatalogueTests(unittest.TestCase):
             set(classes) | {"PROVISIONAL_ASSOCIATION"},
         )
 
+    def test_resource_class_cannot_change_between_versions(self):
+        self.put(activate=True)
+        with self.assertRaises(Exception):
+            self.catalogue.put_resource(
+                "lex.en.core", "1.1.0", "GRAMMAR_PATTERN",
+                {"patterns": []}, self.provenance(),
+            )
+
+    def test_sqlite_triggers_prevent_snapshot_and_usage_event_mutation(self):
+        self.put(activate=True)
+        self.catalogue.record_usage("lex.en.core", "1.0.0", "2026-01-01T00:00:00+00:00")
+        with sqlite3.connect(self.database) as connection:
+            with self.assertRaises(sqlite3.IntegrityError):
+                connection.execute(
+                    "UPDATE semantic_resource_snapshots SET created_at=? WHERE resource_id=?",
+                    ("changed", "lex.en.core"),
+                )
+            with self.assertRaises(sqlite3.IntegrityError):
+                connection.execute(
+                    "DELETE FROM semantic_resource_usage_events WHERE resource_id=?",
+                    ("lex.en.core",),
+                )
+
     def test_provenance_and_resource_envelope_are_required(self):
         with self.assertRaises(InvalidResourceError):
             self.catalogue.put_resource(
