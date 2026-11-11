@@ -6,6 +6,7 @@ Scenario text is passed as JSON data over stdin. It is never evaluated as code.
 from __future__ import annotations
 
 import json
+import importlib
 import math
 import os
 import socket
@@ -86,6 +87,45 @@ def _completion_outcome(result: dict[str, Any]) -> str:
     return "invalid_output"
 
 
+def _run_import_smoke(target_id: str) -> dict[str, Any] | None:
+    """Import allowlisted package entry points; this is an API-availability smoke test only."""
+    registry_path = os.path.join(os.path.dirname(__file__), "target_profiles.json")
+    with open(registry_path, "r", encoding="utf-8") as stream:
+        registry = json.load(stream)
+    profile = next(
+        (item for item in registry.get("targets", []) if item.get("component_id") == target_id),
+        None,
+    )
+    if profile is None or "smoke_modules" not in profile:
+        return None
+    modules = profile["smoke_modules"]
+    if not modules:
+        return {
+            "outcome": "not_executed",
+            "reason": "profile has no executable Python import adapter; interface requires a dedicated runtime adapter",
+            "execution_metadata": {"adapter": "not-implemented"},
+        }
+    imported = []
+    for relative_path, module_name in modules:
+        package_root = os.path.realpath(os.path.join(os.path.dirname(__file__), "..", "..", relative_path))
+        if os.path.commonpath([os.path.realpath(os.path.dirname(__file__)), package_root]) != os.path.realpath(os.path.dirname(__file__)):
+            raise ValueError("smoke adapter path escapes repository root")
+        if package_root not in sys.path:
+            sys.path.insert(0, package_root)
+        importlib.import_module(module_name)
+        imported.append(module_name)
+    return {
+        "outcome": "partial",
+        "reason": "all registered modules imported; this smoke test does not execute semantic behavior or establish correctness",
+        "target_result": {"imported_modules": imported},
+        "execution_metadata": {
+            "adapter": "allowlisted-python-import-smoke",
+            "smoke_only": True,
+            "semantic_accuracy_assessed": False,
+        },
+    }
+
+
 def execute(case: dict[str, Any]) -> dict[str, Any]:
     target_id = case["target"]["component_id"]
     text = case["input"]["text"]
@@ -105,6 +145,11 @@ def execute(case: dict[str, Any]) -> dict[str, Any]:
     else:
         language = "en"
         language_mapping = "unknown_hint_mapped_to_en_profile"
+
+    if target_id not in {"phase4-bounded-interpreter", "phase5-bounded-interpreter", "js-semantic-workbench-v054"}:
+        smoke_result = _run_import_smoke(target_id)
+        if smoke_result is not None:
+            return smoke_result
 
     if target_id == "phase4-bounded-interpreter":
         from tools.usg_interpretation_v0_1_0 import InterpretationService
