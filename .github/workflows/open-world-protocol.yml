@@ -1,0 +1,40 @@
+name: Open-World Evaluation Protocol
+
+on:
+  pull_request:
+    paths:
+      - "README.md"
+      - "documentation/USG-OPEN-WORLD-EVALUATION-PROTOCOL.md"
+      - "tools/open_world_evaluation/schemas/**"
+      - "tools/open_world_evaluation/validate_protocol.py"
+      - "tests/test_open_world_protocol.py"
+      - ".github/workflows/open-world-protocol.yml"
+  push:
+    branches: [main]
+    paths:
+      - "README.md"
+      - "documentation/USG-OPEN-WORLD-EVALUATION-PROTOCOL.md"
+      - "tools/open_world_evaluation/schemas/**"
+      - "tools/open_world_evaluation/validate_protocol.py"
+      - "tests/test_open_world_protocol.py"
+      - ".github/workflows/open-world-protocol.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  protocol:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install schema validator
+        run: python -m pip install "jsonschema>=4.18,<5"
+      - name: Validate protocol schemas
+        run: python tools/open_world_evaluation/validate_protocol.py
+      - name: Test protocol contracts and negative cases
+        run: python -m unittest discover -s tests -p "test_open_world_protocol.py" -v
+      - name: Compile protocol validator
+        run: python -m py_compile tools/open_world_evaluation/validate_protocol.py

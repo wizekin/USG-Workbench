@@ -1,177 +1,20 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://usg-workbench.local/open-world/source-provenance/1.0.0",
-  "title": "Open-world source provenance",
-  "type": "object",
-  "properties": {
-    "kind": {
-      "enum": [
-        "synthetic",
-        "open_license_dataset",
-        "public_domain",
-        "public_documentation",
-        "diagnostic_fixture",
-        "authorized_user_supplied"
-      ]
-    },
-    "source_id": {
-      "type": "string",
-      "minLength": 1
-    },
-    "source_url": {
-      "type": "string",
-      "format": "uri"
-    },
-    "retrieved_at": {
-      "type": "string",
-      "format": "date-time"
-    },
-    "content_digest": {
-      "type": "string",
-      "pattern": "^[a-f0-9]{64}$"
-    },
-    "license_review": {
-      "type": "object",
-      "properties": {
-        "identifier": {
-          "type": "string",
-          "minLength": 1
-        },
-        "url": {
-          "type": "string",
-          "format": "uri"
-        },
-        "status": {
-          "enum": [
-            "approved",
-            "restricted",
-            "unknown"
-          ]
-        },
-        "redistribution_allowed": {
-          "type": "boolean"
-        },
-        "derivative_allowed": {
-          "type": "boolean"
-        },
-        "reviewed_at": {
-          "type": "string",
-          "format": "date-time"
-        }
-      },
-      "required": [
-        "identifier",
-        "status",
-        "redistribution_allowed",
-        "derivative_allowed",
-        "reviewed_at"
-      ],
-      "additionalProperties": false
-    },
-    "privacy_review": {
-      "type": "object",
-      "properties": {
-        "status": {
-          "enum": [
-            "approved",
-            "no_personal_data",
-            "rejected",
-            "pending"
-          ]
-        },
-        "reviewed_at": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "notes": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "status",
-        "reviewed_at"
-      ],
-      "additionalProperties": false
-    },
-    "transformation_log": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "operation": {
-            "type": "string",
-            "minLength": 1
-          },
-          "version": {
-            "type": "string",
-            "minLength": 1
-          },
-          "notes": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "operation",
-          "version"
-        ],
-        "additionalProperties": false
-      }
-    },
-    "attribution": {
-      "type": "string"
-    },
-    "permission_reference": {
-      "type": "string"
-    }
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "title":"USG Open-World Source Provenance v1.0.0",
+  "type":"object",
+  "properties":{
+    "kind":{"enum":["synthetic","open_license_dataset","public_domain","public_documentation","diagnostic_fixture","authorized_user_supplied"]},
+    "source_id":{"type":"string","minLength":1},
+    "source_url":{"type":"string","format":"uri"},
+    "retrieved_at":{"type":"string","format":"date-time"},
+    "license_status":{"enum":["approved","restricted","unknown"]},
+    "redistribution_allowed":{"type":"boolean"},
+    "privacy_review_status":{"enum":["approved","no_personal_data","rejected","pending"]},
+    "attribution":{"type":"string"},
+    "content_digest":{"type":"string","pattern":"^[a-f0-9]{64}$"},
+    "transformations":{"type":"array","items":{"type":"string"}},
+    "permission_reference":{"type":"string"}
   },
-  "required": [
-    "kind",
-    "source_id"
-  ],
-  "additionalProperties": false,
-  "allOf": [
-    {
-      "if": {
-        "properties": {
-          "kind": {
-            "enum": [
-              "open_license_dataset",
-              "public_domain",
-              "public_documentation"
-            ]
-          }
-        },
-        "required": [
-          "kind"
-        ]
-      },
-      "then": {
-        "required": [
-          "source_url",
-          "retrieved_at",
-          "license_review",
-          "privacy_review"
-        ],
-        "properties": {
-          "license_review": {
-            "properties": {
-              "status": {
-                "const": "approved"
-              },
-              "redistribution_allowed": {
-                "const": true
-              }
-            }
-          },
-          "privacy_review": {
-            "properties": {
-              "status": {
-                "const": "approved"
-              }
-            }
-          }
-        }
-      }
-    }
-  ]
+  "required":["kind","source_id"],
+  "additionalProperties":false
 }
