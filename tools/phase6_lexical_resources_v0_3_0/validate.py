@@ -6,6 +6,7 @@ ROOT=Path(__file__).resolve().parents[2]
 SCHEMA=ROOT/"specifications/phase6-lexical-resource-0.3.0.schema.json"
 RESOURCE=ROOT/"resources/lexical/phase6-v0.3.0/en-ar-candidate.json"
 CORPUS=ROOT/"benchmarks/phase6-interpretation-v0.3.0/corpus.json"
+FRAMES=ROOT/"resources/semantic-frames/v0.3.0/registry.json"
 def validate_resource():
  schema=json.loads(SCHEMA.read_text(encoding="utf-8"))
  data=json.loads(RESOURCE.read_text(encoding="utf-8"))
@@ -37,6 +38,12 @@ def validate_resource():
     raise ValueError(f"morphology example lacks lexical evidence: {form}")
  if data["status"]!="CANDIDATE" or any(e["status"]!="CANDIDATE" for e in data["entries"]) or any(r["status"]!="CANDIDATE" for r in data["morphology_rules"]):
   raise ValueError("lexical resource must remain candidate-only")
+ frames=json.loads(FRAMES.read_text(encoding="utf-8"))
+ expected_ref=data["resource_id"]+"/"+data["version"]
+ for frame in frames["frames"]:
+  for realization in frame["lexicalRealizations"]:
+   if expected_ref not in realization["resourceRefs"]:
+    raise ValueError("frame realization lacks Phase 6 lexical resource reference: "+frame["frameId"])
  return data
 if __name__=="__main__":
  data=validate_resource()
