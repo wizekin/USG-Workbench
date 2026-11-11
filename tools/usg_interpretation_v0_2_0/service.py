@@ -249,7 +249,9 @@ class InterpretationServiceV02:
                 "operators": {
                     "resourceId": self.operator_resource["resource_id"],
                     "version": self.operator_resource["version"],
+                    "sha256": hashlib.sha256(_OPERATOR_RESOURCE_PATH.read_bytes()).hexdigest(),
                 },
+                "expressionGraphSchema": EXPRESSION_GRAPH_PROFILE,
                 "syntax": SYNTAX_ANALYSIS_VERSION,
                 "semanticFrames": {
                     "registryId": self.frame_registry.registry_id,
