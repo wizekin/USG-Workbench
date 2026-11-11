@@ -35,6 +35,10 @@ When more than one semantic operator targets a clause, all bounded surface-order
 
 Tests cover English negation, modality, future tense, perfect aspect, universal quantification, Arabic negation/future/quantification, ambiguous multi-operator scope, invalid scope targets, source identity, and unchanged plain-clause composition. The expression-graph schema admits OPERATOR nodes and graph integrity checks require scope references to resolve to existing nodes. Phase 4 and Phase 5 Steps 5.2–5.5 regressions must pass.
 
-## 6. Explicit limitations
+## 6. Promotion gate
+
+These operator rules are a bounded candidate implementation, not a claim that every listed operator construction is generally enabled. Each language/operator construction remains provisional until Step 5.11 supplies the required per-construction positive, negative/adversarial, and ambiguous/boundary benchmark counts and meets the frozen precision/recall and scope-abstention thresholds. Unit tests establish deterministic behavior for the fixtures in this step; they do not substitute for that broader evaluation.
+
+## 7. Explicit limitations
 
 This is a small operator inventory. It does not implement unrestricted tense/aspect morphology, all English auxiliaries, Arabic root-pattern morphology, all modal particles, quantifier raising, scope across arbitrary clause boundaries, or truth-conditional quantifier logic. The output is an explicit operator/scope representation, not a proof of the sentence's truth.
