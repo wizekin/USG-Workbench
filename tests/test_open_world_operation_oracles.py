@@ -16,6 +16,7 @@ class OperationOracleRegistryTests(unittest.TestCase):
             "workbench-to-canonical-adapter",
             "phase4-bounded-interpreter",
             "phase5-bounded-interpreter",
+            "python-reference-kernel-v04-v05",
         })
         for target_id, suite in SUITES.items():
             with self.subTest(target=target_id):
@@ -58,6 +59,11 @@ class OperationOracleRegistryTests(unittest.TestCase):
         suite = SUITES["phase5-bounded-interpreter"]
         self.assertIn("idempotent run replay", suite["oracle"])
         self.assertEqual(suite["tests"], ["test_phase5_integrated_api.py"])
+ 
+    def test_reference_kernel_oracle_covers_core_and_adapter_contracts(self):
+        suite = SUITES["python-reference-kernel-v04-v05"]
+        self.assertIn("grammar/sort/scope", suite["oracle"])
+        self.assertEqual(len(suite["tests"]), 3)
 
 
 if __name__ == "__main__":
