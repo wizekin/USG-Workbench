@@ -12,7 +12,6 @@ import json
 
 from tools.phase6_external_pud_v0_1.run import DATASETS, download_dataset
 from tools.phase6_external_pud_v0_5.camel_msa import normalize_arabic
-from tools.phase6_external_pud_v0_8.spacy_dependencies import parse_dependency_conllu
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "artifacts" / "phase6-step-6-6-ud-nominal-candidates.json"
@@ -25,6 +24,44 @@ AR_TEMPORAL = {
     "اليوم", "امس", "غدا", "الان", "لاحقا", "حاليا", "مبكرا",
     "متاخرا", "ثم", "قبلا",
 }
+
+
+
+def parse_ud_conllu(payload: bytes) -> list[dict]:
+    source = payload.decode("utf-8")
+    sentences = []
+    for block in source.strip().split("\\n\\n"):
+        meta, tokens = {}, []
+        for line in block.splitlines():
+            if line.startswith("# "):
+                key, sep, value = line[2:].partition(" = ")
+                if sep:
+                    meta[key] = value
+                continue
+            if not line or line.startswith("#"):
+                continue
+            columns = line.split("\\t")
+            if len(columns) != 10 or not columns[0].isdigit():
+                continue
+            if columns[3] == "_" or not columns[6].isdigit() or columns[7] == "_":
+                continue
+            tokens.append({
+                "id": int(columns[0]),
+                "form": columns[1],
+                "lemma": columns[2],
+                "upos": columns[3],
+                "head_id": int(columns[6]),
+                "deprel": columns[7],
+            })
+        if not tokens:
+            continue
+        id_to_index = {token["id"]: index for index, token in enumerate(tokens)}
+        for index, token in enumerate(tokens):
+            head_id = token.pop("head_id")
+            token["is_root"] = head_id == 0
+            token["gold_head_index"] = index if head_id == 0 else id_to_index.get(head_id)
+        sentences.append({"meta": meta, "tokens": tokens})
+    return sentences
 
 
 def normalize_surface(value: str, language: str) -> str:
@@ -278,7 +315,7 @@ def run() -> dict:
         "languages": {},
     }
     for language, spec in DATASETS.items():
-        sentences = parse_dependency_conllu(download_dataset(language))
+        sentences = parse_ud_conllu(download_dataset(language))
         totals = Counter()
         by_construction = Counter()
         sentence_status = Counter()
