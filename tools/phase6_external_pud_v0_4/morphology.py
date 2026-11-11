@@ -171,10 +171,12 @@ def evaluate_fold(train: list[dict], test: list[dict], language: str) -> dict:
             }
             lemma_pos_hit = (gold[0], gold[1]) in candidates
             feature_hit = gold in candidate_features
-            morph_hit = gold in {
+            morph_lemma_pos_hit = (gold[0], gold[1]) in {
+                (lemma, upos) for lemma, upos, _feats, _source in morph_set
+            }
+            morph_feature_hit = gold in {
                 (lemma, upos, feats)
-                for lemma, upos, feats, source in morph_set
-                if source == "MORPHOLOGY_RULE"
+                for lemma, upos, feats, _source in morph_set
             }
             is_oov = not exact_set
 
@@ -185,7 +187,8 @@ def evaluate_fold(train: list[dict], test: list[dict], language: str) -> dict:
             totals["lemma_pos_candidate_hit"] += int(lemma_pos_hit)
             totals["lemma_pos_candidate_miss"] += int(not lemma_pos_hit)
             totals["feature_bundle_candidate_hit"] += int(feature_hit)
-            totals["morphology_rescue"] += int(is_oov and morph_hit)
+            totals["morphology_rescue"] += int(is_oov and morph_lemma_pos_hit)
+            totals["morphology_feature_rescue"] += int(is_oov and morph_feature_hit)
             totals["oov_lemma_pos_hit"] += int(is_oov and lemma_pos_hit)
             totals["ambiguous_candidate_tokens"] += int(len(candidates) > 1)
             totals["candidate_count"] += len(candidates)
