@@ -48,7 +48,7 @@ This is a review of recorded evidence and repository artifacts. It is not a fres
 
 ### 4.1 Open-World campaign
 
-Campaign: [OWC-OW6-43015126807-1](../../evaluations/open-world/campaigns/OWC-OW6-43015126807-1/campaign-report.md)  
+Campaign: [OWC-OW6-43015126807-1](../evaluations/open-world/campaigns/OWC-OW6-43015126807-1/campaign-report.md)  
 Tested commit: `a04806d1480e692913943693b5251535c6a520f0`
 
 | Recorded outcome | Cases |
