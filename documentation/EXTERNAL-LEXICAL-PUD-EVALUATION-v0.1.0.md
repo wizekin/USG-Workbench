@@ -21,7 +21,10 @@ PUD text is downloaded at evaluation time and verified against the pinned Git bl
 - POS candidate recall means the gold UPOS is among the dictionary-derived candidates; it is not a contextual prediction.
 - Lemma coverage means the exact normalized PUD gold lemma exists among crawled dictionary lemmas. It does not measure a lemmatizer's ability to infer lemmas from unseen forms.
 - Lemma-plus-UPOS candidate recall requires both the gold lemma and gold UPOS to be present in the lemma index.
-- The report does not measure morphology feature accuracy, POS precision, contextual disambiguation, sense accuracy, or semantic correctness.
+- Candidate ambiguity is described with candidate-count distributions and per-UPOS rates. The inventory has no ranking or contextual selection, so prediction precision is undefined and is explicitly not measured.
+- Raw source form tags are retained as a diagnostic frequency inventory only. Although pinned PUD contains FEATS annotations, no source-tag-to-UD-FEATS mapping has been independently validated; therefore this evaluator does not claim external-crawl morphology accuracy.
+- The separate Phase 6 Step 6.4 PUD morphology cross-validation experiment is a training-fold-derived morphology baseline, not an evaluation of external crawler tags.
+- The report does not measure morphology feature accuracy, contextual disambiguation, sense accuracy, or semantic correctness.
 - The crawler remains partial. Low coverage is an inventory-coverage result, not a final judgment of dictionary quality.
 - No result can promote data into the active USG lexicon, syntax, semantics, or interpreter.
 
