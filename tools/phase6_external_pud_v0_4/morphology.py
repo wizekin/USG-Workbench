@@ -121,9 +121,7 @@ def analyze_token(form: str, language: str, rules: dict) -> set[tuple]:
             if not surface_affix or not value.endswith(surface_affix):
                 continue
             stem = value[:-len(surface_affix)]
-            if lemma_affix and not stem.endswith(lemma_affix):
-                continue
-            lemma = stem[:-len(lemma_affix)] + lemma_affix if lemma_affix else stem
+            lemma = stem + lemma_affix
         if lemma and lemma != value:
             candidates.add((lemma, upos, feats, "MORPHOLOGY_RULE"))
     return candidates
