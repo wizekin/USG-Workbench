@@ -739,7 +739,7 @@ class LexicalCrawler:
         checkpoint["retried_headwords"] = int(checkpoint.get("retried_headwords", 0)) + batch_retry_attempts
         batch_headwords = batch_retry_attempts
 
-        while page_index < len(pages):
+        while page_index < len(pages) and stop_reason != "source_rate_limited":
             if time.monotonic() >= deadline:
                 stop_reason = "time_budget"
                 break
