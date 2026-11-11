@@ -152,8 +152,8 @@ The audit is read-only and does not modify checkpoints, manifests, or shards.
 
 ## Automatic post-crawl reconciliation
 
-After each successful crawl job, the workflow runs a separate read-only audit
-job. It fetches the current checkpoint and manifest from the data branch and
+After each successful crawl batch, the workflow runs a final read-only audit
+step in the same job. It fetches the current checkpoint and manifest from the data branch and
 uses the Git tree inventory to reconcile every compressed shard for the pinned
 snapshot. A truncated Git tree response fails closed. Counter mismatches,
 missing last-batch shards, byte-accounting errors, or conflicting duplicate
