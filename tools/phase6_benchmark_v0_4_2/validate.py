@@ -5,7 +5,7 @@ from collections import Counter
 from jsonschema import Draft202012Validator
 ROOT=Path(__file__).resolve().parents[2]; BASE=ROOT/"benchmarks/phase6-interpretation-v0.4.2"
 ROLE_KEYS={"ADJECTIVE_MODIFIER":{"HEAD","MODIFIER"},"GENITIVE_RELATION":{"GENITIVE_HEAD","GENITIVE_DEPENDENT"},"NOUN_COMPOUND":{"HEAD","MODIFIER"},"PREPOSITIONAL_MODIFIER":{"HEAD","LOCATION"},"TEMPORAL_MODIFIER":{"EVENT","TIME"}}
-def tokens(text): return [{"surface":m.group(), "start":m.start(), "end":m.end()} for m in re.finditer(r"[\\w]+",text,flags=re.UNICODE) if any(ch.isalpha() for ch in m.group())]
+def tokens(text): return [{"surface":m.group(), "start":m.start(), "end":m.end()} for m in re.finditer(r"[\w]+",text,flags=re.UNICODE) if any(ch.isalpha() for ch in m.group())]
 def sl(text,s): return "".join(list(text)[s["start"]:s["end"]])
 def validate():
  s=json.loads((BASE/"corpus.schema.json").read_text(encoding="utf-8")); d=json.loads((BASE/"corpus.json").read_text(encoding="utf-8"))
