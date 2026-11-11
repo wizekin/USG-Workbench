@@ -52,7 +52,9 @@ def load_candidate_evidence(data_dir: str | Path, language: str = "en") -> dict:
                         raise ValueError(f"invalid JSON in {shard}:{line_number}") from exc
                     if not isinstance(record, dict):
                         raise ValueError(f"non-object record in {shard}:{line_number}")
-                    entries = record.get("entries", []) or []
+                    entries = record.get("entries", [])
+                    if entries is None:
+                        entries = []
                     if not isinstance(entries, list):
                         raise ValueError(f"entries is not a list in {shard}:{line_number}")
                     for entry in entries:
@@ -68,7 +70,9 @@ def load_candidate_evidence(data_dir: str | Path, language: str = "en") -> dict:
                             key = normalize(lemma, language)
                             lemmas[key].add(upos)
                             forms[key].add(upos)
-                        raw_forms = entry.get("forms", []) or []
+                        raw_forms = entry.get("forms", [])
+                        if raw_forms is None:
+                            raw_forms = []
                         if not isinstance(raw_forms, list):
                             raise ValueError(f"forms is not a list in {shard}:{line_number}")
                         for item in raw_forms:
