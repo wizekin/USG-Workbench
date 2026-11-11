@@ -1,0 +1,271 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "USG Open-World Campaign Report v1.0.0",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "campaign_id": {
+      "type": "string",
+      "minLength": 12
+    },
+    "status": {
+      "enum": [
+        "complete",
+        "partial",
+        "failed"
+      ]
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "finished_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "repository": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tested_commit_sha": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{40}$"
+    },
+    "protocol_version": {
+      "const": "1.0.0"
+    },
+    "generator_version": {
+      "type": "string"
+    },
+    "evaluator_version": {
+      "type": "string"
+    },
+    "master_seed": {
+      "type": "string",
+      "minLength": 16
+    },
+    "attempted": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "completed": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "outcome_counts": {
+      "$ref": "#/$defs/outcome_counts"
+    },
+    "population_results": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/population_result"
+      },
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "coverage": {
+      "type": "object"
+    },
+    "failure_families": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string"
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "category",
+          "count"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "novel_clusters": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "cluster_id": {
+            "type": "string"
+          },
+          "case_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "reviewed": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "cluster_id",
+          "case_count",
+          "reviewed"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "uri": {
+            "type": "string"
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        },
+        "required": [
+          "name",
+          "uri",
+          "sha256"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "campaign_id",
+    "status",
+    "created_at",
+    "started_at",
+    "finished_at",
+    "repository",
+    "tested_commit_sha",
+    "protocol_version",
+    "generator_version",
+    "evaluator_version",
+    "master_seed",
+    "attempted",
+    "completed",
+    "outcome_counts",
+    "population_results",
+    "coverage",
+    "failure_families",
+    "novel_clusters",
+    "limitations",
+    "artifacts"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "outcome_counts": {
+      "type": "object",
+      "properties": {
+        "completed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "unsupported": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "ambiguous": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "abstained": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "partial": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "invalid_output": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "timeout": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "crashed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "infrastructure_error": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "not_executed": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "completed",
+        "unsupported",
+        "ambiguous",
+        "abstained",
+        "partial",
+        "invalid_output",
+        "timeout",
+        "crashed",
+        "infrastructure_error",
+        "not_executed"
+      ],
+      "additionalProperties": false
+    },
+    "population_result": {
+      "type": "object",
+      "properties": {
+        "population": {
+          "enum": [
+            "unconstrained_random",
+            "naturalistic",
+            "controlled_diagnostic"
+          ]
+        },
+        "attempted": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "completed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "outcome_counts": {
+          "$ref": "#/$defs/outcome_counts"
+        },
+        "coverage": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "population",
+        "attempted",
+        "completed",
+        "outcome_counts"
+      ],
+      "additionalProperties": false
+    }
+  }
+}
