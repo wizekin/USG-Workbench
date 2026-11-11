@@ -21,12 +21,14 @@ class TestPUDPOSCrossValidation(unittest.TestCase):
     def test_repeated_form_contributes_a_pos_candidate(self):
         sentences = [
             {"tokens": [{"form": "run", "upos": "VERB"}]},
+            {"tokens": [{"form": "run", "upos": "VERB"}]},
+            {"tokens": [{"form": "run", "upos": "NOUN"}]},
             {"tokens": [{"form": "run", "upos": "NOUN"}]},
         ]
         report = cross_validate(sentences, "en", folds=2)
-        self.assertEqual(report["totals"]["seen_tokens"], 2)
-        self.assertEqual(report["totals"]["gold_tag_in_candidates"], 2)
-        self.assertEqual(report["totals"]["ambiguous_seen_tokens"], 2)
+        self.assertEqual(report["totals"]["seen_tokens"], 4)
+        self.assertEqual(report["totals"]["gold_tag_in_candidates"], 4)
+        self.assertEqual(report["totals"]["ambiguous_seen_tokens"], 4)
 
     def test_requires_valid_fold_count(self):
         with self.assertRaises(ValueError):
