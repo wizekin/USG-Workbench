@@ -313,6 +313,12 @@ class SQLiteResourceCatalogue:
         with self._lock:
             self._connection.execute("BEGIN IMMEDIATE")
             try:
+                classes = self._connection.execute(
+                    "SELECT DISTINCT resource_class FROM semantic_resource_snapshots WHERE resource_id=?",
+                    (resource_id,),
+                ).fetchall()
+                if classes and any(item["resource_class"] != resource_class for item in classes):
+                    raise ResourceCatalogueError("resource class cannot change between versions")
                 existing = self._connection.execute(
                     "SELECT sha256 FROM semantic_resource_snapshots WHERE resource_id=? AND version=?",
                     (resource_id, version),
@@ -377,6 +383,12 @@ class SQLiteResourceCatalogue:
                 ).fetchone()
                 if row is None:
                     raise ResourceNotFoundError(f"resource snapshot not found: {resource_id}@{version}")
+                classes = self._connection.execute(
+                    "SELECT DISTINCT resource_class FROM semantic_resource_snapshots WHERE resource_id=?",
+                    (resource_id,),
+                ).fetchall()
+                if any(item["resource_class"] != row["resource_class"] for item in classes):
+                    raise ResourceCatalogueError("resource class cannot change between versions")
                 current = self._active_version(resource_id)
                 if current != expected_active_version:
                     raise ResourceActivationConflictError(
