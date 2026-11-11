@@ -1,6 +1,6 @@
 # Phase 5 Step 5.11 — Full Interpreter Benchmark and Exit Acceptance
 
-**Status:** BENCHMARK QUALITY GATE PASSED — full integrated compatibility matrix pending.
+**Status:** ACCEPTED — benchmark quality gates and full integrated compatibility matrix passed.
 
 ## Objective
 
@@ -31,6 +31,36 @@ The runner invokes `Phase5InterpretationService` once per fixture and derives a 
 - SHA-256 identity of both the bundled resource descriptor manifest and canonicalized gold corpus used for the run.
 - The enabled target constructions observed in the run.
 - Per-case outcomes so regressions can be diagnosed rather than hidden by aggregate scores.
+
+
+## Measured acceptance result
+
+<badge color="success">All Step 5.11 gates passed</badge>
+
+CI run: [Phase 5 Step 5.11 benchmark run #42965506600](https://github.com/wizekin/USG-Workbench/actions/runs/42965506600)
+
+| Metric | English SVO | MSA Arabic VSO/SVO |
+|---|---:|---:|
+| Positive fixtures | 20/20 | 20/20 |
+| Construction precision | 100% | 100% |
+| Construction recall | 100% | 100% |
+| Positive completion-status accuracy | 100% | 100% |
+| Exact role-binding accuracy | 100% | 100% |
+| Exact source-span accuracy | 100% | 100% |
+| Negative target abstention | 100% | 100% |
+| Ambiguous target abstention | 100% | 100% |
+| False unique constructions | 0 | 0 |
+
+Performance on the GitHub Actions Ubuntu runner (Python 3.11.18), single-process in-memory run:
+
+- 100 fixtures in **685.388 ms** total.
+- Mean **6.854 ms** per case; median **5.724 ms**; p95 **11.082 ms**.
+- Peak traced Python allocation: **523,422 bytes** (not OS RSS or native allocator memory).
+- Corpus SHA-256: `2eb0bc3d9f0c0b2c7131304c0ebd22b136a2cf71f5e38aa9527969a8bcbd3364`.
+- Resource-manifest SHA-256: `d0ea95ed093a9a15a326f2ed06d7463ab1b9272533403e86db2afcff1c56f6cd`.
+- Enabled constructions observed: `en.simple_transitive.svo`, `ar.simple_transitive.vso`, `ar.simple_transitive.svo`.
+
+[Download/view the machine-readable benchmark artifact](https://github.com/wizekin/USG-Workbench/actions/runs/42965506600/artifacts/13830553681).
 
 ## Acceptance gates
 
