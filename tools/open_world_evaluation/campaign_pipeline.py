@@ -140,6 +140,7 @@ def build_campaign_report(
     generation_manifest: dict[str, Any] | None = None,
     artifact_entries: list[dict[str, str]] | None = None,
     minimized_reproducers: list[dict[str, Any]] | None = None,
+    adaptive_discovery: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     campaign_id = _safe_campaign_id(campaign_id)
     if len(tested_commit_sha) != 40 or any(c not in "0123456789abcdef" for c in tested_commit_sha):
@@ -317,6 +318,18 @@ def build_campaign_report(
             "semantic_scored_attempt_count": sum(
                 bool(score.get("semantic_scoring", {}).get("metrics")) for score in scores
             ),
+            "adaptive_followup_case_count": int(
+                (adaptive_discovery or {}).get("adaptive_followup_case_count", 0)
+            ),
+            "adaptive_failure_cluster_count": int(
+                (adaptive_discovery or {}).get("current_failure_cluster_count", 0)
+            ),
+            "adaptive_candidate_new_cluster_count": int(
+                (adaptive_discovery or {}).get("candidate_new_cluster_count", 0)
+            ),
+            "adaptive_history_campaign_count": int(
+                (adaptive_discovery or {}).get("history_campaign_count", 0)
+            ),
         },
         "failure_families": failure_families,
         "novel_clusters": novel_clusters,
@@ -402,7 +415,17 @@ def render_markdown(report: dict[str, Any]) -> str:
             )
     else:
         lines.append("No clusterable unsupported, partial, invalid, or runtime outcomes were recorded.")
+    adaptive = report.get("coverage", {})
     lines += [
+        "",
+        "## Adaptive discovery",
+        "",
+        f"- Follow-up cases generated: {adaptive.get('adaptive_followup_case_count', 0)}",
+        f"- Failure clusters compared: {adaptive.get('adaptive_failure_cluster_count', 0)}",
+        f"- Candidate-new clusters: {adaptive.get('adaptive_candidate_new_cluster_count', 0)}",
+        f"- Prior reports scanned: {adaptive.get('adaptive_history_campaign_count', 0)}",
+        "",
+        "Candidate-new means not found in the scanned history, not globally novel. Human review remains required.",
         "",
         "## Limitations",
         "",
@@ -445,6 +468,8 @@ def store_campaign_bundle(
     tested_commit_sha: str,
     generation_manifest_path: Path | None = None,
     minimized_reproducers_path: Path | None = None,
+    adaptive_followups_path: Path | None = None,
+    adaptive_discovery_path: Path | None = None,
 ) -> Path:
     campaign_id = _safe_campaign_id(campaign_id)
     final_dir = output_root / campaign_id
@@ -462,6 +487,10 @@ def store_campaign_bundle(
             inputs.append(("generation-manifest.json", generation_manifest_path))
         if minimized_reproducers_path is not None:
             inputs.append(("minimized-reproducers.jsonl", minimized_reproducers_path))
+        if adaptive_followups_path is not None:
+            inputs.append(("adaptive-followup-cases.jsonl", adaptive_followups_path))
+        if adaptive_discovery_path is not None:
+            inputs.append(("adaptive-discovery.json", adaptive_discovery_path))
 
         artifact_entries = []
         for name, source in inputs:
@@ -478,6 +507,7 @@ def store_campaign_bundle(
         scores = _read_jsonl(temp_dir / "score-results.jsonl")
         manifest = _read_optional_json(temp_dir / "generation-manifest.json") if (temp_dir / "generation-manifest.json").exists() else None
         minimized = _read_jsonl(temp_dir / "minimized-reproducers.jsonl") if (temp_dir / "minimized-reproducers.jsonl").exists() else []
+        adaptive = _read_optional_json(temp_dir / "adaptive-discovery.json") if (temp_dir / "adaptive-discovery.json").exists() else None
 
         report = build_campaign_report(
             campaign_id=campaign_id,
@@ -488,6 +518,7 @@ def store_campaign_bundle(
             generation_manifest=manifest,
             artifact_entries=artifact_entries,
             minimized_reproducers=minimized,
+            adaptive_discovery=adaptive,
         )
         report_bytes = (json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True) + "\n").encode("utf-8")
         markdown_bytes = render_markdown(report).encode("utf-8")
@@ -538,6 +569,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--scores", type=Path, required=True)
     parser.add_argument("--generation-manifest", type=Path)
     parser.add_argument("--minimized-reproducers", type=Path)
+    parser.add_argument("--adaptive-followups", type=Path)
+    parser.add_argument("--adaptive-discovery-report", type=Path)
     parser.add_argument("--commit-sha", required=True)
     parser.add_argument(
         "--output-root", type=Path,
@@ -554,6 +587,8 @@ def main(argv: list[str] | None = None) -> int:
             tested_commit_sha=args.commit_sha,
             generation_manifest_path=args.generation_manifest,
             minimized_reproducers_path=args.minimized_reproducers,
+            adaptive_followups_path=args.adaptive_followups,
+            adaptive_discovery_path=args.adaptive_discovery_report,
         )
     except (OSError, ValueError, RuntimeError) as exc:
         parser.error(str(exc))
