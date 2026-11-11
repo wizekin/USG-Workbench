@@ -160,6 +160,7 @@ def evaluate(corpus: dict, predictions: dict) -> dict:
             "construction_precision": tp / predicted_positive_count if predicted_positive_count else 0.0,
             "construction_recall": tp / positive_total if positive_total else 0.0,
             "positive_completion_status_accuracy": status_ok / status_total if status_total else 0.0,
+            "completion_status_accuracy": status_ok / status_total if status_total else 0.0,
             "positive_completion_status_cases": status_total,
             "role_binding_exact_accuracy": roles_ok / positive_total if positive_total else 0.0,
             "role_span_exact_and_valid_accuracy": spans_ok / positive_total if positive_total else 0.0,
