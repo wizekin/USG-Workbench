@@ -1,7 +1,0 @@
-The doctor gave the patient medication.
-The patient was examined by the doctor.
-The boy wants to eat an apple.
-John did not eat an apple.
-John opened the door.
-John may open the door.
-The florb quuxed.

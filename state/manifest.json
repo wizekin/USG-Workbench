@@ -1,0 +1,17 @@
+{
+  "schema_version": "usg-lexical-crawl-manifest/0.1.0",
+  "source_repository": "figueirego/english-dictionary",
+  "status": "not_started",
+  "source_snapshot_id": null,
+  "source_commit": null,
+  "total_source_headwords": 1396111,
+  "processed_headwords": 0,
+  "processed_entries": 0,
+  "processed_senses": 0,
+  "failed_headwords": 0,
+  "batch_count": 0,
+  "stored_bytes": 0,
+  "storage_budget_bytes": 734003200,
+  "last_batch": null,
+  "updated_at": null
+}

@@ -1,8 +1,0 @@
-{
-  "resource_id": "example-medical-terms",
-  "version": 1,
-  "entries": [
-    {"language": "en", "form": "surgeon", "concepts": ["Doctor"]},
-    {"language": "ar", "form": "الجراح", "concepts": ["Doctor"]}
-  ]
-}

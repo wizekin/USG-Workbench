@@ -1,0 +1,17 @@
+{
+  "schema_version": "usg-lexical-crawl-checkpoint/0.1.0",
+  "status": "not_started",
+  "source_repository": "figueirego/english-dictionary",
+  "source_commit": null,
+  "source_snapshot_id": null,
+  "pages": [],
+  "page_index": 0,
+  "entry_index": 0,
+  "batch_number": 0,
+  "processed_headwords": 0,
+  "processed_entries": 0,
+  "processed_senses": 0,
+  "failed_headwords": 0,
+  "stored_bytes": 0,
+  "updated_at": null
+}
