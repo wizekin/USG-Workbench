@@ -6274,7 +6274,7 @@
       "id": "ar.possession.idafa.positive.1",
       "language": "ar",
       "target_construction": "ar.possession.idafa",
-      "text": "الطالب كتاب",
+      "text": "كتاب الطالب",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
       "gold_construction": "ar.possession.idafa",
@@ -6284,13 +6284,13 @@
       },
       "expected_role_spans": {
         "POSSESSED": {
-          "start": 7,
-          "end": 11,
+          "start": 0,
+          "end": 4,
           "surface": "كتاب"
         },
         "POSSESSOR": {
-          "start": 0,
-          "end": 6,
+          "start": 5,
+          "end": 11,
           "surface": "الطالب"
         }
       },
@@ -6302,7 +6302,7 @@
       "id": "ar.possession.idafa.positive.2",
       "language": "ar",
       "target_construction": "ar.possession.idafa",
-      "text": "المدير مفتاح",
+      "text": "مفتاح المدير",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
       "gold_construction": "ar.possession.idafa",
@@ -6312,13 +6312,13 @@
       },
       "expected_role_spans": {
         "POSSESSED": {
-          "start": 7,
-          "end": 12,
+          "start": 0,
+          "end": 5,
           "surface": "مفتاح"
         },
         "POSSESSOR": {
-          "start": 0,
-          "end": 6,
+          "start": 6,
+          "end": 12,
           "surface": "المدير"
         }
       },
@@ -6330,7 +6330,7 @@
       "id": "ar.possession.idafa.positive.3",
       "language": "ar",
       "target_construction": "ar.possession.idafa",
-      "text": "المسافر خريطة",
+      "text": "خريطة المسافر",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
       "gold_construction": "ar.possession.idafa",
@@ -6340,13 +6340,13 @@
       },
       "expected_role_spans": {
         "POSSESSED": {
-          "start": 8,
-          "end": 13,
+          "start": 0,
+          "end": 5,
           "surface": "خريطة"
         },
         "POSSESSOR": {
-          "start": 0,
-          "end": 7,
+          "start": 6,
+          "end": 13,
           "surface": "المسافر"
         }
       },
@@ -6358,7 +6358,7 @@
       "id": "ar.possession.idafa.positive.4",
       "language": "ar",
       "target_construction": "ar.possession.idafa",
-      "text": "المعلم رسالة",
+      "text": "رسالة المعلم",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
       "gold_construction": "ar.possession.idafa",
@@ -6368,13 +6368,13 @@
       },
       "expected_role_spans": {
         "POSSESSED": {
-          "start": 7,
-          "end": 12,
+          "start": 0,
+          "end": 5,
           "surface": "رسالة"
         },
         "POSSESSOR": {
-          "start": 0,
-          "end": 6,
+          "start": 6,
+          "end": 12,
           "surface": "المعلم"
         }
       },
@@ -6386,7 +6386,7 @@
       "id": "ar.possession.idafa.positive.5",
       "language": "ar",
       "target_construction": "ar.possession.idafa",
-      "text": "الطفل دراجة",
+      "text": "دراجة الطفل",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
       "gold_construction": "ar.possession.idafa",
@@ -6396,13 +6396,13 @@
       },
       "expected_role_spans": {
         "POSSESSED": {
-          "start": 6,
-          "end": 11,
+          "start": 0,
+          "end": 5,
           "surface": "دراجة"
         },
         "POSSESSOR": {
-          "start": 0,
-          "end": 5,
+          "start": 6,
+          "end": 11,
           "surface": "الطفل"
         }
       },
@@ -6414,7 +6414,7 @@
       "id": "ar.possession.idafa.positive.6",
       "language": "ar",
       "target_construction": "ar.possession.idafa",
-      "text": "الطبيب مكتب",
+      "text": "مكتب الطبيب",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
       "gold_construction": "ar.possession.idafa",
@@ -6424,13 +6424,13 @@
       },
       "expected_role_spans": {
         "POSSESSED": {
-          "start": 7,
-          "end": 11,
+          "start": 0,
+          "end": 4,
           "surface": "مكتب"
         },
         "POSSESSOR": {
-          "start": 0,
-          "end": 6,
+          "start": 5,
+          "end": 11,
           "surface": "الطبيب"
         }
       },
@@ -6442,7 +6442,7 @@
       "id": "ar.possession.idafa.positive.7",
       "language": "ar",
       "target_construction": "ar.possession.idafa",
-      "text": "الأسرة غرفة",
+      "text": "غرفة الأسرة",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
       "gold_construction": "ar.possession.idafa",
@@ -6452,13 +6452,13 @@
       },
       "expected_role_spans": {
         "POSSESSED": {
-          "start": 7,
-          "end": 11,
+          "start": 0,
+          "end": 4,
           "surface": "غرفة"
         },
         "POSSESSOR": {
-          "start": 0,
-          "end": 6,
+          "start": 5,
+          "end": 11,
           "surface": "الأسرة"
         }
       },
@@ -6470,7 +6470,7 @@
       "id": "ar.possession.idafa.positive.8",
       "language": "ar",
       "target_construction": "ar.possession.idafa",
-      "text": "السائق حقيبة",
+      "text": "حقيبة السائق",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
       "gold_construction": "ar.possession.idafa",
@@ -6480,13 +6480,13 @@
       },
       "expected_role_spans": {
         "POSSESSED": {
-          "start": 7,
-          "end": 12,
+          "start": 0,
+          "end": 5,
           "surface": "حقيبة"
         },
         "POSSESSOR": {
-          "start": 0,
-          "end": 6,
+          "start": 6,
+          "end": 12,
           "surface": "السائق"
         }
       },
@@ -6498,7 +6498,7 @@
       "id": "ar.possession.idafa.positive.9",
       "language": "ar",
       "target_construction": "ar.possession.idafa",
-      "text": "الجار حديقة",
+      "text": "حديقة الجار",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
       "gold_construction": "ar.possession.idafa",
@@ -6508,13 +6508,13 @@
       },
       "expected_role_spans": {
         "POSSESSED": {
-          "start": 6,
-          "end": 11,
+          "start": 0,
+          "end": 5,
           "surface": "حديقة"
         },
         "POSSESSOR": {
-          "start": 0,
-          "end": 5,
+          "start": 6,
+          "end": 11,
           "surface": "الجار"
         }
       },
@@ -6526,7 +6526,7 @@
       "id": "ar.possession.idafa.positive.10",
       "language": "ar",
       "target_construction": "ar.possession.idafa",
-      "text": "المدير تقرير",
+      "text": "تقرير المدير",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
       "gold_construction": "ar.possession.idafa",
@@ -6536,13 +6536,13 @@
       },
       "expected_role_spans": {
         "POSSESSED": {
-          "start": 7,
-          "end": 12,
+          "start": 0,
+          "end": 5,
           "surface": "تقرير"
         },
         "POSSESSOR": {
-          "start": 0,
-          "end": 6,
+          "start": 6,
+          "end": 12,
           "surface": "المدير"
         }
       },
@@ -6554,7 +6554,7 @@
       "id": "ar.possession.idafa.positive.11",
       "language": "ar",
       "target_construction": "ar.possession.idafa",
-      "text": "المعلم كرسي",
+      "text": "كرسي المعلم",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
       "gold_construction": "ar.possession.idafa",
@@ -6564,13 +6564,13 @@
       },
       "expected_role_spans": {
         "POSSESSED": {
-          "start": 7,
-          "end": 11,
+          "start": 0,
+          "end": 4,
           "surface": "كرسي"
         },
         "POSSESSOR": {
-          "start": 0,
-          "end": 6,
+          "start": 5,
+          "end": 11,
           "surface": "المعلم"
         }
       },
@@ -6582,7 +6582,7 @@
       "id": "ar.possession.idafa.positive.12",
       "language": "ar",
       "target_construction": "ar.possession.idafa",
-      "text": "الصديق منزل",
+      "text": "منزل الصديق",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
       "gold_construction": "ar.possession.idafa",
@@ -6592,13 +6592,13 @@
       },
       "expected_role_spans": {
         "POSSESSED": {
-          "start": 7,
-          "end": 11,
+          "start": 0,
+          "end": 4,
           "surface": "منزل"
         },
         "POSSESSOR": {
-          "start": 0,
-          "end": 6,
+          "start": 5,
+          "end": 11,
           "surface": "الصديق"
         }
       },
@@ -6610,7 +6610,7 @@
       "id": "ar.possession.idafa.positive.13",
       "language": "ar",
       "target_construction": "ar.possession.idafa",
-      "text": "الطبيب هاتف",
+      "text": "هاتف الطبيب",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
       "gold_construction": "ar.possession.idafa",
@@ -6620,13 +6620,13 @@
       },
       "expected_role_spans": {
         "POSSESSED": {
-          "start": 7,
-          "end": 11,
+          "start": 0,
+          "end": 4,
           "surface": "هاتف"
         },
         "POSSESSOR": {
-          "start": 0,
-          "end": 6,
+          "start": 5,
+          "end": 11,
           "surface": "الطبيب"
         }
       },
@@ -6638,7 +6638,7 @@
       "id": "ar.possession.idafa.positive.14",
       "language": "ar",
       "target_construction": "ar.possession.idafa",
-      "text": "الطفل معطف",
+      "text": "معطف الطفل",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
       "gold_construction": "ar.possession.idafa",
@@ -6648,13 +6648,13 @@
       },
       "expected_role_spans": {
         "POSSESSED": {
-          "start": 6,
-          "end": 10,
+          "start": 0,
+          "end": 4,
           "surface": "معطف"
         },
         "POSSESSOR": {
-          "start": 0,
-          "end": 5,
+          "start": 5,
+          "end": 10,
           "surface": "الطفل"
         }
       },
@@ -6666,7 +6666,7 @@
       "id": "ar.possession.idafa.positive.15",
       "language": "ar",
       "target_construction": "ar.possession.idafa",
-      "text": "الفريق خطة",
+      "text": "خطة الفريق",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
       "gold_construction": "ar.possession.idafa",
@@ -6676,13 +6676,13 @@
       },
       "expected_role_spans": {
         "POSSESSED": {
-          "start": 7,
-          "end": 10,
+          "start": 0,
+          "end": 3,
           "surface": "خطة"
         },
         "POSSESSOR": {
-          "start": 0,
-          "end": 6,
+          "start": 4,
+          "end": 10,
           "surface": "الفريق"
         }
       },
@@ -6694,7 +6694,7 @@
       "id": "ar.possession.idafa.positive.16",
       "language": "ar",
       "target_construction": "ar.possession.idafa",
-      "text": "المغني صوت",
+      "text": "صوت المغني",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
       "gold_construction": "ar.possession.idafa",
@@ -6704,13 +6704,13 @@
       },
       "expected_role_spans": {
         "POSSESSED": {
-          "start": 7,
-          "end": 10,
+          "start": 0,
+          "end": 3,
           "surface": "صوت"
         },
         "POSSESSOR": {
-          "start": 0,
-          "end": 6,
+          "start": 4,
+          "end": 10,
           "surface": "المغني"
         }
       },
@@ -6722,7 +6722,7 @@
       "id": "ar.possession.idafa.positive.17",
       "language": "ar",
       "target_construction": "ar.possession.idafa",
-      "text": "الكاتب اسم",
+      "text": "اسم الكاتب",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
       "gold_construction": "ar.possession.idafa",
@@ -6732,13 +6732,13 @@
       },
       "expected_role_spans": {
         "POSSESSED": {
-          "start": 7,
-          "end": 10,
+          "start": 0,
+          "end": 3,
           "surface": "اسم"
         },
         "POSSESSOR": {
-          "start": 0,
-          "end": 6,
+          "start": 4,
+          "end": 10,
           "surface": "الكاتب"
         }
       },
@@ -6750,7 +6750,7 @@
       "id": "ar.possession.idafa.positive.18",
       "language": "ar",
       "target_construction": "ar.possession.idafa",
-      "text": "الفنان عمل",
+      "text": "عمل الفنان",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
       "gold_construction": "ar.possession.idafa",
@@ -6760,13 +6760,13 @@
       },
       "expected_role_spans": {
         "POSSESSED": {
-          "start": 7,
-          "end": 10,
+          "start": 0,
+          "end": 3,
           "surface": "عمل"
         },
         "POSSESSOR": {
-          "start": 0,
-          "end": 6,
+          "start": 4,
+          "end": 10,
           "surface": "الفنان"
         }
       },
@@ -6778,7 +6778,7 @@
       "id": "ar.possession.idafa.positive.19",
       "language": "ar",
       "target_construction": "ar.possession.idafa",
-      "text": "السائق سيارة",
+      "text": "سيارة السائق",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
       "gold_construction": "ar.possession.idafa",
@@ -6788,13 +6788,13 @@
       },
       "expected_role_spans": {
         "POSSESSED": {
-          "start": 7,
-          "end": 12,
+          "start": 0,
+          "end": 5,
           "surface": "سيارة"
         },
         "POSSESSOR": {
-          "start": 0,
-          "end": 6,
+          "start": 6,
+          "end": 12,
           "surface": "السائق"
         }
       },
@@ -6806,7 +6806,7 @@
       "id": "ar.possession.idafa.positive.20",
       "language": "ar",
       "target_construction": "ar.possession.idafa",
-      "text": "الكاتب قصة",
+      "text": "قصة الكاتب",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
       "gold_construction": "ar.possession.idafa",
@@ -6816,13 +6816,13 @@
       },
       "expected_role_spans": {
         "POSSESSED": {
-          "start": 7,
-          "end": 10,
+          "start": 0,
+          "end": 3,
           "surface": "قصة"
         },
         "POSSESSOR": {
-          "start": 0,
-          "end": 6,
+          "start": 4,
+          "end": 10,
           "surface": "الكاتب"
         }
       },
