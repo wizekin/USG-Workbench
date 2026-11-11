@@ -51,6 +51,19 @@ class WorkbenchBrowserSmokeTests(unittest.TestCase):
         self.page.locator('button[data-view="patterns"]').click()
         self.page.locator("#view-patterns").wait_for(state="visible")
 
+    def test_reasoning_engine_exposes_derived_claims_and_export(self):
+        self.page.locator('button[data-view="reasoning"]').click()
+        self.page.locator("#run-reasoning-button").click()
+        derived = self.page.locator("#derived-list")
+        derived.wait_for(state="visible")
+        self.assertIn("Tweety", derived.inner_text())
+        self.assertIn("Animal", derived.inner_text())
+        with self.page.expect_download() as download_info:
+            self.page.locator("#export-button").click()
+        download = download_info.value
+        self.assertTrue(download.suggested_filename.startswith("usg-workbench-backup-"))
+        self.assertTrue(download.suggested_filename.endswith(".json"))
+
 
 if __name__ == "__main__":
     unittest.main()
