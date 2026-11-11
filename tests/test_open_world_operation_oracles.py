@@ -14,6 +14,8 @@ class OperationOracleRegistryTests(unittest.TestCase):
             "python-native-semantic-models-v06-v14",
             "kernel-lab-local-api-cli",
             "workbench-to-canonical-adapter",
+            "phase4-bounded-interpreter",
+            "phase5-bounded-interpreter",
         })
         for target_id, suite in SUITES.items():
             with self.subTest(target=target_id):
@@ -46,6 +48,16 @@ class OperationOracleRegistryTests(unittest.TestCase):
         suite = SUITES["workbench-to-canonical-adapter"]
         self.assertIn("Unicode offset conversion", suite["oracle"])
         self.assertEqual(suite["claim"], "fixture_backed_adapter_contract_conformance")
+ 
+    def test_phase4_interpreter_suite_has_language_and_abstention_oracles(self):
+        suite = SUITES["phase4-bounded-interpreter"]
+        self.assertIn("English and Arabic", suite["oracle"])
+        self.assertEqual(suite["claim"], "bounded_interpreter_fixture_conformance")
+
+    def test_phase5_interpreter_suite_keeps_pipeline_and_storage_contracts_explicit(self):
+        suite = SUITES["phase5-bounded-interpreter"]
+        self.assertIn("idempotent run replay", suite["oracle"])
+        self.assertEqual(suite["tests"], ["test_phase5_integrated_api.py"])
 
 
 if __name__ == "__main__":
