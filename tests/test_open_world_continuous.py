@@ -7,6 +7,7 @@ import unittest
 from tools.open_world_evaluation.campaign_profiles import (
     CONTROLLED_DIAGNOSTIC_COUNT,
     MANUAL_MAX,
+    TARGETS_PER_PROMPT,
     resolve_campaign_profile,
 )
 
@@ -18,7 +19,7 @@ class OpenWorldCampaignProfileTests(unittest.TestCase):
         )
         self.assertEqual(profile["cadence"], "daily")
         self.assertEqual(profile["prompt_count"], 20)
-        self.assertEqual(profile["random_target_case_count"], 60)
+        self.assertEqual(profile["random_target_case_count"], 20 * TARGETS_PER_PROMPT)
         self.assertEqual(profile["total_case_count"], 60 + CONTROLLED_DIAGNOSTIC_COUNT)
 
     def test_weekly_profile_increases_exploration_budget(self):
@@ -27,13 +28,14 @@ class OpenWorldCampaignProfileTests(unittest.TestCase):
         )
         self.assertEqual(profile["cadence"], "weekly")
         self.assertEqual(profile["prompt_count"], 100)
-        self.assertEqual(profile["random_target_case_count"], 300)
+        self.assertEqual(profile["random_target_case_count"], 100 * TARGETS_PER_PROMPT)
 
     def test_release_profile_runs_deeper_matrix(self):
         profile = resolve_campaign_profile("release")
         self.assertEqual(profile["cadence"], "release")
         self.assertEqual(profile["prompt_count"], 250)
-        self.assertEqual(profile["total_case_count"], 856)
+        self.assertEqual(profile["target_count"], TARGETS_PER_PROMPT)
+        self.assertEqual(profile["total_case_count"], 250 * TARGETS_PER_PROMPT + CONTROLLED_DIAGNOSTIC_COUNT)
 
     def test_manual_profile_uses_default_and_custom_budget(self):
         self.assertEqual(
