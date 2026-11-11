@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 import sys
 
+from .audit import audit_crawl_state
 from .cache import LexicalCache, default_cache_path
 from .evaluation import run_structural_benchmark
 from .service import DEFAULT_PROVIDER_ORDER, ExternalLexicalService
@@ -33,6 +34,11 @@ def build_parser() -> argparse.ArgumentParser:
     graph = sub.add_parser("graph", help="Assemble the cumulative graph from previously cached words.")
     graph.add_argument("--limit", type=int, default=10000)
     sub.add_parser("benchmark", help="Run offline structural checks; no network calls.")
+    audit = sub.add_parser("audit", help="Reconcile crawl checkpoint, manifest and shard inventory.")
+    audit.add_argument("--checkpoint", type=Path, required=True)
+    audit.add_argument("--manifest", type=Path, required=True)
+    audit.add_argument("--shard-inventory", type=Path, required=True,
+                       help="JSON array of GitHub shard inventory objects (path, size, sha).")
     return parser
 
 
@@ -41,6 +47,20 @@ def main(argv=None) -> int:
     if args.command == "benchmark":
         _print(run_structural_benchmark())
         return 0
+    if args.command == "audit":
+        try:
+            checkpoint = json.loads(args.checkpoint.read_text(encoding="utf-8"))
+            manifest = json.loads(args.manifest.read_text(encoding="utf-8"))
+            inventory = json.loads(args.shard_inventory.read_text(encoding="utf-8"))
+            if not isinstance(inventory, list):
+                raise ValueError("--shard-inventory must contain a JSON array")
+            report = audit_crawl_state(checkpoint, manifest, inventory)
+            _print(report)
+            return 0 if report["status"] != "failed" else 1
+        except (OSError, ValueError, json.JSONDecodeError) as exc:
+            print(f"USG lexical audit failed: {exc}", file=sys.stderr)
+            return 2
+
     cache = LexicalCache(args.cache)
     service = ExternalLexicalService(cache=cache)
     try:
