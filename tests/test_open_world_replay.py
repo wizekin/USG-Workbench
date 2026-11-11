@@ -62,6 +62,7 @@ class DeterministicReplayTests(unittest.TestCase):
         entry = compare_replay(original, replay)
         self.assertEqual(entry["status"], "target_result_mismatch")
         self.assertFalse(entry["target_result_matches"])
+        self.assertEqual(entry["differing_json_paths"], ["document.expressions[0].id"])
 
     def test_outcome_change_is_reported_separately(self):
         original = make_record(outcome="partial")
