@@ -8,12 +8,14 @@
       "volatile_json_paths": [
         "document.documentId",
         "document.createdAt"
-      ]
+      ],
+      "normalize_source_id_references": true
     },
     "phase5-bounded-interpreter": {
       "pipeline_contract": "USG-INTERPRET/0.2.0",
       "pipeline_version": "phase5-interpretation-integration/0.3.0",
-      "volatile_json_paths": []
+      "volatile_json_paths": [],
+      "normalize_source_id_references": false
     }
   },
   "limitations": [
