@@ -16,6 +16,8 @@ class Phase5SQLiteResourceCatalogueTests(unittest.TestCase):
         self.connection.execute("CREATE TABLE canonical_documents(document_id TEXT PRIMARY KEY)")
         self.connection.execute("BEGIN IMMEDIATE")
         self.catalogue = SQLiteResourceCatalogue(self.connection)
+        self.connection.commit()
+        self.connection.execute("BEGIN IMMEDIATE")
 
     def tearDown(self):
         if self.connection.in_transaction:
