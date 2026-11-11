@@ -54,7 +54,7 @@ The crawler pins one Git commit and its snapshot ID for the duration of a full c
 
 When the pinned snapshot is complete, subsequent runs compare the upstream source snapshot. If the source publishes a new snapshot, the crawler starts a new cycle while preserving prior shards and cumulative storage accounting.
 
-The worker records failed entry fetches and parser failures as compact failure events and continues where it can. A transient source rate limit stops the run without advancing past the current headword.
+The worker records failed entry fetches and parser failures as compact failure events and continues where it can. A transient source rate limit stops the run without advancing past the current headword. A browse-page fetch or parse error is recorded separately and stops the batch without advancing the page/entry cursor; the next scheduled run retries that exact page so a temporary index failure cannot silently skip hundreds of headwords.
 
 ## Run manually
 
