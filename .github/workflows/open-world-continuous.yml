@@ -17,6 +17,8 @@ on:
     paths:
       - ".github/workflows/open-world-continuous.yml"
       - "tools/open_world_evaluation/campaign_profiles.py"
+      - "tools/open_world_evaluation/coverage_ledger.py"
+      - "tools/open_world_evaluation/schemas/coverage-ledger.schema.json"
       - "tests/test_open_world_continuous.py"
       - "documentation/USG-OPEN-WORLD-CONTINUOUS-EXPLORATION.md"
 
