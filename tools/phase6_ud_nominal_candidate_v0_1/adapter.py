@@ -99,6 +99,8 @@ def _candidate(text: str, construction: str, rule: str, relation_type: str,
         head_index = roles.get("POSSESSED")
     if head_index is None:
         head_index = roles.get("GENITIVE_HEAD")
+    if head_index is None:
+        head_index = roles.get("MODIFIED")
     if isinstance(head_index, list):
         head_index = head_index[0]
     head_token = tokens[head_index] if isinstance(head_index, int) else None
@@ -279,7 +281,8 @@ def run() -> dict:
         sentences = parse_dependency_conllu(download_dataset(language))
         totals = Counter()
         by_construction = Counter()
-        by_status = Counter()
+        sentence_status = Counter()
+        candidate_status = Counter()
         alignment_failures = 0
         for sentence in sentences:
             adapted = adapt_sentence(sentence, language)
@@ -288,14 +291,14 @@ def run() -> dict:
             totals["candidates"] += len(adapted["candidates"])
             totals["span_alignment_failures"] += adapted["span_alignment_failures"]
             alignment_failures += adapted["span_alignment_failures"]
-            by_status[adapted["status"]] += 1
+            sentence_status[adapted["status"]] += 1
             for candidate in adapted["candidates"]:
                 if candidate["status"] == "AMBIGUOUS":
-                    by_status["AMBIGUOUS_CANDIDATE"] += 1
+                    candidate_status["AMBIGUOUS"] += 1
                     for alternative in candidate["alternatives"]:
                         by_construction[alternative["construction_id"]] += 1
                 else:
-                    by_status["CANDIDATE"] += 1
+                    candidate_status["CANDIDATE"] += 1
                     by_construction[candidate["construction_id"]] += 1
         report["languages"][language] = {
             "repository": f"UniversalDependencies/{spec['repo']}",
@@ -305,7 +308,8 @@ def run() -> dict:
             "license": "CC BY-SA 3.0",
             "sentences": len(sentences),
             "totals": dict(totals),
-            "by_status": dict(by_status),
+            "sentence_status": dict(sentence_status),
+            "candidate_status": dict(candidate_status),
             "by_construction": dict(by_construction),
             "span_alignment_success_rate": (
                 1 - alignment_failures / totals["tokens"] if totals["tokens"] else None
