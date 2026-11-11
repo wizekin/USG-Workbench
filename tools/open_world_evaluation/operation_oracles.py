@@ -53,7 +53,7 @@ SUITES: dict[str, dict[str, Any]] = {
             "implementations/python-kernel/v1.4.0",
         ],
     },
-    "python-native-model-boundaries": {
+    "python-native-semantic-models-v06-v14": {
         "tests": [
             "implementations/python-kernel/v0.6.0/tests/test_referent_identity.py",
             "implementations/python-kernel/v1.4.0/tests/test_native_definitions.py",
