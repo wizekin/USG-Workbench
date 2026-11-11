@@ -102,13 +102,14 @@ def induce_rules(sentences: list[dict], language: str,
                 examples[rule].add((normalize(token["lemma"], language),
                                     normalize(token["form"], language)))
     return {
-        rule: support[rule]
+        rule: len(examples[rule])
         for rule in support
-        if support[rule] >= min_support
+        if len(examples[rule]) >= min_support
     }
 
 
-def analyze_token(form: str, language: str, rules: dict) -> set[tuple]:
+def analyze_token(form: str, language: str, rules: dict,
+                  known_lemmas: set[tuple[str, str]] | None = None) -> set[tuple]:
     value = normalize(form, language)
     candidates = set()
     for (upos, mode, lemma_affix, surface_affix, feats), count in rules.items():
@@ -122,7 +123,9 @@ def analyze_token(form: str, language: str, rules: dict) -> set[tuple]:
                 continue
             stem = value[:-len(surface_affix)]
             lemma = stem + lemma_affix
-        if lemma and lemma != value:
+        if lemma and lemma != value and (
+            known_lemmas is None or (lemma, upos) in known_lemmas
+        ):
             candidates.add((lemma, upos, feats, "MORPHOLOGY_RULE"))
     return candidates
 
@@ -140,6 +143,10 @@ def _exact_candidates(train: list[dict], language: str) -> dict:
 def evaluate_fold(train: list[dict], test: list[dict], language: str) -> dict:
     rules = induce_rules(train, language)
     exact = _exact_candidates(train, language)
+    known_lemmas = {
+        (normalize(token["lemma"], language), token["upos"])
+        for sentence in train for token in sentence["tokens"]
+    }
     totals = Counter()
     by_upos = defaultdict(Counter)
     rule_usage = Counter()
@@ -153,18 +160,17 @@ def evaluate_fold(train: list[dict], test: list[dict], language: str) -> dict:
                 token["feats"],
             )
             exact_set = exact.get(form, set())
-            morph_set = analyze_token(form, language, rules)
-            candidates = {
+            morph_set = analyze_token(form, language, rules, known_lemmas)
+            candidate_features = {
                 (lemma, upos, feats)
                 for lemma, upos, feats, _source in exact_set | morph_set
             }
+            candidates = {(lemma, upos) for lemma, upos, _feats in candidate_features}
             exact_hit = gold in {
                 (lemma, upos, feats) for lemma, upos, feats, _source in exact_set
             }
-            lemma_pos_hit = (gold[0], gold[1]) in {
-                (lemma, upos) for lemma, upos, _feats in candidates
-            }
-            feature_hit = gold in candidates
+            lemma_pos_hit = (gold[0], gold[1]) in candidates
+            feature_hit = gold in candidate_features
             morph_hit = gold in {
                 (lemma, upos, feats)
                 for lemma, upos, feats, source in morph_set
@@ -183,6 +189,7 @@ def evaluate_fold(train: list[dict], test: list[dict], language: str) -> dict:
             totals["oov_lemma_pos_hit"] += int(is_oov and lemma_pos_hit)
             totals["ambiguous_candidate_tokens"] += int(len(candidates) > 1)
             totals["candidate_count"] += len(candidates)
+            totals["feature_candidate_count"] += len(candidate_features)
             by_upos[token["upos"]]["tokens"] += 1
             by_upos[token["upos"]]["lemma_pos_hit"] += int(lemma_pos_hit)
             by_upos[token["upos"]]["oov"] += int(is_oov)
@@ -228,8 +235,9 @@ def cross_validate(sentences: list[dict], language: str, folds: int = 10) -> dic
         "lemma_pos_candidate_recall": ratio(aggregate["lemma_pos_candidate_hit"], aggregate["tokens"]),
         "feature_bundle_candidate_recall": ratio(aggregate["feature_bundle_candidate_hit"], aggregate["tokens"]),
         "morphology_rescue_rate_over_oov": ratio(aggregate["morphology_rescue"], aggregate["oov_tokens"]),
-        "ambiguous_candidate_rate": ratio(aggregate["ambiguous_candidate_tokens"], aggregate["tokens"]),
-        "mean_candidate_count": ratio(aggregate["candidate_count"], aggregate["tokens"]),
+        "ambiguous_lemma_pos_candidate_rate": ratio(aggregate["ambiguous_candidate_tokens"], aggregate["tokens"]),
+        "mean_lemma_pos_candidate_count": ratio(aggregate["candidate_count"], aggregate["tokens"]),
+        "mean_feature_candidate_count": ratio(aggregate["feature_candidate_count"], aggregate["tokens"]),
     })
     return {
         "language": language,
