@@ -309,6 +309,8 @@ def bundled_resource_descriptors() -> tuple[ResourceDescriptor, ...]:
          "resources/lexical/v0.3.0/en-ar-discourse-lexicon.json", "en+ar"),
         ("usg-en-core-starter-lexicon", "LEXICON", "0.4.0",
          "resources/lexical/v0.4.0/en-core-starter-lexicon.json", "en"),
+        ("usg-en-core-starter-lexicon", "LEXICON", "0.5.0",
+         "resources/lexical/v0.5.0/en-core-starter-lexicon.json", "en"),
         ("usg-en-ar-scope-operators", "GRAMMAR", "0.1.0",
          "resources/operators/v0.1.0/operators-en-ar.json", "en+ar"),
         ("usg-v0.2-lexical-analyzer", "LEXICON", "0.2.0",
