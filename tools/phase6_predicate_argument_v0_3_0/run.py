@@ -2,7 +2,7 @@
 import json
 from pathlib import Path
 from tools.phase6_predicate_argument_v0_3_0.analyzer import predict_corpus
-from tools.phase6_interpretation_benchmark_v0_3_1.run import load_corpus,evaluate,quality_gate
+from tools.phase6_interpretation_benchmark_v0_3_2.run import load_corpus,evaluate,quality_gate
 ROOT=Path(__file__).resolve().parents[2]
 corpus=load_corpus()
 predictions=predict_corpus(corpus)
