@@ -54,7 +54,7 @@ class SemanticFrameRegistry:
 @dataclass(frozen=True)
 class SemanticNode:
     node_id: str
-    op: Literal["REF", "PREDICATE", "OPERATOR", "CLAUSE_GROUP"]
+    op: Literal["REF", "PREDICATE", "OPERATOR", "COORDINATION", "CLAUSE_GROUP"]
     sort: Literal["ENTITY", "PROPOSITION", "PROPOSITION_SET"]
     operand_refs: tuple[str, ...]
     params: tuple[tuple[str, Any], ...]
@@ -68,8 +68,8 @@ class SemanticNode:
             raise ValueError("REF nodes must have ENTITY sort")
         if self.op in {"PREDICATE", "OPERATOR"} and self.sort != "PROPOSITION":
             raise ValueError("PREDICATE and OPERATOR nodes must have PROPOSITION sort")
-        if self.op == "CLAUSE_GROUP" and self.sort != "PROPOSITION_SET":
-            raise ValueError("CLAUSE_GROUP nodes must have PROPOSITION_SET sort")
+        if self.op in {"CLAUSE_GROUP", "COORDINATION"} and self.sort != "PROPOSITION_SET":
+            raise ValueError("CLAUSE_GROUP and COORDINATION nodes must have PROPOSITION_SET sort")
         if self.source_span[0] < 0 or self.source_span[1] <= self.source_span[0]:
             raise ValueError("semantic node source span must be non-empty")
 
@@ -306,26 +306,74 @@ class SemanticComposer:
         if len(clause_roots) == 1:
             root_ref = clause_roots[0]
         else:
-            root_ref = self._stable_id("group", clause_roots)
-            source_span = (min(x[0] for x in clause_spans), max(x[1] for x in clause_spans))
-            selected_clause_refs = {x.clause_ref for x, _, _ in selected}
-            attachment_payload = [{
-                "relation": item.relation, "markerText": item.marker_text,
-                "markerSpan": list(item.marker_span),
-                "sourceClauseRef": item.source_clause_ref,
-                "targetClauseRef": item.target_clause_ref, "status": item.status,
-            } for item in attachments
-                if item.source_clause_ref in selected_clause_refs
-                and item.target_clause_ref in selected_clause_refs]
-            group_params = {
-                "attachmentCandidates": attachment_payload,
-                "unresolvedClauseRefs": list(unresolved_refs),
+            selected_clause_refs = [x.clause_ref for x, _, _ in selected]
+            relevant_attachments = [
+                item for item in attachments
+                if item.source_clause_ref in set(selected_clause_refs)
+                and item.target_clause_ref in set(selected_clause_refs)
+            ]
+            coordination_values = {
+                "COORDINATION_AND": "AND",
+                "COORDINATION_OR": "OR",
+                "CONTRAST": "CONTRAST",
             }
-            nodes.append(SemanticNode(
-                root_ref, "CLAUSE_GROUP", "PROPOSITION_SET", tuple(clause_roots),
-                tuple(sorted(group_params.items())), source_span,
-                tuple(x.candidate_id for x, _, _ in selected),
-            ))
+            is_contiguous_coordination = (
+                len(relevant_attachments) == len(clause_roots) - 1
+                and all(
+                    relevant_attachments[index].source_clause_ref == selected_clause_refs[index]
+                    and relevant_attachments[index].target_clause_ref == selected_clause_refs[index + 1]
+                    and relevant_attachments[index].relation in coordination_values
+                    for index in range(len(relevant_attachments))
+                )
+            )
+            if is_contiguous_coordination:
+                current_root = clause_roots[0]
+                current_span = clause_spans[0]
+                for index, attachment in enumerate(relevant_attachments):
+                    right_root = clause_roots[index + 1]
+                    right_span = clause_spans[index + 1]
+                    coordination_id = self._stable_id("coord", [
+                        current_root, right_root, attachment.relation, attachment.marker_span
+                    ])
+                    params = {
+                        "operatorValue": coordination_values[attachment.relation],
+                        "relation": attachment.relation,
+                        "markerText": attachment.marker_text,
+                        "markerSpan": list(attachment.marker_span),
+                        "leftClauseRef": attachment.source_clause_ref,
+                        "rightClauseRef": attachment.target_clause_ref,
+                        "grouping": "LEFT_ASSOCIATIVE",
+                    }
+                    nodes.append(SemanticNode(
+                        coordination_id, "COORDINATION", "PROPOSITION_SET",
+                        (current_root, right_root), tuple(sorted(params.items())),
+                        (current_span[0], right_span[1]),
+                        tuple(x.candidate_id for x, _, _ in selected[:index + 2]),
+                    ))
+                    current_root = coordination_id
+                    current_span = (current_span[0], right_span[1])
+                root_ref = current_root
+            else:
+                root_ref = self._stable_id("group", clause_roots)
+                source_span = (min(x[0] for x in clause_spans), max(x[1] for x in clause_spans))
+                selected_clause_set = set(selected_clause_refs)
+                attachment_payload = [{
+                    "relation": item.relation, "markerText": item.marker_text,
+                    "markerSpan": list(item.marker_span),
+                    "sourceClauseRef": item.source_clause_ref,
+                    "targetClauseRef": item.target_clause_ref, "status": item.status,
+                } for item in attachments
+                    if item.source_clause_ref in selected_clause_set
+                    and item.target_clause_ref in selected_clause_set]
+                group_params = {
+                    "attachmentCandidates": attachment_payload,
+                    "unresolvedClauseRefs": list(unresolved_refs),
+                }
+                nodes.append(SemanticNode(
+                    root_ref, "CLAUSE_GROUP", "PROPOSITION_SET", tuple(clause_roots),
+                    tuple(sorted(group_params.items())), source_span,
+                    tuple(x.candidate_id for x, _, _ in selected),
+                ))
         candidate_id = self._stable_id("sem", [
             [x.candidate_id, list(order)] for x, _, order in selected
         ])
