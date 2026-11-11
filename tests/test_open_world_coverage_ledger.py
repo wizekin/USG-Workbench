@@ -102,7 +102,8 @@ class CoverageLedgerTests(unittest.TestCase):
         item = case("phase4-bounded-interpreter")
         item["target"]["component_id"] = "future-unregistered-target"
         ledger = build_coverage_ledger(cases=[item], results=[], created_at=STAMP)
-        self.assertEqual(ledger["not_registered_component_ids"], ["future-unregistered-target"])
+        self.assertEqual(ledger["unknown_target_ids"], ["future-unregistered-target"])
+        self.assertIn("python-native-semantic-models-v06-v14", ledger["not_registered_component_ids"])
         self.assertEqual(ledger["case_count"], 1)
 
     def test_historical_ledger_comparison_only_labels_unseen_as_candidates(self):
@@ -113,7 +114,7 @@ class CoverageLedgerTests(unittest.TestCase):
             path.write_text(json.dumps({
                 "observed_taxonomy_labels": ["fixture_test"],
                 "target_component_ids": ["phase4-bounded-interpreter"],
-                "observed_generator_families": ["coverage_test"],
+                "observed_generator_families": ["contradiction"],
             }), encoding="utf-8")
             ledger = build_coverage_ledger(
                 cases=[item], results=[], history_root=Path(folder), created_at=STAMP
