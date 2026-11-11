@@ -631,8 +631,15 @@ class LexicalCrawler:
         if previous and (
             previous.get("status") == "in_progress"
             or bool(previous.get("retry_queue"))
+            or (
+                previous.get("status") == "complete"
+                and int(previous.get("failed_headwords", 0)) > 0
+                and not previous.get("retry_queue_initialized", False)
+            )
         ):
             checkpoint = previous
+            if checkpoint.get("status") == "complete":
+                checkpoint["status"] = "in_progress"
         else:
             latest_commit = self._resolve_latest_source()
             snapshot, pages, expected_count = self._build_catalogue(latest_commit)
