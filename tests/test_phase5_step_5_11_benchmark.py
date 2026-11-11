@@ -35,6 +35,7 @@ class Phase5Step511BenchmarkTests(unittest.TestCase):
             metrics = self.report["by_language"][language]
             self.assertEqual(metrics["case_count"], 50)
             self.assertEqual(metrics["positive_gold_count"], 20)
+            self.assertEqual(metrics["positive_completion_status_cases"], 20)
             self.assertEqual(metrics["negative_gold_count"], 20)
             self.assertEqual(metrics["ambiguous_gold_count"], 10)
             self.assertIn("construction_precision", metrics)
@@ -61,6 +62,8 @@ class Phase5Step511BenchmarkTests(unittest.TestCase):
                 self.assertIsNone(prediction["construction_id"])
                 self.assertEqual(prediction["role_bindings"], {})
                 self.assertEqual(prediction["role_spans"], {})
+                if gold[prediction["case_id"]]["gold_class"] == "AMBIGUOUS":
+                    self.assertIn(prediction["completion_status"], {"AMBIGUOUS", "PARTIAL", "UNSUPPORTED"})
 
 
 if __name__ == "__main__":
