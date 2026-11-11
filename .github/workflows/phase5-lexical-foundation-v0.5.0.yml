@@ -15,7 +15,7 @@ on:
     paths:
       - "tools/usg_interpretation_v0_2_0/**"
       - "resources/lexical/**"
-      - "tests/test_phase5_lexical_foundation_v0_4_0.py"
+      - "tests/test_phase5_lexical_foundation_v0_5_0.py"
       - "tests/test_phase5_packaged_resources.py"
       - "tests/test_phase5_integrated_api.py"
       - "documentation/PHASE5-LEXICAL-FOUNDATION-v0.4.0.md"
