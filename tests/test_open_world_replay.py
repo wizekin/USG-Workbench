@@ -23,14 +23,17 @@ def make_case(case_id="case-1"):
     }
 
 
-def target_result(document_id="old-id", created_at="2026-01-01T00:00:00Z", expression="expr:1"):
+def target_result(document_id="old-id", created_at="2026-01-01T00:00:00Z", expression="expr:1", source_id="src:source-old"):
     return {
+        "source_ref": source_id,
         "pipeline_contract": "USG-INTERPRET/0.1.0",
         "pipeline_version": "usg-interpretation/0.1.0",
         "completion_status": "COMPLETE",
         "document": {
             "documentId": document_id,
             "createdAt": created_at,
+            "primarySourceRef": source_id,
+            "sources": [{"id": source_id, "text": "Ada writes code."}],
             "expressions": [{"id": expression, "op": "PREDICATE"}],
         },
     }
@@ -48,8 +51,8 @@ def make_record(case_id="case-1", outcome="completed", result=None, attempt="att
 
 class DeterministicReplayTests(unittest.TestCase):
     def test_known_volatile_phase4_document_fields_are_excluded(self):
-        original = make_record(result=target_result("doc-A", "2026-01-01T00:00:00Z"))
-        replay = make_record(result=target_result("doc-B", "2026-02-01T00:00:00Z"), attempt="attempt-replay")
+        original = make_record(result=target_result("doc-A", "2026-01-01T00:00:00Z", source_id="src:source-A"))
+        replay = make_record(result=target_result("doc-B", "2026-02-01T00:00:00Z", source_id="src:source-B"), attempt="attempt-replay")
         first, version1 = stable_target_result_digest(original, TARGET)
         second, version2 = stable_target_result_digest(replay, TARGET)
         self.assertEqual(first, second)
@@ -88,7 +91,7 @@ class DeterministicReplayTests(unittest.TestCase):
             self.assertEqual(commit_sha, COMMIT)
             self.assertGreater(max_wall_seconds, 0)
             return make_record(
-                result=target_result("new-id", "2026-03-01T00:00:00Z"),
+                result=target_result("new-id", "2026-03-01T00:00:00Z", source_id="src:source-replay"),
                 attempt="attempt-replay",
             )
         report = replay_records([case], [original], commit_sha=COMMIT, executor=executor)
