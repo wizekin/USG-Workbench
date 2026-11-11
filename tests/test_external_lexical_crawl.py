@@ -325,6 +325,36 @@ headwords: 1
         event = json.loads(events.splitlines()[0])
         self.assertEqual(event["event_type"], "browse_page_error")
 
+    def test_resuming_legacy_checkpoint_adds_failed_pages_counter(self):
+        urls = source_urls()
+        data_branch_url = (
+            "https://raw.githubusercontent.com/wizekin/USG-Workbench/"
+            "usg-external-lexical-data/state/checkpoint.json"
+        )
+        legacy = initial_checkpoint()
+        legacy.update({
+            "status": "in_progress",
+            "source_commit": SHA,
+            "source_snapshot_id": SNAPSHOT,
+            "pages": ["dictionary/browse/a/0001.md"],
+            "expected_headwords": 1,
+        })
+        legacy.pop("failed_pages")
+        urls[data_branch_url] = json.dumps(legacy)
+
+        publisher = FakePublisher()
+        crawler = LexicalCrawler(
+            client=FakeClient(urls), publisher=publisher, delay_seconds=0
+        )
+        result = crawler.run_batch(
+            max_runtime_seconds=60, max_headwords=1,
+            max_shard_bytes=1024 * 1024, run_id="legacy-checkpoint-test",
+        )
+
+        self.assertEqual(result["status"], "complete")
+        self.assertEqual(publisher.calls[0]["checkpoint"]["failed_pages"], 0)
+        self.assertEqual(publisher.calls[0]["manifest"]["failed_pages"], 0)
+
     def test_publisher_updates_branch_ref_after_building_commit(self):
         calls = []
         def fake_api(method, url, token, payload=None):
