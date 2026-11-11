@@ -39,14 +39,14 @@
     {
       "id": "en.positive.02",
       "language": "en",
-      "text": "Mira writes systems.",
+      "text": "Mira writes code.",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
       "expected_construction": "en.simple_transitive.svo",
       "expected_roles": {
         "AGENT": "Mira",
         "ACTION": "writes",
-        "PATIENT": "systems"
+        "PATIENT": "code"
       },
       "expected_role_spans": {
         "AGENT": {
@@ -61,22 +61,22 @@
         },
         "PATIENT": {
           "start": 12,
-          "end": 19,
-          "surface": "systems"
+          "end": 16,
+          "surface": "code"
         }
       }
     },
     {
       "id": "en.positive.03",
       "language": "en",
-      "text": "Omar writes reports.",
+      "text": "Omar writes code.",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
       "expected_construction": "en.simple_transitive.svo",
       "expected_roles": {
         "AGENT": "Omar",
         "ACTION": "writes",
-        "PATIENT": "reports"
+        "PATIENT": "code"
       },
       "expected_role_spans": {
         "AGENT": {
@@ -91,22 +91,22 @@
         },
         "PATIENT": {
           "start": 12,
-          "end": 19,
-          "surface": "reports"
+          "end": 16,
+          "surface": "code"
         }
       }
     },
     {
       "id": "en.positive.04",
       "language": "en",
-      "text": "Lina writes notes.",
+      "text": "Lina writes code.",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
       "expected_construction": "en.simple_transitive.svo",
       "expected_roles": {
         "AGENT": "Lina",
         "ACTION": "writes",
-        "PATIENT": "notes"
+        "PATIENT": "code"
       },
       "expected_role_spans": {
         "AGENT": {
@@ -121,22 +121,22 @@
         },
         "PATIENT": {
           "start": 12,
-          "end": 17,
-          "surface": "notes"
+          "end": 16,
+          "surface": "code"
         }
       }
     },
     {
       "id": "en.positive.05",
       "language": "en",
-      "text": "Noah writes models.",
+      "text": "Noah writes code.",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
       "expected_construction": "en.simple_transitive.svo",
       "expected_roles": {
         "AGENT": "Noah",
         "ACTION": "writes",
-        "PATIENT": "models"
+        "PATIENT": "code"
       },
       "expected_role_spans": {
         "AGENT": {
@@ -151,22 +151,22 @@
         },
         "PATIENT": {
           "start": 12,
-          "end": 18,
-          "surface": "models"
+          "end": 16,
+          "surface": "code"
         }
       }
     },
     {
       "id": "en.positive.06",
       "language": "en",
-      "text": "Ada reads code.",
+      "text": "Ada reads reports.",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
       "expected_construction": "en.simple_transitive.svo",
       "expected_roles": {
         "AGENT": "Ada",
         "ACTION": "reads",
-        "PATIENT": "code"
+        "PATIENT": "reports"
       },
       "expected_role_spans": {
         "AGENT": {
@@ -181,22 +181,22 @@
         },
         "PATIENT": {
           "start": 10,
-          "end": 14,
-          "surface": "code"
+          "end": 17,
+          "surface": "reports"
         }
       }
     },
     {
       "id": "en.positive.07",
       "language": "en",
-      "text": "Mira reads systems.",
+      "text": "Mira reads reports.",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
       "expected_construction": "en.simple_transitive.svo",
       "expected_roles": {
         "AGENT": "Mira",
         "ACTION": "reads",
-        "PATIENT": "systems"
+        "PATIENT": "reports"
       },
       "expected_role_spans": {
         "AGENT": {
@@ -212,7 +212,7 @@
         "PATIENT": {
           "start": 11,
           "end": 18,
-          "surface": "systems"
+          "surface": "reports"
         }
       }
     },
@@ -249,14 +249,14 @@
     {
       "id": "en.positive.09",
       "language": "en",
-      "text": "Lina reads notes.",
+      "text": "Lina reads reports.",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
       "expected_construction": "en.simple_transitive.svo",
       "expected_roles": {
         "AGENT": "Lina",
         "ACTION": "reads",
-        "PATIENT": "notes"
+        "PATIENT": "reports"
       },
       "expected_role_spans": {
         "AGENT": {
@@ -271,22 +271,22 @@
         },
         "PATIENT": {
           "start": 11,
-          "end": 16,
-          "surface": "notes"
+          "end": 18,
+          "surface": "reports"
         }
       }
     },
     {
       "id": "en.positive.10",
       "language": "en",
-      "text": "Noah reads models.",
+      "text": "Noah reads reports.",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
       "expected_construction": "en.simple_transitive.svo",
       "expected_roles": {
         "AGENT": "Noah",
         "ACTION": "reads",
-        "PATIENT": "models"
+        "PATIENT": "reports"
       },
       "expected_role_spans": {
         "AGENT": {
@@ -301,22 +301,22 @@
         },
         "PATIENT": {
           "start": 11,
-          "end": 17,
-          "surface": "models"
+          "end": 18,
+          "surface": "reports"
         }
       }
     },
     {
       "id": "en.positive.11",
       "language": "en",
-      "text": "Ada builds code.",
+      "text": "Ada builds models.",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
       "expected_construction": "en.simple_transitive.svo",
       "expected_roles": {
         "AGENT": "Ada",
         "ACTION": "builds",
-        "PATIENT": "code"
+        "PATIENT": "models"
       },
       "expected_role_spans": {
         "AGENT": {
@@ -331,22 +331,22 @@
         },
         "PATIENT": {
           "start": 11,
-          "end": 15,
-          "surface": "code"
+          "end": 17,
+          "surface": "models"
         }
       }
     },
     {
       "id": "en.positive.12",
       "language": "en",
-      "text": "Mira builds systems.",
+      "text": "Mira builds models.",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
       "expected_construction": "en.simple_transitive.svo",
       "expected_roles": {
         "AGENT": "Mira",
         "ACTION": "builds",
-        "PATIENT": "systems"
+        "PATIENT": "models"
       },
       "expected_role_spans": {
         "AGENT": {
@@ -361,22 +361,22 @@
         },
         "PATIENT": {
           "start": 12,
-          "end": 19,
-          "surface": "systems"
+          "end": 18,
+          "surface": "models"
         }
       }
     },
     {
       "id": "en.positive.13",
       "language": "en",
-      "text": "Omar builds reports.",
+      "text": "Omar builds models.",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
       "expected_construction": "en.simple_transitive.svo",
       "expected_roles": {
         "AGENT": "Omar",
         "ACTION": "builds",
-        "PATIENT": "reports"
+        "PATIENT": "models"
       },
       "expected_role_spans": {
         "AGENT": {
@@ -391,22 +391,22 @@
         },
         "PATIENT": {
           "start": 12,
-          "end": 19,
-          "surface": "reports"
+          "end": 18,
+          "surface": "models"
         }
       }
     },
     {
       "id": "en.positive.14",
       "language": "en",
-      "text": "Lina builds notes.",
+      "text": "Lina builds models.",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
       "expected_construction": "en.simple_transitive.svo",
       "expected_roles": {
         "AGENT": "Lina",
         "ACTION": "builds",
-        "PATIENT": "notes"
+        "PATIENT": "models"
       },
       "expected_role_spans": {
         "AGENT": {
@@ -421,8 +421,8 @@
         },
         "PATIENT": {
           "start": 12,
-          "end": 17,
-          "surface": "notes"
+          "end": 18,
+          "surface": "models"
         }
       }
     },
@@ -459,14 +459,14 @@
     {
       "id": "en.positive.16",
       "language": "en",
-      "text": "Ada tests code.",
+      "text": "Ada tests systems.",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
       "expected_construction": "en.simple_transitive.svo",
       "expected_roles": {
         "AGENT": "Ada",
         "ACTION": "tests",
-        "PATIENT": "code"
+        "PATIENT": "systems"
       },
       "expected_role_spans": {
         "AGENT": {
@@ -481,8 +481,8 @@
         },
         "PATIENT": {
           "start": 10,
-          "end": 14,
-          "surface": "code"
+          "end": 17,
+          "surface": "systems"
         }
       }
     },
@@ -519,14 +519,14 @@
     {
       "id": "en.positive.18",
       "language": "en",
-      "text": "Omar tests reports.",
+      "text": "Omar tests systems.",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
       "expected_construction": "en.simple_transitive.svo",
       "expected_roles": {
         "AGENT": "Omar",
         "ACTION": "tests",
-        "PATIENT": "reports"
+        "PATIENT": "systems"
       },
       "expected_role_spans": {
         "AGENT": {
@@ -542,21 +542,21 @@
         "PATIENT": {
           "start": 11,
           "end": 18,
-          "surface": "reports"
+          "surface": "systems"
         }
       }
     },
     {
       "id": "en.positive.19",
       "language": "en",
-      "text": "Lina tests notes.",
+      "text": "Lina tests systems.",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
       "expected_construction": "en.simple_transitive.svo",
       "expected_roles": {
         "AGENT": "Lina",
         "ACTION": "tests",
-        "PATIENT": "notes"
+        "PATIENT": "systems"
       },
       "expected_role_spans": {
         "AGENT": {
@@ -571,22 +571,22 @@
         },
         "PATIENT": {
           "start": 11,
-          "end": 16,
-          "surface": "notes"
+          "end": 18,
+          "surface": "systems"
         }
       }
     },
     {
       "id": "en.positive.20",
       "language": "en",
-      "text": "Noah tests models.",
+      "text": "Noah tests systems.",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
       "expected_construction": "en.simple_transitive.svo",
       "expected_roles": {
         "AGENT": "Noah",
         "ACTION": "tests",
-        "PATIENT": "models"
+        "PATIENT": "systems"
       },
       "expected_role_spans": {
         "AGENT": {
@@ -601,8 +601,8 @@
         },
         "PATIENT": {
           "start": 11,
-          "end": 17,
-          "surface": "models"
+          "end": 18,
+          "surface": "systems"
         }
       }
     },
@@ -639,20 +639,20 @@
     {
       "id": "ar.positive.02",
       "language": "ar",
-      "text": "كتب المعلمة النموذج",
+      "text": "كتب المعلم الرسالة",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
       "expected_construction": "ar.simple_transitive.vso",
       "expected_roles": {
-        "AGENT": "المعلمة",
+        "AGENT": "المعلم",
         "ACTION": "كتب",
-        "PATIENT": "النموذج"
+        "PATIENT": "الرسالة"
       },
       "expected_role_spans": {
         "AGENT": {
           "start": 4,
-          "end": 11,
-          "surface": "المعلمة"
+          "end": 10,
+          "surface": "المعلم"
         },
         "ACTION": {
           "start": 0,
@@ -660,23 +660,23 @@
           "surface": "كتب"
         },
         "PATIENT": {
-          "start": 12,
-          "end": 19,
-          "surface": "النموذج"
+          "start": 11,
+          "end": 18,
+          "surface": "الرسالة"
         }
       }
     },
     {
       "id": "ar.positive.03",
       "language": "ar",
-      "text": "كتب الطبيب الكتاب",
+      "text": "كتب الطبيب الرسالة",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
       "expected_construction": "ar.simple_transitive.vso",
       "expected_roles": {
         "AGENT": "الطبيب",
         "ACTION": "كتب",
-        "PATIENT": "الكتاب"
+        "PATIENT": "الرسالة"
       },
       "expected_role_spans": {
         "AGENT": {
@@ -691,22 +691,22 @@
         },
         "PATIENT": {
           "start": 11,
-          "end": 17,
-          "surface": "الكتاب"
+          "end": 18,
+          "surface": "الرسالة"
         }
       }
     },
     {
       "id": "ar.positive.04",
       "language": "ar",
-      "text": "كتب المهندس التقرير",
+      "text": "كتب المهندس الرسالة",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
       "expected_construction": "ar.simple_transitive.vso",
       "expected_roles": {
         "AGENT": "المهندس",
         "ACTION": "كتب",
-        "PATIENT": "التقرير"
+        "PATIENT": "الرسالة"
       },
       "expected_role_spans": {
         "AGENT": {
@@ -722,21 +722,21 @@
         "PATIENT": {
           "start": 12,
           "end": 19,
-          "surface": "التقرير"
+          "surface": "الرسالة"
         }
       }
     },
     {
       "id": "ar.positive.05",
       "language": "ar",
-      "text": "كتب الباحث العينة",
+      "text": "كتب الباحث الرسالة",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
       "expected_construction": "ar.simple_transitive.vso",
       "expected_roles": {
         "AGENT": "الباحث",
         "ACTION": "كتب",
-        "PATIENT": "العينة"
+        "PATIENT": "الرسالة"
       },
       "expected_role_spans": {
         "AGENT": {
@@ -751,22 +751,22 @@
         },
         "PATIENT": {
           "start": 11,
-          "end": 17,
-          "surface": "العينة"
+          "end": 18,
+          "surface": "الرسالة"
         }
       }
     },
     {
       "id": "ar.positive.06",
       "language": "ar",
-      "text": "قرأ الطالب الرسالة",
+      "text": "قرأ الطالب الكتاب",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
       "expected_construction": "ar.simple_transitive.vso",
       "expected_roles": {
         "AGENT": "الطالب",
         "ACTION": "قرأ",
-        "PATIENT": "الرسالة"
+        "PATIENT": "الكتاب"
       },
       "expected_role_spans": {
         "AGENT": {
@@ -781,28 +781,28 @@
         },
         "PATIENT": {
           "start": 11,
-          "end": 18,
-          "surface": "الرسالة"
+          "end": 17,
+          "surface": "الكتاب"
         }
       }
     },
     {
       "id": "ar.positive.07",
       "language": "ar",
-      "text": "قرأ المعلمة النموذج",
+      "text": "قرأ المعلم الكتاب",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
       "expected_construction": "ar.simple_transitive.vso",
       "expected_roles": {
-        "AGENT": "المعلمة",
+        "AGENT": "المعلم",
         "ACTION": "قرأ",
-        "PATIENT": "النموذج"
+        "PATIENT": "الكتاب"
       },
       "expected_role_spans": {
         "AGENT": {
           "start": 4,
-          "end": 11,
-          "surface": "المعلمة"
+          "end": 10,
+          "surface": "المعلم"
         },
         "ACTION": {
           "start": 0,
@@ -810,9 +810,9 @@
           "surface": "قرأ"
         },
         "PATIENT": {
-          "start": 12,
-          "end": 19,
-          "surface": "النموذج"
+          "start": 11,
+          "end": 17,
+          "surface": "الكتاب"
         }
       }
     },
@@ -849,14 +849,14 @@
     {
       "id": "ar.positive.09",
       "language": "ar",
-      "text": "قرأ المهندس التقرير",
+      "text": "قرأ المهندس الكتاب",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
       "expected_construction": "ar.simple_transitive.vso",
       "expected_roles": {
         "AGENT": "المهندس",
         "ACTION": "قرأ",
-        "PATIENT": "التقرير"
+        "PATIENT": "الكتاب"
       },
       "expected_role_spans": {
         "AGENT": {
@@ -871,22 +871,22 @@
         },
         "PATIENT": {
           "start": 12,
-          "end": 19,
-          "surface": "التقرير"
+          "end": 18,
+          "surface": "الكتاب"
         }
       }
     },
     {
       "id": "ar.positive.10",
       "language": "ar",
-      "text": "قرأ الباحث العينة",
+      "text": "قرأ الباحث الكتاب",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
       "expected_construction": "ar.simple_transitive.vso",
       "expected_roles": {
         "AGENT": "الباحث",
         "ACTION": "قرأ",
-        "PATIENT": "العينة"
+        "PATIENT": "الكتاب"
       },
       "expected_role_spans": {
         "AGENT": {
@@ -902,21 +902,21 @@
         "PATIENT": {
           "start": 11,
           "end": 17,
-          "surface": "العينة"
+          "surface": "الكتاب"
         }
       }
     },
     {
       "id": "ar.positive.11",
       "language": "ar",
-      "text": "فحص الطالب الرسالة",
+      "text": "فحص الطالب العينة",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
       "expected_construction": "ar.simple_transitive.vso",
       "expected_roles": {
         "AGENT": "الطالب",
         "ACTION": "فحص",
-        "PATIENT": "الرسالة"
+        "PATIENT": "العينة"
       },
       "expected_role_spans": {
         "AGENT": {
@@ -931,28 +931,28 @@
         },
         "PATIENT": {
           "start": 11,
-          "end": 18,
-          "surface": "الرسالة"
+          "end": 17,
+          "surface": "العينة"
         }
       }
     },
     {
       "id": "ar.positive.12",
       "language": "ar",
-      "text": "فحص المعلمة النموذج",
+      "text": "فحص المعلم العينة",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
       "expected_construction": "ar.simple_transitive.vso",
       "expected_roles": {
-        "AGENT": "المعلمة",
+        "AGENT": "المعلم",
         "ACTION": "فحص",
-        "PATIENT": "النموذج"
+        "PATIENT": "العينة"
       },
       "expected_role_spans": {
         "AGENT": {
           "start": 4,
-          "end": 11,
-          "surface": "المعلمة"
+          "end": 10,
+          "surface": "المعلم"
         },
         "ACTION": {
           "start": 0,
@@ -960,23 +960,23 @@
           "surface": "فحص"
         },
         "PATIENT": {
-          "start": 12,
-          "end": 19,
-          "surface": "النموذج"
+          "start": 11,
+          "end": 17,
+          "surface": "العينة"
         }
       }
     },
     {
       "id": "ar.positive.13",
       "language": "ar",
-      "text": "فحص الطبيب الكتاب",
+      "text": "فحص الطبيب العينة",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
       "expected_construction": "ar.simple_transitive.vso",
       "expected_roles": {
         "AGENT": "الطبيب",
         "ACTION": "فحص",
-        "PATIENT": "الكتاب"
+        "PATIENT": "العينة"
       },
       "expected_role_spans": {
         "AGENT": {
@@ -992,21 +992,21 @@
         "PATIENT": {
           "start": 11,
           "end": 17,
-          "surface": "الكتاب"
+          "surface": "العينة"
         }
       }
     },
     {
       "id": "ar.positive.14",
       "language": "ar",
-      "text": "فحص المهندس التقرير",
+      "text": "فحص المهندس العينة",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
       "expected_construction": "ar.simple_transitive.vso",
       "expected_roles": {
         "AGENT": "المهندس",
         "ACTION": "فحص",
-        "PATIENT": "التقرير"
+        "PATIENT": "العينة"
       },
       "expected_role_spans": {
         "AGENT": {
@@ -1021,8 +1021,8 @@
         },
         "PATIENT": {
           "start": 12,
-          "end": 19,
-          "surface": "التقرير"
+          "end": 18,
+          "surface": "العينة"
         }
       }
     },
@@ -1059,14 +1059,14 @@
     {
       "id": "ar.positive.16",
       "language": "ar",
-      "text": "بنى الطالب الرسالة",
+      "text": "بنى الطالب النموذج",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
       "expected_construction": "ar.simple_transitive.vso",
       "expected_roles": {
         "AGENT": "الطالب",
         "ACTION": "بنى",
-        "PATIENT": "الرسالة"
+        "PATIENT": "النموذج"
       },
       "expected_role_spans": {
         "AGENT": {
@@ -1082,27 +1082,27 @@
         "PATIENT": {
           "start": 11,
           "end": 18,
-          "surface": "الرسالة"
+          "surface": "النموذج"
         }
       }
     },
     {
       "id": "ar.positive.17",
       "language": "ar",
-      "text": "بنى المعلمة النموذج",
+      "text": "بنى المعلم النموذج",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
       "expected_construction": "ar.simple_transitive.vso",
       "expected_roles": {
-        "AGENT": "المعلمة",
+        "AGENT": "المعلم",
         "ACTION": "بنى",
         "PATIENT": "النموذج"
       },
       "expected_role_spans": {
         "AGENT": {
           "start": 4,
-          "end": 11,
-          "surface": "المعلمة"
+          "end": 10,
+          "surface": "المعلم"
         },
         "ACTION": {
           "start": 0,
@@ -1110,8 +1110,8 @@
           "surface": "بنى"
         },
         "PATIENT": {
-          "start": 12,
-          "end": 19,
+          "start": 11,
+          "end": 18,
           "surface": "النموذج"
         }
       }
@@ -1119,14 +1119,14 @@
     {
       "id": "ar.positive.18",
       "language": "ar",
-      "text": "بنى الطبيب الكتاب",
+      "text": "بنى الطبيب النموذج",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
       "expected_construction": "ar.simple_transitive.vso",
       "expected_roles": {
         "AGENT": "الطبيب",
         "ACTION": "بنى",
-        "PATIENT": "الكتاب"
+        "PATIENT": "النموذج"
       },
       "expected_role_spans": {
         "AGENT": {
@@ -1141,22 +1141,22 @@
         },
         "PATIENT": {
           "start": 11,
-          "end": 17,
-          "surface": "الكتاب"
+          "end": 18,
+          "surface": "النموذج"
         }
       }
     },
     {
       "id": "ar.positive.19",
       "language": "ar",
-      "text": "بنى المهندس التقرير",
+      "text": "بنى المهندس النموذج",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
       "expected_construction": "ar.simple_transitive.vso",
       "expected_roles": {
         "AGENT": "المهندس",
         "ACTION": "بنى",
-        "PATIENT": "التقرير"
+        "PATIENT": "النموذج"
       },
       "expected_role_spans": {
         "AGENT": {
@@ -1172,21 +1172,21 @@
         "PATIENT": {
           "start": 12,
           "end": 19,
-          "surface": "التقرير"
+          "surface": "النموذج"
         }
       }
     },
     {
       "id": "ar.positive.20",
       "language": "ar",
-      "text": "بنى الباحث العينة",
+      "text": "بنى الباحث النموذج",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
       "expected_construction": "ar.simple_transitive.vso",
       "expected_roles": {
         "AGENT": "الباحث",
         "ACTION": "بنى",
-        "PATIENT": "العينة"
+        "PATIENT": "النموذج"
       },
       "expected_role_spans": {
         "AGENT": {
@@ -1201,8 +1201,8 @@
         },
         "PATIENT": {
           "start": 11,
-          "end": 17,
-          "surface": "العينة"
+          "end": 18,
+          "surface": "النموذج"
         }
       }
     },
@@ -1719,7 +1719,7 @@
     {
       "id": "ar.ambiguous.06",
       "language": "ar",
-      "text": "زار الأقارب قد يكون مملاً.",
+      "text": "زار الأقارب المريض في المستشفى.",
       "gold_class": "AMBIGUOUS",
       "expected_completion_status": "AMBIGUOUS",
       "expected_construction": null,
