@@ -25,7 +25,8 @@ on:
       - "tools/usg_external_lexical_v0_1_0/**"
       - "tests/test_external_lexical_crawl.py"
       - "tests/test_external_lexical_retrieval.py"
-      - "tests/test_external_lexical_audit.py"\n      - "tests/test_external_lexical_remote_audit.py"
+      - "tests/test_external_lexical_audit.py"
+      - "tests/test_external_lexical_remote_audit.py"
       - "documentation/USG-EXTERNAL-LEXICAL-SCHEDULED-CRAWLER-v0.1.0.md"
       - ".github/workflows/usg-external-lexical-crawl.yml"
 
@@ -50,7 +51,9 @@ jobs:
         run: python -m unittest discover -s tests -p "test_external_lexical_retrieval.py" -v
       - name: Run lexical state reconciliation audit tests
         run: python -m unittest discover -s tests -p "test_external_lexical_audit.py" -v
-      - name: Run remote lexical state audit tests\n        run: python -m unittest discover -s tests -p "test_external_lexical_remote_audit.py" -v\n      - name: Run offline structural benchmark
+      - name: Run remote lexical state audit tests
+        run: python -m unittest discover -s tests -p "test_external_lexical_remote_audit.py" -v
+      - name: Run offline structural benchmark
         run: python -m tools.usg_external_lexical_v0_1_0 benchmark
 
   crawl:
