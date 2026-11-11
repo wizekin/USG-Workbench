@@ -45,13 +45,13 @@ jobs:
       - name: Validate corpus and execute real interpreter over all fixtures
         run: |
           mkdir -p benchmark-results
-          python -m tools.phase5_interpretation_benchmark_v0_2_0.run --run-pipeline --output benchmark-results/phase5-v0.2.0-report.json
+          python -m tools.phase5_interpretation_benchmark_v0_2_0.run --run-pipeline --output benchmark-results/phase5-v0.2.1-report.json
       - name: Run Step 5.11 benchmark regression tests
         run: python -m unittest discover -s tests -p "test_phase5_step_5_11_benchmark.py" -v
       - name: Upload immutable benchmark report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: phase5-v0.2.0-benchmark-report
-          path: benchmark-results/phase5-v0.2.0-report.json
+          name: phase5-v0.2.1-benchmark-report
+          path: benchmark-results/phase5-v0.2.1-report.json
           if-no-files-found: warn
