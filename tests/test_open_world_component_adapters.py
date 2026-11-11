@@ -28,11 +28,11 @@ class ComponentAdapterRegistryTests(unittest.TestCase):
                 self.assertTrue(resolved == ROOT or ROOT in resolved.parents)
                 self.assertTrue(resolved.exists(), f"missing adapter path: {relative_path}")
 
-    def test_smoke_only_profiles_do_not_claim_semantic_accuracy(self):
+    def test_python_smoke_profiles_have_an_explicit_module_allowlist(self):
         profiles = json.loads(PROFILES.read_text(encoding="utf-8"))
         for profile in profiles["targets"]:
-            if profile.get("smoke_modules"):
-                self.assertIn("smoke", profile["entry_point"].lower() + profile["interface"].lower())
+            if profile.get("interface", "").startswith("python_"):
+                self.assertTrue(profile.get("smoke_modules"), profile["component_id"])
 
 if __name__ == "__main__":
     unittest.main()
