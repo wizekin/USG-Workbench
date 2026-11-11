@@ -221,6 +221,22 @@
       ],
       "inventory_path": "interoperability/workbench_adapter",
       "smoke_modules": []
+    },
+    {
+      "component_id": "python-reference-kernel-v04-v05",
+      "component_version": "0.4.0",
+      "entry_point": "implementations/python-kernel/v0.4.0/usg package import smoke",
+      "interface": "python_package_api",
+      "contract_versions": [
+        "Python reference kernel v0.4.0"
+      ],
+      "inventory_path": "implementations/python-kernel/v0.4.0/usg",
+      "smoke_modules": [
+        [
+          "implementations/python-kernel/v0.4.0",
+          "usg"
+        ]
+      ]
     }
   ]
 }
