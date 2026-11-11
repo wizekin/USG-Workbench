@@ -76,6 +76,8 @@ class SemanticNode:
 @dataclass(frozen=True)
 class SemanticCandidate:
     candidate_id: str
+    source_ref: str
+    source_sha256: str
     root_ref: str
     clause_root_refs: tuple[str, ...]
     nodes: tuple[SemanticNode, ...]
@@ -83,6 +85,10 @@ class SemanticCandidate:
     source_span: tuple[int, int]
 
     def __post_init__(self):
+        if not self.source_ref or len(self.source_sha256) != 64:
+            raise ValueError("semantic candidate must identify its source snapshot")
+        if any(char not in "0123456789abcdef" for char in self.source_sha256):
+            raise ValueError("source_sha256 must be a lowercase SHA-256 digest")
         ids = [x.node_id for x in self.nodes]
         if len(ids) != len(set(ids)):
             raise ValueError("semantic node IDs must be unique")
@@ -97,6 +103,8 @@ class SemanticCandidate:
     def to_dict(self) -> dict:
         return {
             "candidateId": self.candidate_id,
+            "sourceRef": self.source_ref,
+            "sourceSha256": self.source_sha256,
             "rootRef": self.root_ref,
             "clauseRootRefs": list(self.clause_root_refs),
             "status": self.status,
@@ -117,11 +125,15 @@ class SemanticComposition:
     status: Literal["COMPOSED", "AMBIGUOUS", "PARTIAL", "UNSUPPORTED", "INCOMPLETE_RESOURCE_LIMIT"]
     candidates: tuple[SemanticCandidate, ...]
     unresolved_clause_refs: tuple[str, ...]
+    source_ref: str
+    source_sha256: str
     composer_version: str = SEMANTIC_COMPOSITION_VERSION
 
     def to_dict(self) -> dict:
         return {
             "status": self.status,
+            "sourceRef": self.source_ref,
+            "sourceSha256": self.source_sha256,
             "composerVersion": self.composer_version,
             "unresolvedClauseRefs": list(self.unresolved_clause_refs),
             "candidates": [x.to_dict() for x in self.candidates],
@@ -256,7 +268,8 @@ class SemanticComposer:
         candidate_id = self._stable_id("sem", [x.candidate_id for x, _ in selected])
         candidate_status = "PARTIAL" if unresolved_refs else "RESOLVED"
         return SemanticCandidate(
-            candidate_id, root_ref, tuple(clause_roots), tuple(nodes), candidate_status,
+            candidate_id, lexical.source.source_id, lexical.source.sha256,
+            root_ref, tuple(clause_roots), tuple(nodes), candidate_status,
             (min(x[0] for x in clause_spans), max(x[1] for x in clause_spans)),
         )
 
@@ -288,7 +301,8 @@ class SemanticComposer:
                 status = "PARTIAL"
             else:
                 status = "UNSUPPORTED"
-            return SemanticComposition(status, (), tuple(unresolved))
+            return SemanticComposition(status, (), tuple(unresolved),
+                                       lexical.source.source_id, lexical.source.sha256)
 
         candidates = []
         overflow = False
@@ -309,17 +323,20 @@ class SemanticComposer:
             status = "COMPOSED"
         if status == "INCOMPLETE_RESOURCE_LIMIT":
             candidates = [
-                SemanticCandidate(x.candidate_id, x.root_ref, x.clause_root_refs,
-                                  x.nodes, "PARTIAL", x.source_span)
+                SemanticCandidate(x.candidate_id, x.source_ref, x.source_sha256,
+                                  x.root_ref, x.clause_root_refs, x.nodes,
+                                  "PARTIAL", x.source_span)
                 for x in candidates
             ]
         elif status == "AMBIGUOUS":
             candidates = [
-                SemanticCandidate(x.candidate_id, x.root_ref, x.clause_root_refs,
-                                  x.nodes, "AMBIGUOUS", x.source_span)
+                SemanticCandidate(x.candidate_id, x.source_ref, x.source_sha256,
+                                  x.root_ref, x.clause_root_refs, x.nodes,
+                                  "AMBIGUOUS", x.source_span)
                 for x in candidates
             ]
-        return SemanticComposition(status, tuple(candidates), tuple(unresolved))
+        return SemanticComposition(status, tuple(candidates), tuple(unresolved),
+                                   lexical.source.source_id, lexical.source.sha256)
 
 
 def syntax_source(segmented: SegmentedDocument, syntax: SyntaxAnalysis):
