@@ -86,11 +86,15 @@ def _pages_from_letter_index(markdown: str, expected_snapshot: str) -> list[str]
     return pages
 
 
-def parse_headword_page(markdown: str, page_path: str) -> list[dict[str, str]]:
+def parse_headword_page(
+    markdown: str, page_path: str, expected_snapshot_id: str | None = None
+) -> list[dict[str, str]]:
     """Return validated candidate labels and safe entry paths from one browse page."""
     metadata = _front_matter(markdown)
     if metadata.get("kind") != "alphabetical-headword-page":
         raise ProviderError(f"Unexpected browse page kind: {page_path}")
+    if expected_snapshot_id and metadata.get("snapshot_id") != expected_snapshot_id:
+        raise ProviderError(f"Browse page snapshot mismatch: {page_path}")
     rows = []
     base_dir = posixpath.dirname(page_path)
     for label, target in _markdown_links(markdown):
@@ -110,7 +114,10 @@ def parse_headword_page(markdown: str, page_path: str) -> list[dict[str, str]]:
     return rows
 
 
-def _compact_entry(parsed: dict[str, Any], headword: str, entry_path: str) -> dict[str, Any]:
+def _compact_entry(
+    parsed: dict[str, Any], headword: str, entry_path: str,
+    structural_analysis: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     """Keep useful derived lexical structure while omitting copied source passages."""
     source = dict(parsed.get("source") or {})
     compact_entries = []
@@ -267,7 +274,10 @@ def _compact_entry(parsed: dict[str, Any], headword: str, entry_path: str) -> di
             "form_count": form_count,
             "relation_count": relation_count,
             "definition_pattern_counts": pattern_counts,
-            "validation_status": "source_preserving_projection",
+            "validation_status": (structural_analysis or {}).get("validation", {}).get("status", "not_run"),
+            "validation_error_count": (structural_analysis or {}).get("validation", {}).get("error_count", 0),
+            "validation_warning_count": (structural_analysis or {}).get("validation", {}).get("warning_count", 0),
+            "analysis_version": (structural_analysis or {}).get("analysis_version"),
             "validation_note": "Structural analysis only; definition strings and example passages are intentionally not copied into the public data branch.",
         },
         "rights_policy": {
@@ -336,6 +346,7 @@ class GitHubDataPublisher:
         message: str,
     ) -> str:
         ref_url = self.api + "/git/ref/heads/" + quote(self.branch, safe="")
+        update_ref_url = self.api + "/git/refs/heads/" + quote(self.branch, safe="")
         ref = _github_api_request("GET", ref_url, self.token)
         head_sha = ref.get("object", {}).get("sha")
         if not isinstance(head_sha, str):
@@ -378,7 +389,7 @@ class GitHubDataPublisher:
         commit_sha = commit.get("sha")
         if not isinstance(commit_sha, str):
             raise RuntimeError("GitHub did not return a commit SHA")
-        _github_api_request("PATCH", ref_url, self.token, {"sha": commit_sha, "force": False})
+        _github_api_request("PATCH", update_ref_url, self.token, {"sha": commit_sha, "force": False})
         return commit_sha
 
 
@@ -472,9 +483,11 @@ class LexicalCrawler:
             "updated_at": utc_now(),
         }
 
-    def _load_page_rows(self, commit: str, page_path: str) -> list[dict[str, str]]:
+    def _load_page_rows(
+        self, commit: str, page_path: str, snapshot_id: str
+    ) -> list[dict[str, str]]:
         markdown, _ = self.client.get_text(self._raw_base(commit) + page_path)
-        return parse_headword_page(markdown, page_path)
+        return parse_headword_page(markdown, page_path, expected_snapshot_id=snapshot_id)
 
     def _process_candidate(self, commit: str, row: dict[str, str]) -> dict[str, Any]:
         entry_path = row["entry_path"]
@@ -484,7 +497,17 @@ class LexicalCrawler:
             markdown, row["headword_candidate"], entry_url
         )
         parsed["source"]["provider"] = "english_dictionary_github"
-        return _compact_entry(parsed, row["headword_candidate"], entry_path)
+        for entry in parsed.get("entries", []):
+            entry["provider"] = "english_dictionary_github"
+        structural_analysis = analyze_bundle({
+            "schema_version": "usg-external-lexical/0.1.0",
+            "queried_form": row["headword_candidate"],
+            "sources": [parsed["source"]],
+            "entries": parsed.get("entries", []),
+        })
+        return _compact_entry(
+            parsed, row["headword_candidate"], entry_path, structural_analysis
+        )
 
     def _initial_manifest(self, checkpoint: dict[str, Any]) -> dict[str, Any]:
         return {
@@ -579,6 +602,7 @@ class LexicalCrawler:
                 page_index += 1
                 entry_index = 0
                 batch_failed += 1
+                checkpoint["failed_headwords"] = int(checkpoint.get("failed_headwords", 0)) + 1
                 continue
 
             while entry_index < len(page_rows):
@@ -643,18 +667,22 @@ class LexicalCrawler:
 
         proposed_stored = int(checkpoint.get("stored_bytes", 0)) + len(shard_bytes)
         if proposed_stored > self.storage_budget_bytes:
-            checkpoint["status"] = "storage_limit_reached"
+            # Preserve the exact previous cursor. A future run must not advance past
+            # data that could not be committed to the durable store.
             if previous:
-                for key in ("page_index", "entry_index", "processed_headwords", "processed_entries",
-                            "processed_senses", "failed_headwords", "status", "stored_bytes"):
-                    checkpoint[key] = previous.get(key, checkpoint.get(key))
+                checkpoint = dict(previous)
             else:
-                checkpoint.update({
-                    "page_index": 0, "entry_index": 0, "processed_headwords": 0,
-                    "processed_entries": 0, "processed_senses": 0, "failed_headwords": 0,
-                    "status": "storage_limit_reached", "stored_bytes": 0,
-                })
+                checkpoint["page_index"] = 0
+                checkpoint["entry_index"] = 0
+                checkpoint["processed_headwords"] = 0
+                checkpoint["processed_entries"] = 0
+                checkpoint["processed_senses"] = 0
+                checkpoint["failed_headwords"] = 0
+                checkpoint["stored_bytes"] = 0
+            checkpoint["status"] = "storage_limit_reached"
+            checkpoint["updated_at"] = utc_now()
             manifest = self._initial_manifest(checkpoint)
+            manifest["status"] = "storage_limit_reached"
             commit_sha = self.publisher.publish(None, None, checkpoint, manifest, "Record lexical storage guard") if self.publisher else None
             return {"status": "storage_limit_reached", "published": bool(commit_sha), "commit_sha": commit_sha}
 
