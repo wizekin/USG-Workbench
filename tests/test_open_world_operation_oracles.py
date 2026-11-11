@@ -33,7 +33,7 @@ class OperationOracleRegistryTests(unittest.TestCase):
     def test_native_model_suite_is_explicitly_version_bounded(self):
         suite = SUITES["python-native-semantic-models-v06-v14"]
         self.assertIn("versioned native model", suite["oracle"])
-        self.assertEqual(len(suite["tests"]), 2)
+        self.assertEqual(len(suite["tests"]), 9)
 
 
 if __name__ == "__main__":
