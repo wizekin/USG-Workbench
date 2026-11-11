@@ -18,8 +18,11 @@ on:
       - ".github/workflows/open-world-continuous.yml"
       - "tools/open_world_evaluation/campaign_profiles.py"
       - "tools/open_world_evaluation/coverage_ledger.py"
+      - "tools/open_world_evaluation/target_profiles.json"
+      - "tools/open_world_evaluation/worker.py"
       - "tools/open_world_evaluation/schemas/coverage-ledger.schema.json"
       - "tests/test_open_world_continuous.py"
+      - "tests/test_open_world_component_adapters.py"
       - "documentation/USG-OPEN-WORLD-CONTINUOUS-EXPLORATION.md"
 
 permissions:
@@ -41,8 +44,10 @@ jobs:
           python-version: "3.11"
       - name: Test campaign budget and cadence profiles
         run: python -m unittest discover -s tests -p "test_open_world_continuous.py" -v
-      - name: Compile profile resolver
-        run: python -m py_compile tools/open_world_evaluation/campaign_profiles.py
+      - name: Test full component adapter registry
+        run: python -m unittest discover -s tests -p "test_open_world_component_adapters.py" -v
+      - name: Compile evaluation entry points
+        run: python -m py_compile tools/open_world_evaluation/campaign_profiles.py tools/open_world_evaluation/worker.py
 
   campaign:
     if: github.event_name != 'pull_request'
