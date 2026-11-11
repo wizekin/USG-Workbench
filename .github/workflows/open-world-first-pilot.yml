@@ -9,6 +9,8 @@ on:
       - "tools/open_world_evaluation/score_cases.py"
       - "tools/open_world_evaluation/generate_scenarios.py"
       - "tools/open_world_evaluation/campaign_pipeline.py"
+      - "tools/open_world_evaluation/coverage_ledger.py"
+      - "tools/open_world_evaluation/schemas/coverage-ledger.schema.json"
       - "tools/open_world_evaluation/execute_cases.py"
       - "tools/open_world_evaluation/worker.py"
       - "tools/open_world_evaluation/schemas/scenario.schema.json"
