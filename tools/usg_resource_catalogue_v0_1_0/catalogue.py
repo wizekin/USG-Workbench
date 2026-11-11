@@ -393,6 +393,8 @@ class SQLiteResourceCatalogue:
             raise ResourceIntegrityError("stored resource is not valid UTF-8 JSON") from exc
         if _canonical_bytes(envelope) != raw:
             raise ResourceIntegrityError("stored resource is not canonical JSON")
+        if not isinstance(envelope, dict):
+            raise ResourceIntegrityError("stored resource envelope must be an object")
         if envelope.get("catalogue_contract") != RESOURCE_CATALOGUE_VERSION:
             raise ResourceIntegrityError("stored resource catalogue contract is unsupported")
         if (envelope.get("resource_id") != row["resource_id"]
