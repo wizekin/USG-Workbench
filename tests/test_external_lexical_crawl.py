@@ -388,7 +388,10 @@ headwords: 1
         checkpoint_out = publisher.calls[0]["checkpoint"]
         self.assertEqual(checkpoint_out["processed_headwords"], 1)
         self.assertEqual(checkpoint_out["recovered_headwords"], 1)
-        self.assertEqual(checkpoint_out["stored_bytes"], 123)
+        self.assertEqual(
+            checkpoint_out["stored_bytes"],
+            123 + len(publisher.calls[0]["shard_bytes"]),
+        )
         self.assertEqual(checkpoint_out["retry_queue"], [])
         records = [
             json.loads(line)
