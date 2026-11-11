@@ -15,6 +15,11 @@ class Phase6Step64LexicalTests(unittest.TestCase):
   rules={r["rule_id"]:r for r in self.data["morphology_rules"]}
   self.assertEqual(set(rules),{"en.present-third-person-singular-s","ar-definite-article-al"})
   self.assertTrue(all(r["pattern"]["example_forms"] for r in rules.values()))
+ def test_polysemous_predicate_forms_keep_separate_sense_candidates(self):
+  for language,form in (("en","waits"),("ar","انتظر")):
+   senses={e["sense_id"] for e in self.data["entries"] if e["language"]==language and e["form"]==form}
+   self.assertIn("usg.sense.event.intransitive",senses)
+   self.assertIn("usg.sense.spatial.location",senses)
  def test_lexical_inventory_covers_both_profiles(self):
   counts={lang:sum(e["language"]==lang for e in self.data["entries"]) for lang in ("en","ar")}
   self.assertGreater(counts["en"],0); self.assertGreater(counts["ar"],0)
