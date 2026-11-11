@@ -452,14 +452,27 @@ class LexicalCrawler:
         return snapshot, page_paths, expected_count
 
     def load_checkpoint(self) -> dict[str, Any] | None:
-        url = f"https://raw.githubusercontent.com/wizekin/USG-Workbench/{self.data_branch}/{CHECKPOINT_PATH}"
+        # Read the mutable branch ref through the GitHub Contents API. The raw
+        # content URL is CDN-cached and can briefly return an older checkpoint,
+        # which would make a scheduled run replay a previously published batch.
+        url = (
+            f"https://api.github.com/repos/wizekin/USG-Workbench/contents/"
+            f"{CHECKPOINT_PATH}?ref={quote(self.data_branch, safe='')}"
+        )
         try:
-            payload, _ = self.client.get_text(url)
-            value = json.loads(payload)
+            payload, _ = self.client.get_json(url)
+            if not isinstance(payload, dict):
+                raise ProviderError("GitHub returned an invalid checkpoint response")
+            encoded = payload.get("content")
+            encoding = payload.get("encoding")
+            if not isinstance(encoded, str) or encoding != "base64":
+                raise ProviderError("GitHub checkpoint response did not contain base64 content")
+            decoded = base64.b64decode(encoded, validate=True).decode("utf-8")
+            value = json.loads(decoded)
             return value if isinstance(value, dict) else None
         except ProviderNotFound:
             return None
-        except (json.JSONDecodeError, ProviderError):
+        except (ValueError, UnicodeDecodeError, json.JSONDecodeError, ProviderError):
             raise ProviderError("The data-branch checkpoint is invalid or unavailable")
 
     @staticmethod
