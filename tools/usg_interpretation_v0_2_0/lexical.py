@@ -228,7 +228,7 @@ class LexicalAnalyzer:
             if rule.stem_operation == "RESTORE_E":
                 stem += "e"
             elif rule.stem_operation == "Y_TO_I":
-                stem += "y"
+                stem = stem[:-1] + "y" if stem.endswith("i") else stem + "y"
             elif rule.stem_operation == "UNDOUBLE_FINAL":
                 if len(stem) < 2 or stem[-1] != stem[-2]:
                     continue
