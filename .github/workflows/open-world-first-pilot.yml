@@ -1,0 +1,157 @@
+name: USG Open-World First Pilot
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/open-world-first-pilot.yml"
+      - "tools/open_world_evaluation/import_diagnostics.py"
+      - "tools/open_world_evaluation/score_cases.py"
+      - "tools/open_world_evaluation/generate_scenarios.py"
+      - "tools/open_world_evaluation/campaign_pipeline.py"
+      - "tools/open_world_evaluation/execute_cases.py"
+      - "tools/open_world_evaluation/worker.py"
+      - "tools/open_world_evaluation/schemas/scenario.schema.json"
+      - "benchmarks/phase4-interpretation/v0.1.0/fixtures.json"
+      - "benchmarks/phase5-interpretation-v0.2.1/corpus.json"
+  workflow_dispatch:
+    inputs:
+      prompt_count:
+        description: "Number of base random prompts; target-matrix mode multiplies this by three"
+        required: true
+        default: "1000"
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: usg-open-world-pilot-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  pilot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    env:
+      PROMPT_COUNT: ${{ github.event.inputs.prompt_count || '1000' }}
+      CAMPAIGN_ID: OWC-OW6-${{ github.run_id }}-${{ github.run_attempt }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install schema validator
+        run: python -m pip install "jsonschema>=4.18,<5"
+      - name: Validate campaign size and run diagnostic importer tests
+        run: |
+          python - <<'PY'
+          import os
+          value = int(os.environ["PROMPT_COUNT"])
+          if not 1 <= value <= 2000:
+              raise SystemExit("PROMPT_COUNT must be between 1 and 2000")
+          PY
+          python -m unittest discover -s tests -p "test_open_world_diagnostics.py" -v
+      - name: Generate unconstrained-random target matrix
+        run: |
+          python -m tools.open_world_evaluation.generate_scenarios \
+            --count "$PROMPT_COUNT" \
+            --seed "OW6-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
+            --created-at "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            --target-matrix \
+            --output "$RUNNER_TEMP/ow6-random-cases.jsonl"
+      - name: Import controlled Phase 4 and Phase 5 diagnostic cases
+        run: |
+          python -m tools.open_world_evaluation.import_diagnostics \
+            --output "$RUNNER_TEMP/ow6-diagnostic-cases.jsonl" \
+            --manifest "$RUNNER_TEMP/ow6-diagnostic-manifest.json" \
+            --created-at "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+      - name: Combine populations and preserve source manifests
+        run: |
+          cat "$RUNNER_TEMP/ow6-random-cases.jsonl" \
+              "$RUNNER_TEMP/ow6-diagnostic-cases.jsonl" \
+              > "$RUNNER_TEMP/ow6-all-cases.jsonl"
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          root = Path(os.environ["RUNNER_TEMP"])
+          random = json.loads((root / "ow6-random-cases.jsonl.manifest.json").read_text(encoding="utf-8"))
+          diagnostic = json.loads((root / "ow6-diagnostic-manifest.json").read_text(encoding="utf-8"))
+          combined = {
+              "manifest_version": "1.0.0",
+              "generator_version": random["generator_version"],
+              "master_seed": random["master_seed"],
+              "random_population": random,
+              "diagnostic_population": diagnostic,
+              "random_case_count": random["case_count"],
+              "diagnostic_case_count": diagnostic["case_count"],
+          }
+          (root / "ow6-combined-generation-manifest.json").write_text(
+              json.dumps(combined, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+              encoding="utf-8",
+          )
+          rows = [json.loads(line) for line in (root / "ow6-all-cases.jsonl").read_text(encoding="utf-8").splitlines()]
+          assert len(rows) == random["case_count"] + diagnostic["case_count"]
+          PY
+      - name: Execute real Phase 4 and Phase 5 interpreters; record JS target as not executed
+        run: |
+          python -m tools.open_world_evaluation.execute_cases \
+            --input "$RUNNER_TEMP/ow6-all-cases.jsonl" \
+            --output "$RUNNER_TEMP/ow6-execution-results.jsonl" \
+            --commit-sha "$GITHUB_SHA" \
+            --max-wall-seconds 30
+      - name: Validate, score, and aggregate every attempt
+        run: |
+          python -m tools.open_world_evaluation.score_cases \
+            --cases "$RUNNER_TEMP/ow6-all-cases.jsonl" \
+            --results "$RUNNER_TEMP/ow6-execution-results.jsonl" \
+            --scores "$RUNNER_TEMP/ow6-score-results.jsonl" \
+            --summary "$RUNNER_TEMP/ow6-score-summary.json"
+      - name: Build immutable campaign report bundle
+        run: |
+          python -m tools.open_world_evaluation.campaign_pipeline \
+            --campaign-id "$CAMPAIGN_ID" \
+            --cases "$RUNNER_TEMP/ow6-all-cases.jsonl" \
+            --results "$RUNNER_TEMP/ow6-execution-results.jsonl" \
+            --scores "$RUNNER_TEMP/ow6-score-results.jsonl" \
+            --generation-manifest "$RUNNER_TEMP/ow6-combined-generation-manifest.json" \
+            --commit-sha "$GITHUB_SHA" \
+            --output-root "$RUNNER_TEMP/ow6-campaigns"
+          mkdir -p "evaluations/open-world/campaigns"
+          cp -a "$RUNNER_TEMP/ow6-campaigns/$CAMPAIGN_ID" "evaluations/open-world/campaigns/$CAMPAIGN_ID"
+      - name: Upload full pilot artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.CAMPAIGN_ID }}
+          path: evaluations/open-world/campaigns/${{ env.CAMPAIGN_ID }}/
+          if-no-files-found: error
+          retention-days: 90
+      - name: Publish campaign bundle through an append-only report pull request
+        id: create-report-pr
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: reports/ow6-${{ github.run_id }}-${{ github.run_attempt }}
+          base: main
+          add-paths: evaluations/open-world/campaigns/${{ env.CAMPAIGN_ID }}/**
+          commit-message: "OW-6: publish first open-world pilot ${{ env.CAMPAIGN_ID }}"
+          title: "OW-6 pilot report: ${{ env.CAMPAIGN_ID }}"
+          body: |
+            Automated, append-only report bundle for the USG Open-World Randomized Evaluation Program.
+
+            - Tested commit: ${{ github.sha }}
+            - Random prompts: ${{ env.PROMPT_COUNT }} across three registered targets
+            - Controlled diagnostic sources: Phase 4 v0.1.0 and Phase 5 v0.2.1 repository fixture corpora
+            - Naturalistic population: not yet populated; report remains partial
+            - Structural validation and diagnostic-oracle scores are reported separately
+            - All raw cases, execution records, score records, report files, and SHA-256 manifest are included
+
+            The report is evidence about this finite sample only, not a claim of unrestricted real-world coverage.
+      - name: Summarize published campaign location
+        run: |
+          echo "Campaign ID: $CAMPAIGN_ID"
+          echo "Campaign report path: evaluations/open-world/campaigns/$CAMPAIGN_ID"
+          echo "Report PR number: ${{ steps.create-report-pr.outputs.pull-request-number }}"

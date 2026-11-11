@@ -1,12 +1,12 @@
 # OW-2 — Seed-reproducible randomized scenario generator
 
 **Status:** OW-2 implementation  
-**Generator:** usg-open-world-compositional-generator 1.0.0  
+**Generator:** usg-open-world-compositional-generator 1.0.1  
 **Protocol:** OW-1 scenario schema 1.0.0
 
 ## What it generates
 
-The first generator produces synthetic cases in the unconstrained-random population. It combines request styles, topic seeds, context, constraints, and controlled perturbations. Initial scenario families include single requests, multi-step instructions, ambiguous references, contradictory assertions, English/Arabic code-switching, malformed text, context changes, quoted instruction-like content, code-and-explanation requests, format constraints, and unfamiliar-topic questions.
+The first generator produces synthetic cases in the unconstrained-random population. It combines request styles, topic seeds, context, constraints, and controlled perturbations. Initial scenario families include single requests, multi-step instructions, ambiguous references, contradictory assertions, English/Arabic code-switching, Arabic-only requests, malformed text, context changes, quoted instruction-like content, code-and-explanation requests, format constraints, and unfamiliar-topic questions.
 
 A deterministic portion of the cases remains unclassified before execution. This is intentional: the capability inventory must not become a closed label set that determines what the generator is allowed to ask.
 

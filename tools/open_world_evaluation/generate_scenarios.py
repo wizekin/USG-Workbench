@@ -17,7 +17,7 @@ from typing import Any, Iterable
 from .validate_protocol import validate_instance
 
 GENERATOR_ID = "usg-open-world-compositional-generator"
-GENERATOR_VERSION = "1.0.0"
+GENERATOR_VERSION = "1.0.1"
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_TARGETS = ROOT / "tools" / "open_world_evaluation" / "target_profiles.json"
 
@@ -31,7 +31,7 @@ def _sha256(value: bytes) -> str:
 
 
 def _seed_digest(seed: str) -> str:
-    return _sha256(("USG-OW-GENERATOR-1.0.0:" + seed).encode("utf-8"))
+    return _sha256(("USG-OW-GENERATOR-1.0.1:" + seed).encode("utf-8"))
 
 
 def _case_seed(master_seed: str, index: int) -> str:
@@ -101,7 +101,7 @@ class ScenarioGenerator:
         topic = rng.choice(topics)
         styles = [
             "single_request", "multi_step", "ambiguity", "contradiction",
-            "mixed_language", "malformed", "context_switch", "quoted_instruction",
+            "mixed_language", "arabic_request", "malformed", "context_switch", "quoted_instruction",
             "code_and_explanation", "format_constraints", "open_domain",
         ]
         family = rng.choice(styles)
@@ -132,6 +132,16 @@ class ScenarioGenerator:
                 "Keep the two explanations consistent and identify any term that does not translate exactly."
             )
             language = "en-ar"
+        elif family == "arabic_request":
+            arabic_requests = [
+                "اشرح الفكرة الأساسية، ثم اذكر مثالاً وحدود ما يمكن استنتاجه من المعلومات المتاحة.",
+                "حلّل العبارة التالية، وحدد المعاني المحتملة، ولا تختر معنى واحداً دون دليل كافٍ.",
+                "قارن بين احتمالين، واذكر الافتراضات والخطوة التالية المناسبة.",
+                "لدي سؤال غير مألوف. وضّح ما هو معلوم وما هو غير معلوم، وتجنب اختلاق معلومات.",
+                "اشرح خطوات حل المشكلة، ثم اذكر حالة استثنائية قد تغيّر النتيجة.",
+            ]
+            text = rng.choice(arabic_requests)
+            language = "ar"
         elif family == "malformed":
             text = (
                 f"Pls analyze {topic} and say what is missing... "
