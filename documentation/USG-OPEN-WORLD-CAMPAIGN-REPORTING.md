@@ -31,12 +31,12 @@ Campaign IDs are path-safe and directories are created using a temporary sibling
 
 ## Report semantics
 
-The report records all ten execution outcomes, every population (including populations with zero cases), per-population attempts, targets, languages, taxonomy labels, unclassified cases, unexecuted scenarios, failure families, within-campaign clusters, and artifact hashes.
+The report records all ten target-result outcomes, every population (including populations with zero cases), per-population result records and actual attempts, targets, languages, taxonomy labels, scenarios without result records, failure families, within-campaign clusters, and artifact hashes.
 
 A campaign is:
-- **complete** only when each of the three populations has cases and every scenario has at least one recorded attempt;
-- **partial** when it has attempts but the run is incomplete or one or more populations are absent;
-- **failed** when it has no execution attempts.
+- **complete** only when each of the three populations has cases and every scenario has at least one actual target invocation;
+- **partial** when at least one actual invocation occurred but scenario or population coverage is incomplete;
+- **failed** when no actual target invocation occurred, even if not_executed result records exist.
 
 This is a completeness classification, not a quality score. A campaign can be complete and still show many unsupported requests, crashes, or invalid outputs.
 
