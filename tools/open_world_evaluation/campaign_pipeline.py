@@ -18,6 +18,7 @@ from jsonschema import Draft202012Validator, FormatChecker
 
 from .validate_protocol import OUTCOMES, POPULATIONS, validate_campaign_report
 from .validate_protocol import validate_instance
+from .growth_diagnostics import build_execution_accounting, build_stage_attribution
 
 ROOT = Path(__file__).resolve().parents[2]
 REPORT_SCHEMA = ROOT / "tools" / "open_world_evaluation" / "schemas" / "campaign-report.schema.json"
@@ -204,6 +205,11 @@ def build_campaign_report(
             outcome: int(population_attempt_counts[population].get(outcome, 0))
             for outcome in OUTCOMES
         }
+        population_cases = [case for case in cases if case.get("population") == population]
+        population_results = [
+            row for row in results
+            if case_by_id[row["case_id"]].get("population") == population
+        ]
         population_rows.append({
             "population": population,
             "attempted": sum(counts.values()),
@@ -212,9 +218,9 @@ def build_campaign_report(
             "coverage": {
                 "scenario_count": int(population_case_counts.get(population, 0)),
                 "attempted_case_count": len({
-                    row["case_id"] for row in results
-                    if case_by_id[row["case_id"]].get("population") == population
+                    row["case_id"] for row in population_results
                 }),
+                "execution_accounting": build_execution_accounting(population_cases, population_results),
             },
         })
 
@@ -312,6 +318,8 @@ def build_campaign_report(
         "coverage": {
             **_case_coverage(cases),
             "execution_result_count": len(results),
+            "execution_accounting": build_execution_accounting(cases, results),
+            "stage_attribution": build_stage_attribution(cases, results),
             "scored_attempt_count": len(scores),
             "unexecuted_case_count": len(cases) - len(attempted_case_ids),
             "complete_population_coverage": complete_population_coverage,
@@ -386,19 +394,24 @@ def render_markdown(report: dict[str, Any]) -> str:
         lines.append(f"| {outcome} | {report['outcome_counts'][outcome]} |")
     lines += [
         "",
-        f"**Total attempts:** {report['attempted']}  ",
-        f"**Completed:** {report['completed']}  ",
-        f"**Unexecuted scenarios:** {report['coverage']['unexecuted_case_count']}",
+        f"**Legacy result records (v1.0 attempted field):** {report['attempted']}  ",
+        f"**Actual execution attempts:** {report['coverage']['execution_accounting']['actual_attempt_count']}  ",
+        f"**Not-executed target records:** {report['coverage']['execution_accounting']['not_executed_record_count']}  ",
+        f"**Scenarios with no result record:** {report['coverage']['execution_accounting']['scenario_count_without_result_record']}  ",
+        f"**Scenarios with only not-executed records:** {report['coverage']['execution_accounting']['scenario_count_only_not_executed']}  ",
+        f"**Completed outcomes:** {report['completed']}  ",
+        f"**Unexecuted scenarios (legacy field):** {report['coverage']['unexecuted_case_count']}",
         "",
         "## Population coverage",
         "",
-        "| Population | Cases | Attempts | Completed |",
-        "|---|---:|---:|---:|",
+        "| Population | Cases | Result records | Actual attempts | Not executed | Completed |",
+        "|---|---:|---:|---:|---:|---:|",
     ]
     for item in report["population_results"]:
         lines.append(
             f"| {item['population']} | {item['coverage']['scenario_count']} | "
-            f"{item['attempted']} | {item['completed']} |"
+            f"{item['attempted']} | {item['coverage']['execution_accounting']['actual_attempt_count']} | "
+            f"{item['coverage']['execution_accounting']['not_executed_record_count']} | {item['completed']} |"
         )
     lines += [
         "",
@@ -437,6 +450,31 @@ def render_markdown(report: dict[str, Any]) -> str:
             )
     else:
         lines.append("No clusterable unsupported, partial, invalid, or runtime outcomes were recorded.")
+    attribution = report.get("coverage", {}).get("stage_attribution", {})
+    lines += [
+        "",
+        "## First blocking stage and downstream diagnostic impact",
+        "",
+        attribution.get("causality_warning", "Attribution is heuristic; review individual cases."),
+        "",
+        f"- Actual attempts analyzed: {attribution.get('analyzed_actual_attempt_count', 0)}",
+        f"- Attempts without target-result payload: {attribution.get('records_without_target_result_payload', 0)}",
+        f"- Attempts without observed blocking diagnostics: {attribution.get('records_without_observed_blocking_diagnostic', 0)}",
+        "",
+        "| First blocking stage | Cases | Later-stage blocker co-occurrences |",
+        "|---|---:|---:|",
+    ]
+    first_counts = attribution.get("first_blocking_stage_counts", {})
+    later_counts = attribution.get("later_blocking_stage_cooccurrence_counts", {})
+    for stage in sorted(set(first_counts) | set(later_counts)):
+        lines.append(f"| {stage} | {first_counts.get(stage, 0)} | {later_counts.get(stage, 0)} |")
+    lines += [
+        "",
+        "### Examples",
+        "",
+    ]
+    for stage, case_ids in attribution.get("example_case_ids_by_first_blocking_stage", {}).items():
+        lines.append(f"- **{stage}:** " + ", ".join(f"`{case_id}`" for case_id in case_ids))
     adaptive = report.get("coverage", {})
     lines += [
         "",
