@@ -2205,7 +2205,11 @@
         }
       },
       "ambiguity_reason": null,
-      "expected_predicate_span": null,
+      "expected_predicate_span": {
+        "start": 8,
+        "end": 12,
+        "surface": "calm"
+      },
       "expected_grammatical_markers": [
         {
           "start": 5,
@@ -2239,7 +2243,11 @@
         }
       },
       "ambiguity_reason": null,
-      "expected_predicate_span": null,
+      "expected_predicate_span": {
+        "start": 8,
+        "end": 12,
+        "surface": "calm"
+      },
       "expected_grammatical_markers": [
         {
           "start": 5,
@@ -2273,7 +2281,11 @@
         }
       },
       "ambiguity_reason": null,
-      "expected_predicate_span": null,
+      "expected_predicate_span": {
+        "start": 8,
+        "end": 12,
+        "surface": "calm"
+      },
       "expected_grammatical_markers": [
         {
           "start": 5,
@@ -2307,7 +2319,11 @@
         }
       },
       "ambiguity_reason": null,
-      "expected_predicate_span": null,
+      "expected_predicate_span": {
+        "start": 8,
+        "end": 12,
+        "surface": "calm"
+      },
       "expected_grammatical_markers": [
         {
           "start": 5,
@@ -2341,7 +2357,11 @@
         }
       },
       "ambiguity_reason": null,
-      "expected_predicate_span": null,
+      "expected_predicate_span": {
+        "start": 8,
+        "end": 12,
+        "surface": "calm"
+      },
       "expected_grammatical_markers": [
         {
           "start": 5,
@@ -2375,7 +2395,11 @@
         }
       },
       "ambiguity_reason": null,
-      "expected_predicate_span": null,
+      "expected_predicate_span": {
+        "start": 8,
+        "end": 13,
+        "surface": "ready"
+      },
       "expected_grammatical_markers": [
         {
           "start": 5,
@@ -2409,7 +2433,11 @@
         }
       },
       "ambiguity_reason": null,
-      "expected_predicate_span": null,
+      "expected_predicate_span": {
+        "start": 8,
+        "end": 13,
+        "surface": "ready"
+      },
       "expected_grammatical_markers": [
         {
           "start": 5,
@@ -2443,7 +2471,11 @@
         }
       },
       "ambiguity_reason": null,
-      "expected_predicate_span": null,
+      "expected_predicate_span": {
+        "start": 8,
+        "end": 13,
+        "surface": "ready"
+      },
       "expected_grammatical_markers": [
         {
           "start": 5,
@@ -2477,7 +2509,11 @@
         }
       },
       "ambiguity_reason": null,
-      "expected_predicate_span": null,
+      "expected_predicate_span": {
+        "start": 8,
+        "end": 13,
+        "surface": "ready"
+      },
       "expected_grammatical_markers": [
         {
           "start": 5,
@@ -2511,7 +2547,11 @@
         }
       },
       "ambiguity_reason": null,
-      "expected_predicate_span": null,
+      "expected_predicate_span": {
+        "start": 8,
+        "end": 13,
+        "surface": "ready"
+      },
       "expected_grammatical_markers": [
         {
           "start": 5,
@@ -2545,7 +2585,11 @@
         }
       },
       "ambiguity_reason": null,
-      "expected_predicate_span": null,
+      "expected_predicate_span": {
+        "start": 8,
+        "end": 15,
+        "surface": "curious"
+      },
       "expected_grammatical_markers": [
         {
           "start": 5,
@@ -2579,7 +2623,11 @@
         }
       },
       "ambiguity_reason": null,
-      "expected_predicate_span": null,
+      "expected_predicate_span": {
+        "start": 8,
+        "end": 15,
+        "surface": "curious"
+      },
       "expected_grammatical_markers": [
         {
           "start": 5,
@@ -2613,7 +2661,11 @@
         }
       },
       "ambiguity_reason": null,
-      "expected_predicate_span": null,
+      "expected_predicate_span": {
+        "start": 8,
+        "end": 15,
+        "surface": "curious"
+      },
       "expected_grammatical_markers": [
         {
           "start": 5,
@@ -2647,7 +2699,11 @@
         }
       },
       "ambiguity_reason": null,
-      "expected_predicate_span": null,
+      "expected_predicate_span": {
+        "start": 8,
+        "end": 15,
+        "surface": "curious"
+      },
       "expected_grammatical_markers": [
         {
           "start": 5,
@@ -2681,7 +2737,11 @@
         }
       },
       "ambiguity_reason": null,
-      "expected_predicate_span": null,
+      "expected_predicate_span": {
+        "start": 8,
+        "end": 15,
+        "surface": "curious"
+      },
       "expected_grammatical_markers": [
         {
           "start": 5,
@@ -2715,7 +2775,11 @@
         }
       },
       "ambiguity_reason": null,
-      "expected_predicate_span": null,
+      "expected_predicate_span": {
+        "start": 8,
+        "end": 13,
+        "surface": "tired"
+      },
       "expected_grammatical_markers": [
         {
           "start": 5,
@@ -2749,7 +2813,11 @@
         }
       },
       "ambiguity_reason": null,
-      "expected_predicate_span": null,
+      "expected_predicate_span": {
+        "start": 8,
+        "end": 13,
+        "surface": "tired"
+      },
       "expected_grammatical_markers": [
         {
           "start": 5,
@@ -2783,7 +2851,11 @@
         }
       },
       "ambiguity_reason": null,
-      "expected_predicate_span": null,
+      "expected_predicate_span": {
+        "start": 8,
+        "end": 13,
+        "surface": "tired"
+      },
       "expected_grammatical_markers": [
         {
           "start": 5,
@@ -2817,7 +2889,11 @@
         }
       },
       "ambiguity_reason": null,
-      "expected_predicate_span": null,
+      "expected_predicate_span": {
+        "start": 8,
+        "end": 13,
+        "surface": "tired"
+      },
       "expected_grammatical_markers": [
         {
           "start": 5,
@@ -2851,7 +2927,11 @@
         }
       },
       "ambiguity_reason": null,
-      "expected_predicate_span": null,
+      "expected_predicate_span": {
+        "start": 8,
+        "end": 13,
+        "surface": "tired"
+      },
       "expected_grammatical_markers": [
         {
           "start": 5,
@@ -6485,7 +6565,11 @@
         }
       },
       "ambiguity_reason": null,
-      "expected_predicate_span": null,
+      "expected_predicate_span": {
+        "start": 7,
+        "end": 11,
+        "surface": "هادئ"
+      },
       "expected_grammatical_markers": []
     },
     {
@@ -6513,7 +6597,11 @@
         }
       },
       "ambiguity_reason": null,
-      "expected_predicate_span": null,
+      "expected_predicate_span": {
+        "start": 7,
+        "end": 11,
+        "surface": "هادئ"
+      },
       "expected_grammatical_markers": []
     },
     {
@@ -6541,7 +6629,11 @@
         }
       },
       "ambiguity_reason": null,
-      "expected_predicate_span": null,
+      "expected_predicate_span": {
+        "start": 6,
+        "end": 10,
+        "surface": "هادئ"
+      },
       "expected_grammatical_markers": []
     },
     {
@@ -6569,7 +6661,11 @@
         }
       },
       "ambiguity_reason": null,
-      "expected_predicate_span": null,
+      "expected_predicate_span": {
+        "start": 6,
+        "end": 10,
+        "surface": "هادئ"
+      },
       "expected_grammatical_markers": []
     },
     {
@@ -6597,7 +6693,11 @@
         }
       },
       "ambiguity_reason": null,
-      "expected_predicate_span": null,
+      "expected_predicate_span": {
+        "start": 8,
+        "end": 12,
+        "surface": "هادئ"
+      },
       "expected_grammatical_markers": []
     },
     {
@@ -6625,7 +6725,11 @@
         }
       },
       "ambiguity_reason": null,
-      "expected_predicate_span": null,
+      "expected_predicate_span": {
+        "start": 7,
+        "end": 12,
+        "surface": "مستعد"
+      },
       "expected_grammatical_markers": []
     },
     {
@@ -6653,7 +6757,11 @@
         }
       },
       "ambiguity_reason": null,
-      "expected_predicate_span": null,
+      "expected_predicate_span": {
+        "start": 7,
+        "end": 12,
+        "surface": "مستعد"
+      },
       "expected_grammatical_markers": []
     },
     {
@@ -6681,7 +6789,11 @@
         }
       },
       "ambiguity_reason": null,
-      "expected_predicate_span": null,
+      "expected_predicate_span": {
+        "start": 6,
+        "end": 11,
+        "surface": "مستعد"
+      },
       "expected_grammatical_markers": []
     },
     {
@@ -6709,7 +6821,11 @@
         }
       },
       "ambiguity_reason": null,
-      "expected_predicate_span": null,
+      "expected_predicate_span": {
+        "start": 6,
+        "end": 11,
+        "surface": "مستعد"
+      },
       "expected_grammatical_markers": []
     },
     {
@@ -6737,7 +6853,11 @@
         }
       },
       "ambiguity_reason": null,
-      "expected_predicate_span": null,
+      "expected_predicate_span": {
+        "start": 8,
+        "end": 13,
+        "surface": "مستعد"
+      },
       "expected_grammatical_markers": []
     },
     {
@@ -6765,7 +6885,11 @@
         }
       },
       "ambiguity_reason": null,
-      "expected_predicate_span": null,
+      "expected_predicate_span": {
+        "start": 7,
+        "end": 12,
+        "surface": "فضولي"
+      },
       "expected_grammatical_markers": []
     },
     {
@@ -6793,7 +6917,11 @@
         }
       },
       "ambiguity_reason": null,
-      "expected_predicate_span": null,
+      "expected_predicate_span": {
+        "start": 7,
+        "end": 12,
+        "surface": "فضولي"
+      },
       "expected_grammatical_markers": []
     },
     {
@@ -6821,7 +6949,11 @@
         }
       },
       "ambiguity_reason": null,
-      "expected_predicate_span": null,
+      "expected_predicate_span": {
+        "start": 6,
+        "end": 11,
+        "surface": "فضولي"
+      },
       "expected_grammatical_markers": []
     },
     {
@@ -6849,7 +6981,11 @@
         }
       },
       "ambiguity_reason": null,
-      "expected_predicate_span": null,
+      "expected_predicate_span": {
+        "start": 6,
+        "end": 11,
+        "surface": "فضولي"
+      },
       "expected_grammatical_markers": []
     },
     {
@@ -6877,7 +7013,11 @@
         }
       },
       "ambiguity_reason": null,
-      "expected_predicate_span": null,
+      "expected_predicate_span": {
+        "start": 8,
+        "end": 13,
+        "surface": "فضولي"
+      },
       "expected_grammatical_markers": []
     },
     {
@@ -6905,7 +7045,11 @@
         }
       },
       "ambiguity_reason": null,
-      "expected_predicate_span": null,
+      "expected_predicate_span": {
+        "start": 7,
+        "end": 11,
+        "surface": "متعب"
+      },
       "expected_grammatical_markers": []
     },
     {
@@ -6933,7 +7077,11 @@
         }
       },
       "ambiguity_reason": null,
-      "expected_predicate_span": null,
+      "expected_predicate_span": {
+        "start": 7,
+        "end": 11,
+        "surface": "متعب"
+      },
       "expected_grammatical_markers": []
     },
     {
@@ -6961,7 +7109,11 @@
         }
       },
       "ambiguity_reason": null,
-      "expected_predicate_span": null,
+      "expected_predicate_span": {
+        "start": 6,
+        "end": 10,
+        "surface": "متعب"
+      },
       "expected_grammatical_markers": []
     },
     {
@@ -6989,7 +7141,11 @@
         }
       },
       "ambiguity_reason": null,
-      "expected_predicate_span": null,
+      "expected_predicate_span": {
+        "start": 6,
+        "end": 10,
+        "surface": "متعب"
+      },
       "expected_grammatical_markers": []
     },
     {
@@ -7017,7 +7173,11 @@
         }
       },
       "ambiguity_reason": null,
-      "expected_predicate_span": null,
+      "expected_predicate_span": {
+        "start": 8,
+        "end": 12,
+        "surface": "متعب"
+      },
       "expected_grammatical_markers": []
     },
     {
