@@ -6,7 +6,7 @@
 **Canonical semantic interchange:** `USG-SEM/1.0` remains unchanged.  
 **Canonical persistence:** the existing Phase 3 SQLite store remains authoritative.  
 **Initial language profiles:** English and Modern Standard Arabic (MSA).  
-**Next gate:** Step 6.6 — nominal, property, genitive-relation, and modifier semantics; definition inventory, corrected candidate benchmarks v0.4.0/v0.4.1/v0.4.2, and a closed-profile candidate interpreter added; independent benchmark acceptance remains pending.
+**Next gate:** Step 6.6 remains IN PROGRESS — nominal, property, genitive-relation, and modifier semantics; definition inventory, corrected candidate benchmarks v0.4.0–v0.4.3, closed-profile candidate interpreter, independent English/Arabic PUD syntax audits, English spaCy and Arabic Stanza end-to-end parser baselines now exist. These external results are syntactic structural proxies, not human-adjudicated semantic-role gold. Independent semantic-role evaluation and construction-specific acceptance remain pending; Step 6.7 stays blocked.
 
 ## 1. Purpose and transition from Phase 5
 
@@ -159,7 +159,7 @@ Each step is a separate contract/implementation/acceptance gate. The sequence is
 - Step 6.2 must precede grammar implementation so feature selection and quality thresholds are not chosen after observing model output.
 - Step 6.3 defines the semantic role/frame vocabulary required by the later construction families.
 - Step 6.4 adds only the lexical/morphological evidence demanded by the frozen benchmark and accepted construction plan. The additive gold profiles v0.3.1 and v0.3.2 separate predicate/marker spans and repair repeated participant mention offsets; v0.3.2 is the scoring baseline for Steps 6.5 and 6.14.
-- Steps 6.5–6.6 expand clause and phrase semantics using the role/frame model.
+- Steps 6.5–6.6 expand clause and phrase semantics using the role/frame model. The current English spaCy and Arabic Stanza PUD end-to-end experiments are external parser/adapter structural baselines only; they do not supply human-adjudicated USG semantic-role gold or satisfy Step 6.6 acceptance.
 - Steps 6.7–6.8 close important Phase 5 composition gaps after the underlying argument and modifier representations are stable.
 - Step 6.9 separates grammatical voice and communicative form from semantic assertion.
 - Step 6.10 composes the already explicit operator model over the larger expression graph.
@@ -268,4 +268,4 @@ It will not mean unrestricted language understanding, universal semantic coverag
 
 ## 12. Phase 6 starting point
 
-Steps 6.1–6.5 are accepted for their bounded scope. Proceed with **Step 6.6 only**. Do not broaden a construction beyond its measured evidence. Each later step follows the same sequence used in Phase 5: define the contract, implement one bounded capability, run its focused and compatibility tests, publish its evidence, and merge only after the exact pull-request head passes the required checks.
+Steps 6.1–6.5 are accepted for their bounded scope. Step 6.6 remains open: the candidate interpreter and external PUD syntax/parser baselines are useful evidence, but a separately adjudicated semantic-role benchmark and per-construction acceptance are still required. Proceed with **Step 6.6 only**; Step 6.7 remains blocked. Do not broaden or enable a construction beyond its measured evidence. Each later step follows the same sequence used in Phase 5: define the contract, implement one bounded capability, run its focused and compatibility tests, publish its evidence, and merge only after the exact pull-request head passes the required checks.
