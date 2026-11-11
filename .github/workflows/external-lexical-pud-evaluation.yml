@@ -6,6 +6,13 @@ on:
       - "tests/test_external_lexical_pud_evaluation.py"
       - "documentation/EXTERNAL-LEXICAL-PUD-EVALUATION-v0.1.0.md"
       - ".github/workflows/external-lexical-pud-evaluation.yml"
+  push:
+    branches: [main]
+    paths:
+      - "tools/usg_external_lexical_v0_1_0/pud_evaluation.py"
+      - "tests/test_external_lexical_pud_evaluation.py"
+      - "documentation/EXTERNAL-LEXICAL-PUD-EVALUATION-v0.1.0.md"
+      - ".github/workflows/external-lexical-pud-evaluation.yml"
   workflow_run:
     workflows: ["USG External Lexical Incremental Crawl"]
     types: [completed]
@@ -14,7 +21,7 @@ permissions:
   contents: read
 jobs:
   evaluate:
-    if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch' || github.event_name == 'push' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout USG code
