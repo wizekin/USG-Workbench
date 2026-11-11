@@ -39,6 +39,8 @@ class ExternalLexicalPudEvaluationTests(unittest.TestCase):
         self.assertNotIn("unknown", inventory)
         self.assertEqual(evidence["entry_count"], 3)
         self.assertEqual(evidence["shard_count"], 1)
+        self.assertEqual(evidence["form_tag_counts"], {"plural": 1})
+        self.assertEqual(evidence["tagged_form_records"], 1)
 
     def test_reports_oov_ambiguity_pos_and_lemma_coverage(self):
         sentences = [{"tokens": [
@@ -62,6 +64,12 @@ class ExternalLexicalPudEvaluationTests(unittest.TestCase):
         self.assertEqual(totals["gold_lemma_and_upos_hit"], 2)
         self.assertAlmostEqual(totals["gold_lemma_coverage"], 0.5)
         self.assertAlmostEqual(totals["gold_lemma_upos_candidate_recall"], 0.5)
+        ambiguity = report["candidate_ambiguity"]
+        self.assertEqual(ambiguity["single_candidate_seen_tokens"], 2)
+        self.assertEqual(ambiguity["multi_candidate_seen_tokens"], 1)
+        self.assertEqual(ambiguity["candidate_label_count_distribution"], {"1": 2, "2": 1})
+        self.assertAlmostEqual(ambiguity["mean_candidate_labels_when_seen"], 4 / 3)
+        self.assertFalse(ambiguity["candidate_precision_measured"])
 
     def test_lemma_metrics_are_optional_for_legacy_callers(self):
         report = evaluate(
