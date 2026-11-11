@@ -573,6 +573,8 @@ class LexicalCrawler:
                 latest_commit, snapshot, pages, expected_count, previous
             )
 
+        # Additive checkpoint fields are migrated in place when resuming an older run.
+        checkpoint.setdefault("failed_pages", 0)
         manifest = self._initial_manifest(checkpoint)
         if checkpoint.get("stored_bytes", 0) >= self.storage_budget_bytes:
             checkpoint["status"] = "storage_limit_reached"
