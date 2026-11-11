@@ -1,0 +1,69 @@
+{
+  "graph_version": "1.0.0",
+  "description": "Versioned dependency profiles for currently registered interpreter targets. Dependencies describe required upstream artifacts, not necessarily wall-clock execution order.",
+  "profiles": {
+    "phase4-bounded-interpreter": {
+      "pipeline_contract": "USG-INTERPRET/0.1.0",
+      "pipeline_version": "usg-interpretation/0.1.0",
+      "stages": {
+        "source_ingestion": {
+          "depends_on": []
+        },
+        "segmentation": {
+          "depends_on": ["source_ingestion"]
+        },
+        "lexical": {
+          "depends_on": ["source_ingestion"]
+        },
+        "mentions": {
+          "depends_on": ["lexical"]
+        },
+        "discourse": {
+          "depends_on": ["lexical", "segmentation"]
+        },
+        "syntax": {
+          "depends_on": ["lexical"]
+        },
+        "semantic_composition": {
+          "depends_on": ["lexical", "syntax"]
+        },
+        "document_projection": {
+          "depends_on": ["semantic_composition", "mentions", "discourse"]
+        }
+      }
+    },
+    "phase5-bounded-interpreter": {
+      "pipeline_contract": "USG-INTERPRET/0.2.0",
+      "pipeline_version": "phase5-interpretation-integration/0.3.0",
+      "stages": {
+        "lexical": {
+          "depends_on": []
+        },
+        "segmentation": {
+          "depends_on": ["lexical"]
+        },
+        "operators": {
+          "depends_on": ["lexical", "segmentation"]
+        },
+        "syntax": {
+          "depends_on": ["lexical", "segmentation", "operators"]
+        },
+        "semantic_composition": {
+          "depends_on": ["lexical", "segmentation", "operators", "syntax"]
+        },
+        "discourse": {
+          "depends_on": ["lexical", "segmentation"]
+        },
+        "document_projection": {
+          "depends_on": ["semantic_composition", "discourse"]
+        }
+      }
+    }
+  },
+  "limitations": [
+    "These profiles describe dependencies in the currently registered Phase 4 and Phase 5 interpreter implementations only.",
+    "The graph is not a complete ontology of USG reasoning stages and must be versioned when implementation dependencies change.",
+    "A dependency edge does not prove that every downstream diagnostic was caused by an upstream failure.",
+    "Targets without a registered dependency profile are left unattributed rather than assigned a guessed global order."
+  ]
+}
