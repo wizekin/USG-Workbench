@@ -30,6 +30,8 @@ def build_parser() -> argparse.ArgumentParser:
         command.add_argument("--providers", nargs="+", choices=DEFAULT_PROVIDER_ORDER, default=None)
     activity = sub.add_parser("activity", help="Show which words have been requested most often.")
     activity.add_argument("--limit", type=int, default=20)
+    graph = sub.add_parser("graph", help="Assemble the cumulative graph from previously cached words.")
+    graph.add_argument("--limit", type=int, default=10000)
     sub.add_parser("benchmark", help="Run offline structural checks; no network calls.")
     return parser
 
@@ -48,6 +50,10 @@ def main(argv=None) -> int:
                 "activity": service.activity(args.limit),
                 "note": "Activity counts represent lookup use, not semantic importance or word frequency in English.",
             })
+        elif args.command == "graph":
+            graph = service.knowledge_graph(limit=args.limit)
+            graph["cache_path"] = str(cache.path)
+            _print(graph)
         elif args.command == "lookup":
             _print(service.lookup(
                 args.word, refresh=args.refresh, offline=args.offline, providers=args.providers
