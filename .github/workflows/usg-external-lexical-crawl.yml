@@ -26,6 +26,7 @@ on:
       - "tests/test_external_lexical_crawl.py"
       - "tests/test_external_lexical_retrieval.py"
       - "tests/test_external_lexical_audit.py"
+      - "tests/test_external_lexical_remote_audit.py"
       - "documentation/USG-EXTERNAL-LEXICAL-SCHEDULED-CRAWLER-v0.1.0.md"
       - ".github/workflows/usg-external-lexical-crawl.yml"
 
@@ -50,6 +51,8 @@ jobs:
         run: python -m unittest discover -s tests -p "test_external_lexical_retrieval.py" -v
       - name: Run lexical state reconciliation audit tests
         run: python -m unittest discover -s tests -p "test_external_lexical_audit.py" -v
+      - name: Run remote lexical state audit tests
+        run: python -m unittest discover -s tests -p "test_external_lexical_remote_audit.py" -v
       - name: Run offline structural benchmark
         run: python -m tools.usg_external_lexical_v0_1_0 benchmark
 
@@ -112,3 +115,10 @@ jobs:
             echo "Durable checkpoint and compressed shards are stored on branch: usg-external-lexical-data."
             echo "The next scheduled run resumes from state/checkpoint.json."
           } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Reconcile durable checkpoint, manifest and shard inventory
+        if: success()
+        run: |
+          python -m tools.usg_external_lexical_v0_1_0 audit-remote \\
+            --repository "${GITHUB_REPOSITORY}" \\
+            --branch "${USG_LEXICAL_DATA_BRANCH}"

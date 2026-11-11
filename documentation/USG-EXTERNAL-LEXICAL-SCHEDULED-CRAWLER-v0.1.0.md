@@ -148,3 +148,22 @@ means a consistency error was found; exit code 2 means the audit inputs could
 not be read or parsed. Identical duplicate shard blobs are warnings, not
 silently discarded: their physical bytes remain included in storage totals.
 The audit is read-only and does not modify checkpoints, manifests, or shards.
+
+
+## Automatic post-crawl reconciliation
+
+After each successful crawl job, the workflow runs a separate read-only audit
+job. It fetches the current checkpoint and manifest from the data branch and
+uses the Git tree inventory to reconcile every compressed shard for the pinned
+snapshot. A truncated Git tree response fails closed. Counter mismatches,
+missing last-batch shards, byte-accounting errors, or conflicting duplicate
+batch IDs fail the audit. Identical historical duplicate copies are reported
+as warnings and remain included in physical storage accounting.
+
+The same operation can be run manually from a checkout with a GitHub token:
+
+```bash
+GITHUB_TOKEN=... python -m tools.usg_external_lexical_v0_1_0 audit-remote \\
+  --repository wizekin/USG-Workbench \\
+  --branch usg-external-lexical-data
+```

@@ -16,7 +16,7 @@ def audit_crawl_state(checkpoint: dict, manifest: dict, shard_inventory: list[di
     """Compare checkpoint, manifest and physical shard metadata without mutating data."""
     errors: list[str] = []
     warnings: list[str] = []
-    inventory = [item for item in shard_inventory if item.get("type", "file") == "file"
+    inventory = [item for item in shard_inventory if item.get("type", "file") in {"file", "blob"}
                  and str(item.get("path", item.get("name", ""))).endswith(".jsonl.gz")]
     paths = [str(item.get("path", item.get("name", ""))) for item in inventory]
     if len(paths) != len(set(paths)):

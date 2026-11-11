@@ -3,12 +3,14 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 from pathlib import Path
 import sys
 
 from .audit import audit_crawl_state
 from .cache import LexicalCache, default_cache_path
 from .evaluation import run_structural_benchmark
+from .remote_audit import audit_github_branch
 from .service import DEFAULT_PROVIDER_ORDER, ExternalLexicalService
 
 
@@ -39,6 +41,9 @@ def build_parser() -> argparse.ArgumentParser:
     audit.add_argument("--manifest", type=Path, required=True)
     audit.add_argument("--shard-inventory", type=Path, required=True,
                        help="JSON array of GitHub shard inventory objects (path, size, sha).")
+    remote_audit = sub.add_parser("audit-remote", help="Audit checkpoint, manifest and shards directly from GitHub.")
+    remote_audit.add_argument("--repository", required=True)
+    remote_audit.add_argument("--branch", required=True)
     return parser
 
 
@@ -47,6 +52,16 @@ def main(argv=None) -> int:
     if args.command == "benchmark":
         _print(run_structural_benchmark())
         return 0
+    if args.command == "audit-remote":
+        try:
+            report = audit_github_branch(
+                args.repository, args.branch, token=os.environ.get("GITHUB_TOKEN")
+            )
+            _print(report)
+            return 0 if report["status"] != "failed" else 1
+        except (OSError, ValueError, RuntimeError) as exc:
+            print(f"USG remote lexical audit failed: {exc}", file=sys.stderr)
+            return 2
     if args.command == "audit":
         try:
             checkpoint = json.loads(args.checkpoint.read_text(encoding="utf-8"))
