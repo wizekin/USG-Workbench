@@ -25,6 +25,29 @@
           "sourceSpan": {"$ref": "#/$defs/span"},
           "derivationRefs": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
         },
+        "allOf": [
+          {
+            "if": {"properties": {"op": {"const": "OPERATOR"}}, "required": ["op"]},
+            "then": {
+              "properties": {
+                "sort": {"const": "PROPOSITION"},
+                "params": {
+                  "type": "object",
+                  "required": ["operatorType", "operatorValue", "scopeTargetRef", "scopeTargetKind", "scopeTargetTokenRef", "scopeSourceSpan", "surfaceOrder"],
+                  "properties": {
+                    "operatorType": {"enum": ["NEGATION", "MODALITY", "TENSE", "ASPECT", "QUANTIFIER"]},
+                    "operatorValue": {"type": "string", "minLength": 1},
+                    "scopeTargetRef": {"type": "string", "minLength": 1},
+                    "scopeTargetKind": {"enum": ["PREDICATE", "ARGUMENT"]},
+                    "scopeTargetTokenRef": {"type": "string", "minLength": 1},
+                    "scopeSourceSpan": {"type": "array", "prefixItems": [{"type": "integer", "minimum": 0}, {"type": "integer", "minimum": 1}], "minItems": 2, "maxItems": 2},
+                    "surfaceOrder": {"type": "integer", "minimum": 0}
+                  }
+                }
+              }
+            }
+          }
+        ],
         "additionalProperties": false
       }
     }
