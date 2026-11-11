@@ -269,7 +269,7 @@ def load_lexical_resource(path: str | Path) -> LexicalResource:
 
 
 def bundled_lexical_resource() -> LexicalResource:
-    return load_lexical_resource(Path(__file__).resolve().parent / "resources" / "en-ar-foundation-lexicon.json")
+    return load_lexical_resource(Path(__file__).resolve().parents[2] / "resources" / "lexical" / "v0.1.0" / "en-ar-foundation-lexicon.json")
 
 
 __all__ = [
