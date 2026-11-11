@@ -8,7 +8,7 @@ import json
 from typing import Any
 
 from tools.usg_interpretation_v0_1_0.source import ingest_source
-from .lexical import LexicalAnalyzer, bundled_lexical_resource_v0_4_0
+from .lexical import LexicalAnalyzer, bundled_lexical_resource_v0_5_0
 from .segmentation import segment_document
 from .syntax import SyntaxAnalyzer
 from .compose import SemanticComposer
@@ -16,7 +16,7 @@ from .operators import OperatorAnalyzer
 from .discourse import DiscourseAnalyzer
 from .catalogue import bundled_resource_descriptors
 
-PHASE5_INTEGRATION_VERSION = "phase5-interpretation-integration/0.2.0"
+PHASE5_INTEGRATION_VERSION = "phase5-interpretation-integration/0.3.0"
 PIPELINE_CONTRACT = "USG-INTERPRET/0.2.0"
 
 
@@ -53,7 +53,7 @@ class Phase5InterpretationService:
         max_antecedents: int = 20,
         max_reference_candidates: int = 64,
     ):
-        self.lexical_resource = bundled_lexical_resource_v0_4_0()
+        self.lexical_resource = bundled_lexical_resource_v0_5_0()
         self.lexical_analyzer = LexicalAnalyzer(self.lexical_resource)
         self.syntax_analyzer = SyntaxAnalyzer(max_candidates=max_syntax_candidates)
         self.semantic_composer = SemanticComposer(max_candidates=max_semantic_candidates)
