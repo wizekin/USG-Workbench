@@ -99,6 +99,13 @@ class Phase5SegmentationSyntaxTests(unittest.TestCase):
         for item in lex.tokens:
             self.assertEqual(text[item.token.start:item.token.end], item.token.surface_text)
 
+    def test_empty_document_is_not_reported_as_complete(self):
+        lex = self.lexical.analyze(ingest_source("", "en"))
+        segmented = segment_document(lex)
+        result = SyntaxAnalyzer().analyze(lex, segmented)
+        self.assertEqual(result.status, "UNSUPPORTED")
+        self.assertEqual(result.clauses, ())
+
     def test_artifacts_from_different_sources_are_rejected(self):
         lex = self.lexical.analyze(ingest_source("Ada writes code.", "en"))
         other = self.lexical.analyze(ingest_source("Mira reads reports.", "en"))
