@@ -24,6 +24,9 @@ class TestSpacyEnglishEvaluation(unittest.TestCase):
         self.assertEqual(result["totals"]["upos_hits"], 1)
         self.assertEqual(result["totals"]["lemma_upos_hits"], 1)
         self.assertEqual(result["totals"]["lemma_upos_joint_accuracy"], 0.5)
+        self.assertEqual(result["totals"]["content_tokens"], 2)
+        self.assertEqual(result["totals"]["content_lemma_upos_joint_accuracy"], 0.5)
+        self.assertEqual(result["totals"]["nonpunct_lemma_upos_joint_accuracy"], 0.5)
 
     def test_rejects_token_count_mismatch(self):
         sentences = [{"tokens": [{"form": "word", "lemma": "word", "upos": "NOUN"}]}]
