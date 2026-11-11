@@ -1,6 +1,6 @@
 # USG Phase 5 — Definitions and Roadmap
 
-**Status:** IN PROGRESS — Step 5.1 interpretation contract accepted; Step 5.2 benchmark foundation under implementation.  
+**Status:** IN PROGRESS — Steps 5.1 and 5.2 accepted; Step 5.3 lexical and morphology resources under implementation.  
 **Target interpretation contract:** `USG-INTERPRET/0.2.0` (independent of the semantic interchange profile).  
 **Current accepted baseline:** `USG-INTERPRET/0.1.0`, bounded offline demonstrator.  
 **Normative semantic interchange:** `USG-SEM/1.0` remains unchanged unless a separately versioned profile is justified by a demonstrated representation gap.  
@@ -251,4 +251,4 @@ Phase 5 completion will mean a broader, benchmarked interpreter for the explicit
 
 ## 11. Immediate next implementation step
 
-**Step 5.1 is accepted.** Its frozen contract is documented in [PHASE-5-STEP-5.1-INTERPRETATION-EXPANSION-CONTRACT.md](PHASE-5-STEP-5.1-INTERPRETATION-EXPANSION-CONTRACT.md). The next gate is **Step 5.2 — Expanded Benchmark Corpus and Evaluator Foundation**. No capability expansion is enabled merely by the roadmap or benchmark gold annotations.
+**Steps 5.1 and 5.2 are accepted.** Their frozen contract and benchmark foundation are documented in [Step 5.1](PHASE-5-STEP-5.1-INTERPRETATION-EXPANSION-CONTRACT.md) and [Step 5.2](PHASE-5-STEP-5.2-BENCHMARK-FOUNDATION.md). Step 5.3 is implementing the first provenance-bearing lexical and morphology resources. The benchmark gold annotations remain evaluation targets, not claims of runtime support.
