@@ -170,6 +170,27 @@ class OpenWorldCampaignPipelineTests(unittest.TestCase):
         self.assertEqual(report["novel_clusters"][0]["case_count"], 2)
         self.assertFalse(report["novel_clusters"][0]["reviewed"])
 
+    def test_report_exposes_adaptive_discovery_counts(self):
+        cases = [make_case("OW-CASE-00000001", "unconstrained_random")]
+        results = [make_result(cases[0], "completed", 1)]
+        discovery = {
+            "adaptive_followup_case_count": 4,
+            "current_failure_cluster_count": 2,
+            "candidate_new_cluster_count": 1,
+            "history_campaign_count": 7,
+        }
+        report = build_campaign_report(
+            campaign_id="OWC-TEST-CAMPAIGN-0006",
+            cases=cases, results=results, scores=[],
+            tested_commit_sha=COMMIT,
+            adaptive_discovery=discovery,
+        )
+        self.assertEqual(report["coverage"]["adaptive_followup_case_count"], 4)
+        self.assertEqual(report["coverage"]["adaptive_candidate_new_cluster_count"], 1)
+        markdown = render_markdown(report)
+        self.assertIn("Adaptive discovery", markdown)
+        self.assertIn("Follow-up cases generated: 4", markdown)
+
     def test_markdown_report_includes_limits_and_outcomes(self):
         cases = [make_case("OW-CASE-00000001", "unconstrained_random")]
         results = [make_result(cases[0], "not_executed", 1)]
