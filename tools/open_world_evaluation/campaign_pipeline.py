@@ -289,11 +289,14 @@ def build_campaign_report(
             }),
         })
 
-    attempted_case_ids = {row.get("case_id") for row in results}
+    result_record_case_ids = {row.get("case_id") for row in results}
+    actual_attempt_case_ids = {
+        row.get("case_id") for row in results if row.get("outcome") != "not_executed"
+    }
     complete_population_coverage = all(population_case_counts.get(pop, 0) > 0 for pop in POPULATIONS)
-    if not results:
+    if not actual_attempt_case_ids:
         status = "failed"
-    elif len(attempted_case_ids) == len(cases) and complete_population_coverage:
+    elif len(actual_attempt_case_ids) == len(cases) and complete_population_coverage:
         status = "complete"
     else:
         status = "partial"
@@ -321,7 +324,7 @@ def build_campaign_report(
             "execution_accounting": build_execution_accounting(cases, results),
             "stage_attribution": build_stage_attribution(cases, results),
             "scored_attempt_count": len(scores),
-            "unexecuted_case_count": len(cases) - len(attempted_case_ids),
+            "unexecuted_case_count": len(cases) - len(result_record_case_ids),
             "complete_population_coverage": complete_population_coverage,
             "failure_cluster_count": len(novel_clusters),
             "semantic_scored_attempt_count": sum(
@@ -400,7 +403,7 @@ def render_markdown(report: dict[str, Any]) -> str:
         f"**Scenarios with no result record:** {report['coverage']['execution_accounting']['scenario_count_without_result_record']}  ",
         f"**Scenarios with only not-executed records:** {report['coverage']['execution_accounting']['scenario_count_only_not_executed']}  ",
         f"**Completed outcomes:** {report['completed']}  ",
-        f"**Unexecuted scenarios (legacy field):** {report['coverage']['unexecuted_case_count']}",
+        f"**Scenarios with no result record (legacy field):** {report['coverage']['unexecuted_case_count']}",
         "",
         "## Population coverage",
         "",
