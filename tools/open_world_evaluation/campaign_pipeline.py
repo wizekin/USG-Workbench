@@ -145,6 +145,22 @@ def build_campaign_report(
     if len(tested_commit_sha) != 40 or any(c not in "0123456789abcdef" for c in tested_commit_sha):
         raise ValueError("tested_commit_sha must be a 40-character lowercase Git SHA")
 
+    for index, case in enumerate(cases):
+        errors = validate_instance("scenario", case)
+        if errors:
+            raise ValueError(f"invalid scenario at index {index}: " + "; ".join(errors))
+    for index, record in enumerate(results):
+        errors = validate_instance("execution_result", record)
+        if errors:
+            raise ValueError(f"invalid execution result at index {index}: " + "; ".join(errors))
+    score_schema_path = ROOT / "tools" / "open_world_evaluation" / "schemas" / "score-result.schema.json"
+    score_schema = json.loads(score_schema_path.read_text(encoding="utf-8"))
+    score_validator = Draft202012Validator(score_schema, format_checker=FormatChecker())
+    for index, score in enumerate(scores):
+        errors = list(score_validator.iter_errors(score))
+        if errors:
+            raise ValueError(f"invalid score result at index {index}: " + "; ".join(error.message for error in errors))
+
     case_by_id = {case.get("case_id"): case for case in cases}
     if len(case_by_id) != len(cases):
         raise ValueError("scenario file contains duplicate case_id values")
