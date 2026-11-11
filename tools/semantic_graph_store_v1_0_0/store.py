@@ -1,6 +1,7 @@
 """Immutable, revisioned SQLite storage for complete USG-SEM/1.0 documents."""
 from __future__ import annotations
 
+from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from hashlib import sha256
@@ -8,7 +9,7 @@ import json
 from pathlib import Path
 import sqlite3
 import threading
-from typing import Any
+from typing import Any, Iterator
 
 from jsonschema import Draft202012Validator, FormatChecker
 
@@ -23,6 +24,7 @@ from .canonical import (
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_SCHEMA_PATH = ROOT / "specifications" / "usg-sem-1.0.schema.json"
 MIGRATION_VERSION = 1
+RESOURCE_CATALOGUE_ROLE = "USG_RESOURCE_CATALOGUE"
 
 
 class GraphStoreError(RuntimeError):
@@ -118,6 +120,35 @@ class CanonicalDocumentStore:
             if not self._closed:
                 self._connection.close()
                 self._closed = True
+
+    @contextmanager
+    def resource_catalogue_session(
+        self, *, role: str, write: bool = False
+    ) -> Iterator[sqlite3.Connection]:
+        """Grant the resource catalogue a role-scoped session on this exact connection.
+
+        The canonical store remains the connection owner. A write session owns
+        BEGIN/COMMIT/ROLLBACK and serializes access with the store lock; the
+        catalogue itself never controls transaction boundaries.
+        """
+        if role != RESOURCE_CATALOGUE_ROLE:
+            raise PermissionError("SQLite connection access is restricted to the resource-catalogue role")
+        if not isinstance(write, bool):
+            raise TypeError("write must be a boolean")
+        with self._lock:
+            self._ensure_open()
+            if self._connection.in_transaction:
+                raise GraphStoreError("resource catalogue sessions cannot be nested in another transaction")
+            if write:
+                self._connection.execute("BEGIN IMMEDIATE")
+            try:
+                yield self._connection
+                if write:
+                    self._connection.execute("COMMIT")
+            except BaseException:
+                if write and self._connection.in_transaction:
+                    self._connection.execute("ROLLBACK")
+                raise
 
     def __enter__(self) -> "CanonicalDocumentStore":
         self._ensure_open()
