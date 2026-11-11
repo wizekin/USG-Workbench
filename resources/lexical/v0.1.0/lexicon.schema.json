@@ -35,7 +35,8 @@
           "position": {"enum": ["prefix", "suffix"]},
           "affix": {"type": "string", "minLength": 1},
           "target_part_of_speech": {"enum": ["NOUN", "PROPN", "VERB", "ADJ", "ADV", "PRON", "ADP", "DET", "NUM", "OTHER"]},
-          "features": {"type": "object", "additionalProperties": {"type": "string"}}
+          "features": {"type": "object", "additionalProperties": {"type": "string"}},
+          "stem_operation": {"enum": ["IDENTITY", "RESTORE_E", "UNDOUBLE_FINAL", "Y_TO_I"]}
         },
         "additionalProperties": false
       }
