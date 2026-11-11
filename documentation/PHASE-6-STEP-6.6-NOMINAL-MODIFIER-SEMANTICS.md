@@ -43,3 +43,8 @@ The existing v0.3.2 gold corpus and Phase 1–5 benchmarks remain immutable. No 
 ## 6. Acceptance boundary
 
 This PR accepts definitions and evidence requirements only. It does not add runtime parsing, mutate the Phase 6 frame registry, enable any construction, or integrate with the API/CLI/Kernel Lab. Those require the focused benchmark and implementation acceptance gates.
+
+
+## Additive genitive semantics refinement
+
+The v0.4.0 candidate benchmark used `POSSESSED`/`POSSESSOR` labels for all English *of*-phrases and MSA Arabic iḍāfa examples. Those forms do not uniquely entail ownership or a single semantic relation. The additive v0.4.1 benchmark therefore uses `GENITIVE_HEAD` and `GENITIVE_DEPENDENT` with `GENITIVE_UNSPECIFIED` semantics. Specific possession, authorship, part-whole, and other relations require independent lexical/construction evidence; they are not inferred from genitive form alone. See [the v0.4.1 refinement record](PHASE-6-STEP-6.6-BENCHMARK-V0.4.1.md).
