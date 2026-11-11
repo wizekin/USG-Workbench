@@ -166,7 +166,9 @@ class ExternalLexicalTests(unittest.TestCase):
         }]
         result = DictionaryApiDevProvider(FakeClient(json_payload=payload)).lookup("bank")
         senses = [sense for entry in result["entries"] for sense in entry["senses"]]
-        self.assertEqual(len(result["entries"]), 3)
+        # One API meaning/POS entry can contain multiple separately identified senses.
+        self.assertEqual(len(result["entries"]), 2)
+        self.assertEqual(len(result["entries"][0]["senses"]), 2)
         self.assertEqual(len(senses), 3)
         self.assertEqual(len({sense["sense_id"] for sense in senses}), 3)
         self.assertEqual(senses[0]["relations"][0]["scope"], "sense")
