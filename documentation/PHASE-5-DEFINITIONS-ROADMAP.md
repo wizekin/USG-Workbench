@@ -1,6 +1,6 @@
 # USG Phase 5 — Definitions and Roadmap
 
-**Status:** IN PROGRESS — Steps 5.1–5.5 accepted; Step 5.6 scoped operators under implementation.  
+**Status:** IN PROGRESS — Steps 5.1–5.6 accepted; Step 5.7 clause coordination under implementation.  
 **Target interpretation contract:** `USG-INTERPRET/0.2.0` (independent of the semantic interchange profile).  
 **Current accepted baseline:** `USG-INTERPRET/0.1.0`, bounded offline demonstrator.  
 **Normative semantic interchange:** `USG-SEM/1.0` remains unchanged unless a separately versioned profile is justified by a demonstrated representation gap.  
@@ -251,4 +251,4 @@ Phase 5 completion will mean a broader, benchmarked interpreter for the explicit
 
 ## 11. Immediate next implementation step
 
-**Steps 5.1–5.5 are accepted.** Their contract, benchmark, lexical/morphology resources, clause/syntax artifacts, and typed semantic composition are documented in the corresponding Step 5.1–5.5 records. Step 5.6 adds explicitly registered negation, modality, tense, aspect, and quantifier operators with bounded scope alternatives. The benchmark remains an evaluation target, not a claim of full runtime coverage.
+**Steps 5.1–5.6 are accepted.** Their contract, benchmark, lexical/morphology resources, clause/syntax artifacts, typed semantic composition, and scoped-operator inventory are documented in the corresponding Step 5.1–5.6 records. Step 5.7 is being delivered in two gates: 5.7A clause-level coordination and 5.7B coordinated predicates/arguments. The benchmark remains an evaluation target, not a claim of full runtime coverage.
