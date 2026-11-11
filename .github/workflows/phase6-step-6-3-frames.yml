@@ -1,0 +1,43 @@
+name: Phase 6 Step 6.3 Typed Semantic Roles and Predicate Frames
+on:
+  pull_request:
+    paths:
+      - "specifications/usg-frame-registry-0.3.0.schema.json"
+      - "resources/semantic-frames/v0.3.0/**"
+      - "tools/phase6_semantic_frames_v0_3_0/**"
+      - "tests/test_phase6_step_6_3_frame_registry.py"
+      - "documentation/PHASE-6-STEP-6.3-TYPED-ROLES-FRAMES-VALENCY.md"
+      - ".github/workflows/phase6-step-6-3-frames.yml"
+  push:
+    branches: [main]
+    paths:
+      - "specifications/usg-frame-registry-0.3.0.schema.json"
+      - "resources/semantic-frames/v0.3.0/**"
+      - "tools/phase6_semantic_frames_v0_3_0/**"
+      - "tests/test_phase6_step_6_3_frame_registry.py"
+      - ".github/workflows/phase6-step-6-3-frames.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  frame-registry:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install JSON Schema validator
+        run: python -m pip install "jsonschema==4.23.0"
+      - name: Validate typed roles, frames, valency, and benchmark bindings
+        run: |
+          python -m compileall -q tools/phase6_semantic_frames_v0_3_0
+          python -m tools.phase6_semantic_frames_v0_3_0.validate
+          python -m unittest discover -s tests -p 'test_phase6_step_6_3_frame_registry.py' -v
+      - name: Verify Phase 1–5 and USG-SEM/1.0 contracts remain unchanged
+        run: |
+          git diff --exit-code origin/main...HEAD -- documentation/PHASE-[1-5]* specifications/USG-SEM-1.0.md specifications/usg-sem-1.0.schema.json specifications/usg-interpret-expression-graph-0.2.0.schema.json tools/usg_interpretation_v0_1_0 tools/usg_interpretation_v0_2_0 archives/ implementations/
