@@ -75,3 +75,37 @@ This audit does not:
 - enable any nominal construction or unblock Step 6.7.
 
 **Updated outcome:** independent MSA semantic-role gold does exist in the published SemEval-2007 Task 18 / Pilot Arabic PropBank release, and an English nominal-relation gold task exists in SemEval-2007 Task 4. These are promising new evaluation sources, not yet integrated or rights-cleared. The remaining work is to verify their exact data files and licensing, align their annotation units to the Step 6.6 construction inventory, and fill the internal nominal-relation gap—especially for MSA—without pretending predicate-argument labels annotate every modifier relation. The Step 6.6 gate therefore remains open, but the data search has identified stronger concrete candidates than the initial audit.
+
+
+## 7. Follow-up verification — 2026-11-11
+
+A second source-level check narrows the usable scope and access status:
+
+### SemEval-2007 Task 4 (English)
+
+- The task's official data page explicitly lists trial, training, testing, and scoring files. The testing files omit target labels; labels are provided separately in scoring files.
+- The task paper defines seven separate binary nominal-relation classification tasks: Cause–Effect, Instrument–Agency, Product–Producer, Origin–Entity, Theme–Tool, Part–Whole, and Content–Container.
+- The annotation unit is a pair of marked nominals in a sentence. The paper defines nominals as nouns or base noun phrases, excludes named entities, and excludes complex noun phrases with attached prepositional phrases.
+- This is independent relation-labelled data for a useful but narrow English slice. It does not directly label all five USG construction families, adjective modification, general prepositional attachment, temporal modifiers, or all internal phrase structure. A mapping must be justified relation by relation; unmatched cases stay out of the USG gold denominator.
+- **Access status:** the official page exposes an embedded Google Drive folder, but this audit could not retrieve the files through the available public interface. A third-party dataset index points to a public mirror, but no authoritative redistribution license for the underlying corpus was verified. Do not copy that mirror into this repository or treat it as cleared for redistribution.
+
+Sources: official [Task 4 data page](https://sites.google.com/site/semeval2007task4/data), [Task 4 documentation](https://sites.google.com/site/semeval2007task4/documentation), [Task 4 paper](https://aclanthology.org/S07-1003/), and SemEval's [dataset FAQ](https://semeval.github.io/faq.html). The FAQ states that past task datasets are distributed by task organizers, not by SemEval centrally; where a task site does not provide access, it advises contacting organizers.
+
+### SemEval-2007 Task 18 (MSA Arabic)
+
+- The published paper confirms an MSA semantic-role task and describes the Arabic PropBank resource built from ATB3 v2. It reports train/dev/test sentence counts and explains the iḍāfa noun-phrase boundary challenge in argument-span detection.
+- The paper and its ACL Anthology record are accessible; that does not itself establish that the sentence-level task files are publicly downloadable or that the underlying ATB-derived data may be redistributed.
+- The official task dataset download location and a corpus-specific redistribution license remain unverified in this audit. Do not reconstruct or redistribute ATB text, parses, or annotation files from the paper.
+- Even if obtained under valid terms, Task 18 can evaluate predicate-argument spans and selected iḍāfa-containing NP boundaries. It does not provide gold labels for the internal semantic distinction among possession, lexicalized compounds, adjective relations, or other Step 6.6 modifier families.
+
+Sources: [Task 18 ACL Anthology record](https://aclanthology.org/S07-1017/) and [published task paper](https://aclanthology.org/S07-1.pdf).
+
+### Revised operational decision
+
+1. Keep both resources in the **candidate source** category until the exact files, version/checksum, access terms, and permitted use are recorded.
+2. If Task 4 files become available, add a narrow English relation-classification adapter with an explicit seven-label mapping table and a separate score report. Do not translate its seven labels into USG modifier labels by name similarity.
+3. If Task 18 files become available under verified terms, add a separate MSA predicate-argument/NP-boundary diagnostic. Do not count its SRL labels as internal nominal-relation gold.
+4. Keep all five-by-two USG modifier profiles disabled until each profile has its own independent positive, negative/adversarial, and ambiguous/boundary gold examples and meets the roadmap thresholds.
+5. The remaining MSA internal nominal-relation gap cannot be solved by the Task 18 SRL corpus alone. It requires a separately sourced, legally usable relation-labelled set or an explicitly provisional annotation effort with independent adjudication.
+
+**No dataset has been imported, no gold denominator has been increased, and no Step 6.6 construction has been enabled by this follow-up.**

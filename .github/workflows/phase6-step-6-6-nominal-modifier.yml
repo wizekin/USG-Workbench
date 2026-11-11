@@ -7,6 +7,8 @@ on:
       - "tools/phase6_nominal_modifier_v0_3_0/**"
       - "tests/test_phase6_step_6_6_definitions.py"
       - "documentation/PHASE-6-STEP-6.6-NOMINAL-MODIFIER-SEMANTICS.md"
+      - "documentation/PHASE-6-STEP-6.6-INDEPENDENT-GOLD-DATASET-AUDIT.md"
+      - "documentation/PHASE-6-DEFINITIONS-ROADMAP.md"
       - ".github/workflows/phase6-step-6-6-nominal-modifier.yml"
   push:
     branches: [main]
