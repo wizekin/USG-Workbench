@@ -43,9 +43,9 @@ jobs:
             --target-matrix \
             --output "$RUNNER_TEMP/ow3-cases.jsonl"
           python - <<'PY'
-          import hashlib, json
+          import hashlib, json, os
           from pathlib import Path
-          path = Path("$RUNNER_TEMP/ow3-cases.jsonl")
+          path = Path(os.environ["RUNNER_TEMP"]) / "ow3-cases.jsonl"
           rows = [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines()]
           assert len(rows) == 2
           for row in rows:
@@ -64,9 +64,9 @@ jobs:
             --commit-sha "$GITHUB_SHA" \
             --max-wall-seconds 30
           python - <<'PY'
-          import json
+          import json, os
           from pathlib import Path
-          path = Path("$RUNNER_TEMP/ow3-results.jsonl")
+          path = Path(os.environ["RUNNER_TEMP"]) / "ow3-results.jsonl"
           rows = [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines()]
           assert len(rows) == 2
           assert {row["target"]["component_id"] for row in rows} == {
