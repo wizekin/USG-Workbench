@@ -10,4 +10,6 @@ This directory contains normative, versioned USG contracts, schemas, and semanti
 - [Phase 6 predicate-frame and semantic-role registry schema 0.3.0](usg-frame-registry-0.3.0.schema.json) defines versioned role definitions, frame slots, valency, and language-specific realization links.
 - [Phase 6 candidate bilingual lexical and morphology resource schema 0.3.0](phase6-lexical-resource-0.3.0.schema.json) validates provenance-bearing English/MSA Arabic forms, exact fixture evidence, and bounded morphology patterns.
 
+- [Phase 6 candidate predicate/argument construction rules schema 0.3.0](phase6-predicate-argument-rules-0.3.0.schema.json) validates versioned language-specific patterns and frame references.
+
 The canonical semantic interchange contract and schema are maintained separately. Do not infer that an absent specification has already been implemented by either runtime.
