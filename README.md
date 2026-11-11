@@ -37,6 +37,11 @@ The archive inventory records fresh tests and limitations for the original packa
 - **Phase 5:** COMPLETE for its documented and benchmarked scope. Steps 5.1–5.11 are accepted. The v0.2.1 benchmark measured 100% precision/recall, role/span accuracy, and negative/ambiguous target abstention for the three simple-transitive English/MSA Arabic target constructions; it does not establish broad language coverage. See the [Phase 5 roadmap](documentation/PHASE-5-DEFINITIONS-ROADMAP.md), [completion record](documentation/PHASE-5-COMPLETION-RECORD.md), and [Step 5.11 acceptance report](documentation/PHASE-5-STEP-5.11-BENCHMARK-EXIT-ACCEPTANCE.md).
 - **Phase 6:** IN PROGRESS. Steps 6.1–6.5 are accepted for their bounded, benchmarked scope. Step 6.6 remains in progress; the candidate interpreter and external PUD parser baselines do not provide independent semantic-role gold. The [Step 6.6 independent gold dataset audit](documentation/PHASE-6-STEP-6.6-INDEPENDENT-GOLD-DATASET-AUDIT.md) records that SemEval-2007 Task 4 and Task 18 are narrow candidates only: exact data access and redistribution rights remain unverified; WojoodRelations is an additional MSA candidate whose download requires institutional affiliation and whose entity-level relations do not directly annotate internal phrase modifiers. These sources do not cover all internal modifier relations. No external corpus has been imported; Step 6.7 remains blocked pending Step 6.6 acceptance. See the [Phase 6 roadmap](documentation/PHASE-6-DEFINITIONS-ROADMAP.md).
 
+## System-wide capability assessment
+
+- [USG System-Wide Capability Assessment — 2026-11-12](documentation/USG-SYSTEM-WIDE-CAPABILITY-ASSESSMENT-2026-11-12.md) synthesizes the Open-World campaign, Phase 4–6 benchmarks, lexical diagnostics, and independent evaluation gaps.
+- [USG System Improvement Backlog](documentation/USG-SYSTEM-IMPROVEMENT-BACKLOG.md) records prioritized, dependency-ordered modifications. The machine-readable evidence snapshot is stored at [assessment.json](evaluations/system-wide/2026-11-12/assessment.json).
+
 ## External lexical retrieval and incremental analysis
 
 - [External lexical retrieval and incremental analysis](documentation/EXTERNAL-LEXICAL-RETRIEVAL-AND-INCREMENTAL-LEARNING-v0.1.0.md) retrieves individual English words from the public providers on demand and caches only requested words locally.

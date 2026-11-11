@@ -1,0 +1,121 @@
+{
+  "assessment_id": "USG-SYSTEM-WIDE-2026-11-12",
+  "repository": "wizekin/USG-Workbench",
+  "assessment_type": "evidence_based_architecture_and_capability_review",
+  "evidence_baseline": {
+    "open_world_campaign": "OWC-OW6-43015126807-1",
+    "tested_commit": "a04806d1480e692913943693b5251535c6a520f0",
+    "phase4_profile": "USG-INTERPRET/0.1.0",
+    "phase5_profile": "USG-INTERPRET/0.2.0",
+    "phase6_profile": "USG-INTERPRET/0.3.0",
+    "external_lexical_evaluation": "EXTERNAL-LEXICAL-PUD-EVALUATION-v0.1.0"
+  },
+  "open_world": {
+    "status": "partial",
+    "case_target_records": 3106,
+    "outcomes": {
+      "completed": 44,
+      "partial": 1013,
+      "unsupported": 946,
+      "ambiguous": 103,
+      "not_executed": 1000,
+      "invalid_output": 0,
+      "timeout": 0,
+      "crashed": 0,
+      "infrastructure_error": 0
+    },
+    "populations": {
+      "unconstrained_random": 3000,
+      "controlled_diagnostic": 106,
+      "naturalistic": 0
+    },
+    "targets": {
+      "js_semantic_workbench_v054": 1000,
+      "phase4_bounded_interpreter": 1006,
+      "phase5_bounded_interpreter": 1100
+    },
+    "reporting_note": "The report also records unexecuted_case_count=0 while outcome not_executed=1000; clarify target-record versus execution-attempt semantics before computing rates."
+  },
+  "phase_benchmarks": {
+    "phase4": {
+      "status": "accepted_bounded_demonstrator",
+      "fixture_count": 6,
+      "scope": "explicit three-word English SVO and MSA SVO/VSO patterns"
+    },
+    "phase5": {
+      "status": "accepted_bounded_profile",
+      "fixture_count": 100,
+      "construction_profiles": [
+        "English simple-transitive SVO",
+        "MSA Arabic simple-transitive VSO",
+        "MSA Arabic simple-transitive SVO"
+      ],
+      "reported_precision_recall_role_span_and_abstention": "100% on the declared benchmark scope"
+    },
+    "phase6": {
+      "status": "in_progress",
+      "accepted_steps": "6.1-6.5 bounded scope",
+      "step_6_6": "blocked_pending_independent_bilingual_semantic_gold",
+      "step_6_7": "blocked"
+    }
+  },
+  "lexical_diagnostics": {
+    "crawl_processed_headwords": 602,
+    "crawl_expected_headwords": 1396111,
+    "external_pud_exact_surface_coverage": 0.0244,
+    "external_pud_oov_rate": 0.9756,
+    "external_pud_gold_upos_candidate_recall": 0.0174,
+    "external_pud_exact_gold_lemma_coverage": 0.021,
+    "mapped_morphology_candidate_pool_precision": 0.0,
+    "mapped_morphology_candidate_recall": 0.0,
+    "warning": "These are measurements of a small incomplete external crawl and limited tag mapping; do not generalize them to all source dictionary quality."
+  },
+  "pud_cross_validation_diagnostics": {
+    "english_exact_form_coverage": 0.826,
+    "arabic_exact_form_coverage": 0.755,
+    "english_gold_upos_candidate_inclusion": 0.809,
+    "arabic_gold_upos_candidate_inclusion": 0.74,
+    "english_candidate_ambiguity": 0.342,
+    "arabic_candidate_ambiguity": 0.292,
+    "warning": "Fold-derived PUD candidate inventory; not production external lexicon accuracy or contextual POS prediction."
+  },
+  "contextual_pos_diagnostic": {
+    "english_unigram_accuracy": 0.8204,
+    "english_hmm_accuracy": 0.8255,
+    "arabic_unigram_accuracy": 0.8196,
+    "arabic_hmm_accuracy": 0.7959,
+    "decision": "do_not_integrate_current_hmm"
+  },
+  "system_diagnosis": [
+    "The evaluation and contract infrastructure is stronger than demonstrated open-world interpretation coverage.",
+    "Lexical coverage is a major bottleneck but does not explain all syntax, semantic composition, operator, and discourse failures.",
+    "No naturalistic evaluation population currently supports a claim about real-world request distribution.",
+    "The JavaScript Workbench target is not executed by the current open-world browser campaign.",
+    "Phase 6 semantic construction expansion remains blocked by independent bilingual gold-data and rights requirements."
+  ],
+  "priority_work": [
+    {"id": "SYS-01", "priority": "P0", "title": "Reconcile Open-World case/target/attempt outcome accounting"},
+    {"id": "SYS-02", "priority": "P0", "title": "Add first-blocking-stage and downstream-impact attribution"},
+    {"id": "SYS-03", "priority": "P0", "title": "Add a legally usable naturalistic corpus pilot"},
+    {"id": "SYS-04", "priority": "P0", "title": "Add a real browser execution adapter for the JS Workbench"},
+    {"id": "SYS-05", "priority": "P1", "title": "Define a versioned lexical-candidate adapter contract"},
+    {"id": "SYS-06", "priority": "P1", "title": "Add OOV and lexical ambiguity regression coverage"},
+    {"id": "SYS-07", "priority": "P1", "title": "Build a stage dependency/error graph"},
+    {"id": "SYS-08", "priority": "P1", "title": "Select one construction for a bilingual expansion pilot"},
+    {"id": "SYS-09", "priority": "P1", "title": "Require independent construction-level gold and acceptance"},
+    {"id": "SYS-10", "priority": "P2", "title": "Resolve Phase 6 Step 6.6 data access and licensing"},
+    {"id": "SYS-11", "priority": "P2", "title": "Define a provisional MSA annotation and adjudication pathway"},
+    {"id": "SYS-12", "priority": "P2", "title": "Expand the cross-implementation conformance matrix"},
+    {"id": "SYS-13", "priority": "P2", "title": "Improve Kernel Lab stage explanations"},
+    {"id": "SYS-14", "priority": "P2", "title": "Add deterministic replay for accepted failure cases"}
+  ],
+  "runtime_changes_made": false,
+  "candidate_data_promoted": false,
+  "semantic_contracts_changed": false,
+  "assessment_limitations": [
+    "This assessment synthesizes existing repository evidence; it is not a fresh run of every benchmark.",
+    "Open-world synthetic scenarios do not substitute for a naturalistic corpus.",
+    "Structural/operation tests do not establish general semantic correctness.",
+    "The external lexical crawl is incomplete and candidate-only."
+  ]
+}
