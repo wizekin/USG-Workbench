@@ -142,7 +142,6 @@ def import_diagnostic_scenarios(
     for index, fixture in enumerate(p5["cases"], start=1):
         expected = {
             "expected_completion_status": fixture.get("expected_completion_status"),
-            "expected_expression_count": None,
             "gold_class": fixture["gold_class"],
             "expected_construction": fixture.get("expected_construction"),
             "expected_roles": fixture.get("expected_roles", {}),
