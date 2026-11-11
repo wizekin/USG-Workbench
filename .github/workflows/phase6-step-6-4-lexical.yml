@@ -4,6 +4,7 @@ on:
     paths:
       - "specifications/phase6-lexical-resource-0.3.0.schema.json"
       - "resources/lexical/phase6-v0.3.0/**"
+      - "resources/semantic-frames/v0.3.0/registry.json"
       - "tools/phase6_lexical_resources_v0_3_0/**"
       - "tests/test_phase6_step_6_4_lexical_resources.py"
       - "documentation/PHASE-6-STEP-6.4-LEXICAL-MORPHOLOGY-RESOURCES.md"
@@ -37,6 +38,7 @@ jobs:
         run: |
           python -m compileall -q tools/phase6_lexical_resources_v0_3_0
           python -m tools.phase6_lexical_resources_v0_3_0.validate
+          python -m tools.phase6_semantic_frames_v0_3_0.validate
           python -m unittest discover -s tests -p 'test_phase6_step_6_4_lexical_resources.py' -v
       - name: Verify Phase 1–5 and USG-SEM/1.0 contracts remain unchanged
         run: |
