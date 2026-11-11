@@ -23,12 +23,13 @@ The runner invokes `Phase5InterpretationService` once per fixture and derives a 
 - Separate English and MSA Arabic construction precision and recall.
 - Exact AGENT/ACTION/PATIENT role-binding accuracy.
 - Exact, source-slice-valid role-span accuracy using Unicode code-point offsets.
-- Completion-status accuracy and missing prediction count.
+- Positive-case completion-status accuracy and missing prediction count; nonpositive whole-pipeline statuses are not forced to one label.
 - False unique constructions on negative and ambiguous fixtures.
 - Negative and ambiguous abstention rates.
 - Total, mean, median, and p95 per-case latency.
 - Peak traced Python allocation during the corpus run (explicitly not an OS RSS measurement).
-- SHA-256 identity of the bundled resource descriptor manifest used for the run.
+- SHA-256 identity of both the bundled resource descriptor manifest and canonicalized gold corpus used for the run.
+- The enabled target constructions observed in the run.
 - Per-case outcomes so regressions can be diagnosed rather than hidden by aggregate scores.
 
 ## Acceptance gates
@@ -48,4 +49,4 @@ The frozen v0.2.0 corpus is retained unchanged. The additive v0.2.1 100-case cor
 
 The performance profile is a reproducible CI baseline, not a hardware-independent speed guarantee. It measures one process and Python traced allocations; it does not claim native-memory or production concurrency coverage.
 
-Step 5.11 is accepted only after measured results satisfy the gates and the full integrated compatibility matrix passes. A benchmark report with failing metrics is diagnostic evidence, not a passing acceptance.
+Step 5.11 is accepted only after the automated per-language quality gate passes and the full integrated compatibility matrix passes. A benchmark report with failing metrics is diagnostic evidence, not a passing acceptance.
