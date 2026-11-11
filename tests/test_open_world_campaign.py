@@ -152,6 +152,30 @@ class OpenWorldCampaignPipelineTests(unittest.TestCase):
         self.assertEqual(errors, [])
         self.assertEqual(report["attempted"], 3)
         self.assertEqual(sum(report["outcome_counts"].values()), 3)
+        accounting = report["coverage"]["execution_accounting"]
+        self.assertEqual(accounting["result_record_count"], 3)
+        self.assertEqual(accounting["actual_attempt_count"], 3)
+        self.assertEqual(accounting["not_executed_record_count"], 0)
+        self.assertEqual(accounting["scenario_count_without_result_record"], 0)
+
+    def test_not_executed_records_do_not_make_a_campaign_complete(self):
+        cases = [
+            make_case("OW-CASE-00000031", "unconstrained_random"),
+            make_case("OW-CASE-00000032", "naturalistic"),
+            make_case("OW-CASE-00000033", "controlled_diagnostic"),
+        ]
+        results = [make_result(case, "not_executed", index) for index, case in enumerate(cases, 31)]
+        report = build_campaign_report(
+            campaign_id="OWC-TEST-CAMPAIGN-0010",
+            cases=cases, results=results, scores=[],
+            tested_commit_sha=COMMIT,
+        )
+        self.assertEqual(report["status"], "failed")
+        accounting = report["coverage"]["execution_accounting"]
+        self.assertEqual(accounting["actual_attempt_count"], 0)
+        self.assertEqual(accounting["not_executed_record_count"], 3)
+        self.assertEqual(accounting["scenario_count_only_not_executed"], 3)
+        self.assertEqual(accounting["scenario_count_without_result_record"], 0)
 
     def test_failure_signatures_are_clustered_without_marking_reviewed(self):
         cases = [

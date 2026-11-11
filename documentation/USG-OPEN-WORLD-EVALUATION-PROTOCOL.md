@@ -44,7 +44,7 @@ The ten outcomes remain distinct:
 - infrastructure_error
 - not_executed
 
-They must never be collapsed into one pass/fail value or silently removed from denominators. Unsupported is not a crash; ambiguity is not automatically an error.
+A not_executed record is a recorded target disposition, not an invocation of the target. It remains visible in result records and outcome counts, but must be excluded from actual-attempt counts. Unsupported is not a crash; ambiguity is not automatically an error.
 
 ## Campaign report contract
 
@@ -56,6 +56,12 @@ The validator checks that:
 - all three populations occur exactly once;
 - per-population counts reconcile with both population attempt totals and campaign-level totals;
 - a complete report has a finish timestamp and at least one attempt.
+
+## Campaign accounting compatibility
+
+Campaign report schema 1.0.0 retains the legacy attempted field, which counts execution-result records. New reports add explicit accounting under coverage.execution_accounting and per-population coverage.execution_accounting. Consumers must use actual_attempt_count for target invocations and not_executed_record_count for skipped target records. These fields reconcile with scenario, target, population, and campaign totals. The legacy attempted field is not silently redefined.
+
+A complete campaign requires an actual target invocation for every scenario plus all three populations. A campaign with result records but zero actual invocations is failed; partial campaigns remain first-class reports.
 
 ## Scoring and independence
 
