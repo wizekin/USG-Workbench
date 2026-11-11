@@ -3,6 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 import json,re
 ROOT=Path(__file__).resolve().parents[2]
+TOKEN_RE=re.compile(r"[^\\W\\d_]+",re.UNICODE)
 LEXICON=ROOT/"resources/lexical/phase6-v0.3.0/en-ar-candidate.json"
 RULES=ROOT/"resources/constructions/phase6-v0.3.0/predicate-argument-rules.json"
 FRAME_BY_FAMILY={"intransitive":"usg.frame.event.intransitive","ditransitive":"usg.frame.transfer.ditransitive","copular":"usg.frame.predication.copular","prepositional":"usg.frame.relation.location"}
