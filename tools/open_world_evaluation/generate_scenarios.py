@@ -290,6 +290,9 @@ def write_jsonl(
     requested_count: int,
     target_matrix: bool,
 ) -> Path:
+    manifest_path = output_path.with_suffix(output_path.suffix + ".manifest.json")
+    if output_path.exists() or manifest_path.exists():
+        raise FileExistsError("refusing to overwrite an earlier scenario artifact or manifest")
     output_path.parent.mkdir(parents=True, exist_ok=True)
     lines = [json.dumps(case, ensure_ascii=False, sort_keys=True) for case in cases]
     payload = ("\n".join(lines) + "\n").encode("utf-8")
@@ -316,7 +319,6 @@ def write_jsonl(
             for case in cases
         ],
     }
-    manifest_path = output_path.with_suffix(output_path.suffix + ".manifest.json")
     manifest_path.write_text(
         json.dumps(manifest, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
         encoding="utf-8",
