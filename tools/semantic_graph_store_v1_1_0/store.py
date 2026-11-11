@@ -1,6 +1,7 @@
 """Immutable, revisioned SQLite storage for complete USG-SEM/1.0 documents."""
 from __future__ import annotations
 
+from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from hashlib import sha256
@@ -19,10 +20,16 @@ from .canonical import (
     canonical_bytes,
     parse_canonical,
 )
+from tools.usg_interpretation_v0_2_0.catalogue import (
+    SQLiteResourceCatalogue, bundled_resource_descriptors,
+)
+from tools.usg_interpretation_v0_1_0.resources import SemanticAssociation
+
+STORE_VERSION = "1.1.0"
 
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_SCHEMA_PATH = ROOT / "specifications" / "usg-sem-1.0.schema.json"
-MIGRATION_VERSION = 1
+MIGRATION_VERSION = 2
 
 
 class GraphStoreError(RuntimeError):
@@ -51,6 +58,10 @@ class RevisionConflictError(GraphStoreError):
 
 
 class IntegrityError(GraphStoreError):
+    pass
+
+
+class InterpretationResultNotFoundError(GraphStoreError):
     pass
 
 
@@ -112,6 +123,7 @@ class CanonicalDocumentStore:
         if not self._memory:
             self._connection.execute("PRAGMA journal_mode=WAL")
         self._migrate()
+        self._initialize_resource_catalogue()
 
     def close(self) -> None:
         with self._lock:
@@ -235,6 +247,33 @@ class CanonicalDocumentStore:
         BEGIN
             SELECT RAISE(ABORT, 'document revisions are immutable');
         END;
+
+        CREATE TABLE IF NOT EXISTS usg_interpretation_results (
+            result_id TEXT PRIMARY KEY,
+            source_ref TEXT NOT NULL,
+            revision INTEGER NOT NULL CHECK (revision > 0),
+            contract TEXT NOT NULL CHECK (contract = 'USG-INTERPRET/0.2.0'),
+            canonical_json BLOB NOT NULL,
+            sha256 TEXT NOT NULL CHECK (length(sha256) = 64),
+            resource_manifest_digest TEXT NOT NULL CHECK (length(resource_manifest_digest) = 64),
+            created_at TEXT NOT NULL,
+            UNIQUE(source_ref, revision)
+        );
+
+        CREATE INDEX IF NOT EXISTS idx_interpretation_results_source
+            ON usg_interpretation_results(source_ref, revision DESC);
+
+        CREATE TRIGGER IF NOT EXISTS immutable_interpretation_result_update
+        BEFORE UPDATE ON usg_interpretation_results
+        BEGIN
+            SELECT RAISE(ABORT, 'interpretation results are immutable');
+        END;
+
+        CREATE TRIGGER IF NOT EXISTS immutable_interpretation_result_delete
+        BEFORE DELETE ON usg_interpretation_results
+        BEGIN
+            SELECT RAISE(ABORT, 'interpretation results are immutable');
+        END;
         """
         now = self._now()
         with self._lock:
@@ -243,7 +282,9 @@ class CanonicalDocumentStore:
                 "BEGIN IMMEDIATE;\n"
                 + ddl
                 + "\nINSERT OR IGNORE INTO schema_migrations(version,migration_name,applied_at) "
-                + f"VALUES({MIGRATION_VERSION},'initial-canonical-document-store','{safe_now}');\n"
+                + f"VALUES(1,'initial-canonical-document-store','{safe_now}');\n"
+                + "INSERT OR IGNORE INTO schema_migrations(version,migration_name,applied_at) "
+                + f"VALUES(2,'phase5-resource-catalogue-and-interpretation-results','{safe_now}');\n"
                 + "COMMIT;"
             )
             try:
@@ -252,6 +293,167 @@ class CanonicalDocumentStore:
                 if self._connection.in_transaction:
                     self._connection.execute("ROLLBACK")
                 raise
+
+    @contextmanager
+    def resource_catalogue_transaction(self):
+        """Yield the resource catalogue inside a store-owned, role-safe transaction."""
+        self._ensure_open()
+        with self._lock:
+            if self._connection.in_transaction:
+                raise GraphStoreError("resource catalogue transactions cannot be nested")
+            self._connection.execute("BEGIN IMMEDIATE")
+            try:
+                catalogue = SQLiteResourceCatalogue(self._connection)
+                yield catalogue
+                self._connection.execute("COMMIT")
+            except BaseException:
+                if self._connection.in_transaction:
+                    self._connection.execute("ROLLBACK")
+                raise
+
+    def _initialize_resource_catalogue(self) -> None:
+        with self.resource_catalogue_transaction():
+            pass
+
+    def bootstrap_resource_catalogue(self) -> dict:
+        """Register current bundled resources, rejecting silent ID/digest changes."""
+        now = datetime.now(timezone.utc).timestamp()
+        with self.resource_catalogue_transaction() as catalogue:
+            for descriptor in bundled_resource_descriptors():
+                existing = catalogue.get_resource(descriptor.resource_id)
+                if existing is None:
+                    catalogue.register_resource(descriptor, now)
+                elif (existing.version != descriptor.version
+                      or existing.sha256 != descriptor.sha256
+                      or existing.resource_type != descriptor.resource_type):
+                    raise GraphStoreError(
+                        "resource ID is already registered with different content; create a new resource version"
+                    )
+            return catalogue.manifest()
+
+    def resource_catalogue_manifest(self) -> dict:
+        with self.resource_catalogue_transaction() as catalogue:
+            return catalogue.manifest()
+
+    def resource_catalogue_digest(self) -> str:
+        with self.resource_catalogue_transaction() as catalogue:
+            return catalogue.digest()
+
+    def register_semantic_association(self, association: SemanticAssociation, created_at: float | None = None) -> None:
+        timestamp = datetime.now(timezone.utc).timestamp() if created_at is None else created_at
+        with self.resource_catalogue_transaction() as catalogue:
+            catalogue.register_association(association, timestamp)
+
+    def record_association_use(
+        self, association_id: str, used_at: float | None = None, context_ref: str | None = None
+    ) -> None:
+        timestamp = datetime.now(timezone.utc).timestamp() if used_at is None else used_at
+        with self.resource_catalogue_transaction() as catalogue:
+            catalogue.record_use(association_id, timestamp, context_ref)
+
+    def retrieve_resource_associations(
+        self, source_ref: str, *, now: float | None = None,
+        active_limit: int = 10, secondary_limit: int = 20,
+        half_life_seconds: float = 30 * 24 * 3600,
+    ):
+        timestamp = datetime.now(timezone.utc).timestamp() if now is None else now
+        with self.resource_catalogue_transaction() as catalogue:
+            return catalogue.retrieve_associations(
+                source_ref, now=timestamp, active_limit=active_limit,
+                secondary_limit=secondary_limit, half_life_seconds=half_life_seconds,
+            )
+
+    def put_interpretation_result(self, result: dict[str, Any]) -> dict[str, Any]:
+        """Persist an immutable USG-INTERPRET/0.2.0 result in this same SQLite file."""
+        if not isinstance(result, dict) or result.get("contract") != "USG-INTERPRET/0.2.0":
+            raise InvalidDocumentError(["INTERPRETATION_RESULT_CONTRACT_INVALID"])
+        source = result.get("source")
+        if not isinstance(source, dict):
+            raise InvalidDocumentError(["INTERPRETATION_RESULT_SOURCE_MISSING"])
+        source_ref = source.get("sourceRef")
+        source_text = source.get("text")
+        source_hash = source.get("sha256")
+        if not isinstance(source_ref, str) or not source_ref or not isinstance(source_text, str):
+            raise InvalidDocumentError(["INTERPRETATION_RESULT_SOURCE_INVALID"])
+        actual_source_hash = sha256(source_text.encode("utf-8")).hexdigest()
+        if source_hash != actual_source_hash:
+            raise InvalidDocumentError(["INTERPRETATION_RESULT_SOURCE_HASH_MISMATCH"])
+        raw = canonical_bytes(result)
+        result_digest = sha256(raw).hexdigest()
+        now = datetime.now(timezone.utc)
+        with self.resource_catalogue_transaction() as catalogue:
+            for descriptor in bundled_resource_descriptors():
+                existing = catalogue.get_resource(descriptor.resource_id)
+                if existing is None:
+                    catalogue.register_resource(descriptor, now.timestamp())
+                elif existing.sha256 != descriptor.sha256 or existing.version != descriptor.version:
+                    raise GraphStoreError("bundled resource changed without a versioned resource ID")
+            manifest_digest = catalogue.digest()
+            row = self._connection.execute(
+                "SELECT COALESCE(MAX(revision),0) FROM usg_interpretation_results WHERE source_ref=?",
+                (source_ref,),
+            ).fetchone()
+            revision = int(row[0]) + 1
+            result_id = "int:" + sha256(
+                f"{source_ref}:{revision}:{result_digest}".encode("utf-8")
+            ).hexdigest()
+            created_at = now.isoformat()
+            self._connection.execute(
+                """INSERT INTO usg_interpretation_results
+                   (result_id,source_ref,revision,contract,canonical_json,sha256,
+                    resource_manifest_digest,created_at)
+                   VALUES(?,?,?,?,?,?,?,?)""",
+                (result_id, source_ref, revision, result["contract"], raw,
+                 result_digest, manifest_digest, created_at),
+            )
+            return {
+                "result_id": result_id, "source_ref": source_ref,
+                "revision": revision, "sha256": result_digest,
+                "resource_manifest_digest": manifest_digest,
+                "created_at": created_at, "status": "STORED",
+            }
+
+    def get_interpretation_result(self, result_id: str) -> dict[str, Any]:
+        self._ensure_open()
+        with self._lock:
+            row = self._connection.execute(
+                """SELECT result_id,source_ref,revision,contract,canonical_json,sha256,
+                          resource_manifest_digest,created_at
+                   FROM usg_interpretation_results WHERE result_id=?""",
+                (result_id,),
+            ).fetchone()
+            if row is None:
+                raise InterpretationResultNotFoundError(f"interpretation result not found: {result_id}")
+            raw = bytes(row["canonical_json"])
+            actual = sha256(raw).hexdigest()
+            if actual != row["sha256"]:
+                raise IntegrityError("stored interpretation result digest mismatch")
+            result = parse_canonical(raw)
+            return {
+                "result_id": row["result_id"], "source_ref": row["source_ref"],
+                "revision": int(row["revision"]), "contract": row["contract"],
+                "sha256": row["sha256"],
+                "resource_manifest_digest": row["resource_manifest_digest"],
+                "created_at": row["created_at"], "result": result,
+            }
+
+    def list_interpretation_results(self, source_ref: str) -> list[dict[str, Any]]:
+        self._ensure_open()
+        with self._lock:
+            rows = self._connection.execute(
+                """SELECT result_id,source_ref,revision,contract,sha256,
+                          resource_manifest_digest,created_at
+                   FROM usg_interpretation_results WHERE source_ref=?
+                   ORDER BY revision DESC""",
+                (source_ref,),
+            ).fetchall()
+            return [{
+                "result_id": row["result_id"], "source_ref": row["source_ref"],
+                "revision": int(row["revision"]), "contract": row["contract"],
+                "sha256": row["sha256"],
+                "resource_manifest_digest": row["resource_manifest_digest"],
+                "created_at": row["created_at"],
+            } for row in rows]
 
     @staticmethod
     def _now() -> str:
