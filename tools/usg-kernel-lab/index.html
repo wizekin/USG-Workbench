@@ -407,16 +407,15 @@ function setQuerySummary(data){
  summary.innerHTML=metrics.map(([label,value])=>'<div class="metric"><b>'+esc(value)+'</b><span>'+esc(label)+'</span></div>').join("");
 }
 function setQueryOutput(value){latestQueryExport=value;renderResult("queryOutput",value,"Question result and explanation");$("downloadQueryBtn").disabled=false;$("downloadQueryAdvancedBtn").disabled=false}
-function friendlyFixture(item){
- const goal=item.goal||{}, goalText=goal.expression_ref?"Check a statement using the prepared information":"Prepared reasoning example";
+function friendlyFixture(item,index){
  const status=item.expected?.goal_status||item.expected?.completion_status||"";
- return labelFor(item.id)+" — "+(status?prettyValue(status)+" · ":"")+goalText;
+ return "Prepared example "+(index+1)+(status?" — expected result: "+prettyValue(status):"");
 }
 async function loadQueryFixtureList(){
  try{
   const response=await fetch("/api/fixtures"),data=await response.json();
   if(!response.ok||!data.ok)throw new Error(data.error||"Could not load prepared examples");
-  $("queryFixtureSelect").innerHTML=data.fixtures.map(item=>'<option value="'+esc(item.id)+'">'+esc(friendlyFixture(item))+'</option>').join("");
+  $("queryFixtureSelect").innerHTML=data.fixtures.map((item,index)=>'<option value="'+esc(item.id)+'">'+esc(friendlyFixture(item,index))+'</option>').join("");
   setStatus(data.fixtures.length+" prepared examples available","ok","queryStatus");
  }catch(e){$("queryFixtureSelect").innerHTML='<option value="">Examples could not be loaded</option>';setStatus(friendlyError(e.message),"err","queryStatus")}
 }
