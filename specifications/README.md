@@ -12,4 +12,6 @@ This directory contains normative, versioned USG contracts, schemas, and semanti
 
 - [Phase 6 candidate predicate/argument construction rules schema 0.3.0](phase6-predicate-argument-rules-0.3.0.schema.json) validates versioned language-specific patterns and frame references.
 
+- [Phase 6 candidate nominal/modifier rules schema 0.3.0](phase6-nominal-modifier-rules-0.3.0.schema.json) validates the five nominal/property/possession/modifier families for English and MSA Arabic.
+
 The canonical semantic interchange contract and schema are maintained separately. Do not infer that an absent specification has already been implemented by either runtime.

@@ -1,0 +1,36 @@
+name: Phase 6 Step 6.6 Nominal and Modifier Definitions
+on:
+  pull_request:
+    paths:
+      - "specifications/phase6-nominal-modifier-rules-0.3.0.schema.json"
+      - "resources/constructions/phase6-v0.3.0/nominal-modifier-rules.json"
+      - "tools/phase6_nominal_modifier_v0_3_0/**"
+      - "tests/test_phase6_step_6_6_definitions.py"
+      - "documentation/PHASE-6-STEP-6.6-NOMINAL-MODIFIER-SEMANTICS.md"
+      - ".github/workflows/phase6-step-6-6-nominal-modifier.yml"
+  push:
+    branches: [main]
+    paths:
+      - "specifications/phase6-nominal-modifier-rules-0.3.0.schema.json"
+      - "resources/constructions/phase6-v0.3.0/nominal-modifier-rules.json"
+      - "tools/phase6_nominal_modifier_v0_3_0/**"
+      - "tests/test_phase6_step_6_6_definitions.py"
+      - ".github/workflows/phase6-step-6-6-nominal-modifier.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  nominal-modifier-definitions:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python -m pip install "jsonschema==4.23.0"
+      - run: |
+          python -m compileall -q tools/phase6_nominal_modifier_v0_3_0
+          python -m tools.phase6_nominal_modifier_v0_3_0.validate
+          python -m unittest discover -s tests -p 'test_phase6_step_6_6_definitions.py' -v

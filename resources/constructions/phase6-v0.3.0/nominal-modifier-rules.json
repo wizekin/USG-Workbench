@@ -1,0 +1,179 @@
+{
+  "resource_id": "phase6.nominal-modifier-rules.candidate",
+  "version": "0.3.0",
+  "contract": "USG-INTERPRET/0.3.0",
+  "status": "CANDIDATE",
+  "provenance": "Definition-only candidate inventory derived from Phase 6 roadmap Step 6.6. These templates define evidence requirements and semantic distinctions; they are not parser implementations or benchmark-enabled constructions.",
+  "rules": [
+    {
+      "rule_id": "en.nominal.adjective-modifier.v1",
+      "language": "en",
+      "construction_id": "en.nominal.adjective_modifier",
+      "family": "ADJECTIVE_MODIFIER",
+      "pattern": "DET? ADJ NOUN",
+      "head_role": "HEAD",
+      "modifier_role": "MODIFIER",
+      "required_evidence": [
+        "lexical_pos",
+        "head_span",
+        "modifier_span",
+        "attachment_constraint"
+      ],
+      "ambiguity_policy": "retain_competing_head_or_attachment_analyses",
+      "status": "CANDIDATE"
+    },
+    {
+      "rule_id": "en.possession.of-phrase.v1",
+      "language": "en",
+      "construction_id": "en.possession.of_phrase",
+      "family": "POSSESSION",
+      "pattern": "NOUN ADP[of] NOUN_OR_PROPN",
+      "head_role": "POSSESSED",
+      "modifier_role": "POSSESSOR",
+      "required_evidence": [
+        "lexical_sense",
+        "possessive_relation_licensing",
+        "head_span",
+        "possessor_span",
+        "of_marker_span"
+      ],
+      "ambiguity_policy": "do_not_infer_ownership_from_of_alone",
+      "status": "CANDIDATE"
+    },
+    {
+      "rule_id": "en.compound.noun-noun.v1",
+      "language": "en",
+      "construction_id": "en.compound.noun_noun",
+      "family": "NOUN_COMPOUND",
+      "pattern": "NOUN NOUN",
+      "head_role": "HEAD",
+      "modifier_role": "COMPOUND_MODIFIER",
+      "required_evidence": [
+        "compound_lexical_sense_or_registered_compound_pattern",
+        "head_direction",
+        "component_spans"
+      ],
+      "ambiguity_policy": "retain_compound_vs_independent_noun_attachment",
+      "status": "CANDIDATE"
+    },
+    {
+      "rule_id": "en.prepositional.nominal-modifier.v1",
+      "language": "en",
+      "construction_id": "en.prepositional.nominal_modifier",
+      "family": "PREPOSITIONAL_MODIFIER",
+      "pattern": "DET? NOUN ADP NP",
+      "head_role": "HEAD",
+      "modifier_role": "LOCATION_OR_RELATION",
+      "required_evidence": [
+        "head_span",
+        "preposition_span",
+        "complement_span",
+        "attachment_constraint"
+      ],
+      "ambiguity_policy": "retain_noun_attachment_vs_clause_attachment",
+      "status": "CANDIDATE"
+    },
+    {
+      "rule_id": "en.temporal.adverbial-modifier.v1",
+      "language": "en",
+      "construction_id": "en.temporal.adverbial_modifier",
+      "family": "TEMPORAL_MODIFIER",
+      "pattern": "SUBJECT VERB TEMPORAL_ADVERB",
+      "head_role": "EVENT",
+      "modifier_role": "TIME",
+      "required_evidence": [
+        "predicate_frame",
+        "temporal_lexical_sense",
+        "event_span",
+        "time_span"
+      ],
+      "ambiguity_policy": "retain_event_scope_and_temporal_attachment_alternatives",
+      "status": "CANDIDATE"
+    },
+    {
+      "rule_id": "ar.nominal.adjective-modifier.v1",
+      "language": "ar",
+      "construction_id": "ar.nominal.adjective_modifier",
+      "family": "ADJECTIVE_MODIFIER",
+      "pattern": "NOUN ADJ",
+      "head_role": "HEAD",
+      "modifier_role": "MODIFIER",
+      "required_evidence": [
+        "lexical_pos",
+        "gender_number_definiteness_agreement_when_observable",
+        "head_span",
+        "modifier_span"
+      ],
+      "ambiguity_policy": "retain_adjective_predication_vs_nominal_modification",
+      "status": "CANDIDATE"
+    },
+    {
+      "rule_id": "ar.possession.idafa.v1",
+      "language": "ar",
+      "construction_id": "ar.possession.idafa",
+      "family": "POSSESSION",
+      "pattern": "NOUN[construct_state] NOUN[genitive]",
+      "head_role": "POSSESSED",
+      "modifier_role": "POSSESSOR",
+      "required_evidence": [
+        "idafa_construction_evidence",
+        "genitive_or_registered_case_evidence",
+        "possessor_sense",
+        "head_span",
+        "possessor_span"
+      ],
+      "ambiguity_policy": "do_not_treat_every_noun_noun_sequence_as_possession",
+      "status": "CANDIDATE"
+    },
+    {
+      "rule_id": "ar.compound.lexicalized-idafa.v1",
+      "language": "ar",
+      "construction_id": "ar.compound.lexicalized_idafa",
+      "family": "NOUN_COMPOUND",
+      "pattern": "NOUN NOUN[registered_compound_sense]",
+      "head_role": "HEAD",
+      "modifier_role": "COMPOUND_MODIFIER",
+      "required_evidence": [
+        "registered_compound_lexical_sense",
+        "component_spans",
+        "head_direction"
+      ],
+      "ambiguity_policy": "retain_possession_vs_lexicalized_compound_if_sense_not_unique",
+      "status": "CANDIDATE"
+    },
+    {
+      "rule_id": "ar.prepositional.nominal-modifier.v1",
+      "language": "ar",
+      "construction_id": "ar.prepositional.nominal_modifier",
+      "family": "PREPOSITIONAL_MODIFIER",
+      "pattern": "NOUN ADP NP",
+      "head_role": "HEAD",
+      "modifier_role": "LOCATION_OR_RELATION",
+      "required_evidence": [
+        "head_span",
+        "preposition_span",
+        "complement_span",
+        "attachment_constraint"
+      ],
+      "ambiguity_policy": "retain_nominal_attachment_vs_clause_attachment",
+      "status": "CANDIDATE"
+    },
+    {
+      "rule_id": "ar.temporal.adverbial-modifier.v1",
+      "language": "ar",
+      "construction_id": "ar.temporal.adverbial_modifier",
+      "family": "TEMPORAL_MODIFIER",
+      "pattern": "VERB SUBJECT TEMPORAL_ADVERB",
+      "head_role": "EVENT",
+      "modifier_role": "TIME",
+      "required_evidence": [
+        "predicate_frame",
+        "temporal_lexical_sense",
+        "event_span",
+        "time_span"
+      ],
+      "ambiguity_policy": "retain_event_scope_and_temporal_attachment_alternatives",
+      "status": "CANDIDATE"
+    }
+  ]
+}
