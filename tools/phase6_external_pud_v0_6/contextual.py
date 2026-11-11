@@ -7,7 +7,7 @@ benchmark experiment, not a USG runtime component.
 """
 from __future__ import annotations
 
-from collections import defaultdict
+from collections import Counter, defaultdict
 from pathlib import Path
 import json
 import unicodedata
@@ -344,8 +344,8 @@ def evaluate_fold(train: list[dict], test: list[dict], epochs: int = EPOCHS) -> 
 
 def cross_validate(prepared: list[dict], folds: int = 10, epochs: int = EPOCHS) -> dict:
     fold_ids = [_fold_index(sample, i, folds) for i, sample in enumerate(prepared)]
-    aggregate = defaultdict(int)
-    per_upos = defaultdict(lambda: defaultdict(int))
+    aggregate = Counter()
+    per_upos = defaultdict(Counter)
     fold_reports = []
     for fold in range(folds):
         train = [s for i, s in enumerate(prepared) if fold_ids[i] != fold]
