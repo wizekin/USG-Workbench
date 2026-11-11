@@ -51,6 +51,15 @@ class TestContextualMorphology(unittest.TestCase):
         self.assertEqual(len(prepared[0]["analyses"][0]), 2)
         self.assertEqual(prepared[0]["mle_top1"][0]["lex"], "كتاب")
 
+
+    def test_decoder_is_constrained_by_morphology_pos_candidates(self):
+        model = AveragedStructuredPerceptron(epochs=1)
+        model.tags = ["NOUN", "VERB"]
+        self.assertEqual(
+            model.predict([("BIAS",)], candidate_tags=[["VERB"]]),
+            ["VERB"],
+        )
+
     def test_candidate_selection_respects_predicted_upos(self):
         candidates = [
             {"analysis": {"lex": "كتب", "ud": "NOUN"}, "pos_lex_logprob": -2, "lex_logprob": -1},
