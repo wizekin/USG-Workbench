@@ -44,4 +44,4 @@ jobs:
         run: python -m unittest discover -s tests -p "test_phase4_*.py" -v
       - name: Verify immutable semantic and historical baselines
         run: |
-          git diff --exit-code origin/main...HEAD -- specifications/USG-SEM-1.0.md specifications/usg-sem-1.0.schema.json tools/usg_interpretation_v0_1_0 benchmarks/phase4-interpretation/ benchmarks/phase5-interpretation/archives/ archives/ implementations/
+          git diff --exit-code origin/main...HEAD -- specifications/USG-SEM-1.0.md specifications/usg-sem-1.0.schema.json tools/usg_interpretation_v0_1_0 benchmarks/phase4-interpretation/ benchmarks/phase5-interpretation/ archives/ implementations/
