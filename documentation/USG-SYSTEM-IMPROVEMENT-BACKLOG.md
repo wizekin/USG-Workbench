@@ -1,6 +1,6 @@
 # USG System Improvement Backlog
 
-**Status:** evidence-derived proposal; candidate work only until separately accepted  
+**Status:** active evidence-derived backlog; completion states are recorded below  
 **Assessment source:** [USG System-Wide Capability Assessment — 2026-11-12](USG-SYSTEM-WIDE-CAPABILITY-ASSESSMENT-2026-11-12.md)
 
 This backlog converts the system-wide assessment into bounded, dependency-ordered work. It is not permission to weaken accepted contracts or promote unvalidated lexical/semantic resources.
@@ -23,6 +23,17 @@ This backlog converts the system-wide assessment into bounded, dependency-ordere
 | SYS-12 | P2 | Cross-implementation conformance matrix | None | JS Workbench, Python kernel, Python interpreter, and adapters tested separately with explicit version/feature matrix | Adapter/test only |
 | SYS-13 | P2 | Kernel Lab stage explanation improvements | SYS-02, SYS-07 | User can inspect source, candidate evidence, rule/resource versions, alternatives, and exact blocker | UI/diagnostic only |
 | SYS-14 | P2 | Deterministic replay of accepted failure cases | SYS-02 | Every accepted repair adds a minimized case and reruns prior frozen gates | Tests only |
+
+## Implementation status — 2026-11-12
+
+| ID | Current state | Evidence |
+|---|---|---|
+| SYS-01 | **Complete** | PR #185 merged to main; merge commit ebfcd46f85f7795f4d736178aab72270e044782c. Explicit result-record, actual-attempt, skipped-target, scenario, target, and population accounting is validated. |
+| SYS-02 | **Core implementation merged; attribution-completeness follow-up in validation** | PR #185 added initial first-blocker attribution. Follow-up PR #188 adds diagnostic-code counts, resource fingerprints, and strict pipeline-version matching before applying a dependency profile. |
+| SYS-07 | **Complete for registered Phase 4/5 profiles** | PR #186 merged to main; merge commit 39fd60d2c9ab4089820a7441a29d90aa957cac3a. Phase-specific DAG dependencies preserve parallel blockers and avoid a false global linear order. |
+| SYS-14 | **Initial implementation in validation** | PR #187 adds pinned replay, target-result comparison, explicit volatile-field policy, and CI smoke replay. Full automatic replay of every accepted repair and frozen failure corpus remains a follow-up acceptance step. |
+
+These are implementation states, not claims that USG's semantic accuracy has improved. The work so far improves evaluation trustworthiness and repeatability; it does not add new accepted language-understanding capabilities.
 
 ## Execution rules
 
