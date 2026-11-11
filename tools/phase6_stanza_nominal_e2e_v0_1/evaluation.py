@@ -12,9 +12,9 @@ import json
 
 import stanza
 
-from tools.phase6_external_pud_v0_1.run import DATASETS, download_dataset, parse_conllu
+from tools.phase6_external_pud_v0_1.run import DATASETS, download_dataset
 from collections import defaultdict
-from tools.phase6_ud_nominal_candidate_v0_1.adapter import adapt_sentence
+from tools.phase6_ud_nominal_candidate_v0_1.adapter import adapt_sentence, parse_ud_conllu
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "artifacts" / "phase6-step-6-6-stanza-arabic-nominal-e2e.json"
@@ -231,7 +231,7 @@ def evaluate_candidate_sets(predicted: list[dict], gold: list[dict]) -> dict:
 def run() -> dict:
     spec = DATASETS["ar"]
     payload = download_dataset("ar")
-    gold_sentences = parse_conllu(payload)
+    gold_sentences = parse_ud_conllu(payload)
     if len(gold_sentences) != spec["sentences"]:
         raise ValueError(
             f"expected {spec['sentences']} Arabic PUD sentences, got {len(gold_sentences)}"
