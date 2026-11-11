@@ -91,6 +91,39 @@ def _remove_path(value: dict[str, Any], path: str) -> None:
         current.pop(parts[-1], None)
 
 
+def _normalize_source_id_references(value: dict[str, Any]) -> None:
+    source_ids: set[str] = set()
+    if isinstance(value.get("source_ref"), str):
+        source_ids.add(value["source_ref"])
+    source = value.get("source")
+    if isinstance(source, dict) and isinstance(source.get("source_id"), str):
+        source_ids.add(source["source_id"])
+    document = value.get("document")
+    if isinstance(document, dict):
+        if isinstance(document.get("primarySourceRef"), str):
+            source_ids.add(document["primarySourceRef"])
+        sources = document.get("sources", [])
+        if isinstance(sources, list):
+            for item in sources:
+                if isinstance(item, dict) and isinstance(item.get("id"), str):
+                    source_ids.add(item["id"])
+    if not source_ids:
+        return
+
+    def normalize(item: Any) -> Any:
+        if isinstance(item, dict):
+            return {key: normalize(child) for key, child in item.items()}
+        if isinstance(item, list):
+            return [normalize(child) for child in item]
+        if isinstance(item, str) and item in source_ids:
+            return "__USG_REPLAY_SOURCE_ID__"
+        return item
+
+    normalized = normalize(value)
+    value.clear()
+    value.update(normalized)
+
+
 def stable_target_result_projection(
     record: dict[str, Any],
     target_id: str,
@@ -110,6 +143,8 @@ def stable_target_result_projection(
     if observed_contract != profile["pipeline_contract"]:
         return None, str(observed_version)
     stable = copy.deepcopy(target_result)
+    if profile.get("normalize_source_id_references", False):
+        _normalize_source_id_references(stable)
     for path in profile["volatile_json_paths"]:
         _remove_path(stable, path)
     return stable, str(observed_version)
