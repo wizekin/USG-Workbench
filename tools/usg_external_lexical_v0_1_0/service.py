@@ -102,6 +102,9 @@ class ExternalLexicalService:
         for provider_id in selected:
             provider = self.providers[provider_id]
             try:
+                if refresh and provider_id == "english_dictionary_github":
+                    # A deliberate refresh also advances the pinned upstream snapshot.
+                    provider._commit_sha = None
                 if provider_id == "freedictionaryapi":
                     # Their published cap is 1,000 requests/hour/IP; leave a safety margin.
                     self.cache.reserve_provider_request(provider_id, maximum=900, window_seconds=3600)
