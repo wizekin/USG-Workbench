@@ -134,7 +134,7 @@ def extract_gold(sentences: list[dict], lang: str) -> list[dict]:
                 add("en.compound.noun_noun", [dep, head],
                     {"MODIFIER": dep["form"], "HEAD": head["form"]})
 
-            if lang == "en" and dep["upos"] in {"NOUN", "PROPN"} and dep["deprel"] == "nmod:of" and head["upos"] in {"NOUN", "PROPN"}:
+            if lang == "en" and dep["upos"] in {"NOUN", "PROPN"} and dep["deprel"].startswith("nmod") and head["upos"] in {"NOUN", "PROPN"}:
                 adp = _case_child(ts, dep["id"])
                 if adp and adp["form"].casefold() == "of" and head["id"] < adp["id"] < dep["id"]:
                     dh, dd = _det_child(ts, head["id"]), _det_child(ts, dep["id"])
