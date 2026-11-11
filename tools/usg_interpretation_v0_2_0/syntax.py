@@ -112,13 +112,7 @@ class SyntaxAnalyzer:
         )
 
     def _analyze_clause(self, lexical: LexicalAnalysis, clause: ClauseSegment,
-                        excluded_token_ids: set[str],
-                        blocked_clause_refs: set[str]) -> ClauseSyntaxResult:
-        # The current simple-transitive patterns do not model predicate/argument
-        # scope. Do not erase a recognized semantic operator and then reinterpret
-        # the remaining words as an unmodified SVO assertion.
-        if clause.segment_id in blocked_clause_refs:
-            return ClauseSyntaxResult(clause.segment_id, "UNSUPPORTED", ())
+                        excluded_token_ids: set[str]) -> ClauseSyntaxResult:
         items = [item for item in lexical.tokens
                  if item.token.kind == "WORD" and item.token.token_id not in excluded_token_ids
                  and clause.start <= item.token.start and item.token.end <= clause.end]
@@ -182,19 +176,13 @@ class SyntaxAnalyzer:
         if lexical.source != segmented.source:
             raise ValueError("lexical and segmentation artifacts must share the exact source snapshot")
         excluded_token_ids = set()
-        blocked_clause_refs = set()
         if operator_analysis is not None:
             if (operator_analysis.source_ref != segmented.source.source_id
                     or operator_analysis.source_sha256 != segmented.source.sha256):
                 raise ValueError("operator analysis must reference the exact source snapshot")
             excluded_token_ids = set(operator_analysis.recognized_token_ids)
-            blocked_clause_refs = {
-                item.clause_ref for item in operator_analysis.clauses
-                if any(candidate.operator_type != "AUXILIARY" for candidate in item.candidates)
-            }
-        results = tuple(self._analyze_clause(
-            lexical, clause, excluded_token_ids, blocked_clause_refs
-        ) for clause in segmented.clauses)
+        results = tuple(self._analyze_clause(lexical, clause, excluded_token_ids)
+                        for clause in segmented.clauses)
         attachments = tuple(ClauseAttachment(
             boundary.boundary_id, boundary.left_clause_ref, boundary.right_clause_ref,
             boundary.relation, boundary.marker_text, boundary.marker_span,
