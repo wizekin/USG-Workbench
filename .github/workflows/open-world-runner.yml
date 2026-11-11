@@ -1,0 +1,80 @@
+name: Open-World Isolated Execution Runner
+
+on:
+  pull_request:
+    paths:
+      - "README.md"
+      - "documentation/USG-OPEN-WORLD-EXECUTION-RUNNER.md"
+      - "tools/open_world_evaluation/**"
+      - "tests/test_open_world_runner.py"
+      - ".github/workflows/open-world-runner.yml"
+  push:
+    branches: [main]
+    paths:
+      - "README.md"
+      - "documentation/USG-OPEN-WORLD-EXECUTION-RUNNER.md"
+      - "tools/open_world_evaluation/**"
+      - "tests/test_open_world_runner.py"
+      - ".github/workflows/open-world-runner.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  runner:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install protocol validator
+        run: python -m pip install "jsonschema>=4.18,<5"
+      - name: Run isolated execution tests
+        run: python -m unittest discover -s tests -p "test_open_world_runner.py" -v
+      - name: Generate a deterministic Phase 4/5 input matrix
+        run: |
+          python -m tools.open_world_evaluation.generate_scenarios \
+            --count 1 \
+            --seed "ow3-isolated-runner-smoke" \
+            --created-at "2026-11-11T12:00:00Z" \
+            --target phase4-bounded-interpreter \
+            --target phase5-bounded-interpreter \
+            --target-matrix \
+            --output "$RUNNER_TEMP/ow3-cases.jsonl"
+          python - <<'PY'
+          import hashlib, json, os
+          from pathlib import Path
+          path = Path(os.environ["RUNNER_TEMP"]) / "ow3-cases.jsonl"
+          rows = [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines()]
+          assert len(rows) == 2
+          for row in rows:
+              row["input"]["text"] = "Ada writes code."
+              row["input"]["language_hint"] = "en"
+              row["input"]["utf8_sha256"] = hashlib.sha256(b"Ada writes code.").hexdigest()
+              row["resource_limits"]["wall_time_seconds"] = 30
+              row["resource_limits"]["memory_megabytes"] = 1024
+          path.write_text("\n".join(json.dumps(row) for row in rows) + "\n", encoding="utf-8")
+          PY
+      - name: Execute real Phase 4 and Phase 5 services in isolated workers
+        run: |
+          python -m tools.open_world_evaluation.execute_cases \
+            --input "$RUNNER_TEMP/ow3-cases.jsonl" \
+            --output "$RUNNER_TEMP/ow3-results.jsonl" \
+            --commit-sha "$GITHUB_SHA" \
+            --max-wall-seconds 30
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          path = Path(os.environ["RUNNER_TEMP"]) / "ow3-results.jsonl"
+          rows = [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines()]
+          assert len(rows) == 2
+          assert {row["target"]["component_id"] for row in rows} == {
+              "phase4-bounded-interpreter", "phase5-bounded-interpreter"
+          }
+          assert all(row["outcome"] not in {"crashed", "infrastructure_error", "timeout", "invalid_output"} for row in rows)
+          PY
+      - name: Compile runner and worker
+        run: |
+          python -m py_compile tools/open_world_evaluation/worker.py
+          python -m py_compile tools/open_world_evaluation/execute_cases.py
