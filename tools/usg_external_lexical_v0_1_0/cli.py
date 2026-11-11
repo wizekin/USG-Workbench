@@ -6,7 +6,8 @@ import json
 from pathlib import Path
 import sys
 
-from .audit import audit_crawl_state\nfrom .cache import LexicalCache, default_cache_path
+from .audit import audit_crawl_state
+from .cache import LexicalCache, default_cache_path
 from .evaluation import run_structural_benchmark
 from .service import DEFAULT_PROVIDER_ORDER, ExternalLexicalService
 
@@ -46,6 +47,20 @@ def main(argv=None) -> int:
     if args.command == "benchmark":
         _print(run_structural_benchmark())
         return 0
+    if args.command == "audit":
+        try:
+            checkpoint = json.loads(args.checkpoint.read_text(encoding="utf-8"))
+            manifest = json.loads(args.manifest.read_text(encoding="utf-8"))
+            inventory = json.loads(args.shard_inventory.read_text(encoding="utf-8"))
+            if not isinstance(inventory, list):
+                raise ValueError("--shard-inventory must contain a JSON array")
+            report = audit_crawl_state(checkpoint, manifest, inventory)
+            _print(report)
+            return 0 if report["status"] != "failed" else 1
+        except (OSError, ValueError, json.JSONDecodeError) as exc:
+            print(f"USG lexical audit failed: {exc}", file=sys.stderr)
+            return 2
+
     cache = LexicalCache(args.cache)
     service = ExternalLexicalService(cache=cache)
     try:
