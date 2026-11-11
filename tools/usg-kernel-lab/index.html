@@ -267,6 +267,12 @@ const valueNames={
  PROVEN:"The available rules support this conclusion",DISPROVEN:"The available rules support the opposite conclusion",
  UNKNOWN_GOAL:"The system could not decide",INCOMPLETE:"More information or processing is needed",CONFLICT:"Statements disagree",
  INVALID_INPUT:"The document or requested item could not be used because it did not pass a check",
+ SOURCE_ASSERTED:"The document contains this statement, but the statement has not been independently checked",
+ SOURCE_ASSERTED_NOT_VERIFIED:"A source states this, but the lab has not independently checked it",
+ DERIVED_NOT_VERIFIED:"A rule produced this possible conclusion, but it has not been independently checked",
+ DISPUTED:"The source itself marks this statement as disputed",
+ UNKNOWN:"The document marks this information as unknown",
+
  CONFLICTING:"Statements disagree about this conclusion under the same conditions",
  DISPUTED:"The source itself marks this statement as disputed",
  SOURCE_ASSERTED_NOT_VERIFIED:"A source states this, but the lab has not independently checked it",
@@ -337,7 +343,11 @@ function statusClass(v){const s=String(v??"").toUpperCase();if(["PASS","PASSED",
 function valueHtml(v){
  if(v===null||v===undefined||v==="")return '<span class="value-pill">Not provided</span>';
  if(typeof v==="boolean")return '<span class="value-pill '+(v?'good':'warn')+'">'+(v?'Yes':'No')+'</span>';
- if(typeof v==="string"&&/^[A-Z][A-Z0-9_]{2,}$/.test(v))return '<span class="value-pill '+statusClass(v)+'">'+esc(prettyValue(v))+'</span>';
+ if(typeof v==="string"&&/^[A-Z][A-Z0-9_]{2,}$/.test(v)){
+  const known=Object.prototype.hasOwnProperty.call(valueNames,v);
+  const explanation=codeMeanings[v]||(!known?"This is an internal label used by this check. In everyday words: "+labelFor(v)+".":"");
+  return '<span class="value-pill '+statusClass(v)+'">'+esc(prettyValue(v))+'</span>'+(explanation?'<span class="explain">'+esc(explanation)+'</span>':"");
+ }
  if(typeof v==="string")return esc(v)+(codeMeanings[v]?'<span class="explain">'+esc(codeMeanings[v])+'</span>':"");
  if(typeof v==="number")return esc(v);
  return renderAny(v,1);
