@@ -45,7 +45,7 @@ def load_pipeline():
     return stanza.Pipeline(
         "ar",
         package="padt",
-        processors="tokenize,pos,depparse",
+        processors="tokenize,pos,lemma,depparse",
         tokenize_pretokenized=True,
         model_dir=str(MODEL_DIR),
         use_gpu=False,
