@@ -139,16 +139,26 @@ class CanonicalDocumentStore:
             self._ensure_open()
             if self._connection.in_transaction:
                 raise GraphStoreError("resource catalogue sessions cannot be nested in another transaction")
+            previous_query_only = int(self._connection.execute("PRAGMA query_only").fetchone()[0])
             if write:
+                self._connection.execute("PRAGMA query_only=OFF")
                 self._connection.execute("BEGIN IMMEDIATE")
+            else:
+                self._connection.execute("PRAGMA query_only=ON")
             try:
                 yield self._connection
                 if write:
                     self._connection.execute("COMMIT")
+                elif self._connection.in_transaction:
+                    self._connection.execute("ROLLBACK")
+                    raise GraphStoreError("read-only resource catalogue session left an open transaction")
             except BaseException:
-                if write and self._connection.in_transaction:
+                if self._connection.in_transaction:
                     self._connection.execute("ROLLBACK")
                 raise
+            finally:
+                if not write:
+                    self._connection.execute(f"PRAGMA query_only={previous_query_only}")
 
     def __enter__(self) -> "CanonicalDocumentStore":
         self._ensure_open()
