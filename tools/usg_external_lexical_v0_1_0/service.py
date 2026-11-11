@@ -233,5 +233,65 @@ class ExternalLexicalService:
     def activity(self, limit: int = 20) -> list[dict[str, Any]]:
         return self.cache.activity(limit=limit)
 
+    def knowledge_graph(self, *, limit: int = 10000) -> dict[str, Any]:
+        """Assemble a cumulative candidate graph from words already looked up locally."""
+        nodes: dict[str, dict[str, Any]] = {}
+        edges: dict[str, dict[str, Any]] = {}
+        words = []
+        stale_count = 0
+        source_providers: set[str] = set()
+        for record in self.cache.cached_records(limit=limit):
+            words.append({
+                "word": record["queried_form"],
+                "cache_key": record["cache_key"],
+                "fetched_at": record["fetched_at"],
+                "is_stale": record["is_stale"],
+            })
+            stale_count += int(record["is_stale"])
+            payload = record["payload"]
+            analysis = record["analysis"] or payload.get("analysis") or analyze_bundle(payload)
+            graph = analysis.get("semantic_candidate_graph", {})
+            for node in graph.get("nodes", []) or []:
+                if not isinstance(node, dict) or not node.get("node_id"):
+                    continue
+                node_id = str(node["node_id"])
+                incoming = dict(node)
+                if incoming.get("node_type") == "lemma_candidate":
+                    incoming.setdefault("source_providers", [])
+                if node_id not in nodes:
+                    nodes[node_id] = incoming
+                else:
+                    existing = nodes[node_id]
+                    for field, value in incoming.items():
+                        if field == "source_providers":
+                            existing[field] = sorted(set(existing.get(field, [])) | set(value or []))
+                        elif field not in existing or existing[field] in (None, "", []):
+                            existing[field] = value
+                provider = node.get("provider")
+                if isinstance(provider, str):
+                    source_providers.add(provider)
+            for edge in graph.get("edges", []) or []:
+                if not isinstance(edge, dict) or not edge.get("edge_id"):
+                    continue
+                edges.setdefault(str(edge["edge_id"]), dict(edge))
+            for entry in payload.get("entries", []) or []:
+                provider = entry.get("provider") if isinstance(entry, dict) else None
+                if isinstance(provider, str):
+                    source_providers.add(provider)
+        return {
+            "graph_version": "usg-incremental-lexical-graph/0.1.0",
+            "nodes": list(nodes.values()),
+            "edges": list(edges.values()),
+            "cached_word_count": len(words),
+            "stale_cached_word_count": stale_count,
+            "words": words,
+            "source_providers": sorted(source_providers),
+            "persistence": "rebuildable view reconstructed from locally cached per-word records",
+            "interpretation_boundary": (
+                "This is a cumulative lexical candidate graph, not a canonical ontology. "
+                "Source claims retain their original sense/entry scope and are not promoted into runtime USG knowledge."
+            ),
+        }
+
     def close(self) -> None:
         self.cache.close()
