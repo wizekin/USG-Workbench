@@ -169,6 +169,9 @@ def evaluate_fold(train: list[dict], test: list[dict], language: str) -> dict:
             exact_hit = gold in {
                 (lemma, upos, feats) for lemma, upos, feats, _source in exact_set
             }
+            exact_lemma_pos_hit = (gold[0], gold[1]) in {
+                (lemma, upos) for lemma, upos, _feats, _source in exact_set
+            }
             lemma_pos_hit = (gold[0], gold[1]) in candidates
             feature_hit = gold in candidate_features
             morph_lemma_pos_hit = (gold[0], gold[1]) in {
@@ -184,6 +187,7 @@ def evaluate_fold(train: list[dict], test: list[dict], language: str) -> dict:
             totals["exact_form_seen"] += int(bool(exact_set))
             totals["oov_tokens"] += int(is_oov)
             totals["exact_candidate_full_hit"] += int(exact_hit)
+            totals["exact_lemma_pos_candidate_hit"] += int(exact_lemma_pos_hit)
             totals["lemma_pos_candidate_hit"] += int(lemma_pos_hit)
             totals["lemma_pos_candidate_miss"] += int(not lemma_pos_hit)
             totals["feature_bundle_candidate_hit"] += int(feature_hit)
@@ -195,6 +199,8 @@ def evaluate_fold(train: list[dict], test: list[dict], language: str) -> dict:
             totals["feature_candidate_count"] += len(candidate_features)
             by_upos[token["upos"]]["tokens"] += 1
             by_upos[token["upos"]]["lemma_pos_hit"] += int(lemma_pos_hit)
+            by_upos[token["upos"]]["exact_lemma_pos_hit"] += int(exact_lemma_pos_hit)
+            by_upos[token["upos"]]["morphology_rescue"] += int(is_oov and morph_lemma_pos_hit)
             by_upos[token["upos"]]["oov"] += int(is_oov)
             by_upos[token["upos"]]["feature_hit"] += int(feature_hit)
             if morph_set:
@@ -235,7 +241,11 @@ def cross_validate(sentences: list[dict], language: str, folds: int = 10) -> dic
     t.update({
         "exact_form_coverage": ratio(aggregate["exact_form_seen"], aggregate["tokens"]),
         "oov_rate": ratio(aggregate["oov_tokens"], aggregate["tokens"]),
+        "exact_lemma_pos_candidate_recall": ratio(aggregate["exact_lemma_pos_candidate_hit"], aggregate["tokens"]),
         "lemma_pos_candidate_recall": ratio(aggregate["lemma_pos_candidate_hit"], aggregate["tokens"]),
+        "morphology_gain_over_exact_lemma_pos": ratio(
+            aggregate["lemma_pos_candidate_hit"] - aggregate["exact_lemma_pos_candidate_hit"],
+            aggregate["tokens"]),
         "feature_bundle_candidate_recall": ratio(aggregate["feature_bundle_candidate_hit"], aggregate["tokens"]),
         "morphology_rescue_rate_over_oov": ratio(aggregate["morphology_rescue"], aggregate["oov_tokens"]),
         "ambiguous_lemma_pos_candidate_rate": ratio(aggregate["ambiguous_candidate_tokens"], aggregate["tokens"]),
@@ -249,6 +259,7 @@ def cross_validate(sentences: list[dict], language: str, folds: int = 10) -> dic
         "by_upos": {
             upos: {
                 **dict(values),
+                "exact_lemma_pos_recall": ratio(values["exact_lemma_pos_hit"], values["tokens"]),
                 "lemma_pos_recall": ratio(values["lemma_pos_hit"], values["tokens"]),
                 "feature_bundle_recall": ratio(values["feature_hit"], values["tokens"]),
             }
