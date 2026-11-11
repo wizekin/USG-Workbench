@@ -56,6 +56,25 @@ Execute them against the pinned repository commit:
 
 The output is one OW-1 execution-result JSON object per attempted case. A run summary is printed to stdout. The output is append-only by convention: the CLI refuses an existing output path; interrupted runs leave their already-written records intact and require a new output path for a continuation.
 
+## Deterministic replay of recorded cases (SYS-14)
+
+Use the replay utility to re-run recorded cases at the exact commit that produced their original execution records:
+
+    python -m tools.open_world_evaluation.replay_cases \
+      --cases evaluations/<campaign>/scenarios.jsonl \
+      --results evaluations/<campaign>/execution-results.jsonl \
+      --output evaluations/replays/<unique-replay-name>.json \
+      --commit-sha <40-character-tested-commit-sha> \
+      --max-cases 25
+
+The current Git checkout must exactly match --commit-sha. The utility refuses to label a replay with a commit that is not checked out. Original execution-result records must also identify that same commit. This means historical replay requires checking out the original tested commit first; replaying old cases against current main is a new experiment, not a deterministic replay.
+
+The tool validates input records, skips not_executed records, replays a bounded number of actual attempts, and writes a new report without overwriting an existing report. Each entry compares the original and replay outcomes plus a canonical digest of the target_result projection.
+
+The target-specific policy is in tools/open_world_evaluation/replay_stability_profiles.json. Only explicitly listed volatile fields are excluded (currently Phase 4 document.documentId and document.createdAt). Every other target_result field, including pipeline and resource versions, remains part of the comparison. Unknown targets and pipeline-version mismatches are marked not_comparable rather than guessed. A mismatch is reported distinctly as an outcome mismatch or target-result mismatch.
+
+An exact match establishes repeatability only for the selected case, implementation commit, and resource versions. It does not establish semantic correctness. Replay reports are append-only evidence and should be retained beside the campaign they reproduce.
+
 ## OW-3 acceptance boundary
 
 OW-3 provides actual child-process execution for Phase 4 and Phase 5, a clearly recorded not-executed result for the browser-only target, time/resource limits, hashes, and schema-valid execution records. It does not yet provide the browser adapter, append-only campaign storage, an adaptive scheduler, a full hostile-code sandbox, or scored large-scale simulations.
