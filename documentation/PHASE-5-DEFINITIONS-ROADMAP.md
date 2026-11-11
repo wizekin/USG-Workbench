@@ -1,6 +1,6 @@
 # USG Phase 5 — Definitions and Roadmap
 
-**Status:** DEFINITION PROPOSED — no Phase 5 implementation is authorized by this document alone.  
+**Status:** IN PROGRESS — Step 5.1 interpretation contract accepted; Step 5.2 benchmark foundation under implementation.  
 **Target interpretation contract:** `USG-INTERPRET/0.2.0` (independent of the semantic interchange profile).  
 **Current accepted baseline:** `USG-INTERPRET/0.1.0`, bounded offline demonstrator.  
 **Normative semantic interchange:** `USG-SEM/1.0` remains unchanged unless a separately versioned profile is justified by a demonstrated representation gap.  
@@ -251,4 +251,4 @@ Phase 5 completion will mean a broader, benchmarked interpreter for the explicit
 
 ## 11. Immediate next implementation step
 
-After this roadmap is merged, begin **Step 5.1 — Phase 5 Interpretation Expansion Contract**. Its first task is to convert the scope, construction inventory, completion statuses, resource lifecycle, benchmark gates, and compatibility rules in this roadmap into a frozen implementation contract. No parser, lexicon expansion, schema change, or database migration should begin before Step 5.1 is accepted.
+**Step 5.1 is accepted.** Its frozen contract is documented in [PHASE-5-STEP-5.1-INTERPRETATION-EXPANSION-CONTRACT.md](PHASE-5-STEP-5.1-INTERPRETATION-EXPANSION-CONTRACT.md). The next gate is **Step 5.2 — Expanded Benchmark Corpus and Evaluator Foundation**. No capability expansion is enabled merely by the roadmap or benchmark gold annotations.
