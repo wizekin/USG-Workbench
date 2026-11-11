@@ -256,11 +256,11 @@ def evaluate_fold(train: list[dict], test: list[dict], epochs: int = EPOCHS) -> 
         )):
             gold_lemma = normalize_arabic(token["lemma"])
             gold_upos = gold.upper()
-            rows = [
+            rows = {
                 (normalize_arabic(str(c["analysis"].get("lex", ""))),
                  str(c["analysis"].get("ud", "")).upper())
                 for c in candidates
-            ]
+            }
             candidate_hit = (gold_lemma, gold_upos) in rows
             mle_top = sample["mle_top1"][position]
             mle_correct = bool(
