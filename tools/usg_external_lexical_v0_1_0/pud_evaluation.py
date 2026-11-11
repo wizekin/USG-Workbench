@@ -90,10 +90,11 @@ def load_candidate_evidence(data_dir: str | Path, language: str = "en") -> dict:
                             if not isinstance(item, dict):
                                 continue
                             form = item.get("form", "")
+                            form_key = None
                             if isinstance(form, str) and form.strip():
-                                key = normalize(form, language)
-                                observed_forms[key].add(upos)
-                                forms[key].add(upos)
+                                form_key = normalize(form, language)
+                                observed_forms[form_key].add(upos)
+                                forms[form_key].add(upos)
                             raw_tags = item.get("tags", [])
                             if isinstance(raw_tags, list):
                                 tags = {
@@ -107,7 +108,8 @@ def load_candidate_evidence(data_dir: str | Path, language: str = "en") -> dict:
                                     for tag in tags:
                                         feature = SOURCE_TAG_TO_UD_FEATURE.get(tag)
                                         if feature:
-                                            morphology_candidates[key].add((upos, feature[0], feature[1]))
+                                            if form_key is not None:
+                                                morphology_candidates[form_key].add((upos, feature[0], feature[1]))
                                             mapped_morphology_tag_counts[tag] += 1
         except (OSError, EOFError) as exc:
             raise ValueError(f"unable to read compressed shard {shard}: {exc}") from exc
