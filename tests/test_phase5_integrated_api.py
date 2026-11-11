@@ -129,6 +129,23 @@ class Phase5IntegratedAPITests(unittest.TestCase):
         self.assertEqual(status, 200)
         self.assertEqual(listed["count"], 1)
 
+    def test_runs_and_resource_manifest_survive_application_reopen(self):
+        status, first = self.interpret()
+        self.assertEqual(status, 200)
+        run_id = first["persistence"]["run_id"]
+        digest = first["resource_manifest_digest"]
+        self.app.close()
+        self.app = USGApplication(self.database)
+        status, manifest = self.call("GET", "/v2/resources")
+        self.assertEqual(status, 200)
+        self.assertEqual(manifest["resource_manifest_digest"], digest)
+        status, stored = self.call("GET", "/v2/interpretations/" + run_id)
+        self.assertEqual(status, 200)
+        self.assertEqual(stored["result"]["source"]["text"], first["source"]["text"])
+        status, replay = self.call("POST", "/v2/interpretations/" + run_id + "/replay", {})
+        self.assertEqual(status, 200)
+        self.assertTrue(replay["deterministic_match"])
+
     def test_replay_refuses_a_changed_resource_manifest(self):
         status, result = self.interpret()
         self.assertEqual(status, 200)
