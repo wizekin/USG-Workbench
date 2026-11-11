@@ -467,7 +467,7 @@ class LexicalCrawler:
             encoding = payload.get("encoding")
             if not isinstance(encoded, str) or encoding != "base64":
                 raise ProviderError("GitHub checkpoint response did not contain base64 content")
-            decoded = base64.b64decode(encoded, validate=True).decode("utf-8")
+            decoded = base64.b64decode(encoded).decode("utf-8")
             value = json.loads(decoded)
             return value if isinstance(value, dict) else None
         except ProviderNotFound:
