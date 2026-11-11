@@ -7,7 +7,7 @@ from tempfile import TemporaryDirectory
 import unittest
 
 from tools.usg_external_lexical_v0_1_0.pud_evaluation import (
-    evaluate, load_candidate_evidence, load_candidate_inventory, normalize,
+    evaluate, evaluate_morphology, load_candidate_evidence, load_candidate_inventory, normalize,
 )
 
 
@@ -41,6 +41,8 @@ class ExternalLexicalPudEvaluationTests(unittest.TestCase):
         self.assertEqual(evidence["shard_count"], 1)
         self.assertEqual(evidence["form_tag_counts"], {"plural": 1})
         self.assertEqual(evidence["tagged_form_records"], 1)
+        self.assertEqual(evidence["morphology_candidates"]["banks"], {("NOUN", "Number", "Plur")})
+        self.assertEqual(evidence["mapped_morphology_tag_counts"], {"plural": 1})
 
     def test_reports_oov_ambiguity_pos_and_lemma_coverage(self):
         sentences = [{"tokens": [
@@ -70,6 +72,26 @@ class ExternalLexicalPudEvaluationTests(unittest.TestCase):
         self.assertEqual(ambiguity["candidate_label_count_distribution"], {"1": 2, "2": 1})
         self.assertAlmostEqual(ambiguity["mean_candidate_labels_when_seen"], 4 / 3)
         self.assertFalse(ambiguity["candidate_precision_measured"])
+
+    def test_morphology_candidates_are_compared_with_pinned_ud_features(self):
+        sentences = [{"tokens": [
+            {"form": "books", "lemma": "book", "upos": "NOUN", "feats": (("Number", "Plur"),)},
+            {"form": "better", "lemma": "good", "upos": "ADJ", "feats": (("Degree", "Cmp"),)},
+            {"form": "fast", "lemma": "fast", "upos": "ADV", "feats": (("Degree", "Pos"),)},
+        ]}]
+        inventory = {
+            "books": {("NOUN", "Number", "Plur")},
+            "better": {("ADJ", "Degree", "Cmp")},
+            "fast": {("ADV", "Degree", "Cmp")},
+        }
+        report = evaluate_morphology(sentences, inventory)
+        totals = report["totals"]
+        self.assertEqual(totals["gold_feature_instances"], 2)
+        self.assertEqual(totals["candidate_feature_instances"], 3)
+        self.assertEqual(totals["matched_feature_instances"], 2)
+        self.assertAlmostEqual(totals["candidate_pool_precision"], 2 / 3)
+        self.assertAlmostEqual(totals["candidate_recall"], 1.0)
+        self.assertAlmostEqual(totals["gold_feature_token_recall"], 1.0)
 
     def test_lemma_metrics_are_optional_for_legacy_callers(self):
         report = evaluate(

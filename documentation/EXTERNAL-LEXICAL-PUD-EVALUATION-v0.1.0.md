@@ -22,7 +22,8 @@ PUD text is downloaded at evaluation time and verified against the pinned Git bl
 - Lemma coverage means the exact normalized PUD gold lemma exists among crawled dictionary lemmas. It does not measure a lemmatizer's ability to infer lemmas from unseen forms.
 - Lemma-plus-UPOS candidate recall requires both the gold lemma and gold UPOS to be present in the lemma index.
 - Candidate ambiguity is described with candidate-count distributions and per-UPOS rates. The inventory has no ranking or contextual selection, so prediction precision is undefined and is explicitly not measured.
-- Raw source form tags are retained as a diagnostic frequency inventory only. Although pinned PUD contains FEATS annotations, no source-tag-to-UD-FEATS mapping has been independently validated; therefore this evaluator does not claim external-crawl morphology accuracy.
+- The observed `plural`, `comparative`, and `superlative` source tags are conservatively mapped to `Number=Plur`, `Degree=Cmp`, and `Degree=Sup`, respectively, and evaluated against pinned PUD `FEATS`. Editorial tags such as `alternative`, `canonical`, `lowercase`, and `uppercase` are not treated as morphology.
+- Morphology candidate-pool precision is the fraction of emitted mapped feature labels that match the gold token annotation; it is not contextual morphology prediction precision. Recall is measured over mapped gold feature instances only. Unmapped tags and unsupported features are excluded.
 - The separate Phase 6 Step 6.4 PUD morphology cross-validation experiment is a training-fold-derived morphology baseline, not an evaluation of external crawler tags.
 - The report does not measure morphology feature accuracy, contextual disambiguation, sense accuracy, or semantic correctness.
 - The crawler remains partial. Low coverage is an inventory-coverage result, not a final judgment of dictionary quality.
@@ -30,7 +31,7 @@ PUD text is downloaded at evaluation time and verified against the pinned Git bl
 
 ## Automation
 
-Workflow: `.github/workflows/external-lexical-pud-evaluation.yml`
+Workflow: `.github/workflows/external-lexical-pud-evaluation.yml`. A separate reproducibility gate validates pinned dataset identity, count/ratio invariants, ambiguity accounting, candidate-only boundaries, and morphology metric consistency before upload. These are report-integrity gates, not minimum lexical-quality thresholds.
 
 It runs evaluator tests on pull requests. After evaluator changes are merged to `main`, it evaluates the latest durable lexical-data branch; it also evaluates after successful crawler runs and by manual dispatch. Non-PR runs upload a JSON artifact named `external-lexical-pud-evaluation`.
 

@@ -3,13 +3,18 @@ on:
   pull_request:
     paths:
       - "tools/usg_external_lexical_v0_1_0/pud_evaluation.py"
+      - "tools/usg_external_lexical_v0_1_0/acceptance.py"
       - "tests/test_external_lexical_pud_evaluation.py"
+      - "tests/test_external_lexical_pud_acceptance.py"
       - "documentation/EXTERNAL-LEXICAL-PUD-EVALUATION-v0.1.0.md"
       - ".github/workflows/external-lexical-pud-evaluation.yml"
   push:
     branches: [main]
     paths:
       - "tools/usg_external_lexical_v0_1_0/pud_evaluation.py"
+      - "tools/usg_external_lexical_v0_1_0/acceptance.py"
+      - "tests/test_external_lexical_pud_evaluation.py"
+      - "tests/test_external_lexical_pud_acceptance.py"
       - "tests/test_external_lexical_pud_evaluation.py"
       - "documentation/EXTERNAL-LEXICAL-PUD-EVALUATION-v0.1.0.md"
       - ".github/workflows/external-lexical-pud-evaluation.yml"
@@ -39,15 +44,25 @@ jobs:
           python-version: "3.11"
       - name: Run evaluator tests
         run: python -m unittest discover -s tests -p 'test_external_lexical_pud_evaluation.py' -v
+      - name: Run reproducible report acceptance-gate tests
+        run: python -m unittest discover -s tests -p 'test_external_lexical_pud_acceptance.py' -v
       - name: Evaluate crawl-derived POS candidates against pinned English PUD
         if: github.event_name != 'pull_request'
         run: |
           python -m tools.usg_external_lexical_v0_1_0.pud_evaluation \
             --data-dir lexical-data/shards \
             --output artifacts/external-lexical-pud-evaluation.json
-      - name: Upload evaluation report
+      - name: Validate reproducible report acceptance gates
+        if: github.event_name != 'pull_request'
+        run: |
+          python -m tools.usg_external_lexical_v0_1_0.acceptance \
+            --report artifacts/external-lexical-pud-evaluation.json \
+            --output artifacts/external-lexical-pud-acceptance.json
+      - name: Upload evaluation report and acceptance record
         if: github.event_name != 'pull_request'
         uses: actions/upload-artifact@v4
         with:
           name: external-lexical-pud-evaluation
-          path: artifacts/external-lexical-pud-evaluation.json
+          path: |
+            artifacts/external-lexical-pud-evaluation.json
+            artifacts/external-lexical-pud-acceptance.json
