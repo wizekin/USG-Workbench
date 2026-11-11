@@ -1,7 +1,9 @@
 import unittest
+from types import SimpleNamespace
 
 from tools.phase6_external_pud_v0_6.contextual import (
     AveragedStructuredPerceptron, _best_for_upos, token_features,
+    prepare_sentences,
 )
 
 
@@ -28,6 +30,26 @@ class TestContextualMorphology(unittest.TestCase):
         model = AveragedStructuredPerceptron(epochs=8).fit(samples)
         self.assertEqual(model.predict(samples[0]["features"]), samples[0]["gold"])
         self.assertEqual(model.predict(samples[1]["features"]), samples[1]["gold"])
+
+
+    def test_full_analyzer_candidates_are_separate_from_mle_top1(self):
+        sentence = {"meta": {"sent_id": "s1"}, "tokens": [
+            {"form": "الكتاب", "lemma": "كتاب", "upos": "NOUN"},
+        ]}
+        class FakeDisambiguator:
+            def disambiguate(self, forms):
+                return [SimpleNamespace(analyses=[
+                    SimpleNamespace(analysis={"lex": "كتاب", "ud": "NOUN"})
+                ])]
+        class FakeAnalyzer:
+            def analyze(self, form):
+                return [
+                    {"lex": "كتاب", "ud": "NOUN", "pos_lex_logprob": -1},
+                    {"lex": "كتب", "ud": "VERB", "pos_lex_logprob": -2},
+                ]
+        prepared = prepare_sentences([sentence], FakeDisambiguator(), FakeAnalyzer())
+        self.assertEqual(len(prepared[0]["analyses"][0]), 2)
+        self.assertEqual(prepared[0]["mle_top1"][0]["lex"], "كتاب")
 
     def test_candidate_selection_respects_predicted_upos(self):
         candidates = [
