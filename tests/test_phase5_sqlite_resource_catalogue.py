@@ -59,6 +59,16 @@ class Phase5SQLiteResourceCatalogueTests(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             self.catalogue.register_resource(self.resource("no-txn"), 100.0)
 
+    def test_registered_resources_and_associations_can_be_retrieved(self):
+        descriptor = self.resource()
+        association = self.association("assoc-lookup", "concept:lookup", 0.4)
+        self.catalogue.register_resource(descriptor, 100.0)
+        self.catalogue.register_association(association, 101.0)
+        self.assertEqual(self.catalogue.get_resource(descriptor.resource_id), descriptor)
+        self.assertEqual(self.catalogue.get_association(association.association_id), association)
+        self.assertIsNone(self.catalogue.get_resource("missing"))
+        self.assertIsNone(self.catalogue.get_association("missing"))
+
     def test_resource_descriptors_are_immutable_and_new_versions_need_new_ids(self):
         self.catalogue.register_resource(self.resource(), 100.0)
         with self.assertRaises(ValueError):
