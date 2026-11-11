@@ -33,6 +33,16 @@ class TestPUDMorphology(unittest.TestCase):
         self.assertIn(("run", "VERB", (("VerbForm", "Ger"),), "MORPHOLOGY_RULE"), candidates)
         self.assertNotIn(("walk", "VERB", (("VerbForm", "Ger"),), "MORPHOLOGY_RULE"), candidates)
 
+
+    def test_morphology_candidates_require_registered_lemma_when_lexicon_supplied(self):
+        rule = ("NOUN", "suffix", "", "s", (("Number", "Plur"),))
+        rules = {rule: 5}
+        self.assertEqual(
+            analyze_token("books", "en", rules, {("book", "NOUN")}),
+            {("book", "NOUN", (("Number", "Plur"),), "MORPHOLOGY_RULE")},
+        )
+        self.assertEqual(analyze_token("cars", "en", rules, {("book", "NOUN")}), set())
+
     def test_internal_stem_change_is_not_guessed(self):
         token = {"form": "went", "lemma": "go", "upos": "VERB", "feats": (("Tense", "Past"),)}
         self.assertIsNone(_rule_for(token, "en"))
