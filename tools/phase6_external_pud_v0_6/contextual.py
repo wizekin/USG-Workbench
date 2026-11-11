@@ -20,7 +20,7 @@ from tools.phase6_external_pud_v0_5.camel_msa import normalize_arabic
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "artifacts" / "phase6-step-6-4-contextual-morphology.json"
 START = "__START__"
-EPOCHS = 5
+EPOCHS = 3
 
 
 def _bucket(value: int) -> str:
