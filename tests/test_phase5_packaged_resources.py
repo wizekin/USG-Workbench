@@ -11,6 +11,8 @@ class PackagedResourceTests(unittest.TestCase):
             "lexical/v0.2.0/en-ar-operator-lexicon.json",
             "lexical/v0.3.0/en-ar-discourse-lexicon.json",
             "lexical/v0.4.0/en-core-starter-lexicon.json",
+            "lexical/v0.5.0/en-core-starter-lexicon.json",
+            "lexical/v0.5.0/en-core-starter-lexicon.json",
             "operators/v0.1.0/operators-en-ar.json",
         )
         for relative in expected:

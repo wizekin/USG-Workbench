@@ -11,8 +11,8 @@ from typing import Literal
 from tools.usg_interpretation_v0_1_0.lexical import Token, tokenize
 from tools.usg_interpretation_v0_1_0.source import SourceSnapshot
 
-LEXICAL_ANALYSIS_VERSION = "lexical-analysis/0.2.0"
-MORPHOLOGY_RULESET_VERSION = "morphology-rules/0.1.0"
+LEXICAL_ANALYSIS_VERSION = "lexical-analysis/0.3.0"
+MORPHOLOGY_RULESET_VERSION = "morphology-rules/0.2.0"
 _POS = frozenset({"NOUN", "PROPN", "VERB", "ADJ", "ADV", "PRON", "ADP", "DET", "NUM", "OTHER"})
 
 
@@ -61,6 +61,7 @@ class MorphologyRule:
     affix: str
     target_part_of_speech: str
     features: tuple[tuple[str, str], ...]
+    stem_operation: Literal["IDENTITY", "RESTORE_E", "UNDOUBLE_FINAL", "Y_TO_I"] = "IDENTITY"
 
     def __post_init__(self):
         for name in ("rule_id", "affix", "target_part_of_speech"):
@@ -69,6 +70,8 @@ class MorphologyRule:
             raise ValueError("unsupported morphology rule language or position")
         if self.target_part_of_speech not in _POS:
             raise ValueError("unsupported target part of speech")
+        if self.stem_operation not in {"IDENTITY", "RESTORE_E", "UNDOUBLE_FINAL", "Y_TO_I"}:
+            raise ValueError("unsupported morphology stem operation")
         if not isinstance(self.features, tuple) or not self.features:
             raise ValueError("morphology rule features must be a non-empty tuple")
         if any(not isinstance(x, tuple) or len(x) != 2
@@ -118,7 +121,9 @@ class LexicalResource:
             "morphology_rules": [
                 {"rule_id": x.rule_id, "language": x.language, "position": x.position,
                  "affix": x.affix, "target_part_of_speech": x.target_part_of_speech,
-                 "features": dict(x.features)}
+                 "features": dict(x.features),
+                 **({"stem_operation": x.stem_operation}
+                    if x.stem_operation != "IDENTITY" else {})}
                 for x in self.morphology_rules
             ],
         }
@@ -220,6 +225,14 @@ class LexicalAnalyzer:
                 stem = surface[:-len(rule.affix)]
             if not stem:
                 continue
+            if rule.stem_operation == "RESTORE_E":
+                stem += "e"
+            elif rule.stem_operation == "Y_TO_I":
+                stem = stem[:-1] + "y" if stem.endswith("i") else stem + "y"
+            elif rule.stem_operation == "UNDOUBLE_FINAL":
+                if len(stem) < 2 or stem[-1] != stem[-2]:
+                    continue
+                stem = stem[:-1]
             entries = self._index.get((language, _lookup(language, stem)), ())
             for entry in entries:
                 if entry.part_of_speech == rule.target_part_of_speech:
@@ -264,6 +277,7 @@ def load_lexical_resource(path: str | Path) -> LexicalResource:
     rules = tuple(MorphologyRule(
         item["rule_id"], item["language"], item["position"], item["affix"],
         item["target_part_of_speech"], tuple(sorted(item["features"].items())),
+        item.get("stem_operation", "IDENTITY"),
     ) for item in raw["morphology_rules"])
     return LexicalResource(raw["resource_id"], raw["version"], raw["provenance"], entries, rules)
 
@@ -280,7 +294,9 @@ def bundled_lexical_resource_v0_3_0() -> LexicalResource:
     return load_lexical_resource(Path(__file__).resolve().parents[2] / "resources" / "lexical" / "v0.3.0" / "en-ar-discourse-lexicon.json")
 
 
-def compose_lexical_resources(resources: tuple[LexicalResource, ...]) -> LexicalResource:
+def compose_lexical_resources(
+    resources: tuple[LexicalResource, ...], version: str | None = None
+) -> LexicalResource:
     """Compose versioned lexical resources without silently hiding conflicts.
 
     Exact duplicate entries/rules are retained once. If two resources assign
@@ -307,9 +323,14 @@ def compose_lexical_resources(resources: tuple[LexicalResource, ...]) -> Lexical
                 raise ValueError(f"conflicting morphology rule {rule.rule_id!r}")
             rules_by_id[rule.rule_id] = rule
 
+    if version is None:
+        version = ".".join(map(str, max(
+            tuple(int(part) for part in item.version.split("."))
+            for item in resources
+        )))
     return LexicalResource(
         "usg-en-ar-composite-lexicon",
-        "0.4.0",
+        version,
         "Deterministic composition of: " + ", ".join(
             f"{item.resource_id}@{item.version}#{item.digest()}" for item in resources
         ),
@@ -326,11 +347,19 @@ def bundled_lexical_resource_v0_4_0() -> LexicalResource:
     return compose_lexical_resources((discourse, starter))
 
 
+def bundled_lexical_resource_v0_5_0() -> LexicalResource:
+    """Return the Phase 5 composite lexicon with explicit stem transformations."""
+    root = Path(__file__).resolve().parents[2] / "resources" / "lexical"
+    discourse = load_lexical_resource(root / "v0.3.0" / "en-ar-discourse-lexicon.json")
+    starter = load_lexical_resource(root / "v0.5.0" / "en-core-starter-lexicon.json")
+    return compose_lexical_resources((discourse, starter), version="0.5.0")
+
+
 __all__ = [
     "LEXICAL_ANALYSIS_VERSION", "MORPHOLOGY_RULESET_VERSION", "LexicalEntry",
     "MorphologyRule", "LexicalResource", "LexicalCandidate", "TokenAnalysis",
     "LexicalAnalysis", "LexicalAnalyzer", "load_lexical_resource",
     "bundled_lexical_resource", "bundled_lexical_resource_v0_2_0",
     "bundled_lexical_resource_v0_3_0", "compose_lexical_resources",
-    "bundled_lexical_resource_v0_4_0",
+    "bundled_lexical_resource_v0_4_0", "bundled_lexical_resource_v0_5_0",
 ]

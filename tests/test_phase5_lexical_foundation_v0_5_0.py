@@ -8,7 +8,7 @@ from tools.usg_interpretation_v0_1_0.source import ingest_source
 from tools.usg_interpretation_v0_2_0.lexical import (
     LexicalAnalyzer,
     bundled_lexical_resource_v0_3_0,
-    bundled_lexical_resource_v0_4_0,
+    bundled_lexical_resource_v0_5_0,
     compose_lexical_resources,
     load_lexical_resource,
 )
@@ -18,7 +18,7 @@ from tools.usg_interpretation_v0_2_0.catalogue import bundled_resource_descripto
 
 class Phase5LexicalFoundationTests(unittest.TestCase):
     def setUp(self):
-        self.resource = bundled_lexical_resource_v0_4_0()
+        self.resource = bundled_lexical_resource_v0_5_0()
         self.analyzer = LexicalAnalyzer(self.resource)
 
     def analyze(self, text: str):
@@ -29,14 +29,15 @@ class Phase5LexicalFoundationTests(unittest.TestCase):
         prior = bundled_lexical_resource_v0_3_0()
         starter = load_lexical_resource(
             Path(__file__).resolve().parents[1]
-            / "resources" / "lexical" / "v0.4.0" / "en-core-starter-lexicon.json"
+            / "resources" / "lexical" / "v0.5.0" / "en-core-starter-lexicon.json"
         )
         composite = compose_lexical_resources((prior, starter))
         self.assertEqual(composite.resource_id, "usg-en-ar-composite-lexicon")
         self.assertGreater(len(composite.entries), len(prior.entries))
+        self.assertEqual(composite.version, "0.5.0")
         self.assertEqual(composite.digest(), self.resource.digest())
         self.assertIn("usg-en-ar-discourse-lexicon@0.3.0", composite.provenance)
-        self.assertIn("usg-en-core-starter-lexicon@0.4.0", composite.provenance)
+        self.assertIn("usg-en-core-starter-lexicon@0.5.0", composite.provenance)
 
     def test_common_function_words_are_resolved(self):
         result = self.analyze("The atom is a part of matter and energy.")
@@ -77,6 +78,25 @@ class Phase5LexicalFoundationTests(unittest.TestCase):
         self.assertEqual(by_form["physically"].candidates[0].derived_by_rule,
                          "en.adverb.derived.ly")
 
+    def test_productive_stem_transformations_cover_held_out_surface_forms(self):
+        result = self.analyze("Studies cities making running planned loved studied.")
+        by_form = {item.token.surface_text.casefold(): item for item in result.tokens
+                   if item.token.kind == "WORD"}
+        expected = {
+            "studies": ("study", "en.verb.third-person-singular.ies"),
+            "cities": ("city", "en.noun.regular-plural.ies"),
+            "making": ("make", "en.verb.participle.ing.restore-e"),
+            "running": ("run", "en.verb.participle.ing.undouble"),
+            "planned": ("plan", "en.verb.past.ed.undouble"),
+            "loved": ("love", "en.verb.past.ed.restore-e"),
+            "studied": ("study", "en.verb.past.ed.y-to-i"),
+        }
+        for form, (lemma, rule_id) in expected.items():
+            with self.subTest(form=form):
+                candidate = by_form[form].candidates[0]
+                self.assertEqual(candidate.lemma, lemma)
+                self.assertEqual(candidate.derived_by_rule, rule_id)
+
     def test_ambiguity_is_preserved_instead_of_forced(self):
         result = self.analyze("The bank changes.")
         bank = next(item for item in result.tokens if item.token.surface_text == "bank")
@@ -97,10 +117,10 @@ class Phase5LexicalFoundationTests(unittest.TestCase):
         )
         lexical = result["stages"]["lexical"]
         self.assertEqual(lexical["resource_id"], "usg-en-ar-composite-lexicon")
-        self.assertEqual(lexical["resource_version"], "0.4.0")
+        self.assertEqual(lexical["resource_version"], "0.5.0")
         self.assertEqual(lexical["resource_sha256_kind"],
                          "canonical_composite_resource_content")
-        self.assertIn("usg-en-core-starter-lexicon@0.4.0",
+        self.assertIn("usg-en-core-starter-lexicon@0.5.0",
                       lexical["resource_provenance"])
         self.assertIn("usg-en-core-starter-lexicon",
                       {item["resource_id"] for item in result["resource_versions"]})
@@ -128,7 +148,7 @@ class Phase5LexicalFoundationTests(unittest.TestCase):
         descriptors = bundled_resource_descriptors()
         descriptor = next(item for item in descriptors
                           if item.resource_id == "usg-en-core-starter-lexicon")
-        self.assertEqual(descriptor.version, "0.4.0")
+        self.assertEqual(descriptor.version, "0.5.0")
         self.assertEqual(len(descriptor.sha256), 64)
 
 
