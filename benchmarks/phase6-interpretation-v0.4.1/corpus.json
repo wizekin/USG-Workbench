@@ -1107,7 +1107,7 @@
       "text": "the book of Mina",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
-      "gold_construction": "en.possession.of_phrase",
+      "gold_construction": "en.genitive.of_phrase",
       "expected_roles": {
         "GENITIVE_HEAD": "book",
         "GENITIVE_DEPENDENT": "Mina"
@@ -1142,7 +1142,7 @@
       "text": "the key of Omar",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
-      "gold_construction": "en.possession.of_phrase",
+      "gold_construction": "en.genitive.of_phrase",
       "expected_roles": {
         "GENITIVE_HEAD": "key",
         "GENITIVE_DEPENDENT": "Omar"
@@ -1177,7 +1177,7 @@
       "text": "the map of Lina",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
-      "gold_construction": "en.possession.of_phrase",
+      "gold_construction": "en.genitive.of_phrase",
       "expected_roles": {
         "GENITIVE_HEAD": "map",
         "GENITIVE_DEPENDENT": "Lina"
@@ -1212,7 +1212,7 @@
       "text": "the letter of Noah",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
-      "gold_construction": "en.possession.of_phrase",
+      "gold_construction": "en.genitive.of_phrase",
       "expected_roles": {
         "GENITIVE_HEAD": "letter",
         "GENITIVE_DEPENDENT": "Noah"
@@ -1247,7 +1247,7 @@
       "text": "the bicycle of Sara",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
-      "gold_construction": "en.possession.of_phrase",
+      "gold_construction": "en.genitive.of_phrase",
       "expected_roles": {
         "GENITIVE_HEAD": "bicycle",
         "GENITIVE_DEPENDENT": "Sara"
@@ -1282,7 +1282,7 @@
       "text": "the office of the manager",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
-      "gold_construction": "en.possession.of_phrase",
+      "gold_construction": "en.genitive.of_phrase",
       "expected_roles": {
         "GENITIVE_HEAD": "office",
         "GENITIVE_DEPENDENT": "the manager"
@@ -1317,7 +1317,7 @@
       "text": "the room of the student",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
-      "gold_construction": "en.possession.of_phrase",
+      "gold_construction": "en.genitive.of_phrase",
       "expected_roles": {
         "GENITIVE_HEAD": "room",
         "GENITIVE_DEPENDENT": "the student"
@@ -1352,7 +1352,7 @@
       "text": "the bag of the traveler",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
-      "gold_construction": "en.possession.of_phrase",
+      "gold_construction": "en.genitive.of_phrase",
       "expected_roles": {
         "GENITIVE_HEAD": "bag",
         "GENITIVE_DEPENDENT": "the traveler"
@@ -1387,7 +1387,7 @@
       "text": "the garden of the family",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
-      "gold_construction": "en.possession.of_phrase",
+      "gold_construction": "en.genitive.of_phrase",
       "expected_roles": {
         "GENITIVE_HEAD": "garden",
         "GENITIVE_DEPENDENT": "the family"
@@ -1422,7 +1422,7 @@
       "text": "the report of the director",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
-      "gold_construction": "en.possession.of_phrase",
+      "gold_construction": "en.genitive.of_phrase",
       "expected_roles": {
         "GENITIVE_HEAD": "report",
         "GENITIVE_DEPENDENT": "the director"
@@ -1457,7 +1457,7 @@
       "text": "the desk of the teacher",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
-      "gold_construction": "en.possession.of_phrase",
+      "gold_construction": "en.genitive.of_phrase",
       "expected_roles": {
         "GENITIVE_HEAD": "desk",
         "GENITIVE_DEPENDENT": "the teacher"
@@ -1492,7 +1492,7 @@
       "text": "the house of the neighbor",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
-      "gold_construction": "en.possession.of_phrase",
+      "gold_construction": "en.genitive.of_phrase",
       "expected_roles": {
         "GENITIVE_HEAD": "house",
         "GENITIVE_DEPENDENT": "the neighbor"
@@ -1527,7 +1527,7 @@
       "text": "the phone of the doctor",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
-      "gold_construction": "en.possession.of_phrase",
+      "gold_construction": "en.genitive.of_phrase",
       "expected_roles": {
         "GENITIVE_HEAD": "phone",
         "GENITIVE_DEPENDENT": "the doctor"
@@ -1562,7 +1562,7 @@
       "text": "the coat of the child",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
-      "gold_construction": "en.possession.of_phrase",
+      "gold_construction": "en.genitive.of_phrase",
       "expected_roles": {
         "GENITIVE_HEAD": "coat",
         "GENITIVE_DEPENDENT": "the child"
@@ -1597,7 +1597,7 @@
       "text": "the plan of the team",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
-      "gold_construction": "en.possession.of_phrase",
+      "gold_construction": "en.genitive.of_phrase",
       "expected_roles": {
         "GENITIVE_HEAD": "plan",
         "GENITIVE_DEPENDENT": "the team"
@@ -1632,7 +1632,7 @@
       "text": "the voice of the singer",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
-      "gold_construction": "en.possession.of_phrase",
+      "gold_construction": "en.genitive.of_phrase",
       "expected_roles": {
         "GENITIVE_HEAD": "voice",
         "GENITIVE_DEPENDENT": "the singer"
@@ -1667,7 +1667,7 @@
       "text": "the name of the author",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
-      "gold_construction": "en.possession.of_phrase",
+      "gold_construction": "en.genitive.of_phrase",
       "expected_roles": {
         "GENITIVE_HEAD": "name",
         "GENITIVE_DEPENDENT": "the author"
@@ -1702,7 +1702,7 @@
       "text": "the work of the artist",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
-      "gold_construction": "en.possession.of_phrase",
+      "gold_construction": "en.genitive.of_phrase",
       "expected_roles": {
         "GENITIVE_HEAD": "work",
         "GENITIVE_DEPENDENT": "the artist"
@@ -1737,7 +1737,7 @@
       "text": "the car of the driver",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
-      "gold_construction": "en.possession.of_phrase",
+      "gold_construction": "en.genitive.of_phrase",
       "expected_roles": {
         "GENITIVE_HEAD": "car",
         "GENITIVE_DEPENDENT": "the driver"
@@ -1772,7 +1772,7 @@
       "text": "the story of the writer",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
-      "gold_construction": "en.possession.of_phrase",
+      "gold_construction": "en.genitive.of_phrase",
       "expected_roles": {
         "GENITIVE_HEAD": "story",
         "GENITIVE_DEPENDENT": "the writer"
@@ -6577,7 +6577,7 @@
       "text": "كتاب الطالب",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
-      "gold_construction": "ar.possession.idafa",
+      "gold_construction": "ar.genitive.idafa",
       "expected_roles": {
         "GENITIVE_HEAD": "كتاب",
         "GENITIVE_DEPENDENT": "الطالب"
@@ -6606,7 +6606,7 @@
       "text": "مفتاح المدير",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
-      "gold_construction": "ar.possession.idafa",
+      "gold_construction": "ar.genitive.idafa",
       "expected_roles": {
         "GENITIVE_HEAD": "مفتاح",
         "GENITIVE_DEPENDENT": "المدير"
@@ -6635,7 +6635,7 @@
       "text": "خريطة المسافر",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
-      "gold_construction": "ar.possession.idafa",
+      "gold_construction": "ar.genitive.idafa",
       "expected_roles": {
         "GENITIVE_HEAD": "خريطة",
         "GENITIVE_DEPENDENT": "المسافر"
@@ -6664,7 +6664,7 @@
       "text": "رسالة المعلم",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
-      "gold_construction": "ar.possession.idafa",
+      "gold_construction": "ar.genitive.idafa",
       "expected_roles": {
         "GENITIVE_HEAD": "رسالة",
         "GENITIVE_DEPENDENT": "المعلم"
@@ -6693,7 +6693,7 @@
       "text": "دراجة الطفل",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
-      "gold_construction": "ar.possession.idafa",
+      "gold_construction": "ar.genitive.idafa",
       "expected_roles": {
         "GENITIVE_HEAD": "دراجة",
         "GENITIVE_DEPENDENT": "الطفل"
@@ -6722,7 +6722,7 @@
       "text": "مكتب الطبيب",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
-      "gold_construction": "ar.possession.idafa",
+      "gold_construction": "ar.genitive.idafa",
       "expected_roles": {
         "GENITIVE_HEAD": "مكتب",
         "GENITIVE_DEPENDENT": "الطبيب"
@@ -6751,7 +6751,7 @@
       "text": "غرفة الأسرة",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
-      "gold_construction": "ar.possession.idafa",
+      "gold_construction": "ar.genitive.idafa",
       "expected_roles": {
         "GENITIVE_HEAD": "غرفة",
         "GENITIVE_DEPENDENT": "الأسرة"
@@ -6780,7 +6780,7 @@
       "text": "حقيبة السائق",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
-      "gold_construction": "ar.possession.idafa",
+      "gold_construction": "ar.genitive.idafa",
       "expected_roles": {
         "GENITIVE_HEAD": "حقيبة",
         "GENITIVE_DEPENDENT": "السائق"
@@ -6809,7 +6809,7 @@
       "text": "حديقة الجار",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
-      "gold_construction": "ar.possession.idafa",
+      "gold_construction": "ar.genitive.idafa",
       "expected_roles": {
         "GENITIVE_HEAD": "حديقة",
         "GENITIVE_DEPENDENT": "الجار"
@@ -6838,7 +6838,7 @@
       "text": "تقرير المدير",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
-      "gold_construction": "ar.possession.idafa",
+      "gold_construction": "ar.genitive.idafa",
       "expected_roles": {
         "GENITIVE_HEAD": "تقرير",
         "GENITIVE_DEPENDENT": "المدير"
@@ -6867,7 +6867,7 @@
       "text": "كرسي المعلم",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
-      "gold_construction": "ar.possession.idafa",
+      "gold_construction": "ar.genitive.idafa",
       "expected_roles": {
         "GENITIVE_HEAD": "كرسي",
         "GENITIVE_DEPENDENT": "المعلم"
@@ -6896,7 +6896,7 @@
       "text": "منزل الصديق",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
-      "gold_construction": "ar.possession.idafa",
+      "gold_construction": "ar.genitive.idafa",
       "expected_roles": {
         "GENITIVE_HEAD": "منزل",
         "GENITIVE_DEPENDENT": "الصديق"
@@ -6925,7 +6925,7 @@
       "text": "هاتف الطبيب",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
-      "gold_construction": "ar.possession.idafa",
+      "gold_construction": "ar.genitive.idafa",
       "expected_roles": {
         "GENITIVE_HEAD": "هاتف",
         "GENITIVE_DEPENDENT": "الطبيب"
@@ -6954,7 +6954,7 @@
       "text": "معطف الطفل",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
-      "gold_construction": "ar.possession.idafa",
+      "gold_construction": "ar.genitive.idafa",
       "expected_roles": {
         "GENITIVE_HEAD": "معطف",
         "GENITIVE_DEPENDENT": "الطفل"
@@ -6983,7 +6983,7 @@
       "text": "خطة الفريق",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
-      "gold_construction": "ar.possession.idafa",
+      "gold_construction": "ar.genitive.idafa",
       "expected_roles": {
         "GENITIVE_HEAD": "خطة",
         "GENITIVE_DEPENDENT": "الفريق"
@@ -7012,7 +7012,7 @@
       "text": "صوت المغني",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
-      "gold_construction": "ar.possession.idafa",
+      "gold_construction": "ar.genitive.idafa",
       "expected_roles": {
         "GENITIVE_HEAD": "صوت",
         "GENITIVE_DEPENDENT": "المغني"
@@ -7041,7 +7041,7 @@
       "text": "اسم الكاتب",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
-      "gold_construction": "ar.possession.idafa",
+      "gold_construction": "ar.genitive.idafa",
       "expected_roles": {
         "GENITIVE_HEAD": "اسم",
         "GENITIVE_DEPENDENT": "الكاتب"
@@ -7070,7 +7070,7 @@
       "text": "عمل الفنان",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
-      "gold_construction": "ar.possession.idafa",
+      "gold_construction": "ar.genitive.idafa",
       "expected_roles": {
         "GENITIVE_HEAD": "عمل",
         "GENITIVE_DEPENDENT": "الفنان"
@@ -7099,7 +7099,7 @@
       "text": "سيارة السائق",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
-      "gold_construction": "ar.possession.idafa",
+      "gold_construction": "ar.genitive.idafa",
       "expected_roles": {
         "GENITIVE_HEAD": "سيارة",
         "GENITIVE_DEPENDENT": "السائق"
@@ -7128,7 +7128,7 @@
       "text": "قصة الكاتب",
       "gold_class": "POSITIVE",
       "expected_completion_status": "COMPLETE",
-      "gold_construction": "ar.possession.idafa",
+      "gold_construction": "ar.genitive.idafa",
       "expected_roles": {
         "GENITIVE_HEAD": "قصة",
         "GENITIVE_DEPENDENT": "الكاتب"
