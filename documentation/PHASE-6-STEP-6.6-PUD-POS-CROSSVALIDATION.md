@@ -1,0 +1,43 @@
+# Phase 6 Step 6.6 — PUD POS Lexicon Cross-Validation v0.2
+
+**Status:** diagnostic lexical-generalization experiment; not semantic acceptance.
+
+The v0.1 external audit found that the existing closed candidate lexicon did
+not cover any complete PUD structural phrase. This experiment tests whether
+a generic, exact-form POS candidate inventory derived from the external corpus
+could provide a better lexical starting point.
+
+## Method
+
+- Download the same pinned English and Arabic PUD snapshots, verifying Git blob
+  SHA-1 values before use.
+- Divide each language's 1,000 sentences deterministically into ten folds by
+  sentence index.
+- For each fold, build a form-to-UPOS candidate dictionary from the other nine
+  folds and evaluate on the held-out fold.
+- Report exact-form OOV rate, token coverage, candidate-set tag recall,
+  ambiguity, and per-UPOS coverage.
+- Do not persist source text or the derived lexical dictionary in the repository.
+
+## Interpretation boundary
+
+This experiment measures only whether a held-out token's gold UPOS tag is
+among the tags observed for that exact surface form in the other folds. It is
+not contextual disambiguation, a POS tagger, syntactic parsing, semantic-role
+annotation, or a USG runtime capability. A high candidate-set hit rate would
+justify a separate prototype, not automatic promotion of lexical senses.
+
+PUD is released under CC BY-SA 3.0. Attribution belongs to the Universal
+Dependencies PUD contributors; the pinned source repositories and licenses
+are documented in the v0.1 audit report. The dataset is downloaded at test
+time and not redistributed by this repository.
+
+All constructions remain candidate-only. Step 6.6 remains unaccepted and
+Step 6.7 remains blocked.
+
+## Run
+
+```bash
+python -m unittest discover -s tests -p 'test_phase6_external_pud_crossval.py' -v
+python -m tools.phase6_external_pud_v0_2.crossval
+```
