@@ -1,0 +1,23 @@
+name: Phase 6 Step 6.6 Benchmark v0.4.2
+on:
+  pull_request:
+    paths: ["benchmarks/phase6-interpretation-v0.4.2/**","tools/phase6_benchmark_v0_4_2/**","tests/test_phase6_benchmark_v0_4_2.py",".github/workflows/phase6-step-6-6-benchmark-v0-4-2.yml"]
+  push:
+    branches: [main]
+    paths: ["benchmarks/phase6-interpretation-v0.4.2/**","tools/phase6_benchmark_v0_4_2/**","tests/test_phase6_benchmark_v0_4_2.py"]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python -m pip install "jsonschema==4.23.0"
+      - run: python -m tools.phase6_benchmark_v0_4_2.validate
+      - run: python -m unittest discover -s tests -p 'test_phase6_benchmark_v0_4_2.py' -v

@@ -2,7 +2,7 @@
 from pathlib import Path
 import json
 from collections import defaultdict
-from tools.phase6_benchmark_v0_4_1.validate import validate as load_gold
+from tools.phase6_benchmark_v0_4_2.validate import validate as load_gold
 from tools.phase6_nominal_candidate_v0_4_1.validate import validate as validate_lexicon
 from tools.phase6_nominal_candidate_v0_4_1.analyzer import predict_corpus
 ROOT=Path(__file__).resolve().parents[2]
