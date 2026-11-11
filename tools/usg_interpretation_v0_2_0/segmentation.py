@@ -17,6 +17,7 @@ _EN_MARKERS = {
 }
 _AR_MARKERS = {
     "ثم": "TEMPORAL", "إذا": "CONDITION", "لأن": "CAUSE", "أن": "COMPLEMENT",
+    "و": "COORDINATION_AND", "أو": "COORDINATION_OR", "لكن": "CONTRAST",
 }
 
 
