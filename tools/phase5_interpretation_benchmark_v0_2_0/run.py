@@ -101,7 +101,7 @@ def evaluate(corpus: dict, predictions: dict) -> dict:
             status_match = predicted_status == case["expected_completion_status"]
             status_ok += int(status_match)
             role_match = pred.get("role_bindings", {}) == case["expected_roles"]
-            roles_ok += int(role_match) if gold_positive else int(not pred.get("role_bindings", {}))
+            if gold_positive:\n                roles_ok += int(role_match)
             predicted_spans = pred.get("role_spans", {})
             span_match = predicted_spans == case["expected_role_spans"]
             spans_valid = True
@@ -117,7 +117,7 @@ def evaluate(corpus: dict, predictions: dict) -> dict:
                             or not isinstance(surface, str) or start < 0 or end <= start
                             or end > len(case["text"]) or case["text"][start:end] != surface):
                         spans_valid = False
-            spans_ok += int(span_match and spans_valid)
+            if gold_positive:\n                spans_ok += int(span_match and spans_valid)
             case_rows.append({
                 "case_id": case["id"], "language": lang,
                 "gold_class": case["gold_class"],
@@ -137,8 +137,8 @@ def evaluate(corpus: dict, predictions: dict) -> dict:
             "construction_precision": tp / predicted_positive_count if predicted_positive_count else 0.0,
             "construction_recall": tp / positive_total if positive_total else 0.0,
             "completion_status_accuracy": status_ok / len(gold) if gold else 0.0,
-            "role_binding_exact_accuracy": roles_ok / len(gold) if gold else 0.0,
-            "role_span_exact_and_valid_accuracy": spans_ok / len(gold) if gold else 0.0,
+            "role_binding_exact_accuracy": roles_ok / positive_total if positive_total else 0.0,
+            "role_span_exact_and_valid_accuracy": spans_ok / positive_total if positive_total else 0.0,
             "missing_predictions": sum(1 for x in gold if x["id"] not in pred_by_id),
         }
     return {
