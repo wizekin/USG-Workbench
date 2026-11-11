@@ -356,10 +356,12 @@ class SemanticComposer:
         unresolved = []
         ambiguous = False
         resource_limited = False
+        partial_required = False
         for result in syntax.clauses:
             operator_result = operator_results.get(result.clause_ref)
             if operator_result is not None and operator_result.status == "INCOMPLETE":
                 unresolved.append(result.clause_ref)
+                partial_required = True
                 continue
             if operator_result is not None and operator_result.status == "INCOMPLETE_RESOURCE_LIMIT":
                 unresolved.append(result.clause_ref)
@@ -367,6 +369,8 @@ class SemanticComposer:
                 continue
             if result.status == "AMBIGUOUS":
                 ambiguous = True
+            if result.status == "INCOMPLETE":
+                partial_required = True
             if result.status == "INCOMPLETE_RESOURCE_LIMIT":
                 resource_limited = True
             if operator_result is not None and operator_result.status == "AMBIGUOUS":
@@ -383,7 +387,7 @@ class SemanticComposer:
         if not options_by_clause:
             if resource_limited:
                 status = "INCOMPLETE_RESOURCE_LIMIT"
-            elif unresolved:
+            elif partial_required:
                 status = "PARTIAL"
             else:
                 status = "UNSUPPORTED"
