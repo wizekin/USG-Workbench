@@ -13,6 +13,11 @@ from .syntax import (
     SYNTAX_ANALYSIS_VERSION, ConstituentNode, DependencyEdge, SyntaxCandidate,
     ClauseSyntaxResult, ClauseAttachment, SyntaxAnalysis, SyntaxAnalyzer,
 )
+from .compose import (
+    SEMANTIC_COMPOSITION_VERSION, PredicateFrame, SemanticFrameRegistry,
+    SemanticNode, SemanticCandidate, SemanticComposition,
+    initial_semantic_frame_registry, SemanticComposer,
+)
 
 __all__ = [
     "LEXICAL_ANALYSIS_VERSION", "MORPHOLOGY_RULESET_VERSION", "LexicalEntry",
@@ -22,5 +27,7 @@ __all__ = [
     "ClauseSegment", "ClauseBoundary", "SegmentedDocument", "segment_document",
     "SYNTAX_ANALYSIS_VERSION", "ConstituentNode", "DependencyEdge",
     "SyntaxCandidate", "ClauseSyntaxResult", "ClauseAttachment",
-    "SyntaxAnalysis", "SyntaxAnalyzer",
+    "SyntaxAnalysis", "SyntaxAnalyzer", "SEMANTIC_COMPOSITION_VERSION",
+    "PredicateFrame", "SemanticFrameRegistry", "SemanticNode", "SemanticCandidate",
+    "SemanticComposition", "initial_semantic_frame_registry", "SemanticComposer",
 ]
