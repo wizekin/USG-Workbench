@@ -1,0 +1,34 @@
+name: External English Headword Inventory v0.1.0
+
+on:
+  pull_request:
+    paths:
+      - "tools/usg_lexical_corpus_v0_1_0/**"
+      - "tests/test_external_english_headwords.py"
+      - "documentation/EXTERNAL-ENGLISH-LEXICAL-CORPUS-v0.1.0.md"
+      - ".github/workflows/external-english-headwords-v0.1.0.yml"
+  push:
+    branches: [main]
+    paths:
+      - "tools/usg_lexical_corpus_v0_1_0/**"
+      - "tests/test_external_english_headwords.py"
+      - "documentation/EXTERNAL-ENGLISH-LEXICAL-CORPUS-v0.1.0.md"
+      - ".github/workflows/external-english-headwords-v0.1.0.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  importer-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Compile importer
+        run: python -m compileall -q tools/usg_lexical_corpus_v0_1_0
+      - name: Run importer tests
+        run: python -m unittest discover -s tests -p "test_external_english_headwords.py" -v
