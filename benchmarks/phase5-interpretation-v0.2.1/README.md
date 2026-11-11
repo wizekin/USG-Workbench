@@ -8,7 +8,7 @@ The target construction family is simple transitive declaratives:
 - English: explicit subject–verb–object (SVO).
 - Modern Standard Arabic: explicit verb–subject–object (VSO) and subject–verb–object (SVO).
 
-The corpus contains 100 cases: 20 positive, 20 negative/adversarial, and 10 ambiguous/boundary cases per language. Positive cases annotate AGENT, ACTION, and PATIENT with exact source spans. Negative and ambiguous cases do not define a unique target-construction graph.
+The corpus contains 100 cases: 20 positive, 20 negative/adversarial, and 10 ambiguous/boundary cases per language. English targets SVO; MSA Arabic targets both VSO and SVO. This is an additive v0.2.1 correction; the earlier v0.2.0 corpus remains frozen. Positive cases annotate AGENT, ACTION, and PATIENT with exact source spans. Negative and ambiguous cases do not define a unique target-construction graph.
 
 The v0.2.1 revision corrects the Arabic SVO annotation: `الرسالة كتب الطالب.` is evaluated according to its explicit SVO surface order, not a presumed intended agent/patient reversal. A separate unsupported Arabic prepositional construction preserves the negative fixture count.
 
@@ -26,6 +26,6 @@ py -m unittest discover -s tests -p "test_phase5_step_5_11_benchmark.py" -v
 
 ## Metrics
 
-The evaluator reports per-language construction precision/recall, positive completion-status accuracy, exact role-binding accuracy, exact source-valid role-span accuracy, negative/ambiguous abstention, false unique constructions, and missing predictions. The actual pipeline run additionally reports runtime percentiles, peak traced Python memory, and resource-manifest digest.
+The evaluator reports per-language construction precision/recall, positive-only completion-status accuracy, exact role-binding accuracy, exact source-valid role-span accuracy, negative/ambiguous abstention, false unique constructions, and missing predictions. The release command enforces each language's quality gates independently. The actual pipeline run additionally reports runtime percentiles, peak traced Python memory, and resource-manifest digest.
 
 The original v0.2.0 corpus remains unchanged and can still be used for historical comparisons. Do not replace or silently rewrite a published corpus version.
