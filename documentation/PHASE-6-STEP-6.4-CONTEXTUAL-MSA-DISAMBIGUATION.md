@@ -18,8 +18,11 @@ from the CAMeL candidate analyses.
   nine folds and evaluate on the held-out fold.
 - Features include current/neighboring forms, prefixes/suffixes, sentence
   boundaries, candidate UPOS/POS sets, and CAMeL morphological features.
-- Predict UPOS from sentence context, then select the highest-ranked CAMeL
-  lemma analysis that matches the predicted UPOS.
+- Decode UPOS with Viterbi while constraining each token to the POS candidates
+  licensed by the morphology analyzer (training sentences also retain their
+  gold POS so missed candidates can be measured).
+- Select the highest-ranked CAMeL lemma analysis that matches the predicted
+  UPOS; abstain if no compatible analysis exists.
 - Compare against CAMeL MLE top-1, which is a word-based/out-of-context
   baseline, and report the candidate-set upper bound.
 
