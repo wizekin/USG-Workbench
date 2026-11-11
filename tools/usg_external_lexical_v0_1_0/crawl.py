@@ -593,7 +593,9 @@ class LexicalCrawler:
                 break
             page_path = pages[page_index]
             try:
-                page_rows = self._load_page_rows(source_commit, page_path)
+                page_rows = self._load_page_rows(
+                    source_commit, page_path, str(checkpoint["source_snapshot_id"])
+                )
             except ProviderRateLimited:
                 stop_reason = "source_rate_limited"
                 break
