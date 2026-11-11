@@ -1,5 +1,5 @@
 import unittest
-from tools.phase6_benchmark_v0_4_1.validate import validate as gold
+from tools.phase6_benchmark_v0_4_2.validate import validate as gold
 from tools.phase6_nominal_candidate_v0_4_1.validate import validate as lexicon
 from tools.phase6_nominal_candidate_v0_4_1.analyzer import analyze, predict_corpus
 from tools.phase6_nominal_candidate_v0_4_1.run import evaluate
@@ -13,6 +13,8 @@ class TestPhase6NominalCandidate(unittest.TestCase):
   self.assertEqual(len(self.pred["predictions"]),500)
  def test_development_self_consistency_gate(self):
   self.assertTrue(self.report["development_gate_passed"],self.report["by_construction"])
+ def test_genitive_marker_spans_are_exact(self):
+  self.assertEqual(self.report['by_construction']['en/en.genitive.of_phrase']['marker_accuracy'],1.0)
  def test_no_construction_is_benchmark_enabled(self):
   self.assertEqual(self.report["benchmark_enabled_constructions"],[])
   self.assertEqual(self.report["runtime_capability_state"],"CANDIDATE_ONLY")
