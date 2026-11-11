@@ -9,6 +9,7 @@ from tools.semantic_graph_store_v1_0_0 import CanonicalDocumentStore
 from tools.usg_resource_catalogue_v0_1_0 import (
     InvalidResourceError,
     ResourceActivationConflictError,
+    ResourceCatalogueError,
     ResourceIntegrityError,
     ResourceNotFoundError,
     ResourceVersionConflictError,
@@ -95,7 +96,7 @@ class ResourceCatalogueTests(unittest.TestCase):
 
     def test_resource_class_cannot_change_between_versions(self):
         self.put(activate=True)
-        with self.assertRaises(Exception):
+        with self.assertRaises(ResourceCatalogueError):
             self.catalogue.put_resource(
                 "lex.en.core", "1.1.0", "GRAMMAR_PATTERN",
                 {"patterns": []}, self.provenance(),
