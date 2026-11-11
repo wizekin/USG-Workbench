@@ -7,6 +7,7 @@ from pathlib import Path
 import sys
 
 from .audit import audit_crawl_state
+from .remote_audit import audit_github_branch
 from .cache import LexicalCache, default_cache_path
 from .evaluation import run_structural_benchmark
 from .service import DEFAULT_PROVIDER_ORDER, ExternalLexicalService
@@ -47,7 +48,7 @@ def main(argv=None) -> int:
     if args.command == "benchmark":
         _print(run_structural_benchmark())
         return 0
-    if args.command == "audit":
+    if args.command == "audit-remote":\n        try:\n            report = audit_github_branch(args.repository, args.branch, token=__import__("os").environ.get("GITHUB_TOKEN"))\n            _print(report)\n            return 0 if report["status"] != "failed" else 1\n        except (OSError, ValueError, RuntimeError) as exc:\n            print(f"USG remote lexical audit failed: {exc}", file=sys.stderr)\n            return 2\n    if args.command == "audit":
         try:
             checkpoint = json.loads(args.checkpoint.read_text(encoding="utf-8"))
             manifest = json.loads(args.manifest.read_text(encoding="utf-8"))
