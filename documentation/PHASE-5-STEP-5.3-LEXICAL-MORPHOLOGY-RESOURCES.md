@@ -16,7 +16,7 @@ The initial resource is project-authored for the benchmark's simple English SVO 
 
 - English proper names, base verb lemmas, and nominal lemmas used by the 20 positive benchmark cases.
 - English regular third-person singular `-s` and regular plural `-s` rules, applied only when the resulting stem is an explicitly registered lexical entry of the required part of speech.
-- MSA Arabic verb entries with explicit past/third-person/masculine/singular features.
+- MSA Arabic verb and noun lemmas remain in Arabic script, with explicit past/third-person/masculine/singular verb features and native-script nominal lemmas.
 - MSA Arabic nominal lemmas and a registered definite-article `ال` prefix rule that preserves the original source token span.
 - Deliberately ambiguous senses for English `bank` and Arabic `عين`; these remain multiple candidates.
 - Unknown words remain unresolved. No edit-distance, semantic similarity, language-model guess, or unconstrained suffix stripping is used.
