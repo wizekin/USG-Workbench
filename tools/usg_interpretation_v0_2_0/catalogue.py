@@ -321,6 +321,8 @@ def bundled_resource_descriptors() -> tuple[ResourceDescriptor, ...]:
          "tools/usg_interpretation_v0_2_0/segmentation.py", "en+ar"),
         ("usg-v0.2-discourse", "DISCOURSE", "0.2.0",
          "tools/usg_interpretation_v0_2_0/discourse.py", "en+ar"),
+        ("usg-v0.2-integration-orchestrator", "OTHER", "0.1.0",
+         "tools/usg_interpretation_v0_2_0/integration.py", "en+ar"),
         ("usg-v0.2-expression-graph-schema", "OTHER", "0.2.0",
          "specifications/usg-interpret-expression-graph-0.2.0.schema.json", None),
     )
