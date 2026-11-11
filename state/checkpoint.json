@@ -1,7 +1,7 @@
 {
-  "batch_number": 1,
+  "batch_number": 2,
   "cycle_number": 1,
-  "entry_index": 200,
+  "entry_index": 400,
   "expected_headwords": 1396111,
   "failed_headwords": 198,
   "page_index": 0,
@@ -1415,14 +1415,14 @@
     "dictionary/browse/_/0004.md",
     "dictionary/browse/_/0005.md"
   ],
-  "processed_entries": 24,
-  "processed_headwords": 200,
-  "processed_senses": 68,
+  "processed_entries": 248,
+  "processed_headwords": 400,
+  "processed_senses": 347,
   "schema_version": "usg-lexical-crawl-checkpoint/0.1.0",
   "source_commit": "4abc6b148921005f9ede04cb5a5dfad831b7b58c",
   "source_repository": "figueirego/english-dictionary",
   "source_snapshot_id": "enwiktionary-2026-10-01-raw-244dcdc56868",
   "status": "in_progress",
-  "stored_bytes": 17292,
-  "updated_at": "2026-11-11T20:04:32.404455+00:00"
+  "stored_bytes": 73265,
+  "updated_at": "2026-11-11T20:08:51.351029+00:00"
 }
