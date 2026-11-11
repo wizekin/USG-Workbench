@@ -117,7 +117,9 @@ class SyntaxAnalyzer:
             raise ValueError("lexical and segmentation artifacts must share the exact source snapshot")
         results = tuple(self._analyze_clause(lexical, clause) for clause in segmented.clauses)
         statuses = {x.status for x in results}
-        if "INCOMPLETE_RESOURCE_LIMIT" in statuses:
+        if not results:
+            overall = "UNSUPPORTED"
+        elif "INCOMPLETE_RESOURCE_LIMIT" in statuses:
             overall = "INCOMPLETE_RESOURCE_LIMIT"
         elif "AMBIGUOUS" in statuses:
             overall = "AMBIGUOUS"
