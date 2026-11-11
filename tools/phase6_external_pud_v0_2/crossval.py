@@ -141,7 +141,7 @@ def run() -> dict:
         "PUD is a news/wiki test treebank and does not establish broad language coverage.",
     ]
     OUT.parent.mkdir(parents=True, exist_ok=True)
-    OUT.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\\n", encoding="utf-8")
+    OUT.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     return report
 
 
