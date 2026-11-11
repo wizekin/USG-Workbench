@@ -30,7 +30,7 @@ AR_TEMPORAL = {
 def parse_ud_conllu(payload: bytes) -> list[dict]:
     source = payload.decode("utf-8")
     sentences = []
-    for block in source.strip().split("\\n\\n"):
+    for block in source.strip().split("\n\n"):
         meta, tokens = {}, []
         for line in block.splitlines():
             if line.startswith("# "):
@@ -40,7 +40,7 @@ def parse_ud_conllu(payload: bytes) -> list[dict]:
                 continue
             if not line or line.startswith("#"):
                 continue
-            columns = line.split("\\t")
+            columns = line.split("\t")
             if len(columns) != 10 or not columns[0].isdigit():
                 continue
             if columns[3] == "_" or not columns[6].isdigit() or columns[7] == "_":
