@@ -112,7 +112,16 @@ class FakeProvider:
                     "definition": "A type of useful example.",
                     "examples": [],
                     "tags": [],
-                    "relations": [],
+                    "relations": ([{
+                        "relation_id": "relation-" + word,
+                        "type": "related_word",
+                        "target_lemma": "shore",
+                        "scope": "sense",
+                        "source_sense_id": "sense-" + word,
+                        "target_sense_id": None,
+                        "evidence": "fixture source relation",
+                        "status": "source_asserted_unvalidated",
+                    }] if word == "example" else []),
                 }],
             }],
         }
@@ -270,6 +279,22 @@ kind: "alphabetical-headword-page"
         self.assertEqual(len(analysis["cross_source_disagreements"]), 1)
         self.assertEqual(len(analysis["semantic_candidate_graph"]["nodes"]), 5)
         self.assertIn("no source is selected as authoritative", analysis["cross_source_disagreements"][0]["note"])
+
+    def test_cumulative_graph_grows_from_previously_cached_words(self):
+        provider = FakeProvider()
+        with LexicalCache(":memory:") as cache:
+            service = ExternalLexicalService(cache=cache, providers=[provider])
+            service.lookup("example", providers=[provider.provider_id])
+            service.lookup("shore", providers=[provider.provider_id])
+            graph = service.knowledge_graph()
+            self.assertEqual(graph["cached_word_count"], 2)
+            sense_nodes = [node for node in graph["nodes"] if node.get("node_type") == "lexical_sense_candidate"]
+            self.assertEqual(len(sense_nodes), 2)
+            self.assertIn("lemma:shore", {node["node_id"] for node in graph["nodes"]})
+            relation_edges = [edge for edge in graph["edges"] if edge.get("type") == "related_word"]
+            self.assertEqual(len(relation_edges), 1)
+            self.assertEqual(relation_edges[0]["scope"], "sense")
+            service.close()
 
     def test_definition_patterns_are_observations_not_validated_facts(self):
         result = classify_definition_pattern("A person who repairs musical instruments.")
