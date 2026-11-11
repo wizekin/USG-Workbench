@@ -261,8 +261,17 @@ def run_pipeline(corpus: dict) -> tuple[dict, dict]:
         tracemalloc.stop()
     ordered = sorted(elapsed_ms)
     p95_index = max(0, min(len(ordered) - 1, int(0.95 * len(ordered) + 0.999999) - 1))
+    corpus_bytes = json.dumps(
+        corpus, ensure_ascii=False, sort_keys=True, separators=(",", ":"),
+        allow_nan=False,
+    ).encode("utf-8")
     performance = {
         "case_count": len(elapsed_ms),
+        "corpus_sha256": sha256(corpus_bytes).hexdigest(),
+        "enabled_constructions_observed": sorted({
+            item["construction_id"] for item in predictions
+            if item["construction_id"] is not None
+        }),
         "total_elapsed_ms": round(sum(elapsed_ms), 3),
         "mean_case_elapsed_ms": round(sum(elapsed_ms) / len(elapsed_ms), 3) if elapsed_ms else 0.0,
         "median_case_elapsed_ms": round(median(elapsed_ms), 3) if elapsed_ms else 0.0,
