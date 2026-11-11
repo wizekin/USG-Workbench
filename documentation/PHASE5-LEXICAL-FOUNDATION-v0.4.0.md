@@ -9,7 +9,7 @@ This is a bounded, project-authored starter resource. It is **not** a complete E
 ## Resource architecture
 
 - `usg-en-ar-discourse-lexicon@0.3.0`: existing cumulative project resource; retained unchanged.
-- `usg-en-core-starter-lexicon@0.4.0`: new English resource with 167 explicit entries and seven morphology rules.
+- `usg-en-core-starter-lexicon@0.4.0`: new English resource with 165 explicit entries and seven morphology rules.
 - `usg-en-ar-composite-lexicon@0.4.0`: deterministic runtime composition consumed by Phase 5.
 
 Composition is deterministic. Exact duplicate entries and morphology rules are retained once. Conflicting records with the same lexical identity or rule ID cause an explicit error; the loader does not silently select a winner.
@@ -40,3 +40,7 @@ The dedicated GitHub Actions workflow:
 ## Scope boundary
 
 This release improves coverage for selected English forms and makes the resource composition auditable. It does not claim high coverage of arbitrary English, full POS disambiguation, complete morphology, syntax completion, semantic composition success, or a passed open-world evaluation. Held-out corpora and independent gold annotations remain necessary for those claims.
+
+## Scoped-operator interaction
+
+The existing Phase 5 simple-transitive syntax patterns do not yet represent predicate or argument scope. If operator analysis resolves a semantic operator (for example negation, modality, tense/aspect, or quantification) in a clause, syntax conservatively withholds a bare simple-transitive assertion candidate for that clause. Auxiliary-only markers do not trigger this guard. This avoids deleting an operator token and then misreading the remaining words as an unmodified assertion. Full operator-aware syntactic/semantic composition remains a later integration task.
