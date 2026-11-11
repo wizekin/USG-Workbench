@@ -24,7 +24,7 @@ main{max-width:1240px;margin:auto;padding:25px clamp(14px,3vw,34px) 55px}
 .panel-body{padding:18px 20px}
 .hint{font-size:13px;color:var(--muted);margin:0 0 13px}.microcopy{font-size:12px;color:var(--muted);margin:6px 0 0}
 .grid{display:grid;grid-template-columns:minmax(0,1fr) 210px;gap:14px;align-items:start}
-textarea{width:100%;min-height:130px;resize:vertical;background:#fbfcff;color:var(--ink);border:1px solid #cbd6e5;border-radius:10px;padding:13px 14px;font:14px/1.6 inherit;outline:none}
+textarea{width:100%;min-height:130px;resize:vertical;background:#fbfcff;color:var(--ink);border:1px solid #cbd6e5;border-radius:10px;padding:13px 14px;font:inherit;line-height:1.6;outline:none}
 textarea:focus,input:focus,select:focus{border-color:#6c94d5;box-shadow:0 0 0 3px #4779c51b;outline:none}
 .controls{display:flex;flex-direction:column;gap:10px}
 select,input{font:inherit;color:var(--ink)}
@@ -76,7 +76,7 @@ details.advanced>summary{cursor:pointer;padding:13px 15px;font-weight:750;color:
 </style>
 </head>
 <body>
-<header><div class="header-inner"><div class="brand"><div class="mark">U</div><div><h1>USG Kernel Lab</h1><p class="subtitle">Explore how USG reads, organizes, and reasons about text</p></div></div><span class="local-tag">Runs on this computer</span></div></header>
+<header><div class="header-inner"><div class="brand"><div class="mark">U</div><div><h1>USG Kernel Lab</h1><p class="subtitle">USG means Universal Semantic Grammar — explore how it reads and organizes text</p></div></div><span class="local-tag">Runs on this computer</span></div></header>
 <main>
 <section class="intro">
 <h2>Welcome — you do not need a programming background</h2>
@@ -232,7 +232,7 @@ const sample={
  "extensions":{"org.usg.kernel-lab":{"sample":true}}
 };
 const keyNames={
- completion_status:"How much of the text this version could process",goal_status:"What the system found about the requested conclusion",
+ completion_status:"How much of the requested operation this version could complete",goal_status:"What the available information says about the requested conclusion",
  candidate_count:"Possible answers found",derivation_count:"Rule-based explanations produced",source_assertion_count:"Statements used from the source",conflict_count:"Disagreements detected",
  inference_candidates:"Possible conclusions",derivations:"How a conclusion was reached",source_assertions:"Statements found in the document",conflicts:"Statements that may disagree",
  resolutionStatus:"How clearly this word or phrase is connected to what it refers to",surfaceText:"Original word or phrase",mentionType:"Kind of word or phrase",
@@ -241,6 +241,9 @@ const keyNames={
  canonicalRecordCounts:"How many items of each kind are in the document",nativeMentions:"Words and phrases identified in the text",
  diagnostics:"Warnings or notes about parts the system could not process",unmappedRefs:"Items that could not be connected during the transfer",
  mapped:"Items transferred into the working model",status:"Overall result",modelVersion:"Version of the internal reading model",
+ fixture_id:"Internal code for this prepared example",benchmark_id:"Name of the prepared test collection",benchmark_version:"Version of the prepared test collection",profile_id:"Name and version of the result format",policy_id:"Name of the safety rules used",policy_version:"Version of the safety rules",query_id:"Internal code for this question",
+ goal:"The exact statement and situation being checked",expression_ref:"Statement reference used by this prepared example",context_ref:"Situation reference used by this prepared example",context_kind:"Type of situation being checked",commitment:"Who the statement is attributed to",attributed_to_ref:"Person reference used by this prepared example",inference_task:"The reasoning task and rules allowed for this example",rule_ids:"Names of the reasoning rules allowed for this example",world_assumption:"How the system treats information it cannot find",max_rule_applications:"Maximum number of times a rule may be used",allow_inferred_premises:"Whether a conclusion may be reused as a starting fact",inferred_premise_chaining:"Whether the system may keep building new conclusions from earlier conclusions",truth_promotion:"Whether a suggested conclusion is automatically treated as true",absence_means_false:"Whether missing information is treated as proof that something is false",free_text_inference:"Whether this test allows free-form guesses from ordinary text",canonical_document_mutated:"Whether the saved source document was changed by this question",
+ explanation:"Steps showing how the system reached its result",step:"Step number",code:"Internal label for this check",input_refs:"Items used in this step",output_refs:"Items produced in this step",epistemic_status:"How the source describes the statement",origin:"Where the statement came from",evidence_refs:"References to supporting information",scope_assertions:"Other statements in the same situation",relation_claims:"Possible relationships between statements",unresolved_questions:"Questions that could not be answered",unsupported_portions:"Parts this version could not handle",assumptions:"Rules or limits used during the check",source_independence_policy:"How the test treats evidence from different sources",conflict_policy:"How the test decides whether two statements disagree",computed_alignment_status:"How closely the evidence matches the statement",pending_work:"Work that remains unfinished",recordMapping:"How original records were carried into the working model",
  manifest:"List of reference information used for the analysis",resources:"Built-in reference information",
  deterministic_match:"Whether the new run produced the same result as the saved run",run_id:"Saved analysis reference",
  revision:"Saved version number",document_id:"Name of the saved document",document_revision:"Version of the saved document",
@@ -263,6 +266,13 @@ const valueNames={
  PASSED:"Test matched the expected result",FAILED:"Test did not match the expected result",
  PROVEN:"The available rules support this conclusion",DISPROVEN:"The available rules support the opposite conclusion",
  UNKNOWN_GOAL:"The system could not decide",INCOMPLETE:"More information or processing is needed",CONFLICT:"Statements disagree",
+ INVALID_INPUT:"The document or requested item could not be used because it did not pass a check",
+ CONFLICTING:"Statements disagree about this conclusion under the same conditions",
+ DISPUTED:"The source itself marks this statement as disputed",
+ SOURCE_ASSERTED_NOT_VERIFIED:"A source states this, but the lab has not independently checked it",
+ DERIVED_NOT_VERIFIED:"A rule produced this possible conclusion, but it has not been independently checked",
+ NOT_ESTABLISHED:"The available information and allowed rules do not establish this conclusion. This does not mean it is false",
+ UNVERIFIED:"The available information has not confirmed this",MISMATCH:"The evidence does not match the statement",MATCHED:"The required information was found",NO_MATCH:"No matching statement was found",
  AUTHOR:"The document's author",ATTRIBUTED:"A person named in the document",NONE:"No speaker assigned",
  YES:"Yes",NO:"No",true:"Yes",false:"No"
 };
@@ -300,12 +310,35 @@ function prettyValue(v){
  if(typeof v==="number")return String(v);
  return String(v);
 }
-function statusClass(v){const s=String(v??"").toUpperCase();if(["PASS","PASSED","COMPLETE","COMPLETED","LOSSLESS","LINKED","RESOLVED","PROVEN","TRUE"].includes(s))return "good";if(["FAIL","FAILED","UNSUPPORTED","UNRESOLVED","AMBIGUOUS","CONFLICT","PARTIAL","INCOMPLETE"].includes(s))return "warn";if(["ERROR","INVALID"].includes(s))return "bad";return ""}
+const codeMeanings={
+ OPEN_WORLD:"Not finding a statement does not mean the statement is false.",
+ EXPLICIT_RULE_ALLOWLIST:"Only the rules listed for this example may be used.",
+ INFERRED_PREMISES_DISABLED:"A conclusion cannot be reused as a new starting fact in this test.",
+ EXACT_GOAL_SCOPE:"Only this exact statement in this exact situation is being checked.",
+ GOAL_GROUNDED:"The system found the statement and situation it was asked to check.",
+ EXACT_SOURCE_ASSERTION_MATCH:"The system checked whether the document already states this exact conclusion.",
+ DETERMINISTIC_INFERENCE:"The system applied the allowed reasoning rules in a fixed, repeatable way.",
+ EVIDENCE_AND_CONFLICT_ASSESSMENT:"The system checked supporting information and looked for disagreements.",
+ QUERY_CONCLUSION:"The system summarized what the available information supports.",
+ NO_EXACT_ASSERTION_OR_DERIVATION_MATCH:"No exact statement or rule-based conclusion was found. Missing information is not treated as proof that the statement is false.",
+ DOCUMENT_SCHEMA_INVALID:"The document does not follow the required structure.",
+ QUERY_GOAL_AMBIGUOUS:"The statement has more than one possible meaning.",
+ QUERY_GOAL_NOT_RESOLVED:"The system could not determine which statement the reference points to.",
+ QUERY_GOAL_SORT_UNSUPPORTED:"This kind of statement is not supported by the current reasoning tool.",
+ QUERY_CONTEXT_KIND_MISMATCH:"The situation category does not match the selected example.",
+ DERIVATION_PREMISE_CONFLICTED:"A starting statement disagrees with another statement, so this reasoning step was not used.",
+ INFERENCE_RULE_UNSUPPORTED:"The current reasoning tool does not support one of the requested rules.",
+ GOAL_ASSERTION_UNKNOWN:"The document itself marks this statement as unknown.",
+ EVIDENCE_ALIGNMENT_UNRESOLVED:"The system could not connect this evidence to the statement.",
+ EVIDENCE_ALIGNMENT_UNVERIFIED:"The evidence has not been checked enough to confirm the statement.",
+ EVIDENCE_ALIGNMENT_MISMATCH:"The evidence does not match the statement."
+};
+function statusClass(v){const s=String(v??"").toUpperCase();if(["PASS","PASSED","COMPLETE","COMPLETED","LOSSLESS","LINKED","RESOLVED","PROVEN","TRUE","MATCHED"].includes(s))return "good";if(["FAIL","FAILED","UNSUPPORTED","UNRESOLVED","AMBIGUOUS","CONFLICT","CONFLICTING","PARTIAL","INCOMPLETE","DISPUTED","NOT_ESTABLISHED"].includes(s))return "warn";if(["ERROR","INVALID","INVALID_INPUT"].includes(s))return "bad";return ""}
 function valueHtml(v){
  if(v===null||v===undefined||v==="")return '<span class="value-pill">Not provided</span>';
  if(typeof v==="boolean")return '<span class="value-pill '+(v?'good':'warn')+'">'+(v?'Yes':'No')+'</span>';
  if(typeof v==="string"&&/^[A-Z][A-Z0-9_]{2,}$/.test(v))return '<span class="value-pill '+statusClass(v)+'">'+esc(prettyValue(v))+'</span>';
- if(typeof v==="string")return esc(v);
+ if(typeof v==="string")return esc(v)+(codeMeanings[v]?'<span class="explain">'+esc(codeMeanings[v])+'</span>':"");
  if(typeof v==="number")return esc(v);
  return renderAny(v,1);
 }
