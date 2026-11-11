@@ -24,7 +24,7 @@ on:
       - ".github/workflows/usg-external-lexical-crawl.yml"
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: usg-external-lexical-crawl
@@ -51,6 +51,8 @@ jobs:
 
   crawl:
     if: github.event_name != 'pull_request'
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     timeout-minutes: 350
     env:
