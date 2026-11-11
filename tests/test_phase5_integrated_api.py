@@ -1,6 +1,7 @@
 """Phase 5 Step 5.10 integrated API, catalogue, run replay, and CLI tests."""
 from __future__ import annotations
 
+import sqlite3
 import tempfile
 import unittest
 from pathlib import Path
@@ -55,6 +56,13 @@ class Phase5IntegratedAPITests(unittest.TestCase):
         ) as connection:
             self.assertIs(connection, self.app.resource_catalogue.connection)
             self.assertFalse(connection.in_transaction)
+            with self.assertRaises(sqlite3.OperationalError):
+                connection.execute(
+                    "INSERT INTO usg_resource_descriptor "
+                    "(resource_id,resource_type,version,sha256,language,provenance,registered_at) "
+                    "VALUES('blocked','OTHER','1.0.0',?,'en','blocked',0)",
+                    ("a" * 64,),
+                )
         with self.app.store.resource_catalogue_session(
             role=RESOURCE_CATALOGUE_ROLE, write=True
         ) as connection:
