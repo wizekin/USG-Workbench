@@ -6,7 +6,7 @@ The deterministic candidate recognizer implements closed-profile patterns for En
 
 ## Critical evaluation boundary
 
-The lexical resource is extracted from the same v0.4.1 positive fixtures used by the development evaluation. Therefore the reported scores are **in-sample closed-lexicon self-consistency**, not an independent benchmark, generalization test, or evidence of broad language understanding. The analyzer returns `CANDIDATE`, not `COMPLETE`, and no construction is benchmark-enabled. Unknown forms and out-of-profile inputs abstain. No productive morphology is inferred.
+The lexical resource is extracted from the same v0.4.1 positive fixtures; evaluation now uses the token-boundary-corrected v0.4.2 corpus used by the development evaluation. Therefore the reported scores are **in-sample closed-lexicon self-consistency**, not an independent benchmark, generalization test, or evidence of broad language understanding. The analyzer returns `CANDIDATE`, not `COMPLETE`, and no construction is benchmark-enabled. Unknown forms and out-of-profile inputs abstain. No productive morphology is inferred.
 
 ## Run
 
