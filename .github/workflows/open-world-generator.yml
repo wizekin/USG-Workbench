@@ -42,10 +42,11 @@ jobs:
             --output "$RUNNER_TEMP/ow2-smoke.jsonl"
           python - <<'PY'
           import json
+          import os
           from pathlib import Path
           registry = json.loads(Path('tools/open_world_evaluation/target_profiles.json').read_text(encoding='utf-8'))
           expected = 12 * len(registry['targets'])
-          actual = len(Path('$RUNNER_TEMP/ow2-smoke.jsonl').read_text(encoding='utf-8').splitlines())
+          actual = len((Path(os.environ['RUNNER_TEMP']) / 'ow2-smoke.jsonl').read_text(encoding='utf-8').splitlines())
           assert actual == expected, (actual, expected)
           PY
       - name: Compile generator and validator
