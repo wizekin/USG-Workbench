@@ -52,3 +52,39 @@ provider and pass independent held-out evaluation.
 python -m unittest discover -s tests -p 'test_phase6_external_pud_spacy_english.py' -v
 python -m tools.phase6_external_pud_v0_7.spacy_english
 ```
+
+## Observed English PUD results (2026-11-11)
+
+The pre-tokenized pipeline evaluated 21,179 annotated tokens:
+
+| Measure | Accuracy |
+|---|---:|
+| Lemma accuracy | 97.94% |
+| UPOS accuracy | 95.28% |
+| Joint lemma + UPOS accuracy | 93.86% |
+| Non-punctuation joint accuracy | 93.05% |
+
+To avoid punctuation and function-word performance hiding content-word errors,
+the five main content UPOS groups were also evaluated separately:
+
+| Content UPOS | Tokens | Joint lemma + UPOS accuracy |
+|---|---:|---:|
+| NOUN | 4,012 | 91.55% |
+| PROPN | 1,718 | 94.12% |
+| VERB | 2,152 | 95.68% |
+| ADJ | 1,568 | 87.63% |
+| ADV | 814 | 84.89% |
+| **All five content groups** | **10,264** | **91.72%** |
+
+Weak categories include SCONJ (64.01%), SYM (56.52%), and X (18.75%). The
+model is therefore a strong English baseline, but not uniformly reliable for
+every grammatical category. The content-word joint score is the more useful
+summary than the 93.86% all-token score.
+
+**Decision:** retain spaCy as a promising optional English lexical/POS
+provider for a later adapter experiment. Do not replace USG's semantic
+interpreter with spaCy and do not make it a mandatory runtime dependency.
+The evaluation provides no semantic-role or construction acceptance credit.
+
+The successful evaluation artifact is available from
+[workflow run 42992787422](https://github.com/wizekin/USG-Workbench/actions/runs/42992787422).
