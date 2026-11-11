@@ -64,14 +64,14 @@ class Phase5LexicalFoundationTests(unittest.TestCase):
         self.assertEqual(atoms.derived_by_rule, "en.noun.regular-plural.s")
 
     def test_morphological_derivation_is_explicit_and_traceable(self):
-        result = self.analyze("The system understands changing chemical conditions.")
+        result = self.analyze("The system understands containing chemical matter.")
         by_form = {item.token.surface_text.casefold(): item for item in result.tokens
                    if item.token.kind == "WORD"}
         self.assertEqual(by_form["understands"].candidates[0].lemma, "understand")
         self.assertEqual(by_form["understands"].candidates[0].derived_by_rule,
                          "en.verb.third-person-singular.s")
-        self.assertEqual(by_form["changing"].candidates[0].lemma, "change")
-        self.assertEqual(by_form["changing"].candidates[0].derived_by_rule,
+        self.assertEqual(by_form["containing"].candidates[0].lemma, "contain")
+        self.assertEqual(by_form["containing"].candidates[0].derived_by_rule,
                          "en.verb.participle.ing")
         self.assertEqual(by_form["chemically"].candidates[0].lemma, "chemical")
         self.assertEqual(by_form["chemically"].candidates[0].derived_by_rule,
