@@ -2,6 +2,7 @@
 
 from .store import (
     CanonicalDocumentStore,
+    RESOURCE_CATALOGUE_ROLE,
     DocumentNotFoundError,
     GraphStoreError,
     IntegrityError,
@@ -12,6 +13,7 @@ from .store import (
 
 __all__ = [
     "CanonicalDocumentStore",
+    "RESOURCE_CATALOGUE_ROLE",
     "DocumentNotFoundError",
     "GraphStoreError",
     "IntegrityError",
