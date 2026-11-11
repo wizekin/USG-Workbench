@@ -475,7 +475,7 @@ class LexicalCrawler:
         except (ValueError, UnicodeDecodeError, json.JSONDecodeError, ProviderError):
             raise ProviderError("The data-branch checkpoint is invalid or unavailable")
 
-    def _discover_failed_headwords(self, snapshot_id: str) -> list[dict[str, Any]]:
+    def _discover_failed_headwords(self, snapshot_id: str) -> tuple[list[dict[str, Any]], int]:
         """Rebuild the retry queue from immutable prior shards after upgrading an old checkpoint."""
         safe_snapshot = re.sub(r"[^A-Za-z0-9_.-]+", "-", snapshot_id)
         listing_url = (
@@ -485,16 +485,18 @@ class LexicalCrawler:
         try:
             items, _ = self.client.get_json(listing_url)
         except ProviderNotFound:
-            return []
+            return [], 0
         if not isinstance(items, list):
             raise ProviderError("GitHub returned an invalid lexical shard listing")
 
         failures: dict[str, dict[str, Any]] = {}
+        observed_shard_bytes = 0
         for item in items:
             if not isinstance(item, dict) or item.get("type") != "file":
                 continue
             if not str(item.get("name", "")).endswith(".jsonl.gz"):
                 continue
+            observed_shard_bytes += max(0, int(item.get("size", 0) or 0))
             download_url = item.get("download_url")
             if not isinstance(download_url, str) or not download_url.startswith("https://raw.githubusercontent.com/"):
                 raise ProviderError("A prior lexical shard has no safe immutable download URL")
@@ -521,7 +523,7 @@ class LexicalCrawler:
                     "entry_path": entry_path,
                     "attempts": 0,
                 })
-        return list(failures.values())
+        return list(failures.values()), observed_shard_bytes
 
     @staticmethod
     def _new_checkpoint(
@@ -664,8 +666,17 @@ class LexicalCrawler:
         checkpoint.setdefault("retry_queue", [])
         if not checkpoint.get("retry_queue_initialized"):
             if int(checkpoint.get("failed_headwords", 0)) > 0:
-                checkpoint["retry_queue"] = self._discover_failed_headwords(
+                (
+                    checkpoint["retry_queue"],
+                    observed_shard_bytes,
+                ) = self._discover_failed_headwords(
                     str(checkpoint["source_snapshot_id"])
+                )
+                # Reconcile historical duplicate shards that were published by a
+                # stale checkpoint read; never undercount physical storage usage.
+                checkpoint["stored_bytes"] = max(
+                    int(checkpoint.get("stored_bytes", 0)),
+                    observed_shard_bytes,
                 )
                 if not checkpoint["retry_queue"]:
                     raise ProviderError(
