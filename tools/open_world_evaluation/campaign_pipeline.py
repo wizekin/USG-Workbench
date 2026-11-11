@@ -473,6 +473,26 @@ def render_markdown(report: dict[str, Any]) -> str:
         lines.append(f"| {stage} | {first_counts.get(stage, 0)} | {later_counts.get(stage, 0)} |")
     lines += [
         "",
+        "### First-blocking diagnostic codes",
+        "",
+        "| Stage | Diagnostic code | Cases |",
+        "|---|---|---:|",
+    ]
+    for stage, codes in attribution.get("first_blocking_diagnostic_counts", {}).items():
+        for code, count in codes.items():
+            lines.append(f"| {stage} | {code} | {count} |")
+    lines += [
+        "",
+        "### Resource fingerprint groups",
+        "",
+    ]
+    for group in attribution.get("breakdown_by_target_population_language", []):
+        lines.append(
+            f"- {group['target_id']} / {group['population']} / {group['language']} / "
+            f"{group['pipeline_version']}: {group['resource_fingerprint']}"
+        )
+    lines += [
+        "",
         "### Examples",
         "",
     ]

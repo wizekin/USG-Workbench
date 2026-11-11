@@ -62,6 +62,9 @@ class FirstBlockingStageTests(unittest.TestCase):
         item = case("case-lexical", language="en-ar")
         output = {
             "target_result": {
+                "resource_manifest_digest": "d" * 64,
+                "pipeline_contract": "USG-INTERPRET/0.2.0",
+                "pipeline_version": "phase5-interpretation-integration/0.3.0",
                 "diagnostics": [
                     {"stage": "syntax", "code": "SYNTAX_INCOMPLETE"},
                     {"stage": "lexical", "code": "LEXICAL_UNRESOLVED_TOKEN"},
@@ -76,13 +79,24 @@ class FirstBlockingStageTests(unittest.TestCase):
         self.assertEqual(report["dependency_related_later_stage_counts"], {
             "semantic_composition": 1, "syntax": 1,
         })
+        self.assertEqual(report["first_blocking_diagnostic_counts"], {
+            "lexical": {"LEXICAL_UNRESOLVED_TOKEN": 1},
+        })
+        self.assertEqual(report["dependency_related_later_stage_diagnostic_counts"], {
+            "semantic_composition": {"SEMANTIC_CLAUSE_UNRESOLVED": 1},
+            "syntax": {"SYNTAX_INCOMPLETE": 1},
+        })
         group = report["breakdown_by_target_population_language"][0]
         self.assertEqual(group["language"], "en-ar")
         self.assertEqual(group["first_blocking_stage_counts"], {"lexical": 1})
+        self.assertEqual(group["resource_fingerprint"], "manifest:" + "d" * 64)
         self.assertIn("not proof that an upstream failure caused them", report["causality_warning"])
 
     def test_parallel_phase5_blockers_are_both_retained_as_first_blockers(self):
-        output = {"target_result": {"diagnostics": [
+        output = {"target_result": {
+            "pipeline_contract": "USG-INTERPRET/0.2.0",
+            "pipeline_version": "phase5-interpretation-integration/0.3.0",
+            "diagnostics": [
             {"stage": "syntax", "code": "SYNTAX_INCOMPLETE"},
             {"stage": "discourse", "code": "DISCOURSE_ANTECEDENT_UNRESOLVED"},
         ]}}
@@ -97,7 +111,10 @@ class FirstBlockingStageTests(unittest.TestCase):
         self.assertEqual(report["dependency_related_later_stage_counts"], {})
 
     def test_phase4_stage_list_statuses_are_read_using_phase4_dependencies(self):
-        output = {"target_result": {"stages": [
+        output = {"target_result": {
+            "pipeline_contract": "USG-INTERPRET/0.1.0",
+            "pipeline_version": "usg-interpretation/0.1.0",
+            "stages": [
             {"stage": "syntax", "status": "INCOMPLETE"},
             {"stage": "semantic_composition", "status": "PARTIAL"},
             {"stage": "discourse", "status": "PARTIAL"},
@@ -124,8 +141,29 @@ class FirstBlockingStageTests(unittest.TestCase):
         self.assertEqual(report["first_blocking_stage_counts"], {})
         self.assertEqual(report["unconfigured_target_record_counts"], {"unknown-interpreter": 1})
 
+    def test_pipeline_version_mismatch_is_not_attributed_with_a_stale_graph(self):
+        output = {"target_result": {
+            "pipeline_contract": "USG-INTERPRET/0.2.0",
+            "pipeline_version": "phase5-interpretation-integration/9.9.9",
+            "diagnostics": [
+                {"stage": "lexical", "code": "LEXICAL_UNRESOLVED_TOKEN"},
+            ],
+        }}
+        report = build_stage_attribution(
+            [case("case-stale-profile")],
+            [result("case-stale-profile", "partial", inline_output=output)],
+        )
+        self.assertEqual(report["first_blocking_stage_counts"], {})
+        self.assertEqual(
+            report["pipeline_version_mismatch_record_counts"],
+            {"phase5-bounded-interpreter:phase5-interpretation-integration/9.9.9": 1},
+        )
+
     def test_warnings_do_not_become_blocking_diagnostics(self):
-        output = {"target_result": {"diagnostics": [
+        output = {"target_result": {
+            "pipeline_contract": "USG-INTERPRET/0.2.0",
+            "pipeline_version": "phase5-interpretation-integration/0.3.0",
+            "diagnostics": [
             {"stage": "lexical", "code": "LEXICAL_LOW_CONFIDENCE", "severity": "warning"},
         ]}}
         report = build_stage_attribution(
@@ -144,7 +182,10 @@ class FirstBlockingStageTests(unittest.TestCase):
         self.assertEqual(report["not_executed_record_count_excluded"], 1)
 
     def test_unmapped_stage_is_reported_without_guessing_a_first_blocker(self):
-        output = {"target_result": {"diagnostics": [
+        output = {"target_result": {
+            "pipeline_contract": "USG-INTERPRET/0.2.0",
+            "pipeline_version": "phase5-interpretation-integration/0.3.0",
+            "diagnostics": [
             {"stage": "experimental_new_stage", "code": "NEW_STAGE_INCOMPLETE"},
         ]}}
         report = build_stage_attribution(
