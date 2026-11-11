@@ -58,3 +58,38 @@ No semantic acceptance credit or construction promotion is permitted.
 python -m unittest discover -s tests -p 'test_phase6_external_pud_camel_msa.py' -v
 python -m tools.phase6_external_pud_v0_5.camel_msa
 ```
+
+## Observed PUD evaluation (2026-11-11)
+
+The pinned Arabic PUD run evaluated 20,747 annotated tokens, including 18,223
+Arabic-script tokens. With analyzer backoff disabled:
+
+| Measure | All PUD tokens | Arabic-script tokens |
+|---|---:|---:|
+| Analysis coverage | 95.14% | 94.47% |
+| Gold lemma included in candidates | 88.46% | 86.88% |
+| Gold UPOS included in candidates | 77.17% | 74.14% |
+| Gold lemma + UPOS candidate recall | 75.32% | 72.04% |
+
+Across all tokens, 51.42% had more than one distinct lemma/POS candidate, and
+the mean candidate-set size was 1.88. By gold UPOS, lemma/POS candidate recall
+was 88.83% for NOUN, 98.06% for VERB, 79.46% for ADJ, and 36.23% for PROPN.
+The weak proper-name result confirms that named entities need a separate
+conservative path rather than unrestricted morphology guesses.
+
+This is a promising source of MSA morphological candidates, particularly for
+common nouns and verbs, but it is **not a disambiguator**. The 51.42% ambiguity
+rate means a contextual stage is still required. Its all-token lemma/POS recall
+is numerically close to the 73.65% result from the fold-derived prefix/suffix
+baseline, but the comparison is not strictly like-for-like: the latter is
+fold-trained on PUD, while CAMeL uses an external prebuilt database whose
+training-data overlap with PUD is not established.
+
+**Decision:** retain CAMeL as an optional candidate-generation backend for
+further study, not as a required USG dependency. Do not integrate its database
+into USG resources or runtime distribution. Next, evaluate contextual
+disambiguation on held-out MSA examples and establish the licensing boundary
+for any optional adapter.
+
+The successful evaluation run is
+[workflow run 42990321466](https://github.com/wizekin/USG-Workbench/actions/runs/42990321466).
