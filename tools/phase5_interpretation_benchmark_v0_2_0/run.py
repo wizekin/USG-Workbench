@@ -6,8 +6,13 @@ import json
 from pathlib import Path
 import sys
 from collections import Counter, defaultdict
+from statistics import median
+from time import perf_counter
+import tracemalloc
+from hashlib import sha256
 
 from jsonschema import Draft202012Validator
+from tools.usg_interpretation_v0_2_0 import Phase5InterpretationService, bundled_resource_descriptors
 
 ROOT = Path(__file__).resolve().parents[2]
 CORPUS = ROOT / "benchmarks/phase5-interpretation/v0.2.0/corpus.json"
@@ -152,15 +157,101 @@ def evaluate(corpus: dict, predictions: dict) -> dict:
     }
 
 
+def run_pipeline(corpus: dict) -> tuple[dict, dict]:
+    """Run the real deterministic Phase 5 service over every gold fixture."""
+    descriptors = [
+        {name: getattr(item, name) for name in item.__dataclass_fields__}
+        for item in bundled_resource_descriptors()
+    ]
+    manifest_bytes = json.dumps(
+        descriptors, ensure_ascii=False, sort_keys=True, separators=(",", ":"),
+        allow_nan=False,
+    ).encode("utf-8")
+    manifest_digest = sha256(manifest_bytes).hexdigest()
+    service = Phase5InterpretationService()
+    predictions = []
+    elapsed_ms = []
+    tracemalloc.start()
+    try:
+        for case in corpus["cases"]:
+            started = perf_counter()
+            result = service.interpret(
+                case["text"], case["language"],
+                resource_manifest_digest=manifest_digest,
+            )
+            elapsed_ms.append((perf_counter() - started) * 1000)
+            syntax = result["stages"]["syntax"]["artifact"]
+            lexical = result["stages"]["lexical"]["artifact"]
+            token_by_id = {
+                item["token"]["token_id"]: item["token"]
+                for item in lexical["tokens"]
+            }
+            syntax_candidates = [
+                candidate
+                for clause in syntax["clauses"]
+                for candidate in clause["candidates"]
+            ]
+            construction_id = None
+            role_bindings = {}
+            role_spans = {}
+            semantic = result["stages"]["semantic_composition"]["artifact"]
+            if (
+                result["completion_status"] == "COMPLETE"
+                and semantic["status"] == "COMPOSED"
+                and len(semantic["candidates"]) == 1
+                and len(syntax_candidates) == 1
+            ):
+                candidate = syntax_candidates[0]
+                construction_id = candidate["construction_id"]
+                for role, token_id in candidate["role_token_refs"]:
+                    token = token_by_id[token_id]
+                    role_bindings[role] = token["surface_text"]
+                    role_spans[role] = {
+                        "start": token["start"],
+                        "end": token["end"],
+                        "surface": token["surface_text"],
+                    }
+            predictions.append({
+                "case_id": case["id"],
+                "completion_status": result["completion_status"],
+                "construction_id": construction_id,
+                "role_bindings": role_bindings,
+                "role_spans": role_spans,
+            })
+        _, peak_bytes = tracemalloc.get_traced_memory()
+    finally:
+        tracemalloc.stop()
+    ordered = sorted(elapsed_ms)
+    p95_index = max(0, min(len(ordered) - 1, int(0.95 * len(ordered) + 0.999999) - 1))
+    performance = {
+        "case_count": len(elapsed_ms),
+        "total_elapsed_ms": round(sum(elapsed_ms), 3),
+        "mean_case_elapsed_ms": round(sum(elapsed_ms) / len(elapsed_ms), 3) if elapsed_ms else 0.0,
+        "median_case_elapsed_ms": round(median(elapsed_ms), 3) if elapsed_ms else 0.0,
+        "p95_case_elapsed_ms": round(ordered[p95_index], 3) if ordered else 0.0,
+        "peak_traced_memory_bytes": peak_bytes,
+        "resource_manifest_digest": manifest_digest,
+        "measurement_note": "Single-process in-memory benchmark; tracemalloc excludes native allocator and OS RSS.",
+    }
+    return {"predictions": predictions}, performance
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--corpus", type=Path, default=CORPUS)
     parser.add_argument("--predictions", type=Path)
+    parser.add_argument("--run-pipeline", action="store_true", help="run the real Phase 5 service over the full gold corpus")
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
     corpus = load_and_validate(args.corpus)
     report = corpus_summary(corpus)
-    if args.predictions:
+    if args.run_pipeline and args.predictions:
+        parser.error("--run-pipeline and --predictions are mutually exclusive")
+    if args.run_pipeline:
+        predictions, performance = run_pipeline(corpus)
+        report["evaluation"] = evaluate(corpus, predictions)
+        report["performance"] = performance
+    elif args.predictions:
         predictions = json.loads(args.predictions.read_text(encoding="utf-8"))
         report["evaluation"] = evaluate(corpus, predictions)
     else:
