@@ -1,0 +1,52 @@
+name: Phase 5 Step 5.9 SQLite Resource Catalogue
+on:
+  pull_request:
+    paths:
+      - "tools/usg_interpretation_v0_2_0/**"
+      - "tests/test_phase5_sqlite_resource_catalogue.py"
+      - "documentation/PHASE-5-STEP-5.9-RESOURCE-CATALOGUE.md"
+      - "README.md"
+      - ".github/workflows/phase5-step-5-9-catalogue.yml"
+  push:
+    branches: [main]
+    paths:
+      - "tools/usg_interpretation_v0_2_0/**"
+      - "tests/test_phase5_sqlite_resource_catalogue.py"
+      - "documentation/PHASE-5-STEP-5.9-RESOURCE-CATALOGUE.md"
+      - "README.md"
+      - ".github/workflows/phase5-step-5-9-catalogue.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  catalogue:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install schema validation dependency
+        run: python -m pip install "jsonschema>=4.18,<5"
+      - name: Compile v0.2 package
+        run: python -m compileall -q tools/usg_interpretation_v0_2_0
+      - name: Run SQLite catalogue tests
+        run: python -m unittest discover -s tests -p "test_phase5_sqlite_resource_catalogue.py" -v
+      - name: Run discourse, coordination, operator, semantic, syntax, lexical, and benchmark regressions
+        run: |
+          python -m unittest discover -s tests -p "test_phase5_discourse_reference.py" -v
+          python -m unittest discover -s tests -p "test_phase5_clause_coordination.py" -v
+          python -m unittest discover -s tests -p "test_phase5_operator_scope.py" -v
+          python -m unittest discover -s tests -p "test_phase5_semantic_composition.py" -v
+          python -m unittest discover -s tests -p "test_phase5_segmentation_syntax.py" -v
+          python -m unittest discover -s tests -p "test_phase5_lexical_resources.py" -v
+          python -m unittest discover -s tests -p "test_phase5_benchmark.py" -v
+      - name: Run frozen Phase 4 regression suite
+        run: python -m unittest discover -s tests -p "test_phase4_*.py" -v
+      - name: Verify canonical USG-SEM and historical implementation baselines
+        run: |
+          git diff --exit-code origin/main...HEAD -- specifications/USG-SEM-1.0.md specifications/usg-sem-1.0.schema.json tools/usg_interpretation_v0_1_0 benchmarks/phase4-interpretation/ benchmarks/phase5-interpretation/ archives/ implementations/
