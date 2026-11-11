@@ -96,6 +96,8 @@ class SQLiteInterpretationRunStore:
             result = json.loads(raw.decode("utf-8"))
         except (UnicodeDecodeError, json.JSONDecodeError) as exc:
             raise InterpretationRunIntegrityError("stored interpretation result is invalid JSON") from exc
+        if not isinstance(result, dict):
+            raise InterpretationRunIntegrityError("stored interpretation result must be a JSON object")
         if canonical_result_bytes(result) != raw:
             raise InterpretationRunIntegrityError("stored interpretation result is not canonical JSON")
         source = result.get("source")
@@ -104,7 +106,8 @@ class SQLiteInterpretationRunStore:
             if isinstance(source, dict) and isinstance(source.get("text"), str)
             else None
         )
-        if (source_digest != result.get("source_sha256")
+        if (not isinstance(source, dict)
+                or source_digest != result.get("source_sha256")
                 or source.get("sha256") != source_digest
                 or source.get("source_id") != result.get("source_ref")):
             raise InterpretationRunIntegrityError("stored interpretation source digest or identity is invalid")
@@ -127,14 +130,12 @@ class SQLiteInterpretationRunStore:
         if isinstance(limit, bool) or not isinstance(limit, int) or not 1 <= limit <= 500:
             raise ValueError("limit must be an integer from 1 through 500")
         rows = self.connection.execute(
-            "SELECT run_id FROM usg_interpretation_run ORDER BY created_at DESC,run_id LIMIT ?",
+            "SELECT run_id,created_at FROM usg_interpretation_run ORDER BY created_at DESC,run_id LIMIT ?",
             (limit,),
         ).fetchall()
         return tuple({
-            "run_id": row[0],
-            "created_at": self.connection.execute(
-                "SELECT created_at FROM usg_interpretation_run WHERE run_id=?", (row[0],)
-            ).fetchone()[0],
+            "run_id": row["run_id"],
+            "created_at": row["created_at"],
         } for row in rows)
 
 
