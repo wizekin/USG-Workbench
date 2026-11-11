@@ -19,6 +19,7 @@ include-package-data = true
 
 [tool.setuptools.package-data]
 tools = ["usg-kernel-lab/*.py", "usg-kernel-lab/*.html", "usg-kernel-lab/*.bat", "usg-kernel-lab/README.md"]
+resources = ["lexical/v0.1.0/*.json", "lexical/v0.2.0/*.json", "lexical/v0.3.0/*.json", "operators/v0.1.0/*.json"]
 specifications = ["*.json"]
 rules = ["**/*.json"]
 benchmarks = ["**/*.json"]

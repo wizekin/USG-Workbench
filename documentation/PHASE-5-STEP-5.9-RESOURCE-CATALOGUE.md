@@ -1,6 +1,6 @@
 # Phase 5 — Step 5.9: Persistent Semantic Resource Catalogue
 
-**Status:** IMPLEMENTED CANDIDATE — acceptance pending CI  
+**Status:** ACCEPTED — merged in PR #97; all 11 required checks passed  
 **Catalogue:** `sqlite-semantic-resource-catalogue/0.1.0`  
 **Storage:** existing caller-owned canonical SQLite connection
 

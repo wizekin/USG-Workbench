@@ -4,7 +4,7 @@ from setuptools import find_namespace_packages, setup
 packages = [
     name for name in find_namespace_packages(
         include=["tools", "tools.*", "interoperability", "interoperability.*",
-                 "specifications", "rules", "benchmarks", "examples", "release"]
+                 "specifications", "rules", "benchmarks", "examples", "release", "resources", "resources.*"]
     )
     if all(part.isidentifier() for part in name.split("."))
 ]

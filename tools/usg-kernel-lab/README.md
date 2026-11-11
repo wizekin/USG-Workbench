@@ -5,7 +5,8 @@ A local-only browser workbench combining:
 - the Phase 2 structured query/reasoning pipeline;
 - the Phase 3 SQLite canonical document store and immutable revisions;
 - persistent query, conditions/exception maps, and exact-scope contradiction inspection;
-- Phase 4 raw-text interpretation panel for the bounded USG-INTERPRET/0.1.0 English/MSA Arabic demonstrator.
+- Phase 4 raw-text-to-USG-SEM/1.0 panel for the bounded USG-INTERPRET/0.1.0 demonstrator;
+- Phase 5 USG-INTERPRET/0.2.0 multi-stage analysis, resource catalogue, provisional association retrieval, and immutable interpretation-run replay.
 
 ## What it can test
 
@@ -20,11 +21,14 @@ A local-only browser workbench combining:
 - Inspect IF/UNLESS conditions, exceptions, and nested NOT scopes.
 - Inspect exact-scope contradictions without selecting a winner.
 - Export the complete canonical document as JSON.
-- Submit raw English or Modern Standard Arabic text to the local interpreter, inspect stage statuses/diagnostics, and optionally persist the resulting canonical document to the same SQLite store.
+- Submit raw English or Modern Standard Arabic text to the Phase 4 interpreter and optionally persist its canonical USG-SEM/1.0 output.
+- Submit source text to the Phase 5 v0.2 pipeline and inspect lexical, segmentation, operator, syntax, semantic-composition, and discourse artifacts.
+- Inspect the versioned resource manifest and retrieve provisional association candidates by exact source reference.
+- Persist immutable Phase 5 interpretation envelopes, export them, and replay them against the pinned resource manifest.
 
 ## What it does not do
 
-The raw-text interpreter is a bounded demonstrator, not a general-purpose English or Arabic parser. Its bundled lexicon is tiny; enabled grammar is limited to explicit three-word English SVO and Modern Standard Arabic SVO/VSO patterns. Multi-sentence composition, nested grammar, negation/modality/tense/aspect scope, coordination, broad lexical coverage, and general coreference remain unsupported. Unknown or unsupported input is preserved with diagnostics rather than guessed. The reasoning interface continues to accept explicit canonical semantic structures and exact typed references; no objective truth is claimed.
+Both interpreters are bounded and are not general-purpose English or Arabic parsers. Phase 4 remains the small v0.1.0 canonical-document demonstrator. Phase 5 v0.2 exposes the accepted lexical, clause segmentation, syntax, operator, semantic-composition, and discourse candidate stages, but it does not emit a USG-SEM/1.0 document. Unknown, ambiguous, unsupported, and resource-limited input remains explicit. Discourse and association candidates do not resolve identity, and no objective truth is claimed.
 
 ## Requirements
 
@@ -86,7 +90,12 @@ The Kernel Lab server exposes the same versioned application dispatcher as the s
 - `GET /v1/documents/{document_id}/contradictions?revision=N`
 - `GET /v1/documents/{document_id}/export?revision=N`
 - `POST /v1/query`
-- `POST /v1/interpret` accepts `text`, `language` (`en` or `ar`), and optional `persist` (defaults to true); returns a USG-SEM/1.0 document, stage diagnostics, and persistence metadata when stored. The enabled language/grammar scope is deliberately small.
+- `POST /v1/interpret` accepts `text`, `language` (`en` or `ar`), and optional `persist`; returns a bounded USG-SEM/1.0 document.
+- `GET /v2/resources` returns the versioned resource manifest and digest.
+- `POST /v2/interpret` runs the Phase 5 stages and optionally stores an immutable interpretation run.
+- `GET /v2/interpretations`, `GET /v2/interpretations/{run_id}`, and `GET /v2/interpretations/{run_id}/export` list, retrieve, and export run envelopes.
+- `POST /v2/interpretations/{run_id}/replay` re-runs and compares the canonical result digest, refusing a changed resource manifest.
+- `POST /v2/associations`, `GET /v2/associations?source_ref=...`, and `POST /v2/associations/{association_id}/use` manage only provisional associations and append-only usage events.
 
 The legacy UI endpoints remain available:
 - `GET /`, `GET /health`, `GET /api/fixtures`
