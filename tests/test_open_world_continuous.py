@@ -20,7 +20,7 @@ class OpenWorldCampaignProfileTests(unittest.TestCase):
         self.assertEqual(profile["cadence"], "daily")
         self.assertEqual(profile["prompt_count"], 20)
         self.assertEqual(profile["random_target_case_count"], 20 * TARGETS_PER_PROMPT)
-        self.assertEqual(profile["total_case_count"], 60 + CONTROLLED_DIAGNOSTIC_COUNT)
+        self.assertEqual(profile["total_case_count"], 20 * TARGETS_PER_PROMPT + CONTROLLED_DIAGNOSTIC_COUNT)
 
     def test_weekly_profile_increases_exploration_budget(self):
         profile = resolve_campaign_profile(
