@@ -1056,7 +1056,7 @@
       "form": "بجانب",
       "lemma": "بجانب",
       "part_of_speech": "ADP",
-      "sense_id": "usg.sense.spatial.location",
+      "sense_id": "usg.sense.spatial.marker",
       "features": {},
       "status": "CANDIDATE",
       "evidence": [
@@ -1228,7 +1228,7 @@
       "form": "داخل",
       "lemma": "داخل",
       "part_of_speech": "ADP",
-      "sense_id": "usg.sense.spatial.location",
+      "sense_id": "usg.sense.spatial.marker",
       "features": {},
       "status": "CANDIDATE",
       "evidence": [
@@ -1488,7 +1488,7 @@
       "form": "في",
       "lemma": "في",
       "part_of_speech": "ADP",
-      "sense_id": "usg.sense.spatial.location",
+      "sense_id": "usg.sense.spatial.marker",
       "features": {},
       "status": "CANDIDATE",
       "evidence": [
@@ -1530,7 +1530,7 @@
       "form": "قرب",
       "lemma": "قرب",
       "part_of_speech": "ADP",
-      "sense_id": "usg.sense.spatial.location",
+      "sense_id": "usg.sense.spatial.marker",
       "features": {},
       "status": "CANDIDATE",
       "evidence": [
@@ -1919,9 +1919,11 @@
       "language_profile": "en/standard-written-1.0",
       "form": "a",
       "lemma": "a",
-      "part_of_speech": "NOUN",
-      "sense_id": "usg.sense.entity",
-      "features": {},
+      "part_of_speech": "DET",
+      "sense_id": "usg.sense.determiner",
+      "features": {
+        "Definiteness": "Indefinite"
+      },
       "status": "CANDIDATE",
       "evidence": [
         {
@@ -3852,9 +3854,11 @@
       "language_profile": "en/standard-written-1.0",
       "form": "the",
       "lemma": "the",
-      "part_of_speech": "NOUN",
-      "sense_id": "usg.sense.entity",
-      "features": {},
+      "part_of_speech": "DET",
+      "sense_id": "usg.sense.determiner",
+      "features": {
+        "Definiteness": "Definite"
+      },
       "status": "CANDIDATE",
       "evidence": [
         {
@@ -3925,7 +3929,7 @@
       "form": "the",
       "lemma": "the",
       "part_of_speech": "DET",
-      "sense_id": "usg.sense.spatial.location",
+      "sense_id": "usg.sense.determiner",
       "features": {
         "Definiteness": "Definite"
       },
