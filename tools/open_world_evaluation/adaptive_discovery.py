@@ -61,7 +61,11 @@ def scan_history(root: Path, exclude_campaign_id: str | None = None) -> dict[str
                     "first_seen_campaign_id": cid,
                     "proposed_label": cluster.get("proposed_label"),
                 })
-    return {"campaign_ids": campaigns, "known": known}
+    return {
+        "campaign_ids": campaigns,
+        "history_campaign_count": len(campaigns),
+        "known": known,
+    }
 
 
 def whitespace_variants(text: str) -> list[tuple[str, str]]:
@@ -124,7 +128,6 @@ def make_followup(
                 f"failure_signature={label}",
             ],
             "mutation_ops": [operation],
-            "novelty_cluster_id": cid,
         },
         "source": {
             "kind": "synthetic",
@@ -135,18 +138,15 @@ def make_followup(
             "text": text,
             "utf8_sha256": digest,
             "language_hint": base.get("input", {}).get("language_hint", "unspecified"),
-            "script_hint": base.get("input", {}).get("script_hint", ""),
             "prior_turns": base.get("input", {}).get("prior_turns", []),
         },
         "target": dict(base["target"]),
         "taxonomy": {
             "labels": labels,
             "unclassified": taxonomy.get("unclassified", True),
-            "notes": f"Formatting-only follow-up derived from {origin}.",
         },
         "oracle": {"type": "none", "independent": False},
         "resource_limits": dict(base["resource_limits"]),
-        "tags": ["adaptive_followup", cid, operation],
     }
 
 
