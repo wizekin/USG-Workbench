@@ -8,7 +8,6 @@ on:
       - "tools/open_world_evaluation/**"
       - "tests/test_open_world_campaign.py"
       - "tests/test_open_world_growth_diagnostics.py"
-      - "tests/test_open_world_growth_diagnostics.py"
       - ".github/workflows/open-world-campaign.yml"
   push:
     branches: [main]
@@ -78,4 +77,5 @@ jobs:
       - name: Compile report and minimizer modules
         run: |
           python -m py_compile tools/open_world_evaluation/campaign_pipeline.py
+          python -m py_compile tools/open_world_evaluation/growth_diagnostics.py
           python -m py_compile tools/open_world_evaluation/minimize_failures.py
