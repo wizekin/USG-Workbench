@@ -41,6 +41,14 @@ def evaluate_predictions(sentences: list[dict], predictions: list[list[dict]]) -
             totals["lemma_hits"] += int(lemma_hit)
             totals["upos_hits"] += int(pos_hit)
             totals["lemma_upos_hits"] += int(joint_hit)
+            if gold_upos in {"NOUN", "PROPN", "VERB", "ADJ", "ADV"}:
+                totals["content_tokens"] += 1
+                totals["content_lemma_hits"] += int(lemma_hit)
+                totals["content_upos_hits"] += int(pos_hit)
+                totals["content_lemma_upos_hits"] += int(joint_hit)
+            if gold_upos != "PUNCT":
+                totals["nonpunct_tokens"] += 1
+                totals["nonpunct_lemma_upos_hits"] += int(joint_hit)
             row = by_upos[gold_upos]
             row["tokens"] += 1
             row["lemma_hits"] += int(lemma_hit)
@@ -55,6 +63,12 @@ def evaluate_predictions(sentences: list[dict], predictions: list[list[dict]]) -
         "lemma_accuracy": ratio(totals["lemma_hits"], totals["tokens"]),
         "upos_accuracy": ratio(totals["upos_hits"], totals["tokens"]),
         "lemma_upos_joint_accuracy": ratio(totals["lemma_upos_hits"], totals["tokens"]),
+        "content_lemma_accuracy": ratio(totals["content_lemma_hits"], totals["content_tokens"]),
+        "content_upos_accuracy": ratio(totals["content_upos_hits"], totals["content_tokens"]),
+        "content_lemma_upos_joint_accuracy": ratio(
+            totals["content_lemma_upos_hits"], totals["content_tokens"]),
+        "nonpunct_lemma_upos_joint_accuracy": ratio(
+            totals["nonpunct_lemma_upos_hits"], totals["nonpunct_tokens"]),
     })
     return {
         "totals": totals_out,
