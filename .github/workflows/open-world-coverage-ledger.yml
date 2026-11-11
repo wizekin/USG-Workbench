@@ -56,7 +56,9 @@ jobs:
           assert rows["phase4-bounded-interpreter"]["entrypoint_coverage_status"] == "entrypoint_exercised"
           assert rows["phase5-bounded-interpreter"]["entrypoint_coverage_status"] == "entrypoint_exercised"
           assert rows["js-semantic-workbench-v054"]["entrypoint_coverage_status"] == "not_executed_only"
-          assert ledger["inventory_component_count"] >= len(ledger["registered_target_profile_count"] for _ in [])
+          assert ledger["inventory_component_count"] == 11
+          assert ledger["registered_target_profile_count"] == 3
+          assert ledger["entrypoint_exercised_component_count"] == 2
           PY
       - name: Compile coverage ledger
         run: python -m py_compile tools/open_world_evaluation/coverage_ledger.py
