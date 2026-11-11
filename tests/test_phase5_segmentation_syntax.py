@@ -25,6 +25,8 @@ class Phase5SegmentationSyntaxTests(unittest.TestCase):
         candidate = syntax.clauses[0].candidates[0]
         self.assertEqual(candidate.construction_id, "en.simple_transitive.svo")
         self.assertEqual(set(dict(candidate.role_token_refs)), {"AGENT", "ACTION", "PATIENT"})
+        self.assertEqual({x.constituent_type for x in candidate.constituents}, {"CLAUSE", "NP", "VP"})
+        self.assertEqual({x.relation for x in candidate.dependencies}, {"NSUBJ", "OBJ"})
 
     def test_arabic_vso_and_svo_patterns_are_distinct(self):
         _, _, vso = self.analyze("كتب الطالب الرسالة", "ar")
@@ -41,6 +43,9 @@ class Phase5SegmentationSyntaxTests(unittest.TestCase):
         self.assertEqual(len(segmented.clauses), 2)
         self.assertEqual(segmented.boundaries[0].relation, "COORDINATION_AND")
         self.assertEqual(text[slice(*segmented.boundaries[0].marker_span)], "and")
+        self.assertEqual(len(syntax.attachments), 1)
+        self.assertEqual(syntax.attachments[0].status, "CANDIDATE")
+        self.assertEqual(syntax.attachments[0].relation, "COORDINATION_AND")
         self.assertEqual(syntax.status, "COMPLETE")
         self.assertEqual([x.status for x in syntax.clauses], ["RESOLVED", "RESOLVED"])
 
