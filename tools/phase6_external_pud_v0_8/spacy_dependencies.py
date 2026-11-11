@@ -111,9 +111,11 @@ def evaluate_predictions(sentences: list[dict], predictions: list[list[dict]]) -
             deprel = gold["deprel"]
             totals["tokens"] += 1
             totals["uas_hits"] += correct
+            totals["converted_uas_hits"] += converted_correct
             if gold.get("is_root", False):
                 totals["root_tokens"] += 1
                 totals["root_hits"] += correct
+                totals["converted_root_hits"] += converted_correct
             if upos != "PUNCT":
                 totals["nonpunct_tokens"] += 1
                 totals["nonpunct_uas_hits"] += correct
@@ -156,7 +158,8 @@ def evaluate_predictions(sentences: list[dict], predictions: list[list[dict]]) -
         "by_gold_deprel": {
             relation: {
                 **dict(values),
-                "uas": ratio(values["uas_hits"], values["tokens"]),
+                "raw_uas": ratio(values["uas_hits"], values["tokens"]),
+                "converted_uas": ratio(values["converted_uas_hits"], values["tokens"]),
             }
             for relation, values in sorted(by_deprel.items())
         },
