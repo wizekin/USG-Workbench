@@ -405,7 +405,7 @@ class LexicalCrawler:
         storage_budget_bytes: int = DEFAULT_STORAGE_BUDGET_BYTES,
     ):
         self.repository = repository
-        self.client = client or HttpClient(timeout=25, max_bytes=12_000_000, retries=3)
+        self.client = client or HttpClient(timeout=25, max_bytes=20_000_000, retries=3)
         self.publisher = publisher
         self.data_branch = data_branch
         self.delay_seconds = max(0.0, min(float(delay_seconds), 2.0))
