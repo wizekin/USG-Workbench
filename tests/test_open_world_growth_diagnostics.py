@@ -4,6 +4,7 @@ import unittest
 from tools.open_world_evaluation.growth_diagnostics import (
     build_execution_accounting,
     build_stage_attribution,
+    load_stage_dependency_graph,
 )
 
 
@@ -72,13 +73,56 @@ class FirstBlockingStageTests(unittest.TestCase):
             [item], [result("case-lexical", "partial", inline_output=output)]
         )
         self.assertEqual(report["first_blocking_stage_counts"], {"lexical": 1})
-        self.assertEqual(report["later_blocking_stage_cooccurrence_counts"], {
+        self.assertEqual(report["dependency_related_later_stage_counts"], {
             "semantic_composition": 1, "syntax": 1,
         })
         group = report["breakdown_by_target_population_language"][0]
         self.assertEqual(group["language"], "en-ar")
         self.assertEqual(group["first_blocking_stage_counts"], {"lexical": 1})
         self.assertIn("not proven root cause", report["causality_warning"])
+
+    def test_parallel_phase5_blockers_are_both_retained_as_first_blockers(self):
+        output = {"target_result": {"diagnostics": [
+            {"stage": "syntax", "code": "SYNTAX_INCOMPLETE"},
+            {"stage": "discourse", "code": "DISCOURSE_ANTECEDENT_UNRESOLVED"},
+        ]}}
+        report = build_stage_attribution(
+            [case("case-parallel")],
+            [result("case-parallel", "partial", inline_output=output)],
+        )
+        self.assertEqual(report["first_blocking_stage_counts"], {
+            "discourse": 1, "syntax": 1,
+        })
+        self.assertEqual(report["records_with_multiple_parallel_first_blockers"], 1)
+        self.assertEqual(report["dependency_related_later_stage_counts"], {})
+
+    def test_phase4_stage_list_statuses_are_read_using_phase4_dependencies(self):
+        output = {"target_result": {"stages": [
+            {"stage": "syntax", "status": "INCOMPLETE"},
+            {"stage": "semantic_composition", "status": "PARTIAL"},
+            {"stage": "discourse", "status": "PARTIAL"},
+        ]}}
+        report = build_stage_attribution(
+            [case("case-phase4", target="phase4-bounded-interpreter")],
+            [result("case-phase4", "partial", target="phase4-bounded-interpreter", inline_output=output)],
+        )
+        self.assertEqual(report["first_blocking_stage_counts"], {"discourse": 1, "syntax": 1})
+        self.assertEqual(report["dependency_related_later_stage_counts"], {
+            "semantic_composition": 1,
+        })
+
+    def test_dependency_graph_is_acyclic_and_unknown_target_is_not_guessed(self):
+        graph = load_stage_dependency_graph()
+        self.assertIn("phase5-bounded-interpreter", graph["profiles"])
+        report = build_stage_attribution(
+            [case("case-unregistered", target="unknown-interpreter")],
+            [result("case-unregistered", "partial", target="unknown-interpreter",
+                    inline_output={"target_result": {"diagnostics": [
+                        {"stage": "lexical", "code": "LEXICAL_UNRESOLVED_TOKEN"},
+                    ]}})],
+        )
+        self.assertEqual(report["first_blocking_stage_counts"], {})
+        self.assertEqual(report["unconfigured_target_record_counts"], {"unknown-interpreter": 1})
 
     def test_warnings_do_not_become_blocking_diagnostics(self):
         output = {"target_result": {"diagnostics": [
