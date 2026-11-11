@@ -103,6 +103,7 @@ The normalized bundle uses:
 
 - **Entry:** a provider/source record with one lemma candidate and a part of speech.
 - **Sense:** one source-specific meaning with its original definition and source sense identifier.
+- **Cumulative graph:** a rebuildable local view assembled from cached entries across prior lookups; it is not a canonical ontology.
 - **Form:** a spelling explicitly observed in the source, together with source tags.
 - **Relation:** a provider-asserted relation with a relation type, direction, source sense (when present), and an explicit sense or entry scope.
 - **Source:** provider identity, record/history URLs, snapshot or revision identifiers, and license/attribution notes.
@@ -135,6 +136,13 @@ The system accumulates lexical evidence as users request words:
 5. Retrieved records and analysis observations are saved locally.
 6. Every access updates local use counts and recency.
 7. Future requests can be served from the local cache.
+8. The cumulative candidate graph can be rebuilt from all cached word records, joining repeated lemma candidates and preserving relation scope across lookups.
+
+Inspect the locally accumulated graph with:
+
+    py -m tools.usg_external_lexical_v0_1_0 graph --limit 10000
+
+The graph command performs no network requests. It only reconstructs a rebuildable view from words previously retrieved into the local cache; it reports the words and records that are stale.
 
 The activity ranking measures how often a word has been requested in this local installation. It is not an English-language frequency list, semantic importance score, or probability.
 
