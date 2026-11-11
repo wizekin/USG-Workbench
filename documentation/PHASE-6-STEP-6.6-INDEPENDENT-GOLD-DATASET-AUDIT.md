@@ -109,3 +109,21 @@ Sources: [Task 18 ACL Anthology record](https://aclanthology.org/S07-1017/) and 
 5. The remaining MSA internal nominal-relation gap cannot be solved by the Task 18 SRL corpus alone. It requires a separately sourced, legally usable relation-labelled set or an explicitly provisional annotation effort with independent adjudication.
 
 **No dataset has been imported, no gold denominator has been increased, and no Step 6.6 construction has been enabled by this follow-up.**
+
+
+## 8. Additional MSA candidate checked — WojoodRelations
+
+The 2025 WojoodRelations paper reports over 33,000 Arabic sentences, approximately 15,000 manually annotated relation triples, 40 relation types, and expert annotation agreement (Cohen's kappa 0.92). The dataset's project page lists relation types including `owner_of`, `has_property`, `has_relative`, `located_in`, `founder_of`, and `manufacturer_of`.
+
+This is a stronger MSA semantic-relation candidate than a syntax-only treebank, but it is **not a direct Step 6.6 gold substitute**:
+
+- Its task is entity-level relation extraction over entity pairs/triples, rather than annotation of every nominal head, modifier, possessor, adjective, compound component, and attachment inside a phrase.
+- Some relation labels may overlap with selected USG relation meanings (for example, ownership or property), but label-name overlap does not establish equivalent annotation units or semantics.
+- The official corpus download link opens a Google Form requiring full name, organization, and professional email. The page states access is limited to affiliated users and download links are sent to official emails.
+- The public access page does not itself specify a corpus redistribution license. The paper's ACL publication license does not automatically license the underlying dataset.
+
+**Decision:** record WojoodRelations as a potentially useful MSA *entity-relation diagnostic* only. Do not download, mirror, or include the data without satisfying the provider's access conditions and verifying dataset-specific terms. If access is granted, first inspect the annotation guidelines and entity-pair span conventions, then map only demonstrably equivalent relation cases into a separate diagnostic report. Do not use it to claim coverage of adjective modification, noun compounds, prepositional attachment, or event-time modifiers.
+
+Sources: [WojoodRelations paper](https://aclanthology.org/2025.emnlp-main.1741/), [official project page and label inventory](https://sina.birzeit.edu/relations/), and [official download request form](https://docs.google.com/forms/d/e/1FAIpQLSdtN7OtVQBkRYktpnHd8xmyLi_KP2eZHc4T41IaWtIAptM4mw/viewform).
+
+**Updated decision:** the MSA search has identified a third relevant semantic resource, but all external candidates remain access- or scope-limited. Step 6.6 remains open; no corpus has been integrated and no candidate construction has been enabled.
