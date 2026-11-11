@@ -89,6 +89,7 @@ def evaluate(corpus: dict, predictions: dict) -> dict:
         gold = [x for x in corpus["cases"] if x["language"] == lang]
         tp = fp = fn = status_ok = roles_ok = spans_ok = positive_total = 0
         negative_total = ambiguous_total = negative_abstentions = ambiguous_abstentions = 0
+        negative_total = ambiguous_total = negative_abstentions = ambiguous_abstentions = 0
         for case in gold:
             pred = pred_by_id.get(case["id"], {})
             predicted_status = pred.get("completion_status")
@@ -98,6 +99,12 @@ def evaluate(corpus: dict, predictions: dict) -> dict:
             predicted_positive = predicted_construction is not None
             if gold_positive:
                 positive_total += 1
+            elif case["gold_class"] == "NEGATIVE":
+                negative_total += 1
+                negative_abstentions += int(not predicted_positive)
+            else:
+                ambiguous_total += 1
+                ambiguous_abstentions += int(not predicted_positive)
             if predicted_positive and gold_positive and predicted_construction == gold_construction:
                 tp += 1
             elif predicted_positive:
@@ -139,6 +146,11 @@ def evaluate(corpus: dict, predictions: dict) -> dict:
         by_language[lang] = {
             "case_count": len(gold),
             "positive_gold_count": positive_total,
+            "negative_gold_count": negative_total,
+            "ambiguous_gold_count": ambiguous_total,
+            "negative_abstention_rate": negative_abstentions / negative_total if negative_total else 0.0,
+            "ambiguous_abstention_rate": ambiguous_abstentions / ambiguous_total if ambiguous_total else 0.0,
+            "nonpositive_unique_constructions": fp,
             "negative_gold_count": negative_total,
             "ambiguous_gold_count": ambiguous_total,
             "negative_abstention_rate": negative_abstentions / negative_total if negative_total else 0.0,
