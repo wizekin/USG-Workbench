@@ -12,7 +12,7 @@ could provide a better lexical starting point.
 - Download the same pinned English and Arabic PUD snapshots, verifying Git blob
   SHA-1 values before use.
 - Divide each language's 1,000 sentences deterministically into ten folds by
-  sentence index.
+  a stable SHA-256 hash of each sentence ID.
 - For each fold, build a form-to-UPOS candidate dictionary from the other nine
   folds and evaluate on the held-out fold.
 - Report exact-form OOV rate, token coverage, candidate-set tag recall,
@@ -44,8 +44,9 @@ python -m tools.phase6_external_pud_v0_2.crossval
 
 ## Observed ten-fold run (2026-11-11)
 
-Each language was evaluated across ten deterministic folds (900 training
-sentences and 100 held-out sentences per fold).
+Each language was evaluated across ten deterministic sentence-ID-hash folds.
+Each fold holds out approximately one tenth of the sentences; fold sizes are
+reported in the machine-readable artifact.
 
 | Measure | English PUD | Arabic PUD |
 |---|---:|---:|
