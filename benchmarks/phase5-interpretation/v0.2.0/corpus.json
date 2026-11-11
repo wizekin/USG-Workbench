@@ -1239,7 +1239,7 @@
     {
       "id": "ar.negative.02",
       "language": "ar",
-      "text": "كتب الطالب في الرسالة.",
+      "text": "الرسالة كتب الطالب.",
       "gold_class": "NEGATIVE",
       "expected_completion_status": "UNSUPPORTED",
       "expected_construction": null,
