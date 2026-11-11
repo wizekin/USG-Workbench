@@ -170,6 +170,28 @@ class LexicalCache:
         """, (max(1, min(int(limit), 500)),)).fetchall()
         return [dict(row) for row in rows]
 
+    def cached_records(self, limit: int = 10000) -> list[dict[str, Any]]:
+        """Read the locally acquired lexical records for incremental graph assembly."""
+        rows = self.connection.execute("""
+            SELECT cache_key, queried_form, status, payload_json, analysis_json,
+                   fetched_at, expires_at
+            FROM cached_records
+            WHERE status IN ('found', 'found_with_provider_warnings')
+            ORDER BY fetched_at DESC
+            LIMIT ?
+        """, (max(1, min(int(limit), 100000)),)).fetchall()
+        now = utc_now()
+        return [{
+            "cache_key": row["cache_key"],
+            "queried_form": row["queried_form"],
+            "status": row["status"],
+            "payload": json.loads(row["payload_json"]),
+            "analysis": json.loads(row["analysis_json"]) if row["analysis_json"] else None,
+            "fetched_at": row["fetched_at"],
+            "expires_at": row["expires_at"],
+            "is_stale": datetime.fromisoformat(row["expires_at"]) <= now,
+        } for row in rows]
+
     def reserve_provider_request(
         self, provider: str, *, maximum: int, window_seconds: int = 3600,
     ) -> None:
