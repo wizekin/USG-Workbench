@@ -250,7 +250,7 @@
           ],
           "senseRef": "usg.sense.event.intransitive",
           "resourceRefs": [
-            "phase6.lexicon.en.candidate/0.3.0"
+            "phase6.lexicon.bilingual.candidate/0.3.0"
           ]
         },
         {
@@ -264,7 +264,7 @@
           ],
           "senseRef": "usg.sense.event.intransitive",
           "resourceRefs": [
-            "phase6.lexicon.ar.candidate/0.3.0"
+            "phase6.lexicon.bilingual.candidate/0.3.0"
           ]
         }
       ]
@@ -343,7 +343,7 @@
           ],
           "senseRef": "usg.sense.transfer",
           "resourceRefs": [
-            "phase6.lexicon.en.candidate/0.3.0"
+            "phase6.lexicon.bilingual.candidate/0.3.0"
           ]
         },
         {
@@ -357,7 +357,7 @@
           ],
           "senseRef": "usg.sense.transfer",
           "resourceRefs": [
-            "phase6.lexicon.ar.candidate/0.3.0"
+            "phase6.lexicon.bilingual.candidate/0.3.0"
           ]
         }
       ]
@@ -424,7 +424,7 @@
           ],
           "senseRef": "usg.sense.property.predication",
           "resourceRefs": [
-            "phase6.lexicon.en.candidate/0.3.0"
+            "phase6.lexicon.bilingual.candidate/0.3.0"
           ]
         },
         {
@@ -438,7 +438,7 @@
           ],
           "senseRef": "usg.sense.property.predication",
           "resourceRefs": [
-            "phase6.lexicon.ar.candidate/0.3.0"
+            "phase6.lexicon.bilingual.candidate/0.3.0"
           ]
         }
       ]
@@ -508,7 +508,7 @@
           ],
           "senseRef": "usg.sense.spatial.location",
           "resourceRefs": [
-            "phase6.lexicon.en.candidate/0.3.0"
+            "phase6.lexicon.bilingual.candidate/0.3.0"
           ]
         },
         {
@@ -522,7 +522,7 @@
           ],
           "senseRef": "usg.sense.spatial.location",
           "resourceRefs": [
-            "phase6.lexicon.ar.candidate/0.3.0"
+            "phase6.lexicon.bilingual.candidate/0.3.0"
           ]
         }
       ]
