@@ -1,11 +1,25 @@
 import unittest
 
 from tools.phase6_ud_nominal_candidate_v0_1.adapter import (
-    adapt_sentence, align_token_spans,
+    adapt_sentence, align_token_spans, parse_ud_conllu,
 )
 
 
 class TestUDNominalAdapter(unittest.TestCase):
+
+    def test_conllu_parser_preserves_dependency_and_source_text(self):
+        payload = (
+            "# sent_id = s1\\n"
+            "# text = red car\\n"
+            "1\\tred\\tred\\tADJ\\t_\\t_\\t2\\tamod\\t_\\t_\\n"
+            "2\\tcar\\tcar\\tNOUN\\t_\\t_\\t0\\troot\\t_\\t_\\n\\n"
+        ).encode()
+        parsed = parse_ud_conllu(payload)
+        self.assertEqual(parsed[0]["meta"]["text"], "red car")
+        self.assertEqual(parsed[0]["tokens"][0]["gold_head_index"], 1)
+        self.assertEqual(parsed[0]["tokens"][0]["deprel"], "amod")
+        self.assertTrue(parsed[0]["tokens"][1]["is_root"])
+
     def test_english_adjective_modifier_has_exact_source_spans(self):
         sentence = {
             "meta": {"text": "the red car"},
