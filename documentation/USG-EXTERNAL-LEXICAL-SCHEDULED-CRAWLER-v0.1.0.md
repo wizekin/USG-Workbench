@@ -126,3 +126,25 @@ A crawl batch is accepted only when all of the following are true:
 7. Offline crawler contract tests, lexical retrieval tests, compilation, and structural benchmark pass before code changes are merged.
 
 External lexical records remain candidate evidence only. Successful crawling does not authorize automatic promotion into USG's active lexical resource or grammar.
+
+
+## Offline state reconciliation audit
+
+The crawler package includes a read-only metadata audit for comparing the data
+branch's checkpoint, manifest, and physical shard inventory. Prepare three
+UTF-8 JSON files: the decoded `state/checkpoint.json`, decoded
+`state/manifest.json`, and a JSON array of shard inventory objects containing
+`path`, `size`, and Git blob `sha` fields. Then run:
+
+```bash
+python -m tools.usg_external_lexical_v0_1_0 audit \
+  --checkpoint checkpoint.json \
+  --manifest manifest.json \
+  --shard-inventory shard-inventory.json
+```
+
+Exit code 0 means metadata reconciles (possibly with warnings); exit code 1
+means a consistency error was found; exit code 2 means the audit inputs could
+not be read or parsed. Identical duplicate shard blobs are warnings, not
+silently discarded: their physical bytes remain included in storage totals.
+The audit is read-only and does not modify checkpoints, manifests, or shards.
