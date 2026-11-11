@@ -1,19 +1,16 @@
-"""System-wide execution accounting and conservative first-blocker attribution.
-
-The legacy OW-1 report field attempted counts execution-result records,
-including not_executed target records. This module adds explicit counters
-without changing that historical field's meaning. Stage attribution is an
-observed diagnostic ordering, not proof of causal responsibility.
-"""
+"""System-wide execution accounting and dependency-aware blocker attribution."""
 from __future__ import annotations
 
 from collections import Counter, defaultdict
+import json
+from pathlib import Path
 from typing import Any
 
-STAGE_ORDER = (
-    "segmentation", "tokenization", "lexical", "morphology", "syntax",
-    "semantic_composition", "operators", "discourse", "serialization",
-    "persistence", "api", "ui",
+ROOT = Path(__file__).resolve().parents[2]
+STAGE_GRAPH_PATH = ROOT / "tools" / "open_world_evaluation" / "stage_dependency_graph.json"
+BLOCKING_MARKERS = (
+    "UNRESOLVED", "INCOMPLETE", "UNSUPPORTED", "INVALID",
+    "ERROR", "FAILED", "AMBIGUOUS", "MISSING", "PARTIAL",
 )
 STAGE_ALIASES = {
     "tokenisation": "tokenization", "lexical_analysis": "lexical",
@@ -21,10 +18,6 @@ STAGE_ALIASES = {
     "semantic": "semantic_composition", "semanticcomposition": "semantic_composition",
     "operator": "operators", "reference": "discourse", "coreference": "discourse",
 }
-BLOCKING_MARKERS = (
-    "UNRESOLVED", "INCOMPLETE", "UNSUPPORTED", "INVALID",
-    "ERROR", "FAILED", "AMBIGUOUS", "MISSING",
-)
 
 
 def _stage_name(value: Any) -> str | None:
@@ -32,6 +25,56 @@ def _stage_name(value: Any) -> str | None:
         return None
     normalized = value.strip().lower().replace("-", "_").replace(" ", "_")
     return STAGE_ALIASES.get(normalized, normalized)
+
+
+def load_stage_dependency_graph(path: Path = STAGE_GRAPH_PATH) -> dict[str, Any]:
+    """Load and validate the acyclic stage-dependency profiles."""
+    graph = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(graph, dict) or not isinstance(graph.get("profiles"), dict):
+        raise ValueError("stage dependency graph must contain a profiles object")
+    for target_id, profile in graph["profiles"].items():
+        stages = profile.get("stages")
+        if not isinstance(stages, dict) or not stages:
+            raise ValueError(f"{target_id} must declare non-empty stages")
+        for stage, spec in stages.items():
+            dependencies = spec.get("depends_on")
+            if not isinstance(dependencies, list) or any(dep not in stages for dep in dependencies):
+                raise ValueError(f"{target_id}.{stage} has an unknown dependency")
+        visiting: set[str] = set()
+        visited: set[str] = set()
+
+        def visit(stage: str) -> None:
+            if stage in visiting:
+                raise ValueError(f"{target_id} stage graph contains a cycle at {stage}")
+            if stage in visited:
+                return
+            visiting.add(stage)
+            for dependency in stages[stage]["depends_on"]:
+                visit(dependency)
+            visiting.remove(stage)
+            visited.add(stage)
+
+        for stage in stages:
+            visit(stage)
+    return graph
+
+
+def _ancestor_map(stages: dict[str, Any]) -> dict[str, set[str]]:
+    ancestors: dict[str, set[str]] = {}
+
+    def resolve(stage: str) -> set[str]:
+        if stage in ancestors:
+            return ancestors[stage]
+        found: set[str] = set()
+        for dependency in stages[stage]["depends_on"]:
+            found.add(dependency)
+            found.update(resolve(dependency))
+        ancestors[stage] = found
+        return found
+
+    for stage in stages:
+        resolve(stage)
+    return ancestors
 
 
 def _case_population(case: dict[str, Any]) -> str:
@@ -129,7 +172,7 @@ def _target_result(record: dict[str, Any]) -> dict[str, Any] | None:
     value = payload.get("target_result")
     if isinstance(value, dict):
         return value
-    if isinstance(payload.get("stages"), dict) or isinstance(payload.get("diagnostics"), list):
+    if isinstance(payload.get("stages"), (dict, list)) or isinstance(payload.get("diagnostics"), list):
         return payload
     return None
 
@@ -143,7 +186,8 @@ def _is_blocking(diagnostic: dict[str, Any]) -> bool:
     if severity in {"error", "fatal", "blocking"}:
         return True
     code = str(diagnostic.get("code", "")).upper()
-    return any(marker in code for marker in BLOCKING_MARKERS)
+    status = str(diagnostic.get("status", "")).upper()
+    return any(marker in code or marker in status for marker in BLOCKING_MARKERS)
 
 
 def _collect_stage_diagnostics(target_result: dict[str, Any]) -> dict[str, set[str]]:
@@ -155,38 +199,54 @@ def _collect_stage_diagnostics(target_result: dict[str, Any]) -> dict[str, set[s
                 continue
             stage = _stage_name(diagnostic.get("stage"))
             if stage:
-                by_stage[stage].add(str(diagnostic.get("code") or "UNSPECIFIED"))
+                by_stage[stage].add(str(diagnostic.get("code") or diagnostic.get("status") or "UNSPECIFIED"))
 
     stages = target_result.get("stages", {})
     if isinstance(stages, dict):
-        for raw_stage, stage_data in stages.items():
-            stage = _stage_name(raw_stage)
-            if not stage or not isinstance(stage_data, dict):
-                continue
-            nested = stage_data.get("diagnostics", [])
-            if isinstance(nested, list):
-                for diagnostic in nested:
-                    if isinstance(diagnostic, dict) and _is_blocking(diagnostic):
-                        by_stage[stage].add(str(diagnostic.get("code") or "UNSPECIFIED"))
-            status = str(stage_data.get("status") or stage_data.get("completion_status") or "").upper()
-            if any(marker in status for marker in BLOCKING_MARKERS):
-                by_stage[stage].add("STAGE_STATUS_" + status)
+        iterable = stages.items()
+    elif isinstance(stages, list):
+        iterable = ((item.get("stage"), item) for item in stages if isinstance(item, dict))
+    else:
+        iterable = ()
+    for raw_stage, stage_data in iterable:
+        stage = _stage_name(raw_stage)
+        if not stage or not isinstance(stage_data, dict):
+            continue
+        nested = stage_data.get("diagnostics", [])
+        if isinstance(nested, list):
+            for diagnostic in nested:
+                if isinstance(diagnostic, dict) and _is_blocking(diagnostic):
+                    by_stage[stage].add(str(diagnostic.get("code") or diagnostic.get("status") or "UNSPECIFIED"))
+        status = str(stage_data.get("status") or stage_data.get("completion_status") or "").upper()
+        if any(marker in status for marker in BLOCKING_MARKERS):
+            by_stage[stage].add("STAGE_STATUS_" + status)
     return by_stage
 
 
-def build_stage_attribution(cases: list[dict[str, Any]], results: list[dict[str, Any]], *, max_examples: int = 8) -> dict[str, Any]:
-    """Summarize earliest observed blocking stage and later observed blockers.
+def build_stage_attribution(
+    cases: list[dict[str, Any]],
+    results: list[dict[str, Any]],
+    *,
+    max_examples: int = 8,
+    graph: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Attribute blockers using target-specific DAG ancestry, not a global sequence.
 
-    The earliest stage is a diagnostic heuristic based on declared pipeline
-    order. Later blockers are co-occurrences, not proven causal consequences.
+    A stage is a first blocker when none of its declared ancestors is also
+    blocked. Multiple parallel first blockers are retained. Later blockers
+    are dependency-related co-occurrences, not proof of causal responsibility.
     """
+    graph = graph or load_stage_dependency_graph()
     case_by_id = {case.get("case_id"): case for case in cases}
     first_counts: Counter[str] = Counter()
     downstream_counts: Counter[str] = Counter()
-    group_counts: dict[tuple[str, str, str], Counter[str]] = defaultdict(Counter)
+    group_counts: dict[tuple[str, str, str, str], Counter[str]] = defaultdict(Counter)
     examples: dict[str, list[str]] = defaultdict(list)
     analyzed = without_payload = without_blocker = not_executed = 0
     unmapped: Counter[str] = Counter()
+    unconfigured_targets: Counter[str] = Counter()
+    multiple_first_blocker_records = 0
+    records_with_blockers = 0
 
     for record in results:
         if record.get("outcome") == "not_executed":
@@ -194,6 +254,7 @@ def build_stage_attribution(cases: list[dict[str, Any]], results: list[dict[str,
             continue
         analyzed += 1
         case = case_by_id.get(record.get("case_id"), {})
+        target_id = str(record.get("target", {}).get("component_id") or _target_id(case))
         target_result = _target_result(record)
         if target_result is None:
             without_payload += 1
@@ -203,41 +264,73 @@ def build_stage_attribution(cases: list[dict[str, Any]], results: list[dict[str,
         if not blockers:
             without_blocker += 1
             continue
-        known = [stage for stage in STAGE_ORDER if stage in blockers]
-        for stage in sorted(set(blockers) - set(STAGE_ORDER)):
-            unmapped[stage] += 1
-        if not known:
-            without_blocker += 1
+        records_with_blockers += 1
+        profile = graph["profiles"].get(target_id)
+        if profile is None:
+            unconfigured_targets[target_id] += 1
+            for stage in blockers:
+                unmapped[stage] += 1
             continue
 
-        first = known[0]
-        first_counts[first] += 1
-        group_counts[(_target_id(case), _case_population(case), _language(case))][first] += 1
+        stages = profile["stages"]
+        ancestors = _ancestor_map(stages)
+        known = set(blockers).intersection(stages)
+        for stage in sorted(set(blockers) - set(stages)):
+            unmapped[stage] += 1
+        if not known:
+            continue
+
+        first = sorted(
+            stage for stage in known
+            if not (ancestors[stage] & known)
+        )
+        later = sorted(known - set(first))
+        if len(first) > 1:
+            multiple_first_blocker_records += 1
+        key = (target_id, _case_population(case), _language(case), profile["pipeline_version"])
         case_id = str(record.get("case_id", ""))
-        if len(examples[first]) < max_examples and case_id not in examples[first]:
-            examples[first].append(case_id)
-        for later in known[1:]:
-            downstream_counts[later] += 1
+        for stage in first:
+            first_counts[stage] += 1
+            group_counts[key][stage] += 1
+            if len(examples[stage]) < max_examples and case_id not in examples[stage]:
+                examples[stage].append(case_id)
+        for stage in later:
+            downstream_counts[stage] += 1
 
     groups = [{
-        "target_id": target, "population": population, "language": language,
+        "target_id": target,
+        "population": population,
+        "language": language,
+        "pipeline_version": pipeline_version,
         "first_blocking_stage_counts": dict(sorted(counts.items())),
-    } for (target, population, language), counts in sorted(group_counts.items())]
+    } for (target, population, language, pipeline_version), counts in sorted(group_counts.items())]
     return {
-        "attribution_version": "1.0.0",
-        "stage_order": list(STAGE_ORDER),
-        "attribution_basis": "earliest_stage_with_explicit_blocking_diagnostic_or_blocking_stage_status",
+        "attribution_version": "2.0.0",
+        "stage_dependency_graph_version": graph.get("graph_version", "unknown"),
+        "attribution_basis": "target_specific_dependency_dag_ancestry",
         "causality_warning": (
-            "First blocking stage is an observed diagnostic heuristic, not proven root cause. "
-            "Later blockers are downstream co-occurrences and may be independent."
+            "A first blocker is an observed diagnostic with no other blocked declared ancestor. "
+            "Parallel first blockers are retained. Dependency-related later blockers are co-occurrences, "
+            "not proof that an upstream failure caused them."
         ),
         "analyzed_actual_attempt_count": analyzed,
         "not_executed_record_count_excluded": not_executed,
         "records_without_target_result_payload": without_payload,
         "records_without_observed_blocking_diagnostic": without_blocker,
-        "first_blocking_stage_counts": dict(sorted(first_counts.items())),
-        "later_blocking_stage_cooccurrence_counts": dict(sorted(downstream_counts.items())),
+        "records_with_blocking_diagnostics": records_with_blockers,
+        "records_with_multiple_parallel_first_blockers": multiple_first_blocker_records,
+        "unconfigured_target_record_counts": dict(sorted(unconfigured_targets.items())),
         "unmapped_blocking_stage_counts": dict(sorted(unmapped.items())),
+        "first_blocking_stage_counts": dict(sorted(first_counts.items())),
+        "dependency_related_later_stage_counts": dict(sorted(downstream_counts.items())),
         "example_case_ids_by_first_blocking_stage": dict(sorted(examples.items())),
         "breakdown_by_target_population_language": groups,
+        "profiles": {
+            target: {
+                "pipeline_contract": profile["pipeline_contract"],
+                "pipeline_version": profile["pipeline_version"],
+                "stages": profile["stages"],
+            }
+            for target, profile in sorted(graph["profiles"].items())
+        },
     }
