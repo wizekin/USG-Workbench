@@ -5,6 +5,7 @@ import argparse
 import json
 from pathlib import Path
 import sys
+from urllib.parse import quote
 
 from .application import USGApplication, create_server
 
@@ -53,6 +54,26 @@ def build_parser():
             command.add_argument("--expected-revision", type=int)
         if name == "export":
             command.add_argument("--output")
+
+    interpret_v2 = sub.add_parser("interpret-v2", help="run the integrated Phase 5 v0.2 interpretation pipeline")
+    interpret_v2.add_argument("file", help="UTF-8 source text file")
+    interpret_v2.add_argument("--language", choices=["en", "ar"], required=True)
+    interpret_v2.add_argument("--db", default="usg-workbench.sqlite3")
+    interpret_v2.add_argument("--no-persist", action="store_true")
+    interpret_v2.add_argument("--output")
+
+    resources = sub.add_parser("resources", help="show the persistent semantic resource catalogue")
+    resources.add_argument("--db", default="usg-workbench.sqlite3")
+
+    associations = sub.add_parser("associations", help="retrieve provisional associations by exact source reference")
+    associations.add_argument("source_ref")
+    associations.add_argument("--db", default="usg-workbench.sqlite3")
+    associations.add_argument("--active-limit", type=int, default=10)
+    associations.add_argument("--secondary-limit", type=int, default=20)
+
+    replay = sub.add_parser("replay", help="replay a stored Phase 5 interpretation run")
+    replay.add_argument("run_id")
+    replay.add_argument("--db", default="usg-workbench.sqlite3")
 
     query = sub.add_parser("query", help="run a structured query against a stored revision")
     query.add_argument("document_id")
@@ -113,7 +134,23 @@ def main(argv=None):
 
     application = USGApplication(args.db)
     try:
-        if args.command == "store":
+        if args.command == "interpret-v2":
+            source_text = Path(args.file).read_text(encoding="utf-8")
+            status, result = application.dispatch("POST", "/v2/interpret", {
+                "text": source_text, "language": args.language,
+                "persist": not args.no_persist,
+            })
+        elif args.command == "resources":
+            status, result = application.dispatch("GET", "/v2/resources")
+        elif args.command == "associations":
+            target = "/v2/associations?source_ref=" + quote(args.source_ref, safe="")
+            target += f"&active_limit={args.active_limit}&secondary_limit={args.secondary_limit}"
+            status, result = application.dispatch("GET", target)
+        elif args.command == "replay":
+            status, result = application.dispatch(
+                "POST", "/v2/interpretations/" + quote(args.run_id, safe="") + "/replay", {}
+            )
+        elif args.command == "store":
             body = {"document": _read_json(args.document_id_or_file)}
             if args.expected_revision is not None:
                 body["expected_revision"] = args.expected_revision
@@ -137,12 +174,12 @@ def main(argv=None):
             if getattr(args, "revision", None) is not None:
                 target += f"?revision={args.revision}"
             status, result = application.dispatch("GET", target)
-        if args.command == "export" and status == 200 and args.output:
+        if args.command in {"export", "interpret-v2"} and status == 200 and args.output:
             Path(args.output).write_text(
                 json.dumps(result, ensure_ascii=False, indent=2) + "\n",
                 encoding="utf-8",
             )
-            print(f"Exported canonical document to {args.output}")
+            print(f"Exported JSON result to {args.output}")
         else:
             _emit(result)
         return 0 if status < 400 else 1
