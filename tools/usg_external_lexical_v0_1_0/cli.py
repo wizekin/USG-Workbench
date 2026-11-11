@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 import sys
 
-from .cache import LexicalCache, default_cache_path
+from .audit import audit_crawl_state\nfrom .cache import LexicalCache, default_cache_path
 from .evaluation import run_structural_benchmark
 from .service import DEFAULT_PROVIDER_ORDER, ExternalLexicalService
 
@@ -33,6 +33,11 @@ def build_parser() -> argparse.ArgumentParser:
     graph = sub.add_parser("graph", help="Assemble the cumulative graph from previously cached words.")
     graph.add_argument("--limit", type=int, default=10000)
     sub.add_parser("benchmark", help="Run offline structural checks; no network calls.")
+    audit = sub.add_parser("audit", help="Reconcile crawl checkpoint, manifest and shard inventory.")
+    audit.add_argument("--checkpoint", type=Path, required=True)
+    audit.add_argument("--manifest", type=Path, required=True)
+    audit.add_argument("--shard-inventory", type=Path, required=True,
+                       help="JSON array of GitHub shard inventory objects (path, size, sha).")
     return parser
 
 
