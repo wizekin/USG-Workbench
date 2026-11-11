@@ -8,7 +8,7 @@ from __future__ import annotations
 import argparse
 import gzip
 import json
-from collections import defaultdict
+from collections import Counter, defaultdict
 from pathlib import Path
 import unicodedata
 
@@ -40,6 +40,8 @@ def load_candidate_evidence(data_dir: str | Path, language: str = "en") -> dict:
     lemmas: dict[str, set[str]] = defaultdict(set)
     observed_forms: dict[str, set[str]] = defaultdict(set)
     entry_count = 0
+    form_tag_counts: Counter[str] = Counter()
+    tagged_form_records = 0
     for shard in shards:
         try:
             with gzip.open(shard, "rt", encoding="utf-8") as stream:
@@ -83,6 +85,13 @@ def load_candidate_evidence(data_dir: str | Path, language: str = "en") -> dict:
                                 key = normalize(form, language)
                                 observed_forms[key].add(upos)
                                 forms[key].add(upos)
+                            raw_tags = item.get("tags", [])
+                            if isinstance(raw_tags, list):
+                                tags = {tag.strip() for tag in raw_tags
+                                        if isinstance(tag, str) and tag.strip()}
+                                if tags:
+                                    tagged_form_records += 1
+                                    form_tag_counts.update(tags)
         except (OSError, EOFError) as exc:
             raise ValueError(f"unable to read compressed shard {shard}: {exc}") from exc
     return {
@@ -91,6 +100,8 @@ def load_candidate_evidence(data_dir: str | Path, language: str = "en") -> dict:
         "observed_forms": dict(observed_forms),
         "entry_count": entry_count,
         "shard_count": len(shards),
+        "form_tag_counts": dict(sorted(form_tag_counts.items())),
+        "tagged_form_records": tagged_form_records,
     }
 
 
@@ -112,12 +123,19 @@ def evaluate(
         "content_gold_tag_in_candidates": 0,
         "tokens_with_gold_lemma": 0, "gold_lemma_seen": 0,
         "gold_lemma_and_upos_hit": 0,
+        "single_candidate_seen_tokens": 0,
+        "multi_candidate_seen_tokens": 0,
+        "candidate_label_total": 0,
     }
     by_upos = defaultdict(lambda: {
         "tokens": 0, "seen": 0, "tag_hit": 0,
         "tokens_with_gold_lemma": 0, "gold_lemma_seen": 0,
         "gold_lemma_and_upos_hit": 0,
+        "single_candidate_seen_tokens": 0,
+        "multi_candidate_seen_tokens": 0,
+        "candidate_label_total": 0,
     })
+    candidate_count_histogram: Counter[int] = Counter()
     for sentence in sentences:
         for token in sentence["tokens"]:
             form = normalize(token["form"], language)
@@ -129,7 +147,16 @@ def evaluate(
             if candidates:
                 totals["seen_tokens"] += 1
                 row["seen"] += 1
-                if len(candidates) > 1:
+                candidate_count = len(candidates)
+                candidate_count_histogram[candidate_count] += 1
+                totals["candidate_label_total"] += candidate_count
+                row["candidate_label_total"] += candidate_count
+                if candidate_count == 1:
+                    totals["single_candidate_seen_tokens"] += 1
+                    row["single_candidate_seen_tokens"] += 1
+                else:
+                    totals["multi_candidate_seen_tokens"] += 1
+                    row["multi_candidate_seen_tokens"] += 1
                     totals["ambiguous_seen_tokens"] += 1
                 if gold in candidates:
                     totals["gold_tag_in_candidates"] += 1
@@ -175,6 +202,23 @@ def evaluate(
         "language": language,
         "method": "EXTERNAL_CRAWL_EXACT_SURFACE_AND_LEMMA_CANDIDATE_MATCH",
         "totals": total_metrics,
+        "candidate_ambiguity": {
+            "seen_tokens": totals["seen_tokens"],
+            "single_candidate_seen_tokens": totals["single_candidate_seen_tokens"],
+            "multi_candidate_seen_tokens": totals["multi_candidate_seen_tokens"],
+            "candidate_label_count_distribution": {
+                str(count): candidate_count_histogram[count]
+                for count in sorted(candidate_count_histogram)
+            },
+            "mean_candidate_labels_when_seen": ratio(
+                totals["candidate_label_total"], totals["seen_tokens"]
+            ),
+            "candidate_precision_measured": False,
+            "candidate_precision_reason": (
+                "The inventory contains unordered candidate sets; no candidate is selected or ranked "
+                "for a token in context, so prediction precision is not defined."
+            ),
+        },
         "by_upos": {
             tag: {
                 **counts,
@@ -183,6 +227,12 @@ def evaluate(
                 "gold_lemma_coverage": ratio(counts["gold_lemma_seen"], counts["tokens_with_gold_lemma"]),
                 "gold_lemma_upos_candidate_recall": ratio(
                     counts["gold_lemma_and_upos_hit"], counts["tokens_with_gold_lemma"]
+                ),
+                "ambiguity_rate_when_seen": ratio(
+                    counts["multi_candidate_seen_tokens"], counts["seen"]
+                ),
+                "mean_candidate_labels_when_seen": ratio(
+                    counts["candidate_label_total"], counts["seen"]
                 ),
             }
             for tag, counts in sorted(by_upos.items())
@@ -212,6 +262,14 @@ def run(data_dir: str | Path) -> dict:
         "lexical_shard_count": evidence["shard_count"],
         "mapped_dictionary_entry_count": evidence["entry_count"],
         "observed_form_count": len(evidence["observed_forms"]),
+        "observed_form_tag_inventory": {
+            "tagged_form_records": evidence["tagged_form_records"],
+            "tag_counts": evidence["form_tag_counts"],
+            "interpretation": (
+                "Raw source form tags are reported for morphology-mapping research only; "
+                "they are not treated as UD FEATS or as verified morphological predictions."
+            ),
+        },
         "pud_repository": f"UniversalDependencies/{spec['repo']}",
         "pud_commit": spec["commit"],
         "pud_file": spec["file"],
