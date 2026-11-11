@@ -25,7 +25,7 @@ on:
       - "tools/usg_external_lexical_v0_1_0/**"
       - "tests/test_external_lexical_crawl.py"
       - "tests/test_external_lexical_retrieval.py"
-      - "tests/test_external_lexical_audit.py"
+      - "tests/test_external_lexical_audit.py"\n      - "tests/test_external_lexical_remote_audit.py"
       - "documentation/USG-EXTERNAL-LEXICAL-SCHEDULED-CRAWLER-v0.1.0.md"
       - ".github/workflows/usg-external-lexical-crawl.yml"
 
@@ -50,7 +50,7 @@ jobs:
         run: python -m unittest discover -s tests -p "test_external_lexical_retrieval.py" -v
       - name: Run lexical state reconciliation audit tests
         run: python -m unittest discover -s tests -p "test_external_lexical_audit.py" -v
-      - name: Run offline structural benchmark
+      - name: Run remote lexical state audit tests\n        run: python -m unittest discover -s tests -p "test_external_lexical_remote_audit.py" -v\n      - name: Run offline structural benchmark
         run: python -m tools.usg_external_lexical_v0_1_0 benchmark
 
   crawl:
@@ -112,3 +112,28 @@ jobs:
             echo "Durable checkpoint and compressed shards are stored on branch: usg-external-lexical-data."
             echo "The next scheduled run resumes from state/checkpoint.json."
           } >> "$GITHUB_STEP_SUMMARY"
+
+
+  audit:
+    needs: crawl
+    if: needs.crawl.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    env:
+      GITHUB_TOKEN: ${{ github.token }}
+      USG_LEXICAL_DATA_BRANCH: usg-external-lexical-data
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Reconcile durable checkpoint, manifest and shard inventory
+        run: >-
+          python -m tools.usg_external_lexical_v0_1_0 audit-remote
+          --repository "${GITHUB_REPOSITORY}"
+          --branch "${USG_LEXICAL_DATA_BRANCH}"
