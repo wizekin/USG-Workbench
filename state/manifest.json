@@ -10,7 +10,7 @@
     "failed_headwords": 0,
     "failed_pages": 0,
     "headwords": 200,
-    "path": "shards/enwiktionary-2026-10-01-raw-244dcdc56868/batch-000002-43093479847-1.jsonl.gz",
+    "path": "shards/enwiktionary-2026-10-01-raw-244dcdc56868/batch-000002-43094020466-1.jsonl.gz",
     "senses": 279,
     "sha256": "fb9bb24221a70e1f94a78b5565c2c2df9a2c559eb78bcba84c2a478e128051f0",
     "stop_reason": "headword_limit"
@@ -26,5 +26,5 @@
   "status": "in_progress",
   "storage_budget_bytes": 734003200,
   "stored_bytes": 73265,
-  "updated_at": "2026-11-11T20:08:51.359724+00:00"
+  "updated_at": "2026-11-11T20:12:13.524808+00:00"
 }

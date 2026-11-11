@@ -4,6 +4,7 @@
   "entry_index": 400,
   "expected_headwords": 1396111,
   "failed_headwords": 198,
+  "failed_pages": 0,
   "page_index": 0,
   "pages": [
     "dictionary/browse/a/0001.md",
@@ -1424,5 +1425,5 @@
   "source_snapshot_id": "enwiktionary-2026-10-01-raw-244dcdc56868",
   "status": "in_progress",
   "stored_bytes": 73265,
-  "updated_at": "2026-11-11T20:08:51.351029+00:00"
+  "updated_at": "2026-11-11T20:12:13.519810+00:00"
 }
