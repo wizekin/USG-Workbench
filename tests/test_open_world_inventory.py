@@ -34,7 +34,7 @@ class OpenWorldInventoryTests(unittest.TestCase):
         data = json.loads((ROOT / INVENTORY_PATH).read_text(encoding="utf-8"))
         joined = " ".join(data["known_gaps"]).lower()
         self.assertIn("scenario generator", joined)
-        self.assertIn("isolated runner", joined)
+        self.assertIn("isolated execution runner", joined)
         self.assertIn("append-only", joined)
 
     def test_no_component_claims_unrestricted_language_coverage(self):
