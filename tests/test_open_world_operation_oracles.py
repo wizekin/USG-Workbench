@@ -12,6 +12,8 @@ class OperationOracleRegistryTests(unittest.TestCase):
             "phase6-candidate-expansion",
             "python-usg-sem-document-adapters-v15",
             "python-native-semantic-models-v06-v14",
+            "kernel-lab-local-api-cli",
+            "workbench-to-canonical-adapter",
         })
         for target_id, suite in SUITES.items():
             with self.subTest(target=target_id):
@@ -34,6 +36,16 @@ class OperationOracleRegistryTests(unittest.TestCase):
         suite = SUITES["python-native-semantic-models-v06-v14"]
         self.assertIn("versioned native model", suite["oracle"])
         self.assertEqual(len(suite["tests"]), 9)
+
+    def test_local_api_oracle_covers_persistence_and_loopback_boundary(self):
+        suite = SUITES["kernel-lab-local-api-cli"]
+        self.assertIn("loopback-only", suite["oracle"])
+        self.assertEqual(suite["tests"], ["test_phase3_local_api_cli.py"])
+
+    def test_workbench_adapter_oracle_checks_canonical_schema_and_offsets(self):
+        suite = SUITES["workbench-to-canonical-adapter"]
+        self.assertIn("Unicode offset conversion", suite["oracle"])
+        self.assertEqual(suite["claim"], "fixture_backed_adapter_contract_conformance")
 
 
 if __name__ == "__main__":
