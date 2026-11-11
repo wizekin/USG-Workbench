@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 import hashlib
+import json
 import unicodedata
 from typing import Any, Iterable
 
@@ -177,7 +178,15 @@ class ExternalLexicalService:
         """Build a versioned candidate package; never edits canonical USG resources."""
         bundle = self.lookup(word, **kwargs)
         candidates = []
+        entry_relations = []
         for entry in bundle.get("entries", []):
+            for relation in entry.get("relations", []) or []:
+                entry_relations.append({
+                    "entry_id": entry.get("entry_id"),
+                    "lemma": entry.get("lemma"),
+                    "source_provider": entry.get("provider"),
+                    "relation": relation,
+                })
             for sense in entry.get("senses", []) or []:
                 if not isinstance(sense, dict):
                     continue
@@ -189,22 +198,33 @@ class ExternalLexicalService:
                     "definition": sense.get("definition"),
                     "examples": sense.get("examples", []),
                     "features": sense.get("tags", []),
+                    "observed_forms": entry.get("forms", []),
                     "source_provider": entry.get("provider"),
                     "source_id": entry.get("source_id"),
+                    "source_entry_id": entry.get("entry_id"),
                     "source_sense_id": sense.get("source_sense_id"),
                     "relations": sense.get("relations", []),
                     "promotion_status": "candidate_only",
                 })
+        digest_payload = {
+            "candidates": candidates,
+            "entry_relations": entry_relations,
+            "source_provenance": bundle.get("sources", []),
+        }
         digest = hashlib.sha256(
-            repr(sorted((item.get("candidate_id"), item.get("definition")) for item in candidates)).encode("utf-8")
+            json.dumps(digest_payload, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
         ).hexdigest()
+        analysis = bundle.get("analysis", {})
         return {
             "contract": "USG-LEXICAL-CANDIDATES/0.1.0",
             "queried_form": bundle.get("queried_form"),
             "candidate_count": len(candidates),
             "candidates": candidates,
+            "entry_relations": entry_relations,
+            "definition_pattern_observations": analysis.get("definition_pattern_observations", []),
+            "semantic_candidate_graph": analysis.get("semantic_candidate_graph"),
             "source_provenance": bundle.get("sources", []),
-            "validation": bundle.get("analysis", {}).get("validation"),
+            "validation": analysis.get("validation"),
             "content_digest": digest,
             "promotion_allowed": False,
             "integration_note": "This adapter is deliberately non-mutating. A separate conformance-tested mapping must be approved before any candidate can enter a runtime LexicalResource.",
