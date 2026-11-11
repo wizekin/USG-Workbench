@@ -26,10 +26,6 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  group: usg-external-lexical-crawl
-  cancel-in-progress: false
-
 jobs:
   validate:
     if: github.event_name == 'pull_request'
@@ -51,6 +47,9 @@ jobs:
 
   crawl:
     if: github.event_name != 'pull_request'
+    concurrency:
+      group: usg-external-lexical-crawl-${{ github.repository }}
+      cancel-in-progress: false
     permissions:
       contents: write
     runs-on: ubuntu-latest
