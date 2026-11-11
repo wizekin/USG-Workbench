@@ -12,6 +12,9 @@ on:
     branches: [main]
     paths:
       - "tools/usg_external_lexical_v0_1_0/pud_evaluation.py"
+      - "tools/usg_external_lexical_v0_1_0/acceptance.py"
+      - "tests/test_external_lexical_pud_evaluation.py"
+      - "tests/test_external_lexical_pud_acceptance.py"
       - "tests/test_external_lexical_pud_evaluation.py"
       - "documentation/EXTERNAL-LEXICAL-PUD-EVALUATION-v0.1.0.md"
       - ".github/workflows/external-lexical-pud-evaluation.yml"
