@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from collections import Counter, defaultdict
+import hashlib
 import json
 from pathlib import Path
 from typing import Any
@@ -223,6 +224,34 @@ def _collect_stage_diagnostics(target_result: dict[str, Any]) -> dict[str, set[s
     return by_stage
 
 
+def _resource_fingerprint(target_result: dict[str, Any]) -> tuple[str, str]:
+    manifest_digest = target_result.get("resource_manifest_digest")
+    if isinstance(manifest_digest, str) and len(manifest_digest) == 64:
+        return "manifest:" + manifest_digest, "resource_manifest_digest"
+    stages = target_result.get("stages", {})
+    iterable = stages.items() if isinstance(stages, dict) else (
+        ((item.get("stage"), item) for item in stages if isinstance(item, dict))
+        if isinstance(stages, list) else ()
+    )
+    descriptors = []
+    for stage, value in iterable:
+        if not isinstance(value, dict):
+            continue
+        descriptor = {
+            key: value[key] for key in (
+                "resource_id", "resource_version", "resource_sha256",
+                "resource_sha256_kind",
+            ) if value.get(key) is not None
+        }
+        if descriptor:
+            descriptors.append({"stage": str(stage), **descriptor})
+    if descriptors:
+        raw = json.dumps(descriptors, ensure_ascii=False, sort_keys=True,
+                         separators=(",", ":")).encode("utf-8")
+        return "stage-refs:" + hashlib.sha256(raw).hexdigest(), "stage_resource_references"
+    return "unknown", "unknown"
+
+
 def build_stage_attribution(
     cases: list[dict[str, Any]],
     results: list[dict[str, Any]],
@@ -240,7 +269,10 @@ def build_stage_attribution(
     case_by_id = {case.get("case_id"): case for case in cases}
     first_counts: Counter[str] = Counter()
     downstream_counts: Counter[str] = Counter()
-    group_counts: dict[tuple[str, str, str, str], Counter[str]] = defaultdict(Counter)
+    group_counts: dict[tuple[str, str, str, str, str], Counter[str]] = defaultdict(Counter)
+    first_diagnostic_counts: dict[str, Counter[str]] = defaultdict(Counter)
+    later_diagnostic_counts: dict[str, Counter[str]] = defaultdict(Counter)
+    resource_fingerprint_kinds: Counter[str] = Counter()
     examples: dict[str, list[str]] = defaultdict(list)
     analyzed = without_payload = without_blocker = not_executed = 0
     unmapped: Counter[str] = Counter()
@@ -287,23 +319,33 @@ def build_stage_attribution(
         later = sorted(known - set(first))
         if len(first) > 1:
             multiple_first_blocker_records += 1
-        key = (target_id, _case_population(case), _language(case), profile["pipeline_version"])
+        resource_fingerprint, resource_fingerprint_kind = _resource_fingerprint(target_result)
+        resource_fingerprint_kinds[resource_fingerprint_kind] += 1
+        key = (
+            target_id, _case_population(case), _language(case),
+            profile["pipeline_version"], resource_fingerprint,
+        )
         case_id = str(record.get("case_id", ""))
         for stage in first:
             first_counts[stage] += 1
             group_counts[key][stage] += 1
+            for diagnostic_code in blockers[stage]:
+                first_diagnostic_counts[stage][diagnostic_code] += 1
             if len(examples[stage]) < max_examples and case_id not in examples[stage]:
                 examples[stage].append(case_id)
         for stage in later:
             downstream_counts[stage] += 1
+            for diagnostic_code in blockers[stage]:
+                later_diagnostic_counts[stage][diagnostic_code] += 1
 
     groups = [{
         "target_id": target,
         "population": population,
         "language": language,
         "pipeline_version": pipeline_version,
+        "resource_fingerprint": resource_fingerprint,
         "first_blocking_stage_counts": dict(sorted(counts.items())),
-    } for (target, population, language, pipeline_version), counts in sorted(group_counts.items())]
+    } for (target, population, language, pipeline_version, resource_fingerprint), counts in sorted(group_counts.items())]
     return {
         "attribution_version": "2.0.0",
         "stage_dependency_graph_version": graph.get("graph_version", "unknown"),
@@ -322,7 +364,16 @@ def build_stage_attribution(
         "unconfigured_target_record_counts": dict(sorted(unconfigured_targets.items())),
         "unmapped_blocking_stage_counts": dict(sorted(unmapped.items())),
         "first_blocking_stage_counts": dict(sorted(first_counts.items())),
+        "first_blocking_diagnostic_counts": {
+            stage: dict(sorted(counts.items()))
+            for stage, counts in sorted(first_diagnostic_counts.items())
+        },
         "dependency_related_later_stage_counts": dict(sorted(downstream_counts.items())),
+        "dependency_related_later_stage_diagnostic_counts": {
+            stage: dict(sorted(counts.items()))
+            for stage, counts in sorted(later_diagnostic_counts.items())
+        },
+        "resource_fingerprint_kind_counts": dict(sorted(resource_fingerprint_kinds.items())),
         "example_case_ids_by_first_blocking_stage": dict(sorted(examples.items())),
         "breakdown_by_target_population_language": groups,
         "profiles": {
