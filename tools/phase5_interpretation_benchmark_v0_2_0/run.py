@@ -234,8 +234,15 @@ def run_pipeline(corpus: dict) -> tuple[dict, dict]:
             role_bindings = {}
             role_spans = {}
             semantic = result["stages"]["semantic_composition"]["artifact"]
+            operators = result["stages"]["operators"]["artifact"]
+            has_scoped_operator = any(
+                candidate["operator_type"] != "AUXILIARY"
+                for clause in operators["clauses"]
+                for candidate in clause["candidates"]
+            )
             if (
                 result["completion_status"] == "COMPLETE"
+                and not has_scoped_operator
                 and semantic["status"] == "COMPOSED"
                 and len(semantic["candidates"]) == 1
                 and len(syntax_candidates) == 1
