@@ -1053,6 +1053,50 @@
     {
       "language": "ar",
       "language_profile": "ar/modern-standard-1.0",
+      "form": "انتظر",
+      "lemma": "انتظر",
+      "part_of_speech": "VERB",
+      "sense_id": "usg.sense.spatial.location",
+      "features": {
+        "VerbForm": "PerfectiveOrLexicalized"
+      },
+      "status": "CANDIDATE",
+      "evidence": [
+        {
+          "fixture_id": "ar.prepositional.location.positive.06",
+          "start": 0,
+          "end": 5,
+          "surface": "انتظر"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.07",
+          "start": 0,
+          "end": 5,
+          "surface": "انتظر"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.08",
+          "start": 0,
+          "end": 5,
+          "surface": "انتظر"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.09",
+          "start": 0,
+          "end": 5,
+          "surface": "انتظر"
+        },
+        {
+          "fixture_id": "ar.prepositional.location.positive.10",
+          "start": 0,
+          "end": 5,
+          "surface": "انتظر"
+        }
+      ]
+    },
+    {
+      "language": "ar",
+      "language_profile": "ar/modern-standard-1.0",
       "form": "بجانب",
       "lemma": "بجانب",
       "part_of_speech": "ADP",
@@ -4131,6 +4175,52 @@
           "end": 10,
           "surface": "waits"
         },
+        {
+          "fixture_id": "en.prepositional.location.positive.01",
+          "start": 4,
+          "end": 9,
+          "surface": "waits"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.02",
+          "start": 5,
+          "end": 10,
+          "surface": "waits"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.03",
+          "start": 5,
+          "end": 10,
+          "surface": "waits"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.04",
+          "start": 5,
+          "end": 10,
+          "surface": "waits"
+        },
+        {
+          "fixture_id": "en.prepositional.location.positive.05",
+          "start": 5,
+          "end": 10,
+          "surface": "waits"
+        }
+      ]
+    },
+    {
+      "language": "en",
+      "language_profile": "en/standard-written-1.0",
+      "form": "waits",
+      "lemma": "wait",
+      "part_of_speech": "VERB",
+      "sense_id": "usg.sense.spatial.location",
+      "features": {
+        "VerbForm": "Finite",
+        "Person": "3",
+        "Number": "Singular"
+      },
+      "status": "CANDIDATE",
+      "evidence": [
         {
           "fixture_id": "en.prepositional.location.positive.01",
           "start": 4,
