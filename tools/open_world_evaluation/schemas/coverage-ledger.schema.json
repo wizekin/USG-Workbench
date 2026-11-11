@@ -263,6 +263,12 @@
         "type": "string"
       },
       "minItems": 1
+    },
+    "unknown_target_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
     }
   },
   "required": [
@@ -289,7 +295,8 @@
     "registered_but_not_sampled_component_ids",
     "not_executed_only_component_ids",
     "historical_comparison",
-    "interpretation_limits"
+    "interpretation_limits",
+    "unknown_target_ids"
   ],
   "additionalProperties": false
 }
