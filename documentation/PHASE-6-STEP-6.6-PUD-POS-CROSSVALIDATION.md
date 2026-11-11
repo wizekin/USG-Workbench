@@ -41,3 +41,32 @@ Step 6.7 remains blocked.
 python -m unittest discover -s tests -p 'test_phase6_external_pud_crossval.py' -v
 python -m tools.phase6_external_pud_v0_2.crossval
 ```
+
+## Observed ten-fold run (2026-11-11)
+
+Each language was evaluated across ten deterministic folds (900 training
+sentences and 100 held-out sentences per fold).
+
+| Measure | English PUD | Arabic PUD |
+|---|---:|---:|
+| Tokens | 21,180 | 20,747 |
+| Exact-form token coverage | 82.8% | 75.7% |
+| Content-token coverage (NOUN/PROPN/VERB/ADJ/ADV) | 66.5% | 57.9% |
+| Gold UPOS included in candidate set, all tokens | 81.1% | 74.3% |
+| Gold UPOS included, content tokens | 63.3% | 55.4% |
+| Ambiguous candidate sets among seen tokens | 34.2% | 29.2% |
+
+The conditional tag-candidate hit rate among seen tokens was 98.0% for English
+and 98.1% for Arabic. This is **not POS accuracy**: the dictionary returns a
+set of observed tags, and the gold tag being somewhere in that set does not
+mean it can disambiguate the token in context. The OOV rate and the lower
+content-word coverage remain substantial, particularly for Arabic.
+
+This supports investigating a separate, context-sensitive POS candidate
+module with explicit OOV and ambiguity handling. It does not justify using
+the fold-derived dictionary as a production lexicon, and it does not solve the
+semantic-role evaluation gap. The experiment receives no Step 6.6 acceptance
+credit. Step 6.7 remains blocked.
+
+Report artifact:
+[workflow run 42988046845](https://github.com/wizekin/USG-Workbench/actions/runs/42988046845).
