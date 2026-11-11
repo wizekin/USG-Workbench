@@ -20,7 +20,7 @@ The v0.2.1 revision corrects the Arabic SVO annotation: `الرسالة كتب �
 
 ```powershell
 py -m pip install "jsonschema>=4.18,<5"
-py -m tools.phase5_interpretation_benchmark_v0_2_0.run --run-pipeline --output benchmark-report.json
+py -m tools.phase5_interpretation_benchmark_v0_2_0.run --run-pipeline --output phase5-v0.2.1-report.json
 py -m unittest discover -s tests -p "test_phase5_step_5_11_benchmark.py" -v
 ```
 
