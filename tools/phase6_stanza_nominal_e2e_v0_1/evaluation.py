@@ -258,7 +258,7 @@ def run() -> dict:
             "commit": spec["commit"],
             "file": spec["file"],
             "git_blob_sha1": spec["blob_sha"],
-            "license": spec["license"],
+            "license": "CC BY-SA 3.0",
             "sentences": len(gold_sentences),
         },
         "tokenization": "PUD_GOLD_PRETOKENIZED_WORDS_PRESERVED",
