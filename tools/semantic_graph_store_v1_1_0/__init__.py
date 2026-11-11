@@ -8,6 +8,8 @@ from .store import (
     InvalidDocumentError,
     RevisionConflictError,
     StoredDocument,
+    InterpretationResultNotFoundError,
+    STORE_VERSION,
 )
 
 __all__ = [
@@ -18,4 +20,6 @@ __all__ = [
     "InvalidDocumentError",
     "RevisionConflictError",
     "StoredDocument",
+    "InterpretationResultNotFoundError",
+    "STORE_VERSION",
 ]
