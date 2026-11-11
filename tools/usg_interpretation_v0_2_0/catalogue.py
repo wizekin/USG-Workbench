@@ -31,6 +31,7 @@ _SCHEMA = (
     """CREATE TABLE IF NOT EXISTS usg_resource_catalogue_state (
         singleton INTEGER PRIMARY KEY CHECK (singleton = 1),
         registry_id TEXT NOT NULL,
+        schema_version TEXT NOT NULL,
         version INTEGER NOT NULL CHECK (version >= 1)
     ) STRICT""",
     """CREATE TABLE IF NOT EXISTS usg_resource_descriptor (
@@ -98,14 +99,16 @@ class SQLiteResourceCatalogue:
         for statement in _SCHEMA:
             connection.execute(statement)
         connection.execute(
-            "INSERT OR IGNORE INTO usg_resource_catalogue_state(singleton,registry_id,version) VALUES(1,?,1)",
-            (registry_id,),
+            "INSERT OR IGNORE INTO usg_resource_catalogue_state(singleton,registry_id,schema_version,version) VALUES(1,?,?,1)",
+            (registry_id, SQLITE_RESOURCE_CATALOGUE_VERSION),
         )
         row = connection.execute(
-            "SELECT registry_id FROM usg_resource_catalogue_state WHERE singleton=1"
+            "SELECT registry_id,schema_version FROM usg_resource_catalogue_state WHERE singleton=1"
         ).fetchone()
         if row is None or row[0] != registry_id:
             raise ValueError("the supplied SQLite database already belongs to a different resource catalogue")
+        if row[1] != SQLITE_RESOURCE_CATALOGUE_VERSION:
+            raise ValueError("resource catalogue schema version mismatch; apply an explicit migration")
 
     def _require_transaction(self) -> None:
         if not self.connection.in_transaction:
@@ -175,7 +178,7 @@ class SQLiteResourceCatalogue:
 
     def manifest(self) -> dict:
         state = self.connection.execute(
-            "SELECT registry_id,version FROM usg_resource_catalogue_state WHERE singleton=1"
+            "SELECT registry_id,schema_version,version FROM usg_resource_catalogue_state WHERE singleton=1"
         ).fetchone()
         resources = self.connection.execute(
             """SELECT resource_id,resource_type,version,sha256,language,provenance
@@ -188,7 +191,8 @@ class SQLiteResourceCatalogue:
         ).fetchall()
         return {
             "registry_id": state[0],
-            "version": int(state[1]),
+            "schema_version": state[1],
+            "version": int(state[2]),
             "contract": SQLITE_RESOURCE_CATALOGUE_VERSION,
             "resources": [
                 {"resource_id": x[0], "resource_type": x[1], "version": x[2],
