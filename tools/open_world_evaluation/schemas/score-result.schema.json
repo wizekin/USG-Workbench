@@ -1,0 +1,154 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "USG Open-World Score Result v1.0.0",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "score_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "case_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "attempt_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "population": {
+      "enum": [
+        "unconstrained_random",
+        "naturalistic",
+        "controlled_diagnostic"
+      ]
+    },
+    "target": {
+      "type": "object"
+    },
+    "tested_commit_sha": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{40}$"
+    },
+    "outcome": {
+      "enum": [
+        "completed",
+        "unsupported",
+        "ambiguous",
+        "abstained",
+        "partial",
+        "invalid_output",
+        "timeout",
+        "crashed",
+        "infrastructure_error",
+        "not_executed"
+      ]
+    },
+    "structural_status": {
+      "enum": [
+        "valid",
+        "invalid",
+        "not_applicable",
+        "not_checked"
+      ]
+    },
+    "structural_checks": {
+      "type": "object",
+      "additionalProperties": {
+        "type": [
+          "boolean",
+          "null"
+        ]
+      }
+    },
+    "failed_checks": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "case_validation_errors": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "record_validation_errors": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "semantic_scoring": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "enum": [
+            "not_scored_no_independent_oracle",
+            "requires_independent_human_rubric_review",
+            "oracle_declared_but_no_case_specific_adapter",
+            "scored"
+          ]
+        },
+        "oracle_type": {
+          "enum": [
+            "none",
+            "exact_match",
+            "structural",
+            "metamorphic",
+            "external_reference",
+            "human_rubric"
+          ]
+        },
+        "oracle_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "independent": {
+          "type": "boolean"
+        },
+        "metrics": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        }
+      },
+      "required": [
+        "status",
+        "oracle_type",
+        "independent",
+        "metrics"
+      ],
+      "additionalProperties": false
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "score_id",
+    "case_id",
+    "attempt_id",
+    "population",
+    "target",
+    "tested_commit_sha",
+    "outcome",
+    "structural_status",
+    "structural_checks",
+    "failed_checks",
+    "case_validation_errors",
+    "record_validation_errors",
+    "semantic_scoring",
+    "limitations"
+  ],
+  "additionalProperties": false
+}

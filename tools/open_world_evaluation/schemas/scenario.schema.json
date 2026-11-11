@@ -134,8 +134,7 @@
       "type": "object",
       "properties": {
         "text": {
-          "type": "string",
-          "minLength": 1
+          "type": "string"
         },
         "utf8_sha256": {
           "type": "string",
