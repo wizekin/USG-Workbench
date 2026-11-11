@@ -12,6 +12,8 @@
 - Verb-evidence gating for connective boundaries, reducing false splits inside nominal coordination.
 - Clause-level syntax candidates for English SVO and MSA Arabic VSO/SVO.
 - Named AGENT/ACTION/PATIENT token-role references and lexical sense references.
+- Typed CLAUSE/NP/VP constituent candidates and NSUBJ/OBJ dependency edges.
+- Explicit inter-clause attachment candidates linking source/target clauses to connective evidence.
 - Explicit RESOLVED, AMBIGUOUS, INCOMPLETE, UNSUPPORTED, and resource-limit outcomes.
 
 ## 2. Conservative segmentation policy
@@ -25,11 +27,11 @@ The initial syntax patterns are:
 - MSA Arabic: verb + nominal/proper subject + nominal/proper object (VSO).
 - MSA Arabic: nominal/proper subject + verb + nominal/proper object (SVO).
 
-All lexical sense combinations licensed by a pattern are retained. Syntax candidates identify role token references and lexical sense references; they do not create semantic truth or choose among alternatives. Unknown tokens produce INCOMPLETE; known but unregistered structures produce UNSUPPORTED; candidate-budget exhaustion produces INCOMPLETE_RESOURCE_LIMIT.
+All lexical sense combinations licensed by a pattern are retained. Syntax candidates identify role token references, lexical sense references, constituent spans, and dependency edges; they do not create semantic truth or choose among alternatives. Inter-clause connective links are retained as attachment candidates, not silently promoted to fully resolved discourse semantics. Unknown tokens produce INCOMPLETE; known but unregistered structures produce UNSUPPORTED; candidate-budget exhaustion produces INCOMPLETE_RESOURCE_LIMIT.
 
 ## 4. Acceptance
 
-Tests cover exact spans, sentence boundaries, English coordination/subordination, Arabic temporal sequencing, semicolon segmentation, SVO/VSO patterns, lexical ambiguity, unknown-token abstention, unsupported word order, candidate budgets, and cross-source artifact rejection. Phase 4 and Phase 5 Steps 5.2–5.3 regressions must pass.
+Tests cover exact spans, sentence boundaries, English coordination/subordination, Arabic temporal sequencing, semicolon segmentation, SVO/VSO patterns, constituent/dependency structures, inter-clause attachments, lexical ambiguity, unknown-token abstention, unsupported word order, candidate budgets, and cross-source artifact rejection. Phase 4 and Phase 5 Steps 5.2–5.3 regressions must pass.
 
 ## 5. Explicit limitations
 
