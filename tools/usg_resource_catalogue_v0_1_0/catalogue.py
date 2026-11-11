@@ -246,6 +246,26 @@ class SQLiteResourceCatalogue:
             ON semantic_resource_snapshots(resource_class, resource_id, version);
         CREATE INDEX IF NOT EXISTS idx_resource_usage
             ON semantic_resource_usage_events(resource_id, version, occurred_at);
+        CREATE TRIGGER IF NOT EXISTS immutable_resource_snapshot_update
+        BEFORE UPDATE ON semantic_resource_snapshots
+        BEGIN
+            SELECT RAISE(ABORT, 'resource snapshots are immutable');
+        END;
+        CREATE TRIGGER IF NOT EXISTS immutable_resource_snapshot_delete
+        BEFORE DELETE ON semantic_resource_snapshots
+        BEGIN
+            SELECT RAISE(ABORT, 'resource snapshots are immutable');
+        END;
+        CREATE TRIGGER IF NOT EXISTS immutable_resource_usage_update
+        BEFORE UPDATE ON semantic_resource_usage_events
+        BEGIN
+            SELECT RAISE(ABORT, 'resource usage events are append-only');
+        END;
+        CREATE TRIGGER IF NOT EXISTS immutable_resource_usage_delete
+        BEFORE DELETE ON semantic_resource_usage_events
+        BEGIN
+            SELECT RAISE(ABORT, 'resource usage events are append-only');
+        END;
         """
         now = self._now().replace("'", "''")
         script = (
