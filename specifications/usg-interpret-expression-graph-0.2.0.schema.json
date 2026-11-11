@@ -2,9 +2,11 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "USG Interpretation Expression Graph Candidate 0.2.0",
   "type": "object",
-  "required": ["candidateId", "rootRef", "clauseRootRefs", "status", "sourceSpan", "nodes"],
+  "required": ["candidateId", "sourceRef", "sourceSha256", "rootRef", "clauseRootRefs", "status", "sourceSpan", "nodes"],
   "properties": {
     "candidateId": {"type": "string", "minLength": 1},
+    "sourceRef": {"type": "string", "minLength": 1},
+    "sourceSha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
     "rootRef": {"type": "string", "minLength": 1},
     "clauseRootRefs": {"type": "array", "items": {"type": "string", "minLength": 1}},
     "status": {"enum": ["RESOLVED", "AMBIGUOUS", "PARTIAL"]},
