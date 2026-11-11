@@ -8,7 +8,17 @@ LEXICON=ROOT/"resources/lexical/phase6-v0.3.0/en-ar-candidate.json"
 RULES=ROOT/"resources/constructions/phase6-v0.3.0/predicate-argument-rules.json"
 FRAME_BY_FAMILY={"intransitive":"usg.frame.event.intransitive","ditransitive":"usg.frame.transfer.ditransitive","copular":"usg.frame.predication.copular","prepositional":"usg.frame.relation.location"}
 def _tokens(text):
- return [{"surface":m.group(0),"start":m.start(),"end":m.end()} for m in TOKEN_RE.finditer(text)]
+ out=[]; start=None
+ for i,ch in enumerate(text):
+  category=unicodedata.category(ch)
+  is_letter=category.startswith("L")
+  is_mark=category.startswith("M")
+  if is_letter or (is_mark and start is not None):
+   if start is None: start=i
+  elif start is not None:
+   out.append({"surface":text[start:i],"start":start,"end":i}); start=None
+ if start is not None: out.append({"surface":text[start:],"start":start,"end":len(text)})
+ return out
 def _index():
  data=json.loads(LEXICON.read_text(encoding="utf-8")); out={}
  for e in data["entries"]: out.setdefault((e["language"],e["form"].casefold() if e["language"]=="en" else e["form"]),[]).append(e)
