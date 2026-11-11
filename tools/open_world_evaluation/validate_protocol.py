@@ -143,6 +143,8 @@ def validate_campaign_report(instance: dict[str, Any]) -> list[str]:
         not_executed = accounting.get("not_executed_record_count", -1)
         if actual + not_executed != accounting.get("result_record_count"):
             errors.append("actual attempts plus not-executed records must equal result records")
+        if not_executed != outcomes["not_executed"]:
+            errors.append("execution_accounting.not_executed_record_count must equal outcome_counts.not_executed")
         scenario_count = accounting.get("scenario_count", -1)
         if scenario_count != instance.get("coverage", {}).get("case_count"):
             errors.append("execution accounting scenario_count must equal coverage.case_count")
@@ -164,6 +166,11 @@ def validate_campaign_report(instance: dict[str, Any]) -> list[str]:
             if sum(row.get(field, 0) for row in target_rows) != accounting.get(field):
                 errors.append(f"target accounting {field} does not reconcile with campaign total")
 
+    population_accounting_totals = {
+        "result_record_count": 0,
+        "actual_attempt_count": 0,
+        "not_executed_record_count": 0,
+    }
     for row in population_rows:
         pop_accounting = row.get("coverage", {}).get("execution_accounting")
         if pop_accounting is None:
@@ -172,6 +179,12 @@ def validate_campaign_report(instance: dict[str, Any]) -> list[str]:
             errors.append(f"{row['population']} legacy attempted must equal result record count")
         if pop_accounting.get("actual_attempt_count", -1) + pop_accounting.get("not_executed_record_count", -1) != row["attempted"]:
             errors.append(f"{row['population']} actual and not-executed records do not reconcile")
+        for field in population_accounting_totals:
+            population_accounting_totals[field] += pop_accounting.get(field, 0)
+    if accounting is not None and population_accounting_totals != {
+        field: accounting.get(field, 0) for field in population_accounting_totals
+    }:
+        errors.append("population execution accounting does not reconcile with campaign totals")
 
     if instance["status"] == "complete" and (
         instance["finished_at"] is None or instance["attempted"] == 0
