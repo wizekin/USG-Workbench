@@ -36,6 +36,7 @@ on:
       - "tests/test_phase6_step_6_5_predicate_argument.py"
       - "tests/test_phase6_nominal_candidate_v0_4_1.py"
       - "documentation/USG-OPEN-WORLD-CONTINUOUS-EXPLORATION.md"
+      - "documentation/OW-12-NATIVE-AND-BROWSER-ORACLES.md"
 
 permissions:
   contents: write
