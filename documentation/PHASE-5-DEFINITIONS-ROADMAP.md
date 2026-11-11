@@ -1,6 +1,6 @@
 # USG Phase 5 — Definitions and Roadmap
 
-**Status:** IN PROGRESS — Steps 5.1–5.6 accepted; Step 5.7 clause coordination under implementation.  
+**Status:** IN PROGRESS — Steps 5.1–5.7 accepted; Step 5.8 discourse and reference candidates under implementation.  
 **Target interpretation contract:** `USG-INTERPRET/0.2.0` (independent of the semantic interchange profile).  
 **Current accepted baseline:** `USG-INTERPRET/0.1.0`, bounded offline demonstrator.  
 **Normative semantic interchange:** `USG-SEM/1.0` remains unchanged unless a separately versioned profile is justified by a demonstrated representation gap.  
@@ -140,7 +140,7 @@ Steps are sequential acceptance gates. Each step receives a dedicated definition
 | **5.4** | Clause segmentation and richer syntactic analysis | Sentence-internal clause segmentation, constituent/dependency candidates, attachments, and syntax alternatives | Nested and multi-clause fixtures preserve exact spans, clause boundaries, role candidates, and ambiguity without flattening or guessing. |
 | **5.5** | Nested compositional semantic construction | Recursive composition of supported clauses, predicates, arguments, modifiers, and embedded propositions into typed USG expression graphs | Role identity, operand order, nesting, graph references, and provenance validate; unsupported structures remain explicit. |
 | **5.6** | Scoped operators and grammatical features | Explicit negation, modality, tense, aspect, and quantifier operators with language-specific realization mappings | Minimal pairs and scope adversarial fixtures distinguish operator attachment and scope; no keyword-only or sentence-wide scope shortcuts. |
-| **5.7** | Coordination and multi-clause composition | Composition of supported conjunction/disjunction and coordinated predicates/arguments/clauses | Every conjunct/disjunct is retained with correct grouping and scope; mixed or ambiguous coordination abstains rather than dropping branches. |
+| **5.7** | Clause coordination and multi-clause composition | Clause-level AND/OR/CONTRAST nodes and left-associative multi-clause grouping | Every supported clause conjunct/disjunct is retained with exact connective evidence; intra-clause coordinated predicates/arguments remain explicitly unsupported. |
 | **5.8** | Multi-sentence discourse and reference | Sentence-to-sentence proposition links, attribution, temporal/conditional/contrast relations, and conservative pronoun/reference candidates | Links identify source and target spans/sentences; candidate identity is distinct from resolved identity; unresolved antecedents remain unresolved. |
 | **5.9** | Persistent semantic resource catalogue and association retrieval | Versioned SQLite-backed resource manifests/catalogue for lexical, grammar, frame, discourse, and provisional association assets; deterministic active/secondary retrieval | Resource snapshots are reproducible and integrity-checked; activation/ranking is derived metadata; updates cannot rewrite canonical definitions or semantic history. |
 | **5.10** | Integrated API, CLI, and Kernel Lab expansion | Expose stage artifacts, alternatives, diagnostics, resource versions, and document composition through the existing local application and UI | API, CLI, and UI share the same application services and SQLite store; export/replay is deterministic; no parallel browser database is introduced. |
@@ -251,4 +251,4 @@ Phase 5 completion will mean a broader, benchmarked interpreter for the explicit
 
 ## 11. Immediate next implementation step
 
-**Steps 5.1–5.6 are accepted.** Their contract, benchmark, lexical/morphology resources, clause/syntax artifacts, typed semantic composition, and scoped-operator inventory are documented in the corresponding Step 5.1–5.6 records. Step 5.7 is being delivered in two gates: 5.7A clause-level coordination and 5.7B coordinated predicates/arguments. The benchmark remains an evaluation target, not a claim of full runtime coverage.
+**Steps 5.1–5.7 are accepted.** Step 5.7 is deliberately bounded to clause-level AND/OR/CONTRAST composition. Coordinated predicates and coordinated arguments inside a single clause remain explicitly unsupported and are deferred beyond this Phase 5 profile rather than being represented as solved. Step 5.8 adds conservative multi-sentence mention/reference candidates and evidence-backed discourse links; it does not resolve entity identity. The benchmark remains an evaluation target, not a claim of full runtime coverage.
