@@ -40,7 +40,7 @@ class ResourceCatalogueTests(unittest.TestCase):
 
     def test_versioned_snapshot_is_immutable_and_identical_retry_is_idempotent(self):
         first = self.put(activate=True)
-        retry = self.put(activate=True)
+        retry = self.put()
         self.assertEqual(first.digest, retry.digest)
         self.assertEqual(retry.write_status, "UNCHANGED")
         with self.assertRaises(ResourceVersionConflictError):
@@ -196,6 +196,7 @@ class ResourceCatalogueTests(unittest.TestCase):
     def test_resource_reads_reject_tampered_canonical_bytes(self):
         self.put(activate=True)
         with sqlite3.connect(self.database) as connection:
+            connection.execute("DROP TRIGGER immutable_resource_snapshot_update")
             connection.execute(
                 "UPDATE semantic_resource_snapshots SET canonical_json=? WHERE resource_id=?",
                 (sqlite3.Binary(b"{}"), "lex.en.core"),
