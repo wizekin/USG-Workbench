@@ -99,9 +99,15 @@ class SQLiteInterpretationRunStore:
         if canonical_result_bytes(result) != raw:
             raise InterpretationRunIntegrityError("stored interpretation result is not canonical JSON")
         source = result.get("source")
-        if (not isinstance(source, dict) or not isinstance(source.get("text"), str)
-                or sha256(source["text"].encode("utf-8")).hexdigest() != result.get("source_sha256")):
-            raise InterpretationRunIntegrityError("stored interpretation source digest is invalid")
+        source_digest = (
+            sha256(source["text"].encode("utf-8")).hexdigest()
+            if isinstance(source, dict) and isinstance(source.get("text"), str)
+            else None
+        )
+        if (source_digest != result.get("source_sha256")
+                or source.get("sha256") != source_digest
+                or source.get("source_id") != result.get("source_ref")):
+            raise InterpretationRunIntegrityError("stored interpretation source digest or identity is invalid")
         if (
             result.get("pipeline_contract") != row["pipeline_contract"]
             or result.get("pipeline_version") != row["pipeline_version"]
