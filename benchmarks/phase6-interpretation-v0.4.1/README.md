@@ -5,3 +5,5 @@ Additive refinement of the v0.4.0 candidate corpus. It retains 500 fixtures acro
 All constructions remain disabled pending implementation and independent acceptance. v0.4.0 remains unchanged as a historical candidate snapshot.
 
 The validator also rejects contradictory positive/negative/ambiguous labels for identical source text within the same language and construction profile. Ambiguous examples are construction-specific; they are not reused across all profiles.
+
+This revision is a frozen candidate snapshot; further annotation corrections require a new benchmark version rather than editing v0.4.1 after acceptance.
