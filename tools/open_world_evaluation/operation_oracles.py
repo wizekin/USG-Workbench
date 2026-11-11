@@ -87,7 +87,8 @@ def run_suites() -> dict[str, Any]:
             raise ValueError(f"operation suite target is not registered: {target_id}")
         target_tests = []
         for filename in specification["tests"]:
-            path = TESTS / filename
+            relative_path = Path(filename)
+            path = ROOT / relative_path if relative_path.parts[0] == "implementations" else TESTS / relative_path
             if not path.is_file():
                 raise FileNotFoundError(f"registered operation-oracle test is missing: {filename}")
             for relative in specification.get("python_paths", []):
