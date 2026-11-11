@@ -18,8 +18,10 @@ held-out forms without copying the held-out annotations into the rules.
 - For each fold, induce rules only from the other nine folds' FORM, LEMMA,
   UPOS, and FEATS annotations.
 - Support prefix attachment, suffix attachment/replacement, and a constrained
-  consonant-doubling pattern. Require at least two training observations for
-  each complete rule.
+  consonant-doubling pattern. Require at least two distinct observed
+  lemma/form pairs for each complete rule.
+- Require each generated lemma/POS candidate to exist in the training-fold
+  lemma inventory; the analyzer does not invent unregistered lexical stems.
 - Apply rules to held-out surface forms and report exact-form coverage, OOV,
   lemma/POS candidate recall, feature-bundle candidate recall, morphology
   rescue, and ambiguity.
