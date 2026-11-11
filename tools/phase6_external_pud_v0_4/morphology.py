@@ -75,7 +75,7 @@ def _rule_for(token: dict, language: str) -> tuple | None:
             # English consonant doubling: run -> running, plan -> planning.
             last = lemma[-1]
             if len(lemma) >= 3 and extra.startswith(last):
-                return (token["upos"], "suffix", last, last + extra[1:], token["feats"])
+                return (token["upos"], "suffix", last, last + last + extra[1:], token["feats"])
             return (token["upos"], "suffix", "", extra, token["feats"])
 
     # General suffix replacement after a shared stem: city -> cities, study -> studies.
