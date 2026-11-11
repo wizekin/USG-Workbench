@@ -427,13 +427,18 @@ class LexicalCrawler:
         base = self._raw_base(commit)
         root, _ = self.client.get_text(base + "dictionary/INDEX.md")
         root_meta = _front_matter(root)
-        snapshot = root_meta.get("snapshot_id")
         expected_count = int(root_meta.get("headwords", "0") or 0)
-        if not snapshot or expected_count <= 0:
-            raise ProviderError("Source root index is missing its snapshot ID or headword count")
+        if expected_count <= 0:
+            raise ProviderError("Source root index is missing its headword count")
+        # The actual upstream browse root has no snapshot_id; dictionary/SOURCE.md
+        # is the authoritative snapshot metadata document.
         source, _ = self.client.get_text(base + "dictionary/SOURCE.md")
         source_meta = _front_matter(source)
-        if source_meta.get("snapshot_id") != snapshot:
+        snapshot = source_meta.get("snapshot_id")
+        if not snapshot:
+            raise ProviderError("Source metadata page is missing its snapshot ID")
+        root_snapshot = root_meta.get("snapshot_id")
+        if root_snapshot and root_snapshot != snapshot:
             raise ProviderError("Root index and source metadata describe different snapshots")
         page_paths = []
         for initial in _initials_from_root(root):
