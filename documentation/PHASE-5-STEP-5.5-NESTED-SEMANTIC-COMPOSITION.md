@@ -27,7 +27,7 @@ Every syntax candidate combination produces a separate semantic graph candidate.
 
 ## 5. Provenance and validation
 
-Every node contains source spans and derivation references. REF nodes point to exact lexical token spans; PREDICATE nodes point to the action token; CLAUSE_GROUP nodes span the composed clause range and retain connective marker spans. Graph validation checks unique node IDs, root/operand references, clause roots, typed operations/sorts, and Unicode code-point spans. A dedicated JSON Schema validates the serialized graph candidate.
+Every graph candidate carries the immutable source ID and SHA-256 digest. Every node contains source spans and derivation references. REF nodes point to exact lexical token spans; PREDICATE nodes point to the action token; CLAUSE_GROUP nodes span the composed clause range and retain connective marker spans. Graph validation checks unique node IDs, root/operand references, clause roots, typed operations/sorts, and Unicode code-point spans. A dedicated JSON Schema validates the serialized graph candidate.
 
 ## 6. Acceptance tests
 
