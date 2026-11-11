@@ -1,0 +1,170 @@
+name: USG Open-World Continuous Exploration
+
+on:
+  schedule:
+    - cron: "15 2 * * *"
+    - cron: "30 3 * * 1"
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      prompt_count:
+        description: "Base random prompt count (each prompt is tested against three targets)"
+        required: false
+        default: "100"
+        type: string
+  pull_request:
+    paths:
+      - ".github/workflows/open-world-continuous.yml"
+      - "tools/open_world_evaluation/campaign_profiles.py"
+      - "tests/test_open_world_continuous.py"
+      - "documentation/USG-OPEN-WORLD-CONTINUOUS-EXPLORATION.md"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: usg-open-world-continuous
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Test campaign budget and cadence profiles
+        run: python -m unittest discover -s tests -p "test_open_world_continuous.py" -v
+      - name: Compile profile resolver
+        run: python -m py_compile tools/open_world_evaluation/campaign_profiles.py
+
+  campaign:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    env:
+      CAMPAIGN_ID: OWC-OW7-${{ github.run_id }}-${{ github.run_attempt }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install schema validator
+        run: python -m pip install "jsonschema>=4.18,<5"
+      - name: Resolve cadence profile and resource budget
+        env:
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          GITHUB_EVENT_SCHEDULE: ${{ github.event.schedule || '' }}
+          MANUAL_PROMPT_COUNT: ${{ github.event.inputs.prompt_count || '' }}
+        run: python -m tools.open_world_evaluation.campaign_profiles
+      - name: Verify diagnostic importer and profile contracts
+        run: |
+          python -m unittest discover -s tests -p "test_open_world_diagnostics.py" -v
+          python -m unittest discover -s tests -p "test_open_world_continuous.py" -v
+      - name: Generate unconstrained-random target matrix
+        run: |
+          python -m tools.open_world_evaluation.generate_scenarios \
+            --count "$PROMPT_COUNT" \
+            --seed "OW7-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
+            --created-at "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            --target-matrix \
+            --output "$RUNNER_TEMP/ow7-random-cases.jsonl"
+      - name: Import controlled Phase 4 and Phase 5 diagnostic cases
+        run: |
+          python -m tools.open_world_evaluation.import_diagnostics \
+            --output "$RUNNER_TEMP/ow7-diagnostic-cases.jsonl" \
+            --manifest "$RUNNER_TEMP/ow7-diagnostic-manifest.json" \
+            --created-at "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+      - name: Combine populations and preserve source manifests
+        run: |
+          cat "$RUNNER_TEMP/ow7-random-cases.jsonl" \
+              "$RUNNER_TEMP/ow7-diagnostic-cases.jsonl" \
+              > "$RUNNER_TEMP/ow7-all-cases.jsonl"
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          root = Path(os.environ["RUNNER_TEMP"])
+          random = json.loads((root / "ow7-random-cases.jsonl.manifest.json").read_text(encoding="utf-8"))
+          diagnostic = json.loads((root / "ow7-diagnostic-manifest.json").read_text(encoding="utf-8"))
+          combined = {
+              "manifest_version": "1.0.0",
+              "generator_version": random["generator_version"],
+              "master_seed": random["master_seed"],
+              "cadence": os.environ["OW_CADENCE"],
+              "random_population": random,
+              "diagnostic_population": diagnostic,
+              "random_case_count": random["case_count"],
+              "diagnostic_case_count": diagnostic["case_count"],
+              "expected_case_count": int(os.environ["OW_EXPECTED_CASE_COUNT"]),
+          }
+          (root / "ow7-combined-generation-manifest.json").write_text(
+              json.dumps(combined, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+              encoding="utf-8",
+          )
+          rows = [json.loads(line) for line in (root / "ow7-all-cases.jsonl").read_text(encoding="utf-8").splitlines()]
+          assert len(rows) == combined["expected_case_count"]
+          PY
+      - name: Execute the real registered entry points with per-case budgets
+        run: |
+          python -m tools.open_world_evaluation.execute_cases \
+            --input "$RUNNER_TEMP/ow7-all-cases.jsonl" \
+            --output "$RUNNER_TEMP/ow7-execution-results.jsonl" \
+            --commit-sha "$GITHUB_SHA" \
+            --max-wall-seconds 30
+      - name: Score structural behavior and controlled diagnostic gold separately
+        run: |
+          python -m tools.open_world_evaluation.score_cases \
+            --cases "$RUNNER_TEMP/ow7-all-cases.jsonl" \
+            --results "$RUNNER_TEMP/ow7-execution-results.jsonl" \
+            --scores "$RUNNER_TEMP/ow7-score-results.jsonl" \
+            --summary "$RUNNER_TEMP/ow7-score-summary.json"
+      - name: Build and retain immutable campaign report
+        run: |
+          python -m tools.open_world_evaluation.campaign_pipeline \
+            --campaign-id "$CAMPAIGN_ID" \
+            --cases "$RUNNER_TEMP/ow7-all-cases.jsonl" \
+            --results "$RUNNER_TEMP/ow7-execution-results.jsonl" \
+            --scores "$RUNNER_TEMP/ow7-score-results.jsonl" \
+            --generation-manifest "$RUNNER_TEMP/ow7-combined-generation-manifest.json" \
+            --commit-sha "$GITHUB_SHA" \
+            --output-root "$RUNNER_TEMP/ow7-campaigns"
+          mkdir -p "evaluations/open-world/campaigns"
+          cp -a "$RUNNER_TEMP/ow7-campaigns/$CAMPAIGN_ID" "evaluations/open-world/campaigns/$CAMPAIGN_ID"
+      - name: Upload immutable campaign artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.CAMPAIGN_ID }}
+          path: evaluations/open-world/campaigns/${{ env.CAMPAIGN_ID }}/
+          if-no-files-found: error
+          retention-days: 90
+      - name: Publish append-only campaign report pull request
+        id: report-pr
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: reports/ow7-${{ github.run_id }}-${{ github.run_attempt }}
+          base: main
+          add-paths: evaluations/open-world/campaigns/${{ env.CAMPAIGN_ID }}/**
+          commit-message: "OW-7: publish ${{ steps.profile.outputs.cadence }} campaign ${{ env.CAMPAIGN_ID }}"
+          title: "OW-7 ${{ steps.profile.outputs.cadence }} campaign report: ${{ env.CAMPAIGN_ID }}"
+          body: |
+            Automated continuous-exploration campaign report.
+
+            - Cadence: ${{ steps.profile.outputs.cadence }}
+            - Tested commit: ${{ github.sha }}
+            - Random base prompts: ${{ steps.profile.outputs.prompt_count }} x 3 registered targets
+            - Controlled diagnostics: 106 repository fixtures
+            - Naturalistic population: not yet populated; status remains partial
+            - Complete JSONL cases/results/scores, Markdown/JSON report, and SHA-256 manifest are attached
+      - name: Record the report PR
+        run: |
+          echo "Cadence: $OW_CADENCE"
+          echo "Campaign: $CAMPAIGN_ID"
+          echo "Expected cases: $OW_EXPECTED_CASE_COUNT"
+          echo "Report PR: ${{ steps.report-pr.outputs.pull-request-number }}"
