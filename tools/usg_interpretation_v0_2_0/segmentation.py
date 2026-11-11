@@ -54,6 +54,8 @@ class SegmentedDocument:
     segmentation_version: str = SEGMENTATION_VERSION
 
     def __post_init__(self):
+        if not isinstance(self.source, SourceSnapshot):
+            raise TypeError("source must be a SourceSnapshot")
         sentence_ids = {x.segment_id for x in self.sentences}
         clause_ids = {x.segment_id for x in self.clauses}
         for item in (*self.sentences, *self.clauses):
