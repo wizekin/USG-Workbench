@@ -1,6 +1,6 @@
 # Phase 6 — Step 6.5: Expanded Predicate and Argument Structures
 
-**Status:** IMPLEMENTED — benchmark acceptance pending  
+**Status:** ACCEPTED — bounded benchmark scope; unified service integration deferred to Step 6.13  
 **Contract:** `USG-INTERPRET/0.3.0`  
 **Corrected gold:** `USG-INTERPRET-GOLD/0.3.2`  
 **Construction resource:** `phase6.predicate-argument-rules.candidate/0.3.0`
