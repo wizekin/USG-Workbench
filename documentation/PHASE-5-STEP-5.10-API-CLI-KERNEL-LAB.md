@@ -131,7 +131,7 @@ The Step 5.10 suite verifies:
 - immutable/idempotent run persistence, integrity-checked export, and deterministic replay;
 - refusal to replay when the resource manifest changes;
 - provisional association registration, retrieval, and append-only usage;
-- CLI command exposure;
+- CLI command exposure;\n- wheel build/install smoke test proving bundled lexical/operator JSON assets are present in installed package data;
 - real HTTP routing through the Kernel Lab server and Phase 5 UI controls.
 
 The dedicated workflow runs Step 5.10 tests, all Phase 5 regressions, frozen Phase 4 tests, Phase 3 local API/CLI and graph-store regressions, plus protected-contract diff checks. Existing Phase 3 integrated exit and Step 5.9 resource-catalogue workflows are also triggered by the changed integration paths.
