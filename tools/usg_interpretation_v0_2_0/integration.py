@@ -148,12 +148,20 @@ class Phase5InterpretationService:
                 "mention_ref": mention_ref,
             })
 
+        interrogative_force = text.rstrip().endswith(("?", "؟"))
+        if interrogative_force:
+            diagnostics.append({
+                "code": "UNSUPPORTED_INTERROGATIVE_FORCE",
+                "stage": "syntax",
+                "source_span": [len(text.rstrip()) - 1, len(text.rstrip())],
+            })
+
         stage_statuses = {
             syntax.status, operators.status, composition.status, discourse.status,
         }
         if "INCOMPLETE_RESOURCE_LIMIT" in stage_statuses:
             completion = "INCOMPLETE_RESOURCE_LIMIT"
-        elif "UNSUPPORTED" in stage_statuses:
+        elif interrogative_force or "UNSUPPORTED" in stage_statuses:
             completion = "UNSUPPORTED"
         elif ("AMBIGUOUS" in stage_statuses or lexical_ambiguous):
             completion = "AMBIGUOUS"
