@@ -101,7 +101,8 @@ def evaluate(corpus: dict, predictions: dict) -> dict:
             status_match = predicted_status == case["expected_completion_status"]
             status_ok += int(status_match)
             role_match = pred.get("role_bindings", {}) == case["expected_roles"]
-            if gold_positive:\n                roles_ok += int(role_match)
+            if gold_positive:
+                roles_ok += int(role_match)
             predicted_spans = pred.get("role_spans", {})
             span_match = predicted_spans == case["expected_role_spans"]
             spans_valid = True
@@ -117,7 +118,8 @@ def evaluate(corpus: dict, predictions: dict) -> dict:
                             or not isinstance(surface, str) or start < 0 or end <= start
                             or end > len(case["text"]) or case["text"][start:end] != surface):
                         spans_valid = False
-            if gold_positive:\n                spans_ok += int(span_match and spans_valid)
+            if gold_positive:
+                spans_ok += int(span_match and spans_valid)
             case_rows.append({
                 "case_id": case["id"], "language": lang,
                 "gold_class": case["gold_class"],
