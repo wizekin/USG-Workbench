@@ -106,9 +106,10 @@ def _run_import_smoke(target_id: str) -> dict[str, Any] | None:
             "execution_metadata": {"adapter": "not-implemented"},
         }
     imported = []
+    repository_root = os.path.realpath(os.path.join(os.path.dirname(__file__), "..", ".."))
     for relative_path, module_name in modules:
-        package_root = os.path.realpath(os.path.join(os.path.dirname(__file__), "..", "..", relative_path))
-        if os.path.commonpath([os.path.realpath(os.path.dirname(__file__)), package_root]) != os.path.realpath(os.path.dirname(__file__)):
+        package_root = os.path.realpath(os.path.join(repository_root, relative_path))
+        if os.path.commonpath([repository_root, package_root]) != repository_root:
             raise ValueError("smoke adapter path escapes repository root")
         if package_root not in sys.path:
             sys.path.insert(0, package_root)
