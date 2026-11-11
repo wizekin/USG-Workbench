@@ -38,7 +38,7 @@ class TestExternalLexicalStateAudit(unittest.TestCase):
         checkpoint, manifest, shards = self.fixture()
         duplicate = dict(shards[1], path="shards/snapshot/batch-000002-retry.jsonl.gz")
         shards.append(duplicate)
-        manifest["stored_bytes"] += duplicate["size"]
+        manifest["stored_bytes"] += duplicate["size"]\n        checkpoint["stored_bytes"] += duplicate["size"]
         report = audit_crawl_state(checkpoint, manifest, shards)
         self.assertEqual(report["status"], "passed_with_warnings")
         self.assertTrue(report["checks"]["duplicate_batches"][0]["identical_blob"])
