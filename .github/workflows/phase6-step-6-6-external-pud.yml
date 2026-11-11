@@ -1,0 +1,28 @@
+name: Phase 6 Step 6.6 Independent PUD Structural Audit
+on:
+  pull_request:
+    paths:
+      - "tools/phase6_external_pud_v0_1/**"
+      - "tests/test_phase6_external_pud.py"
+      - "documentation/PHASE-6-STEP-6.6-EXTERNAL-PUD-AUDIT.md"
+      - ".github/workflows/phase6-step-6-6-external-pud.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  external-pud:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python -m unittest discover -s tests -p 'test_phase6_external_pud.py' -v
+      - run: python -m tools.phase6_external_pud_v0_1.run
+      - name: Upload external evaluation report
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase6-step-6-6-pud-report
+          path: artifacts/phase6-step-6.6-pud-report.json
