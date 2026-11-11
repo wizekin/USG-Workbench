@@ -6,7 +6,7 @@ human-adjudicated semantic-role gold set. Results cannot enable constructions.
 """
 from __future__ import annotations
 
-from collections import Counter, defaultdict
+from collections import defaultdict
 from hashlib import sha1
 from pathlib import Path
 from urllib.request import urlopen
@@ -177,13 +177,29 @@ def extract_gold(sentences: list[dict], lang: str) -> list[dict]:
 
 
 def evaluate(cases: list[dict]) -> dict:
+    lexicon = json.loads((ROOT / "resources/lexical/phase6-v0.4.1/nominal-candidate.json").read_text(encoding="utf-8"))
+    known_forms = defaultdict(set)
+    for entry in lexicon["entries"]:
+        form = entry["form"].casefold() if entry["language"] == "en" else entry["form"]
+        known_forms[entry["language"]].add(form)
     by_profile = defaultdict(lambda: {"gold_cases": 0, "exact_matches": 0,
-                                       "abstentions": 0, "wrong_candidates": 0})
+                                       "abstentions": 0, "wrong_candidates": 0,
+                                       "phrase_tokens": 0, "lexicon_covered_tokens": 0,
+                                       "fully_covered_phrases": 0,
+                                       "analyzer_status_counts": {}})
     for case in cases:
         key = f"{case['language']}/{case['construction']}"
         row = by_profile[key]
         row["gold_cases"] += 1
+        words = case["text"].split()
+        forms = [w.casefold() if case["language"] == "en" else w for w in words]
+        covered = sum(form in known_forms[case["language"]] for form in forms)
+        row["phrase_tokens"] += len(forms)
+        row["lexicon_covered_tokens"] += covered
+        row["fully_covered_phrases"] += int(bool(forms) and covered == len(forms))
         result = analyze(case["text"], case["language"])
+        status = result.get("status", "MISSING_STATUS")
+        row["analyzer_status_counts"][status] = row["analyzer_status_counts"].get(status, 0) + 1
         if (result.get("status") == "CANDIDATE"
                 and result.get("construction_id") == case["construction"]
                 and result.get("role_bindings") == case["expected_roles"]):
@@ -195,6 +211,13 @@ def evaluate(cases: list[dict]) -> dict:
     for row in by_profile.values():
         n = row["gold_cases"]
         row["exact_recall"] = row["exact_matches"] / n if n else None
+        row["lexicon_token_coverage"] = (
+            row["lexicon_covered_tokens"] / row["phrase_tokens"]
+            if row["phrase_tokens"] else None
+        )
+        row["fully_covered_phrase_rate"] = (
+            row["fully_covered_phrases"] / n if n else None
+        )
     return {
         "evaluation_type": "INDEPENDENT_UD_STRUCTURAL_PROXY_RECALL",
         "precision_measured": False,
