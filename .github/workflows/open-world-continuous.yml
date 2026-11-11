@@ -27,6 +27,10 @@ on:
       - "tests/test_open_world_operation_oracles.py"
       - "tests/test_open_world_browser.py"
       - "tests/test_phase3_local_api_cli.py"
+      - "tests/test_phase4_integrated_api.py"
+      - "tests/test_phase5_integrated_api.py"
+      - "tools/usg_interpretation_v0_1_0/**"
+      - "tools/usg_interpretation_v0_2_0/**"
       - "tests/test_workbench_source_adapter.py"
       - "tests/test_workbench_source_adapter.js"
       - "tests/test_workbench_reconstruction_adapter.js"
@@ -52,6 +56,7 @@ on:
       - "documentation/OW-12-NATIVE-AND-BROWSER-ORACLES.md"
       - "documentation/OW-13-FULL-GENERATION-AND-REASONING-COVERAGE.md"
       - "documentation/OW-14-LOCAL-API-AND-WORKBENCH-ADAPTERS.md"
+      - "documentation/OW-15-PHASE4-PHASE5-INTERPRETER-ORACLES.md"
 
 permissions:
   contents: write
