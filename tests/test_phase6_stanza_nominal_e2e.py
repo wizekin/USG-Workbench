@@ -79,6 +79,29 @@ class TestStanzaNominalE2E(unittest.TestCase):
         self.assertEqual(len(graphs[0]["tokens"]), 2)
         self.assertEqual(graphs[1]["tokens"], [])
 
+
+    def test_gold_conllu_parser_provides_adapter_head_indexes(self):
+        from tools.phase6_ud_nominal_candidate_v0_1.adapter import (
+            adapt_sentence, parse_ud_conllu,
+        )
+        payload = (
+            "# text = الكتاب الجديد\\n"
+            "1\\tالكتاب\\tكتاب\\tNOUN\\t_\\t_\\t0\\troot\\t_\\t_\\n"
+            "2\\tالجديد\\tجديد\\tADJ\\t_\\t_\\t1\\tamod\\t_\\t_\\n"
+        ).encode("utf-8")
+        sentence = parse_ud_conllu(payload)[0]
+        self.assertEqual(
+            [token["gold_head_index"] for token in sentence["tokens"]],
+            [0, 0],
+        )
+        adapted = adapt_sentence(sentence, "ar")
+        self.assertEqual(adapted["status"], "CANDIDATE")
+        self.assertEqual(len(adapted["candidates"]), 1)
+        self.assertEqual(
+            adapted["candidates"][0]["construction_id"],
+            "nominal.attribute_modifier",
+        )
+
     def test_batch_size_must_be_positive(self):
         with self.assertRaisesRegex(ValueError, "batch_size"):
             parse_in_batches(FakePipeline([]), [self.gold], batch_size=0)
