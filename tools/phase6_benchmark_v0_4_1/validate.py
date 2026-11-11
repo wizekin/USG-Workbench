@@ -18,10 +18,12 @@ def validate():
    key=(lang,x["construction_id"])
    if key in inv or x["enabled"] is not False or x["family"] not in ROLE_KEYS: raise ValueError("invalid candidate construction inventory: "+str(key))
    inv[key]=x["family"]
- ids=set(); counts=Counter()
+ ids=set(); counts=Counter(); labels={}
  for c in d["cases"]:
   if c["id"] in ids: raise ValueError("duplicate fixture id: "+c["id"])
-  ids.add(c["id"]); key=(c["language"],c["target_construction"])
+  ids.add(c["id"]); key=(c["language"],c["target_construction"]); text_key=(c["language"],c["target_construction"],c["text"]); previous=labels.get(text_key)
+  if previous is not None and previous!=c["gold_class"]: raise ValueError("conflicting gold classes for identical source text: "+c["id"])
+  labels[text_key]=c["gold_class"]
   if key not in inv: raise ValueError("unknown construction: "+c["id"])
   family=inv[key]; counts[(key[0],key[1],c["gold_class"])]+=1
   roles=c["expected_roles"]; spans=c["expected_role_spans"]
