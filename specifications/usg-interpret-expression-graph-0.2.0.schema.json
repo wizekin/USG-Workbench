@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "USG Interpretation Expression Graph Candidate 0.2.0",
+  "type": "object",
+  "required": ["candidateId", "rootRef", "clauseRootRefs", "status", "sourceSpan", "nodes"],
+  "properties": {
+    "candidateId": {"type": "string", "minLength": 1},
+    "rootRef": {"type": "string", "minLength": 1},
+    "clauseRootRefs": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "status": {"enum": ["RESOLVED", "AMBIGUOUS", "PARTIAL"]},
+    "sourceSpan": {"$ref": "#/$defs/span"},
+    "nodes": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["nodeId", "op", "sort", "operandRefs", "params", "sourceSpan", "derivationRefs"],
+        "properties": {
+          "nodeId": {"type": "string", "minLength": 1},
+          "op": {"enum": ["REF", "PREDICATE", "CLAUSE_GROUP"]},
+          "sort": {"enum": ["ENTITY", "PROPOSITION", "PROPOSITION_SET"]},
+          "operandRefs": {"type": "array", "items": {"type": "string"}},
+          "params": {"type": "object"},
+          "sourceSpan": {"$ref": "#/$defs/span"},
+          "derivationRefs": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "$defs": {
+    "span": {
+      "type": "object",
+      "required": ["start", "end", "offsetUnit"],
+      "properties": {
+        "start": {"type": "integer", "minimum": 0},
+        "end": {"type": "integer", "minimum": 1},
+        "offsetUnit": {"const": "unicode_code_point"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
