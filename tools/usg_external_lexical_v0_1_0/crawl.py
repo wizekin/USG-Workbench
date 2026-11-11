@@ -405,7 +405,7 @@ class LexicalCrawler:
         storage_budget_bytes: int = DEFAULT_STORAGE_BUDGET_BYTES,
     ):
         self.repository = repository
-        self.client = client or HttpClient(timeout=25, max_bytes=12_000_000, retries=3)
+        self.client = client or HttpClient(timeout=25, max_bytes=20_000_000, retries=3)
         self.publisher = publisher
         self.data_branch = data_branch
         self.delay_seconds = max(0.0, min(float(delay_seconds), 2.0))
@@ -452,15 +452,78 @@ class LexicalCrawler:
         return snapshot, page_paths, expected_count
 
     def load_checkpoint(self) -> dict[str, Any] | None:
-        url = f"https://raw.githubusercontent.com/wizekin/USG-Workbench/{self.data_branch}/{CHECKPOINT_PATH}"
+        # Read the mutable branch ref through the GitHub Contents API. The raw
+        # content URL is CDN-cached and can briefly return an older checkpoint,
+        # which would make a scheduled run replay a previously published batch.
+        url = (
+            f"https://api.github.com/repos/wizekin/USG-Workbench/contents/"
+            f"{CHECKPOINT_PATH}?ref={quote(self.data_branch, safe='')}"
+        )
         try:
-            payload, _ = self.client.get_text(url)
-            value = json.loads(payload)
+            payload, _ = self.client.get_json(url)
+            if not isinstance(payload, dict):
+                raise ProviderError("GitHub returned an invalid checkpoint response")
+            encoded = payload.get("content")
+            encoding = payload.get("encoding")
+            if not isinstance(encoded, str) or encoding != "base64":
+                raise ProviderError("GitHub checkpoint response did not contain base64 content")
+            decoded = base64.b64decode(encoded).decode("utf-8")
+            value = json.loads(decoded)
             return value if isinstance(value, dict) else None
         except ProviderNotFound:
             return None
-        except (json.JSONDecodeError, ProviderError):
+        except (ValueError, UnicodeDecodeError, json.JSONDecodeError, ProviderError):
             raise ProviderError("The data-branch checkpoint is invalid or unavailable")
+
+    def _discover_failed_headwords(self, snapshot_id: str) -> tuple[list[dict[str, Any]], int]:
+        """Rebuild the retry queue from immutable prior shards after upgrading an old checkpoint."""
+        safe_snapshot = re.sub(r"[^A-Za-z0-9_.-]+", "-", snapshot_id)
+        listing_url = (
+            f"https://api.github.com/repos/wizekin/USG-Workbench/contents/"
+            f"shards/{safe_snapshot}?ref={quote(self.data_branch, safe='')}"
+        )
+        try:
+            items, _ = self.client.get_json(listing_url)
+        except ProviderNotFound:
+            return [], 0
+        if not isinstance(items, list):
+            raise ProviderError("GitHub returned an invalid lexical shard listing")
+
+        failures: dict[str, dict[str, Any]] = {}
+        observed_shard_bytes = 0
+        for item in items:
+            if not isinstance(item, dict) or item.get("type") != "file":
+                continue
+            if not str(item.get("name", "")).endswith(".jsonl.gz"):
+                continue
+            observed_shard_bytes += max(0, int(item.get("size", 0) or 0))
+            download_url = item.get("download_url")
+            if not isinstance(download_url, str) or not download_url.startswith("https://raw.githubusercontent.com/"):
+                raise ProviderError("A prior lexical shard has no safe immutable download URL")
+            raw, _ = self.client.get_bytes(download_url)
+            try:
+                lines = gzip.decompress(raw).decode("utf-8").splitlines()
+            except (OSError, UnicodeDecodeError) as exc:
+                raise ProviderError("A prior lexical shard could not be decoded") from exc
+            for line in lines:
+                try:
+                    record = json.loads(line)
+                except json.JSONDecodeError as exc:
+                    raise ProviderError("A prior lexical shard contains invalid JSONL") from exc
+                if not isinstance(record, dict) or record.get("event_type") != "headword_error":
+                    continue
+                candidate = record.get("headword_candidate")
+                entry_path = record.get("entry_path")
+                if not isinstance(candidate, str) or not candidate.strip():
+                    continue
+                if not isinstance(entry_path, str) or not entry_path.startswith("dictionary/entries/"):
+                    continue
+                failures.setdefault(entry_path, {
+                    "headword_candidate": candidate,
+                    "entry_path": entry_path,
+                    "attempts": 0,
+                })
+        return list(failures.values()), observed_shard_bytes
 
     @staticmethod
     def _new_checkpoint(
@@ -485,6 +548,12 @@ class LexicalCrawler:
             "processed_senses": 0,
             "failed_headwords": 0,
             "failed_pages": 0,
+            "retry_queue_initialized": bool((previous or {}).get("retry_queue_initialized", False)),
+            "retry_queue": list((previous or {}).get("retry_queue", [])),
+            "retried_headwords": int((previous or {}).get("retried_headwords", 0)),
+            "recovered_headwords": int((previous or {}).get("recovered_headwords", 0)),
+            "retry_failed_headwords": int((previous or {}).get("retry_failed_headwords", 0)),
+            "retry_dead_letter_headwords": int((previous or {}).get("retry_dead_letter_headwords", 0)),
             "stored_bytes": int((previous or {}).get("stored_bytes", 0)),
             "updated_at": utc_now(),
         }
@@ -528,6 +597,11 @@ class LexicalCrawler:
             "processed_senses": checkpoint.get("processed_senses", 0),
             "failed_headwords": checkpoint.get("failed_headwords", 0),
             "failed_pages": checkpoint.get("failed_pages", 0),
+            "retried_headwords": checkpoint.get("retried_headwords", 0),
+            "recovered_headwords": checkpoint.get("recovered_headwords", 0),
+            "retry_failed_headwords": checkpoint.get("retry_failed_headwords", 0),
+            "retry_dead_letter_headwords": checkpoint.get("retry_dead_letter_headwords", 0),
+            "pending_retries": len(checkpoint.get("retry_queue", [])),
             "batch_count": checkpoint.get("batch_number", 0),
             "stored_bytes": checkpoint.get("stored_bytes", 0),
             "storage_budget_bytes": self.storage_budget_bytes,
@@ -556,8 +630,18 @@ class LexicalCrawler:
                 "published": False,
             }
 
-        if previous and previous.get("status") == "in_progress":
+        if previous and (
+            previous.get("status") == "in_progress"
+            or bool(previous.get("retry_queue"))
+            or (
+                previous.get("status") == "complete"
+                and int(previous.get("failed_headwords", 0)) > 0
+                and not previous.get("retry_queue_initialized", False)
+            )
+        ):
             checkpoint = previous
+            if checkpoint.get("status") == "complete":
+                checkpoint["status"] = "in_progress"
         else:
             latest_commit = self._resolve_latest_source()
             snapshot, pages, expected_count = self._build_catalogue(latest_commit)
@@ -575,6 +659,31 @@ class LexicalCrawler:
 
         # Additive checkpoint fields are migrated in place when resuming an older run.
         checkpoint.setdefault("failed_pages", 0)
+        checkpoint.setdefault("retried_headwords", 0)
+        checkpoint.setdefault("recovered_headwords", 0)
+        checkpoint.setdefault("retry_failed_headwords", 0)
+        checkpoint.setdefault("retry_dead_letter_headwords", 0)
+        checkpoint.setdefault("retry_queue", [])
+        if not checkpoint.get("retry_queue_initialized"):
+            if int(checkpoint.get("failed_headwords", 0)) > 0:
+                (
+                    checkpoint["retry_queue"],
+                    observed_shard_bytes,
+                ) = self._discover_failed_headwords(
+                    str(checkpoint["source_snapshot_id"])
+                )
+                # Reconcile historical duplicate shards that were published by a
+                # stale checkpoint read; never undercount physical storage usage.
+                checkpoint["stored_bytes"] = max(
+                    int(checkpoint.get("stored_bytes", 0)),
+                    observed_shard_bytes,
+                )
+                if not checkpoint["retry_queue"]:
+                    raise ProviderError(
+                        "Historical headword failures exist, but no retryable events "
+                        "could be recovered from the stored shards"
+                    )
+            checkpoint["retry_queue_initialized"] = True
         manifest = self._initial_manifest(checkpoint)
         if checkpoint.get("stored_bytes", 0) >= self.storage_budget_bytes:
             checkpoint["status"] = "storage_limit_reached"
@@ -588,10 +697,67 @@ class LexicalCrawler:
         entry_index = int(checkpoint.get("entry_index", 0))
         records: list[str] = []
         batch_headwords = batch_entries = batch_senses = batch_failed = batch_failed_pages = 0
+        batch_retry_attempts = batch_retry_recovered = batch_retry_failed = 0
         stop_reason = "batch_limit"
         limit = max(1, min(int(max_headwords), 100_000))
 
-        while page_index < len(pages):
+        # Retry historical failures before advancing the normal source cursor.
+        # Process only the queue length present at batch start; failures are
+        # deferred to a later run so a persistent source error cannot loop here.
+        retry_queue = list(checkpoint.get("retry_queue", []))
+        retry_batch = retry_queue[:limit]
+        retry_deferred: list[dict[str, Any]] = []
+        for retry_item in retry_batch:
+            if time.monotonic() >= deadline:
+                retry_deferred.append(retry_item)
+                continue
+            batch_retry_attempts += 1
+            try:
+                compact = self._process_candidate(source_commit, retry_item)
+                compact["retrieval_event"] = {
+                    "type": "headword_retry_recovered",
+                    "attempt": int(retry_item.get("attempts", 0)) + 1,
+                }
+                records.append(json.dumps(compact, ensure_ascii=False, separators=(",", ":")))
+                record_entries = compact["analysis_summary"]["entry_count"]
+                record_senses = compact["analysis_summary"]["sense_count"]
+                batch_entries += record_entries
+                batch_senses += record_senses
+                checkpoint["processed_entries"] = int(checkpoint.get("processed_entries", 0)) + record_entries
+                checkpoint["processed_senses"] = int(checkpoint.get("processed_senses", 0)) + record_senses
+                checkpoint["recovered_headwords"] = int(checkpoint.get("recovered_headwords", 0)) + 1
+                batch_retry_recovered += 1
+            except ProviderRateLimited:
+                stop_reason = "source_rate_limited"
+                retry_deferred.append(retry_item)
+                retry_deferred.extend(retry_batch[batch_retry_attempts:])
+                break
+            except (ProviderNotFound, ProviderError, ValueError) as exc:
+                attempt = int(retry_item.get("attempts", 0)) + 1
+                records.append(json.dumps({
+                    "event_type": "headword_retry_error",
+                    "headword_candidate": retry_item.get("headword_candidate"),
+                    "entry_path": retry_item.get("entry_path"),
+                    "attempt": attempt,
+                    "error_type": type(exc).__name__,
+                    "recorded_at": utc_now(),
+                }, ensure_ascii=False, separators=(",", ":")))
+                checkpoint["retry_failed_headwords"] = int(checkpoint.get("retry_failed_headwords", 0)) + 1
+                batch_retry_failed += 1
+                if attempt < 3:
+                    retry_deferred.append({
+                        **retry_item,
+                        "attempts": attempt,
+                        "last_error_type": type(exc).__name__,
+                    })
+                else:
+                    checkpoint["retry_dead_letter_headwords"] = int(checkpoint.get("retry_dead_letter_headwords", 0)) + 1
+
+        checkpoint["retry_queue"] = retry_queue[len(retry_batch):] + retry_deferred
+        checkpoint["retried_headwords"] = int(checkpoint.get("retried_headwords", 0)) + batch_retry_attempts
+        batch_headwords = batch_retry_attempts
+
+        while page_index < len(pages) and stop_reason != "source_rate_limited":
             if time.monotonic() >= deadline:
                 stop_reason = "time_budget"
                 break
@@ -648,6 +814,11 @@ class LexicalCrawler:
                     }, ensure_ascii=False, separators=(",", ":")))
                     batch_failed += 1
                     checkpoint["failed_headwords"] = int(checkpoint.get("failed_headwords", 0)) + 1
+                    checkpoint.setdefault("retry_queue", []).append({
+                        "headword_candidate": row["headword_candidate"],
+                        "entry_path": row["entry_path"],
+                        "attempts": 0,
+                    })
 
                 batch_headwords += 1
                 checkpoint["processed_headwords"] = int(checkpoint.get("processed_headwords", 0)) + 1
@@ -659,11 +830,13 @@ class LexicalCrawler:
             page_index += 1
             entry_index = 0
 
-        if page_index >= len(pages):
+        if page_index >= len(pages) and not checkpoint.get("retry_queue"):
             checkpoint["status"] = "complete"
             stop_reason = "source_snapshot_complete"
         else:
             checkpoint["status"] = "in_progress"
+            if page_index >= len(pages):
+                stop_reason = "retry_queue_pending"
         checkpoint["page_index"] = page_index
         checkpoint["entry_index"] = entry_index
         checkpoint["updated_at"] = utc_now()
@@ -709,6 +882,11 @@ class LexicalCrawler:
             "processed_senses": checkpoint["processed_senses"],
             "failed_headwords": checkpoint["failed_headwords"],
             "failed_pages": checkpoint.get("failed_pages", 0),
+            "retried_headwords": checkpoint.get("retried_headwords", 0),
+            "recovered_headwords": checkpoint.get("recovered_headwords", 0),
+            "retry_failed_headwords": checkpoint.get("retry_failed_headwords", 0),
+            "retry_dead_letter_headwords": checkpoint.get("retry_dead_letter_headwords", 0),
+            "pending_retries": len(checkpoint.get("retry_queue", [])),
             "batch_count": checkpoint["batch_number"],
             "stored_bytes": checkpoint["stored_bytes"],
             "updated_at": utc_now(),
@@ -727,6 +905,10 @@ class LexicalCrawler:
                 "senses": batch_senses,
                 "failed_headwords": batch_failed,
                 "failed_pages": batch_failed_pages,
+                "retry_attempts": batch_retry_attempts,
+                "retry_recovered": batch_retry_recovered,
+                "retry_failed": batch_retry_failed,
+                "pending_retries": len(checkpoint.get("retry_queue", [])),
                 "stop_reason": stop_reason,
             }
 
@@ -752,6 +934,10 @@ class LexicalCrawler:
                 "senses": batch_senses,
                 "failed_headwords": batch_failed,
                 "failed_pages": batch_failed_pages,
+                "retry_attempts": batch_retry_attempts,
+                "retry_recovered": batch_retry_recovered,
+                "retry_failed": batch_retry_failed,
+                "pending_retries": len(checkpoint.get("retry_queue", [])),
                 "compressed_bytes": len(shard_bytes),
                 "shard_path": shard_path,
             },

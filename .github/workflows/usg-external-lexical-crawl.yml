@@ -15,6 +15,11 @@ on:
         required: false
         default: "15"
         type: string
+      validation_only:
+        description: "Run offline validation without starting a crawl"
+        required: false
+        default: false
+        type: boolean
   pull_request:
     paths:
       - "tools/usg_external_lexical_v0_1_0/**"
@@ -28,7 +33,7 @@ permissions:
 
 jobs:
   validate:
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && inputs.validation_only)
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -46,7 +51,7 @@ jobs:
         run: python -m tools.usg_external_lexical_v0_1_0 benchmark
 
   crawl:
-    if: github.event_name != 'pull_request'
+    if: github.event_name != 'pull_request' && !(github.event_name == 'workflow_dispatch' && inputs.validation_only)
     concurrency:
       group: usg-external-lexical-crawl-${{ github.repository }}
       cancel-in-progress: false

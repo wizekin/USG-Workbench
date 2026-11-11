@@ -24,11 +24,11 @@ GitHub's standard hosted runner job limit is six hours. The repository is public
 Results are published to the separate usg-external-lexical-data branch, not main.
 
 - README.md: explains the data-branch contents and rights policy.
-- state/checkpoint.json: immutable source snapshot, page/entry cursor, cumulative counters, and next resume position.
+- state/checkpoint.json: immutable source snapshot, page/entry cursor, cumulative counters, pending failed-headword retry queue, and next resume position.
 - state/manifest.json: cumulative counts, compressed bytes, batch count, and last batch metadata.
 - shards/<snapshot-id>/batch-*.jsonl.gz: append-only per-run lexical analysis results.
 
-The workflow publishes each batch through GitHub's Git Data API. It does not check out or download the growing data branch on every run. It retrieves only the small checkpoint from the branch, then uploads the new shard and updated state.
+The workflow publishes each batch through GitHub's Git Data API. It does not check out or download the growing data branch on every run. It retrieves only the small checkpoint through the GitHub Contents API (not the CDN-cached raw branch URL), then uploads the new shard and updated state. This avoids replaying a previously published batch when the raw-file CDN briefly serves a stale checkpoint.
 
 The initial storage budget is 700 MiB of compressed shards. This is a safety limit, not a prediction of the final corpus size. If the budget is reached, the worker writes a storage_limit_reached status and stops; it does not silently delete old results or reset the cursor. Continuing beyond that point requires a separately chosen storage destination or storage-budget revision.
 
@@ -54,7 +54,7 @@ The crawler pins one Git commit and its snapshot ID for the duration of a full c
 
 When the pinned snapshot is complete, subsequent runs compare the upstream source snapshot. If the source publishes a new snapshot, the crawler starts a new cycle while preserving prior shards and cumulative storage accounting.
 
-The worker records failed entry fetches and parser failures as compact failure events and continues where it can. A transient source rate limit stops the run without advancing past the current headword. A browse-page fetch or parse error is recorded separately and stops the batch without advancing the page/entry cursor; the next scheduled run retries that exact page so a temporary index failure cannot silently skip hundreds of headwords.
+The worker records failed entry fetches and parser failures as compact failure events and continues where it can. A transient source rate limit stops the run without advancing past the current headword. A browse-page fetch or parse error is recorded separately and stops the batch without advancing the page/entry cursor; the next scheduled run retries that exact page so a temporary index failure cannot silently skip hundreds of headwords.\n\nOlder crawler versions recorded per-headword failures but did not retry them. On upgrade, the crawler scans the existing snapshot shards once, reconstructs a deduplicated retry queue from those failure events, and persists it in the checkpoint. Pending failures are retried before new headwords; recovered entries are published with an explicit `retrieval_event` marker. A failed retry is deferred to a later run and is moved to a dead-letter count after three attempts. Retry attempts, recoveries, failures, and pending queue size are reported separately from the original source-cursor counters.
 
 ## Run manually
 
@@ -62,7 +62,7 @@ Open the repository's Actions tab, select **USG External Lexical Incremental Cra
 
 The manual default is a 200-headword / 15-minute pilot. To run a larger manual batch, supply:
 - max_headwords: up to 30,000.
-- max_runtime_minutes: up to 320.
+- max_runtime_minutes: up to 320.\n- validation_only: true to run the offline validation suite without starting a crawl.
 
 The scheduled cadence always uses 30,000 headwords / 320 minutes.
 

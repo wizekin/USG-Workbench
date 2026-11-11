@@ -94,6 +94,10 @@ class HttpClient:
         except UnicodeDecodeError as exc:
             raise ProviderError("Provider returned non-UTF-8 text") from exc
 
+    def get_bytes(self, url: str) -> tuple[bytes, dict[str, str]]:
+        """Return a bounded binary response for immutable compressed evidence shards."""
+        return self._get(url)
+
 
 def _as_strings(value: Any) -> list[str]:
     if not isinstance(value, list):

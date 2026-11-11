@@ -1,6 +1,7 @@
 """Tests for the resumable scheduled lexical crawler."""
 from __future__ import annotations
 
+import base64
 import gzip
 import json
 import unittest
@@ -72,7 +73,16 @@ class FakeClient:
 
     def get_json(self, url):
         self.requests.append(url)
+        if url in self.text_map:
+            value = self.text_map[url]
+            return json.loads(value) if isinstance(value, str) else value, {}
         return {"sha": SHA}, {}
+
+    def get_bytes(self, url):
+        self.requests.append(url)
+        if url not in self.text_map:
+            raise AssertionError("Unexpected binary URL: " + url)
+        return self.text_map[url], {}
 
 
 class FakePublisher:
@@ -259,13 +269,45 @@ headwords: 1
         self.assertEqual(compact["entries"][0]["relations"][0]["scope"], "entry")
         self.assertEqual(compact["rights_policy"]["raw_definitions_persisted"], False)
 
+    def test_checkpoint_uses_github_api_instead_of_cdn_cached_raw_branch_url(self):
+        urls = source_urls()
+        api_url = (
+            "https://api.github.com/repos/wizekin/USG-Workbench/contents/"
+            "state/checkpoint.json?ref=usg-external-lexical-data"
+        )
+        checkpoint = initial_checkpoint()
+        checkpoint.update({
+            "status": "in_progress",
+            "source_commit": SHA,
+            "source_snapshot_id": SNAPSHOT,
+            "pages": ["dictionary/browse/a/0001.md"],
+            "expected_headwords": 1,
+            "entry_index": 7,
+        })
+        urls[api_url] = {
+            "encoding": "base64",
+            "content": base64.b64encode(json.dumps(checkpoint).encode()).decode(),
+        }
+        client = FakeClient(urls)
+        crawler = LexicalCrawler(client=client, delay_seconds=0)
+
+        loaded = crawler.load_checkpoint()
+
+        self.assertEqual(loaded["entry_index"], 7)
+        self.assertIn(api_url, client.requests)
+        self.assertNotIn(
+            "https://raw.githubusercontent.com/wizekin/USG-Workbench/"
+            "usg-external-lexical-data/state/checkpoint.json",
+            client.requests,
+        )
+
     def test_scheduled_batch_resumes_and_publishes_one_compressed_shard(self):
         urls = source_urls()
         data_branch_url = (
-            "https://raw.githubusercontent.com/wizekin/USG-Workbench/"
-            "usg-external-lexical-data/state/checkpoint.json"
+            "https://api.github.com/repos/wizekin/USG-Workbench/contents/"
+            "state/checkpoint.json?ref=usg-external-lexical-data"
         )
-        urls[data_branch_url] = json.dumps(initial_checkpoint())
+        urls[data_branch_url] = {"encoding": "base64", "content": base64.b64encode(json.dumps(initial_checkpoint()).encode()).decode()}
         client = FakeClient(urls)
         publisher = FakePublisher()
         crawler = LexicalCrawler(client=client, publisher=publisher, delay_seconds=0)
@@ -286,13 +328,85 @@ headwords: 1
         self.assertNotIn("definition", row["entries"][0]["senses"][0])
         self.assertEqual(row["source_provenance"]["license"], "CC-BY-SA-4.0")
 
+    def test_historical_headword_errors_are_recovered_before_advancing_cursor(self):
+        urls = source_urls()
+        checkpoint_url = (
+            "https://api.github.com/repos/wizekin/USG-Workbench/contents/"
+            "state/checkpoint.json?ref=usg-external-lexical-data"
+        )
+        checkpoint = initial_checkpoint()
+        checkpoint.update({
+            "status": "in_progress",
+            "source_commit": SHA,
+            "source_snapshot_id": SNAPSHOT,
+            "pages": ["dictionary/browse/a/0001.md"],
+            "page_index": 0,
+            "entry_index": 1,
+            "processed_headwords": 1,
+            "failed_headwords": 1,
+            "expected_headwords": 1,
+        })
+        urls[checkpoint_url] = {
+            "encoding": "base64",
+            "content": base64.b64encode(json.dumps(checkpoint).encode()).decode(),
+        }
+        listing_url = (
+            "https://api.github.com/repos/wizekin/USG-Workbench/contents/"
+            f"shards/{SNAPSHOT}?ref=usg-external-lexical-data"
+        )
+        shard_url = (
+            "https://raw.githubusercontent.com/wizekin/USG-Workbench/"
+            "usg-external-lexical-data/shards/fixture/batch-000001.jsonl.gz"
+        )
+        event = {
+            "event_type": "headword_error",
+            "headword_candidate": "cat",
+            "entry_path": "dictionary/entries/001/cat--fixture.md",
+        }
+        urls[listing_url] = [{
+            "type": "file",
+            "name": "batch-000001.jsonl.gz",
+            "download_url": shard_url,
+            "size": 123,
+        }]
+        urls[shard_url] = gzip.compress(
+            (json.dumps(event) + "\n").encode("utf-8")
+        )
+
+        publisher = FakePublisher()
+        client = FakeClient(urls)
+        crawler = LexicalCrawler(client=client, publisher=publisher, delay_seconds=0)
+        result = crawler.run_batch(
+            max_runtime_seconds=60, max_headwords=10,
+            max_shard_bytes=1024 * 1024, run_id="retry-historical-test",
+        )
+
+        self.assertEqual(result["status"], "complete")
+        self.assertEqual(result["batch"]["retry_attempts"], 1)
+        self.assertEqual(result["batch"]["retry_recovered"], 1)
+        self.assertEqual(result["batch"]["pending_retries"], 0)
+        checkpoint_out = publisher.calls[0]["checkpoint"]
+        self.assertEqual(checkpoint_out["processed_headwords"], 1)
+        self.assertEqual(checkpoint_out["recovered_headwords"], 1)
+        self.assertEqual(
+            checkpoint_out["stored_bytes"],
+            123 + len(publisher.calls[0]["shard_bytes"]),
+        )
+        self.assertEqual(checkpoint_out["retry_queue"], [])
+        records = [
+            json.loads(line)
+            for line in gzip.decompress(publisher.calls[0]["shard_bytes"]).decode().splitlines()
+        ]
+        self.assertEqual(records[0]["headword_candidate"], "cat")
+        self.assertEqual(records[0]["retrieval_event"]["type"], "headword_retry_recovered")
+
     def test_browse_page_error_is_recorded_without_advancing_cursor(self):
         urls = source_urls()
         data_branch_url = (
-            "https://raw.githubusercontent.com/wizekin/USG-Workbench/"
-            "usg-external-lexical-data/state/checkpoint.json"
+            "https://api.github.com/repos/wizekin/USG-Workbench/contents/"
+            "state/checkpoint.json?ref=usg-external-lexical-data"
         )
-        urls[data_branch_url] = json.dumps(initial_checkpoint())
+        urls[data_branch_url] = {"encoding": "base64", "content": base64.b64encode(json.dumps(initial_checkpoint()).encode()).decode()}
 
         class FailingPageClient(FakeClient):
             def get_text(self, url):
@@ -328,8 +442,8 @@ headwords: 1
     def test_resuming_legacy_checkpoint_adds_failed_pages_counter(self):
         urls = source_urls()
         data_branch_url = (
-            "https://raw.githubusercontent.com/wizekin/USG-Workbench/"
-            "usg-external-lexical-data/state/checkpoint.json"
+            "https://api.github.com/repos/wizekin/USG-Workbench/contents/"
+            "state/checkpoint.json?ref=usg-external-lexical-data"
         )
         legacy = initial_checkpoint()
         legacy.update({
@@ -340,7 +454,7 @@ headwords: 1
             "expected_headwords": 1,
         })
         legacy.pop("failed_pages")
-        urls[data_branch_url] = json.dumps(legacy)
+        urls[data_branch_url] = {"encoding": "base64", "content": base64.b64encode(json.dumps(legacy).encode()).decode()}
 
         publisher = FakePublisher()
         crawler = LexicalCrawler(
