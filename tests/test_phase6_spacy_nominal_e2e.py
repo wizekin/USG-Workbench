@@ -39,6 +39,28 @@ class TestSpacyNominalEndToEnd(unittest.TestCase):
         adapted = adapt_sentence(sentence, "en")
         self.assertEqual(adapted["candidates"][0]["relation_type"], "POSSESSION")
 
+
+    def test_sentence_identity_prevents_cross_sentence_candidate_collisions(self):
+        sentence = {
+            "status": "CANDIDATE",
+            "candidates": [{
+                "status": "CANDIDATE",
+                "construction_id": "nominal.attribute_modifier",
+                "derivation": {"head_token_id": 2, "dependent_token_id": 1},
+                "role_spans": {
+                    "HEAD": {"start": 4, "end": 7},
+                    "ATTRIBUTE": {"start": 0, "end": 3},
+                },
+                "grammatical_markers": [],
+            }],
+        }
+        result = evaluate_candidate_sets([sentence, sentence], [sentence, sentence])
+        self.assertEqual(result["predicted_candidate_count"], 2)
+        self.assertEqual(result["gold_candidate_count"], 2)
+        self.assertEqual(result["structural_edge_metrics_ignoring_spans"]["true_positive"], 2)
+        self.assertEqual(result["exact_candidate_and_span_metrics"]["true_positive"], 2)
+        self.assertEqual(result["exact_span_rate_given_structural_match"], 1.0)
+
     def test_candidate_metrics_require_exact_structure_and_spans(self):
         sentence = {
             "status": "CANDIDATE",
