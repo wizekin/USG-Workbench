@@ -10,3 +10,8 @@ The additive v0.4.0 corpus has 500 fixtures across ten English/MSA Arabic profil
 ## Corpus correction note
 
 The initial v0.4.0 corpus commit contained an MSA Arabic iḍāfa positive-fixture constituent-order error. The follow-up correction changes those 20 examples to possessed-noun + possessor order and recalculates exact Unicode spans. The original commit is superseded by this corrected version. The corpus remains candidate-only; no accuracy or runtime-support claim is made.
+
+
+## Negative-fixture correction
+
+The original negative pool reused nominal/modifier-positive examples from other profiles, which could create false-negative gold labels. The corrected corpus replaces all negative rows with simple intransitive clauses lacking nominal modification, possession, compounds, nominal prepositional attachment, or temporal modifiers. This correction improves target-specific negative validity but does not replace independent linguistic adjudication of positive and ambiguous examples.
