@@ -8,6 +8,7 @@ on:
       - "tools/open_world_evaluation/**"
       - "tests/test_open_world_campaign.py"
       - "tests/test_open_world_growth_diagnostics.py"
+      - "tests/test_open_world_growth_diagnostics.py"
       - ".github/workflows/open-world-campaign.yml"
   push:
     branches: [main]
@@ -16,6 +17,7 @@ on:
       - "documentation/USG-OPEN-WORLD-CAMPAIGN-REPORTING.md"
       - "tools/open_world_evaluation/**"
       - "tests/test_open_world_campaign.py"
+      - "tests/test_open_world_growth_diagnostics.py"
       - ".github/workflows/open-world-campaign.yml"
 
 permissions:
