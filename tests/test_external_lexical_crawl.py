@@ -12,7 +12,7 @@ from tools.usg_external_lexical_v0_1_0.crawl import (
     _compact_entry,
     parse_headword_page,
 )
-from tools.usg_external_lexical_v0_1_0.providers import parse_english_dictionary_entry
+from tools.usg_external_lexical_v0_1_0.providers import ProviderError, parse_english_dictionary_entry
 
 
 SHA = "a" * 40
@@ -142,6 +142,7 @@ def initial_checkpoint():
         "processed_entries": 0,
         "processed_senses": 0,
         "failed_headwords": 0,
+        "failed_pages": 0,
         "stored_bytes": 0,
         "updated_at": None,
     }
@@ -234,6 +235,45 @@ headwords: 1
         self.assertEqual(row["headword_candidate"], "cat")
         self.assertNotIn("definition", row["entries"][0]["senses"][0])
         self.assertEqual(row["source_provenance"]["license"], "CC-BY-SA-4.0")
+
+    def test_browse_page_error_is_recorded_without_advancing_cursor(self):
+        urls = source_urls()
+        data_branch_url = (
+            "https://raw.githubusercontent.com/wizekin/USG-Workbench/"
+            "usg-external-lexical-data/state/checkpoint.json"
+        )
+        urls[data_branch_url] = json.dumps(initial_checkpoint())
+
+        class FailingPageClient(FakeClient):
+            def get_text(self, url):
+                if url.endswith("/dictionary/browse/a/0001.md"):
+                    raise ProviderError("temporary browse page failure")
+                return super().get_text(url)
+
+        publisher = FakePublisher()
+        crawler = LexicalCrawler(
+            client=FailingPageClient(urls), publisher=publisher, delay_seconds=0
+        )
+        result = crawler.run_batch(
+            max_runtime_seconds=60, max_headwords=10,
+            max_shard_bytes=1024 * 1024, run_id="page-retry-test",
+        )
+
+        self.assertEqual(result["status"], "in_progress")
+        self.assertEqual(result["stop_reason"], "browse_page_error")
+        self.assertEqual(result["cursor"]["page_index"], 0)
+        self.assertEqual(result["cursor"]["entry_index"], 0)
+        self.assertEqual(result["batch"]["headwords"], 0)
+        self.assertEqual(result["batch"]["failed_pages"], 1)
+        self.assertEqual(result["batch"]["failed_headwords"], 0)
+        checkpoint = publisher.calls[0]["checkpoint"]
+        self.assertEqual(checkpoint["page_index"], 0)
+        self.assertEqual(checkpoint["entry_index"], 0)
+        self.assertEqual(checkpoint["failed_pages"], 1)
+        self.assertEqual(checkpoint["failed_headwords"], 0)
+        events = gzip.decompress(publisher.calls[0]["shard_bytes"]).decode("utf-8")
+        event = json.loads(events.splitlines()[0])
+        self.assertEqual(event["event_type"], "browse_page_error")
 
     def test_publisher_updates_branch_ref_after_building_commit(self):
         calls = []
