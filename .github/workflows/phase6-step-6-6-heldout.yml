@@ -1,0 +1,23 @@
+name: Phase 6 Step 6.6 Held-Out Combination Evaluation
+on:
+  pull_request:
+    paths: ["tools/phase6_nominal_candidate_v0_4_1/holdout.py","tests/test_phase6_nominal_heldout.py","documentation/PHASE-6-STEP-6.6-HELDOUT-V0.4.3.md",".github/workflows/phase6-step-6-6-heldout.yml"]
+  push:
+    branches: [main]
+    paths: ["tools/phase6_nominal_candidate_v0_4_1/holdout.py","tests/test_phase6_nominal_heldout.py"]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  heldout:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python -m pip install "jsonschema==4.23.0"
+      - run: python -m tools.phase6_nominal_candidate_v0_4_1.holdout
+      - run: python -m unittest discover -s tests -p 'test_phase6_nominal_heldout.py' -v
