@@ -120,7 +120,7 @@ class Phase5LexicalFoundationTests(unittest.TestCase):
         self.assertEqual(lexical["resource_version"], "0.5.0")
         self.assertEqual(lexical["resource_sha256_kind"],
                          "canonical_composite_resource_content")
-        self.assertIn("usg-en-core-starter-lexicon@0.4.0",
+        self.assertIn("usg-en-core-starter-lexicon@0.5.0",
                       lexical["resource_provenance"])
         self.assertIn("usg-en-core-starter-lexicon",
                       {item["resource_id"] for item in result["resource_versions"]})
