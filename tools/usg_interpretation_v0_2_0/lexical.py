@@ -4,6 +4,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 import hashlib
 import json
+import re
 from pathlib import Path
 from typing import Literal
 
@@ -73,6 +74,8 @@ class MorphologyRule:
         if any(not isinstance(x, tuple) or len(x) != 2
                or not all(isinstance(v, str) and v for v in x) for x in self.features):
             raise ValueError("morphology rule features must be string pairs")
+        if len(dict(self.features)) != len(self.features):
+            raise ValueError("morphology rule feature keys must be unique")
 
 
 @dataclass(frozen=True)
@@ -86,6 +89,8 @@ class LexicalResource:
     def __post_init__(self):
         for name in ("resource_id", "version", "provenance"):
             _nonempty(getattr(self, name), name)
+        if re.fullmatch(r"\d+\.\d+\.\d+", self.version) is None:
+            raise ValueError("resource version must use semantic version syntax")
         if not isinstance(self.entries, tuple) or any(not isinstance(x, LexicalEntry) for x in self.entries):
             raise TypeError("entries must be a tuple of LexicalEntry")
         if not isinstance(self.morphology_rules, tuple) or any(
@@ -156,6 +161,12 @@ class LexicalAnalysis:
     tokens: tuple[TokenAnalysis, ...]
 
     def __post_init__(self):
+        if not isinstance(self.source, SourceSnapshot):
+            raise TypeError("source must be a SourceSnapshot")
+        if len(self.resource_sha256) != 64 or any(
+            char not in "0123456789abcdef" for char in self.resource_sha256
+        ):
+            raise ValueError("resource_sha256 must be a lowercase SHA-256 digest")
         previous_end = 0
         for item in self.tokens:
             token = item.token
