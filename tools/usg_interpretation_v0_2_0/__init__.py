@@ -5,7 +5,7 @@ from .lexical import (
     LexicalAnalysis, LexicalAnalyzer, load_lexical_resource,
     bundled_lexical_resource, bundled_lexical_resource_v0_2_0,
     bundled_lexical_resource_v0_3_0, compose_lexical_resources,
-    bundled_lexical_resource_v0_4_0,
+    bundled_lexical_resource_v0_4_0, bundled_lexical_resource_v0_5_0,
 )
 from .segmentation import (
     SEGMENTATION_VERSION, SentenceSegment, ClauseSegment, ClauseBoundary,
@@ -27,7 +27,7 @@ __all__ = [
     "LexicalAnalysis", "LexicalAnalyzer", "load_lexical_resource",
     "bundled_lexical_resource", "bundled_lexical_resource_v0_2_0",
     "bundled_lexical_resource_v0_3_0", "compose_lexical_resources",
-    "bundled_lexical_resource_v0_4_0", "SEGMENTATION_VERSION", "SentenceSegment",
+    "bundled_lexical_resource_v0_4_0", "bundled_lexical_resource_v0_5_0", "SEGMENTATION_VERSION", "SentenceSegment",
     "ClauseSegment", "ClauseBoundary", "SegmentedDocument", "segment_document",
     "SYNTAX_ANALYSIS_VERSION", "ConstituentNode", "DependencyEdge",
     "SyntaxCandidate", "ClauseSyntaxResult", "ClauseAttachment",
