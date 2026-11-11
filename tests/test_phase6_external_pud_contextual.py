@@ -3,8 +3,9 @@ from types import SimpleNamespace
 
 from tools.phase6_external_pud_v0_6.contextual import (
     AveragedStructuredPerceptron, _best_for_upos, token_features,
-    prepare_sentences,
+    prepare_sentences, cross_validate,
 )
+from tools.phase6_external_pud_v0_2.crossval import _fold_index
 
 
 class TestContextualMorphology(unittest.TestCase):
@@ -51,6 +52,35 @@ class TestContextualMorphology(unittest.TestCase):
         self.assertEqual(len(prepared[0]["analyses"][0]), 2)
         self.assertEqual(prepared[0]["mle_top1"][0]["lex"], "كتاب")
 
+
+
+    def test_cross_validation_accumulates_all_heldout_folds(self):
+        samples = []
+        seen_folds = set()
+        for index in range(100):
+            sample = {
+                "meta": {"sent_id": f"sent-{index}"},
+                "tokens": [{"form": "word", "lemma": "word", "upos": "NOUN"}],
+                "analyses": [[{
+                    "analysis": {"lex": "word", "ud": "NOUN"},
+                    "pos_lex_logprob": -1.0, "lex_logprob": -1.0,
+                }]],
+                "mle_top1": [{"lex": "word", "ud": "NOUN"}],
+                "features": [("BIAS", "W=word")],
+                "candidate_tags": [["NOUN"]],
+                "gold": ["NOUN"],
+            }
+            fold = _fold_index(sample, index, 2)
+            if fold not in seen_folds or len(samples) < 4:
+                samples.append(sample)
+                seen_folds.add(fold)
+            if seen_folds == {0, 1} and len(samples) >= 4:
+                break
+        result = cross_validate(samples, folds=2, epochs=1)
+        self.assertEqual(result["totals"]["tokens"], len(samples))
+        self.assertEqual(result["totals"]["candidate_upper_bound_hits"], len(samples))
+        self.assertEqual(result["totals"]["mle_top1_hits"], len(samples))
+        self.assertEqual(result["totals"]["crf_pos_hits"], len(samples))
 
     def test_decoder_is_constrained_by_morphology_pos_candidates(self):
         model = AveragedStructuredPerceptron(epochs=1)
