@@ -51,6 +51,12 @@ on:
       - "documentation/PHASE-8-DEFINITIONS-ROADMAP.md"
       - ".github/workflows/system-evidence-collection.yml"
       - "documentation/USG-SYSTEM-IMPROVEMENT-BACKLOG.md"
+      - "documentation/USG-LONG-TERM-DEVELOPMENT-PLAN.md"
+      - "config/usg-long-term-development-plan-0.1.0.json"
+      - "specifications/usg-long-term-development-plan-0.1.0.schema.json"
+      - "tools/system_evidence/long_term_plan_sync.py"
+      - "tests/test_long_term_plan_sync.py"
+      - ".github/workflows/usg-long-term-roadmap-sync.yml"
       - "documentation/USG-GROWTH-POLICY-AND-AUTONOMY.md"
       - "tools/open_world_evaluation/growth_controller.py"
       - "tools/open_world_evaluation/growth_diagnostics.py"
@@ -86,6 +92,7 @@ jobs:
           python -m unittest discover -s tests -p "test_system_evidence_discovery.py" -v
           python -m unittest discover -s tests -p "test_system_evidence_freshness.py" -v
           python -m unittest discover -s tests -p "test_phase8_integrated_acceptance.py" -v
+          python -m unittest discover -s tests -p "test_long_term_plan_sync.py" -v
           python -m unittest discover -s tests -p "test_system_intelligence.py" -v
       - name: Enforce Phase 8+ resource manifest policy
         run: python -m unittest discover -s tests -p "test_phase_resource_manifest_policy.py" -v
@@ -108,7 +115,11 @@ jobs:
           Draft202012Validator(phase_map_schema).validate(phase_map)
           assert phase_map["contract"] == "USG-PHASE-RESOURCE-CONSUMPTION-MAP/0.1.0"
           assert {item["phase_id"] for item in phase_map["phases"]} >= {f"P{i}" for i in range(1, 9)}
-          print(f"Validated {len(registry['source_families'])} source families across {len(registry['phases'])} phases.")
+          plan = json.loads((root / "config/usg-long-term-development-plan-0.1.0.json").read_text(encoding="utf-8"))
+          plan_schema = json.loads((root / "specifications/usg-long-term-development-plan-0.1.0.schema.json").read_text(encoding="utf-8"))
+          Draft202012Validator(plan_schema).validate(plan)
+          assert plan["update_policy"]["contract"] == "USG-LONG-TERM-PLAN-SYNC/0.1.0"
+          print(f"Validated {len(registry['source_families'])} source families across {len(registry['phases'])} phases; long-term plan contains {len(plan['phases'])} proposed future phases.")
           PY
 
   collect:
