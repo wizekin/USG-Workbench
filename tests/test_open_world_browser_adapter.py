@@ -104,7 +104,7 @@ class BrowserAdapterEndToEndTests(unittest.TestCase):
             case["input"]["text"].encode("utf-8")
         ).hexdigest()
         record = execute_case(case, commit_sha="a" * 40, max_wall_seconds=60)
-        self.assertEqual(record["outcome"], "completed", record.get("validation", {}).get("diagnostics"))
+        self.assertEqual(record["outcome"], "completed", record.get("capture", {}).get("inline_output"))
         result = record["capture"]["inline_output"]
         target = result["target_result"]
         self.assertEqual(target["pipeline_contract"], "USG-WB-SEM/1.0")
