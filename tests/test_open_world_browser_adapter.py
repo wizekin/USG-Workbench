@@ -1,0 +1,86 @@
+"""End-to-end browser adapter tests for the JavaScript Semantic Workbench."""
+from __future__ import annotations
+
+import os
+import unittest
+
+from tools.open_world_evaluation.browser_adapter import (
+    ADAPTER_ID,
+    stable_workbench_projection,
+)
+from tools.open_world_evaluation.worker import execute
+from tools.open_world_evaluation.generate_scenarios import ScenarioGenerator
+
+
+class BrowserAdapterProjectionTests(unittest.TestCase):
+    def test_projection_ignores_run_ids_but_preserves_semantic_content(self):
+        def record(claim_id, created_at):
+            return {
+                "engine": "rule_fallback",
+                "intent": "ASSERTION",
+                "interpretation": "A thermometer measures temperature.",
+                "claims": [{
+                    "id": claim_id,
+                    "createdAt": created_at,
+                    "subject": {"text": "thermometer", "surfaceText": "thermometer", "type": "instrument"},
+                    "predicate": "MEASURES",
+                    "object": {"text": "temperature", "surfaceText": "temperature", "type": "property"},
+                    "polarity": "positive",
+                    "tense": "present",
+                    "modality": "asserted",
+                    "conditions": [],
+                    "evidence": {"quote": "A thermometer measures temperature.", "start": 0, "end": 37, "verified": True},
+                    "provenance": "local_rule",
+                    "sourceKind": "interpreted_text",
+                    "confidence": 0.86,
+                }],
+                "unresolved": [],
+                "warnings": [],
+            }
+        first = stable_workbench_projection(record("claim-1", "2026-01-01T00:00:00Z"),
+                                            "A thermometer measures temperature.")
+        second = stable_workbench_projection(record("claim-99", "2026-11-12T00:00:00Z"),
+                                             "A thermometer measures temperature.")
+        self.assertEqual(first, second)
+        self.assertEqual(first["claim_count"], 1)
+        self.assertEqual(first["claims"][0]["predicate"], "MEASURES")
+        self.assertEqual(first["source"]["sha256"] and len(first["source"]["sha256"]), 64)
+
+    def test_non_english_input_is_explicitly_unsupported(self):
+        case = {"input": {"text": "الطالب يقرأ الكتاب.", "language_hint": "ar"}}
+        result = __import__(
+            "tools.open_world_evaluation.browser_adapter",
+            fromlist=["interpret_in_browser"],
+        ).interpret_in_browser(case)
+        self.assertEqual(result["outcome"], "unsupported")
+        self.assertIn("English-only", result["reason"])
+        self.assertEqual(result["execution_metadata"]["adapter"], ADAPTER_ID)
+
+
+@unittest.skipUnless(os.environ.get("USG_RUN_BROWSER_TESTS") == "1",
+                     "real Chromium smoke test runs in the dedicated GitHub Actions job")
+class BrowserAdapterEndToEndTests(unittest.TestCase):
+    def test_isolated_worker_runs_real_workbench_browser(self):
+        generator = ScenarioGenerator(
+            seed="sys04-playwright-browser-smoke",
+            target_ids=["js-semantic-workbench-v054"],
+            created_at="2026-11-12T00:00:00Z",
+        )
+        case = generator.generate(1)[0]
+        case["input"]["text"] = "A thermometer measures temperature."
+        case["input"]["language_hint"] = "en"
+        from hashlib import sha256
+        case["input"]["utf8_sha256"] = sha256(
+            case["input"]["text"].encode("utf-8")
+        ).hexdigest()
+        result = execute(case)
+        self.assertIn(result["outcome"], {"completed", "partial"})
+        target = result["target_result"]
+        self.assertEqual(target["pipeline_contract"], "USG-WB-SEM/1.0")
+        self.assertGreaterEqual(target["claim_count"], 1)
+        self.assertEqual(target["source"]["text"], case["input"]["text"])
+        self.assertEqual(result["execution_metadata"]["ollama_used"], False)
+
+
+if __name__ == "__main__":
+    unittest.main()
