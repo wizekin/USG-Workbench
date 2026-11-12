@@ -36,6 +36,11 @@ class BroaderSemanticsTests(unittest.TestCase):
  def test_unknown_relation_and_missing_evidence_are_rejected(self):
   text,lang,g=self.base(); g["relations"]=[{"type":"OWNS","source":"ada","target":"books"}]
   with self.assertRaises(CompositionError): compose(text,lang,g)
+ def test_source_digest_and_provenance_are_retained(self):
+  text,lang,g=self.base(); out=compose(text,lang,g)
+  self.assertEqual(out["source"]["text"],text)
+  self.assertEqual(out["provenance"],g["provenance"])
+  self.assertEqual(out["pipeline_contract"],"USG-INTERPRET/0.3.0")
  def test_clause_cycles_are_rejected(self):
   text,lang,g=self.base(); g["clauses"][0]["parent_id"]="cause"
   with self.assertRaises(CompositionError): compose(text,lang,g)
