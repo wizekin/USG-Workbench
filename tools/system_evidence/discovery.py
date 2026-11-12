@@ -160,3 +160,73 @@ def integrated_priorities(findings: list[dict[str, Any]]) -> list[dict[str, Any]
     for rank, item in enumerate(output, 1):
         item["rank"] = rank
     return output
+
+
+def build_review_proposals(findings: list[dict[str, Any]], phases: list[dict[str, Any]],
+                           limit: int = 100) -> list[dict[str, Any]]:
+    """Turn observations into stable, review-only proposal records; never implement them."""
+    phase_by_id = {str(item.get("id")): item for item in phases}
+    proposals = []
+    for finding in findings:
+        route = str(finding.get("route", "evidence_quality_review"))
+        impact = finding.get("impact_classification") or {}
+        if impact.get("migration_review_required"):
+            proposal_type = "versioned_contract_migration_review"
+            next_action = "Prepare a versioned migration, compatibility adapter, and affected regression plan for explicit review."
+        elif route == "existing_phase_continuation":
+            proposal_type = "existing_continuation_update"
+            next_action = "Update the owning continuation with this evidence; preserve its existing acceptance boundary."
+        elif route == "existing_phase_amendment_proposal":
+            proposal_type = "accepted_phase_amendment"
+            next_action = "Draft a scope-specific amendment proposal; retain the prior acceptance record unchanged."
+        elif route == "cross_cutting_workstream_review":
+            proposal_type = "cross_cutting_workstream"
+            next_action = "Compare affected phases and dependencies before defining a shared workstream."
+        elif route == "new_phase_candidate":
+            proposal_type = "future_phase_candidate"
+            next_action = "Check all existing continuations and amendments before proposing a new phase."
+        elif route == "evidence_quality_review":
+            proposal_type = "evidence_quality_remediation"
+            next_action = "Resolve or explicitly document the evidence-quality gap, then refresh the affected snapshot."
+        else:
+            proposal_type = "evidence_collection_or_registry_maintenance"
+            next_action = "Repair collection or registry coverage and rerun the evidence collector."
+        key = str(finding.get("discovery_key") or discovery_key(finding))
+        proposal_id = "P8-PROP-" + hashlib.sha256((proposal_type + ":" + key).encode("utf-8")).hexdigest()[:16]
+        impacted = []
+        for phase_id in sorted(set(str(x) for x in finding.get("phase_impacts", []))):
+            phase = phase_by_id.get(phase_id, {})
+            impacted.append({
+                "phase_id": phase_id,
+                "phase_name": phase.get("name"),
+                "recorded_status": phase.get("status", "unknown"),
+                "open_work": phase.get("open_work"),
+            })
+        proposals.append({
+            "proposal_id": proposal_id,
+            "source_discovery_id": finding.get("id"),
+            "source_discovery_key": key,
+            "proposal_type": proposal_type,
+            "route": route,
+            "title": str(finding.get("summary") or finding.get("kind") or "Evidence-backed follow-up"),
+            "priority_band": finding.get("severity", "unknown"),
+            "impacted_phases": impacted,
+            "evidence_refs": list(finding.get("evidence_refs", [])),
+            "related_backlog_items": list(finding.get("related_backlog_items", [])),
+            "proposed_next_action": next_action,
+            "acceptance_requirements": [
+                "Declare positive, negative, ambiguous, and boundary regressions where behavior changes.",
+                "Preserve source rights, population, version, and candidate/runtime boundaries.",
+                "Run relevant regression and independent evaluation gates.",
+                "Record exact commit, resource digests, and evidence population."
+            ],
+            "review_status": "draft_requires_review",
+            "implementation_status": "not_implemented",
+            "phase_status_mutation_allowed": False,
+            "canonical_contract_mutation_allowed": False,
+            "runtime_promotion_allowed": False,
+        })
+    proposals.sort(key=lambda item: (
+        {"high": 0, "medium": 1, "low": 2, "informational": 3}.get(item["priority_band"], 4),
+        item["proposal_id"]))
+    return proposals[:max(0, limit)]
