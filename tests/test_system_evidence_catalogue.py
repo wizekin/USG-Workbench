@@ -37,6 +37,13 @@ class SystemEvidenceCatalogueTests(unittest.TestCase):
         self.manifest = self.root / "manifest.json"
         self.checkpoint = self.root / "checkpoint.json"
         self.pud = self.root / "pud.json"
+        self.shard_inventory = self.root / "shard-inventory.json"
+        self.shard_inventory.write_text(json.dumps({
+            "status": "available", "snapshot_id": "snapshot-x", "file_count": 2,
+            "total_size_bytes": 150,
+            "files": [{"path": "shard-1.jsonl.gz", "size_bytes": 70, "sha256": "a" * 64},
+                      {"path": "shard-2.jsonl.gz", "size_bytes": 80, "sha256": "b" * 64}],
+        }), encoding="utf-8")
         self.growth = self.root / "growth.json"
         self.manifest.write_text(json.dumps({
             "status": "in_progress", "processed_headwords": 5, "expected_headwords": 10,
@@ -75,6 +82,7 @@ class SystemEvidenceCatalogueTests(unittest.TestCase):
             external_manifest_path=self.manifest,
             external_checkpoint_path=self.checkpoint,
             pud_evaluation_path=self.pud,
+            external_shard_inventory_path=self.shard_inventory,
             growth_plan_path=self.growth,
             repository_name="wizekin/USG-Workbench", commit_sha="test-sha",
             generated_at="2026-11-12T12:00:00Z", **kwargs)
@@ -128,6 +136,19 @@ class SystemEvidenceCatalogueTests(unittest.TestCase):
         self.assertEqual(report["external_lexical"]["pud_evaluation"]["status"],
                          "fresh_for_current_shard_count")
         self.assertEqual(report["external_lexical"]["pud_evaluation"]["evaluated_shard_count"], 2)
+        self.assertEqual(report["external_lexical"]["shard_inventory"]["status"], "matches_manifest")
+
+    def test_pud_metrics_remain_stale_when_physical_shard_count_disagrees(self):
+        value = json.loads(self.pud.read_text(encoding="utf-8"))
+        value["lexical_shard_count"] = 2
+        self.pud.write_text(json.dumps(value), encoding="utf-8")
+        inventory = json.loads(self.shard_inventory.read_text(encoding="utf-8"))
+        inventory["file_count"] = 1
+        self.shard_inventory.write_text(json.dumps(inventory), encoding="utf-8")
+        report = self.collect()
+        self.assertEqual(report["external_lexical"]["pud_evaluation"]["status"],
+                         "stale_shard_count_mismatch")
+        self.assertEqual(report["external_lexical"]["shard_inventory"]["status"], "count_mismatch")
 
     def test_latest_campaign_population_and_accounting_are_preserved(self):
         report = self.collect()
