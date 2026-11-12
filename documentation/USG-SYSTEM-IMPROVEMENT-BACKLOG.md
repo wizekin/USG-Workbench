@@ -39,6 +39,7 @@ This backlog converts the system-wide assessment into bounded, dependency-ordere
 | SYS-13 | **Complete for Phase 5 Kernel Lab explanations** | PR #191 merged; stage guide, first diagnostic location, statuses, source spans, resource version/hash, and expandable stage artifacts are displayed separately from the raw envelope. |
 | SYS-05 | **Complete** | PR #190 publishes the versioned `USG-LEXICAL-CANDIDATES/0.1.0` JSON Schema and deterministic `USG-LEXICAL-ADAPTER/0.1.0` read-only adapter with provenance/identity checks and candidate-only enforcement. |
 | SYS-06 | **Complete** | PR #190 adds English OOV and polysemy regressions plus Arabic OOV regression; unknown forms remain unresolved and bank remains ambiguous. |
+| SYS-03 | **Implemented in PR #196; live corpus validation pending** | Adds a separate bilingual news/Wikipedia naturalistic population from pinned UD English/Arabic PUD commits, CC BY-SA 3.0 attribution/share-alike artifacts, deterministic sampling, deduplication, email/URL screening, and explicit translation/no-semantic-gold limitations. |
 | SYS-04 | **Complete for English browser execution** | PR #194 adds a real Chromium/Playwright adapter for JS Semantic Workbench v0.5.4, with loopback-only browser requests, stable result projection, explicit unsupported-language outcomes, and a full isolated-worker smoke test. It does not add Arabic support or semantic correctness guarantees. |
 | SYS-15 | **Complete for evidence aggregation and prioritization** | PR #195 adds the daily scheduled growth controller, first-blocker/resource-aware ranking, growth policy, validation tests, and 90-day report artifacts. It does not synthesize or merge semantic rules. |
 
@@ -57,7 +58,7 @@ These are implementation states, not claims that USG's semantic accuracy has imp
 
 ## Current execution sequence
 
-1. **SYS-03 — naturalistic data gate:** identify a legally usable, privacy-reviewed naturalistic corpus. The current baseline has zero naturalistic cases; do not relabel synthetic prompts as naturalistic.
+1. **SYS-03 — naturalistic pilot:** validate and run the pinned English/Arabic PUD news/Wikipedia population. It is naturalistic text, not conversational requests; Arabic is translated and no semantic gold is claimed.
 2. **SYS-16 — bounded repair executor:** automate deterministic infrastructure, report, and regression-test repairs in isolated branches with exact replay and PR checks. Do not auto-promote semantic rules or candidate resources.
 3. **SYS-08 + SYS-09 — construction pilot and independent gold:** select one bilingual construction only after data rights and independent annotation are available.
 4. **SYS-17 — candidate semantic/lexical growth:** use measured failure clusters to generate candidate resources and construction proposals, then require held-out independent acceptance.
