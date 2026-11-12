@@ -163,6 +163,7 @@ Phase 5's accepted benchmark demonstrated its stated simple-transitive English a
 ### Other completed or implemented foundations
 
 - **Canonical semantic interchange:** the versioned `USG-SEM/1.0` contract and schema are preserved as the canonical interchange boundary.
+- **Phase 7 knowledge layer:** all ten steps are merged and the frozen bilingual exit profile is accepted. It provides typed lexical/concept records, rights-aware provenance, SQLite snapshots, relation reconciliation, contextual retrieval, read-only consumer adapters, API/CLI/Kernel Lab inspection, and a 102-case bilingual retrieval acceptance suite. The 43 cross-language mappings remain unresolved; this is bounded profile acceptance, not general semantic understanding. See the [Phase 7 completion record](documentation/PHASE-7-COMPLETION-RECORD.md).
 - **Persistent workspace:** Phase 3 SQLite remains the authoritative canonical persistence backend for the Kernel Lab workspace.
 - **Kernel Lab:** local interface for inspecting structured semantic documents, running bounded Phase 4/5 interpretation, viewing stage evidence, managing versioned resources, querying, replaying, and exporting.
 - **Lexical candidate adapter:** versioned `USG-LEXICAL-CANDIDATES/0.1.0` contract and read-only adapter preserve source provenance and ambiguity. Candidate evidence is not automatically promoted into active runtime resources.
@@ -180,14 +181,6 @@ Related evidence: [system improvement backlog](documentation/USG-SYSTEM-IMPROVEM
 ## Incomplete major tasks
 
 These are the major open workstreams. Detailed step definitions, dependencies, and acceptance criteria remain in the linked roadmaps and backlog.
-
-### 1. Phase 7 — semantic knowledge integration and contextual knowledge layer
-
-**Status: STEPS 7.1–7.9 MERGED; STEP 7.10 IMPLEMENTED ON REVIEW BRANCH, CI PENDING.** Phase 7 builds a reusable knowledge layer for lexical forms, senses, concepts, typed relations, provenance, context, and controlled retrieval on top of accepted Phase 1–5 foundations. It does not wait for the broader Phase 6 research queue. The additive `USG-KNOWLEDGE/0.1.0` contract and SQLite knowledge repository are in place; `USG-SEM/1.0` remains unchanged.
-
-The initial roadmap defines ten ordered steps: knowledge contract/inventory; typed lexical-sense and concept model; persistent repository; source adapters and incremental acquisition; cross-language alignment; typed relations and reconciliation; contextual retrieval; read-only integration with reasoning/interpreters; API/CLI/Kernel Lab inspection; and profile-specific evaluation/exit acceptance.
-
-Reference: [Phase 7 Definitions Roadmap](documentation/PHASE-7-DEFINITIONS-ROADMAP.md).
 
 ### 2. Phase 6 — bounded exit accepted; continuation tracked separately
 
