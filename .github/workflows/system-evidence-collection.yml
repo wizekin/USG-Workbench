@@ -43,6 +43,7 @@ on:
       - "documentation/USG-SYSTEM-EVIDENCE-AND-RESOURCE-INTEGRATION.md"
       - "config/usg-phase-resource-consumption-map-0.1.0.json"
       - "tools/system_evidence/**"
+      - "tests/test_system_evidence_github_actions.py"
       - "tests/test_system_evidence_catalogue.py"
       - "tests/test_phase_resource_manifest_policy.py"
       - "documentation/PHASE-8-DEFINITIONS-ROADMAP.md"
@@ -105,6 +106,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     permissions:
+      actions: read
       contents: write
       pull-requests: write
     env:
@@ -221,6 +223,33 @@ jobs:
           printf '{"error":"GROWTH_PLANNER_FAILED","outcome":"%s"}\n' "${{ steps.growth.outcome }}" \
             > "$EVIDENCE_DIR/usg-growth-plan-error.json"
           echo "Growth planner did not return a fresh plan; this is recorded as missing planning evidence." >> "$GITHUB_STEP_SUMMARY"
+      - name: Collect latest status for every GitHub Actions workflow
+        id: workflow-evidence
+        continue-on-error: true
+        run: |
+          python -m tools.system_evidence.github_actions \
+            --repository "$GITHUB_REPOSITORY" \
+            --output "$EVIDENCE_DIR/github-actions-workflows.json"
+      - name: Record GitHub Actions status collection failure
+        if: steps.workflow-evidence.outcome != 'success'
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          path = Path(os.environ["EVIDENCE_DIR"]) / "github-actions-workflows.json"
+          payload = {
+              "contract": "USG-GITHUB-ACTIONS-EVIDENCE/0.1.0",
+              "repository": os.environ.get("GITHUB_REPOSITORY"),
+              "workflow_count": 0,
+              "latest_run_count": 0,
+              "status_counts": {"collection_error": 1},
+              "workflows": [],
+              "collection_errors": [{"error": "GITHUB_ACTIONS_STATUS_COLLECTION_FAILED"}],
+              "interpretation_boundary": "Workflow status collection failed; workflow definitions are not evidence of execution or success."
+          }
+          path.write_text(json.dumps(payload, indent=2) + chr(10), encoding="utf-8")
+          PY
       - name: Generate schema-validated system evidence catalogue
         run: |
           set -- --root . \
@@ -249,6 +278,9 @@ jobs:
           if [ -s "$EVIDENCE_DIR/usg-growth-plan.json" ]; then
             set -- "$@" --growth-plan "$EVIDENCE_DIR/usg-growth-plan.json"
           fi
+          if [ -s "$EVIDENCE_DIR/github-actions-workflows.json" ]; then
+            set -- "$@" --workflow-runs "$EVIDENCE_DIR/github-actions-workflows.json"
+          fi
           python -m tools.system_evidence.collector "$@"
       - name: Assemble append-only evidence snapshot
         id: snapshot
@@ -267,7 +299,8 @@ jobs:
             external-lexical-collection-error.json \
             usg-growth-plan.json \
             usg-growth-plan.md \
-            usg-growth-plan-error.json; do
+            usg-growth-plan-error.json \
+            github-actions-workflows.json; do
             if [ -s "$EVIDENCE_DIR/$item" ]; then cp "$EVIDENCE_DIR/$item" "$snapshot_dir/$item"; fi
           done
           cat > "$snapshot_dir/collection-metadata.json" <<EOF
