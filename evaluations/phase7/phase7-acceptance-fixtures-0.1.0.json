@@ -1,0 +1,833 @@
+{
+  "contract": "USG-PHASE7-EVALUATION/0.1.0",
+  "fixture_version": "1.0.0",
+  "resource": {
+    "resource_id": "usg-en-ar-discourse-lexicon",
+    "version": "0.3.0",
+    "git_blob_sha": "a8fa4c60d4d14c0b488e5078c2d1a956e41f4577",
+    "entry_count": 48,
+    "unique_form_count": 46,
+    "unique_sense_count": 43,
+    "provenance": "Project-authored lexical resource extension for bounded English/MSA Arabic discourse-reference fixtures; inherits only project-authored v0.2.0 entries and adds pronouns and selected plural nouns."
+  },
+  "generation_policy": "Frozen exact-form bilingual cases derived from the pinned project-authored resource; wrong-language and OOV cases are adversarial negatives. No human labels, external data, model output, or inferred equivalence is used.",
+  "positive_cases": [
+    {
+      "case_id": "exact-en-01",
+      "language": "en",
+      "query": "Ada",
+      "expected_form": true,
+      "expected_senses": [
+        "en:proper.ada"
+      ]
+    },
+    {
+      "case_id": "exact-en-02",
+      "language": "en",
+      "query": "Mira",
+      "expected_form": true,
+      "expected_senses": [
+        "en:proper.mira"
+      ]
+    },
+    {
+      "case_id": "exact-en-03",
+      "language": "en",
+      "query": "Omar",
+      "expected_form": true,
+      "expected_senses": [
+        "en:proper.omar"
+      ]
+    },
+    {
+      "case_id": "exact-en-04",
+      "language": "en",
+      "query": "Lina",
+      "expected_form": true,
+      "expected_senses": [
+        "en:proper.lina"
+      ]
+    },
+    {
+      "case_id": "exact-en-05",
+      "language": "en",
+      "query": "Noah",
+      "expected_form": true,
+      "expected_senses": [
+        "en:proper.noah"
+      ]
+    },
+    {
+      "case_id": "exact-en-06",
+      "language": "en",
+      "query": "write",
+      "expected_form": true,
+      "expected_senses": [
+        "en:verb.write"
+      ]
+    },
+    {
+      "case_id": "exact-en-07",
+      "language": "en",
+      "query": "read",
+      "expected_form": true,
+      "expected_senses": [
+        "en:verb.read"
+      ]
+    },
+    {
+      "case_id": "exact-en-08",
+      "language": "en",
+      "query": "build",
+      "expected_form": true,
+      "expected_senses": [
+        "en:verb.build"
+      ]
+    },
+    {
+      "case_id": "exact-en-09",
+      "language": "en",
+      "query": "test",
+      "expected_form": true,
+      "expected_senses": [
+        "en:verb.test"
+      ]
+    },
+    {
+      "case_id": "exact-en-10",
+      "language": "en",
+      "query": "code",
+      "expected_form": true,
+      "expected_senses": [
+        "en:noun.code"
+      ]
+    },
+    {
+      "case_id": "exact-en-11",
+      "language": "en",
+      "query": "report",
+      "expected_form": true,
+      "expected_senses": [
+        "en:noun.report"
+      ]
+    },
+    {
+      "case_id": "exact-en-12",
+      "language": "en",
+      "query": "model",
+      "expected_form": true,
+      "expected_senses": [
+        "en:noun.model"
+      ]
+    },
+    {
+      "case_id": "exact-en-13",
+      "language": "en",
+      "query": "system",
+      "expected_form": true,
+      "expected_senses": [
+        "en:noun.system"
+      ]
+    },
+    {
+      "case_id": "exact-en-14",
+      "language": "en",
+      "query": "note",
+      "expected_form": true,
+      "expected_senses": [
+        "en:noun.note"
+      ]
+    },
+    {
+      "case_id": "exact-en-15",
+      "language": "en",
+      "query": "bank",
+      "expected_form": true,
+      "expected_senses": [
+        "en:noun.bank.financial",
+        "en:noun.bank.river"
+      ]
+    },
+    {
+      "case_id": "exact-ar-16",
+      "language": "ar",
+      "query": "كتب",
+      "expected_form": true,
+      "expected_senses": [
+        "ar:verb.write"
+      ]
+    },
+    {
+      "case_id": "exact-ar-17",
+      "language": "ar",
+      "query": "قرأ",
+      "expected_form": true,
+      "expected_senses": [
+        "ar:verb.read"
+      ]
+    },
+    {
+      "case_id": "exact-ar-18",
+      "language": "ar",
+      "query": "فحص",
+      "expected_form": true,
+      "expected_senses": [
+        "ar:verb.examine"
+      ]
+    },
+    {
+      "case_id": "exact-ar-19",
+      "language": "ar",
+      "query": "بنى",
+      "expected_form": true,
+      "expected_senses": [
+        "ar:verb.build"
+      ]
+    },
+    {
+      "case_id": "exact-ar-20",
+      "language": "ar",
+      "query": "طالب",
+      "expected_form": true,
+      "expected_senses": [
+        "ar:noun.student"
+      ]
+    },
+    {
+      "case_id": "exact-ar-21",
+      "language": "ar",
+      "query": "معلم",
+      "expected_form": true,
+      "expected_senses": [
+        "ar:noun.teacher"
+      ]
+    },
+    {
+      "case_id": "exact-ar-22",
+      "language": "ar",
+      "query": "طبيب",
+      "expected_form": true,
+      "expected_senses": [
+        "ar:noun.doctor"
+      ]
+    },
+    {
+      "case_id": "exact-ar-23",
+      "language": "ar",
+      "query": "مهندس",
+      "expected_form": true,
+      "expected_senses": [
+        "ar:noun.engineer"
+      ]
+    },
+    {
+      "case_id": "exact-ar-24",
+      "language": "ar",
+      "query": "باحث",
+      "expected_form": true,
+      "expected_senses": [
+        "ar:noun.researcher"
+      ]
+    },
+    {
+      "case_id": "exact-ar-25",
+      "language": "ar",
+      "query": "رسالة",
+      "expected_form": true,
+      "expected_senses": [
+        "ar:noun.letter",
+        "ar:noun.letters"
+      ]
+    },
+    {
+      "case_id": "exact-ar-26",
+      "language": "ar",
+      "query": "كتاب",
+      "expected_form": true,
+      "expected_senses": [
+        "ar:noun.book",
+        "ar:noun.books"
+      ]
+    },
+    {
+      "case_id": "exact-ar-27",
+      "language": "ar",
+      "query": "عينة",
+      "expected_form": true,
+      "expected_senses": [
+        "ar:noun.sample"
+      ]
+    },
+    {
+      "case_id": "exact-ar-28",
+      "language": "ar",
+      "query": "نموذج",
+      "expected_form": true,
+      "expected_senses": [
+        "ar:noun.model"
+      ]
+    },
+    {
+      "case_id": "exact-ar-29",
+      "language": "ar",
+      "query": "عين",
+      "expected_form": true,
+      "expected_senses": [
+        "ar:noun.eye",
+        "ar:noun.spring"
+      ]
+    },
+    {
+      "case_id": "exact-en-30",
+      "language": "en",
+      "query": "student",
+      "expected_form": true,
+      "expected_senses": [
+        "en:noun.student"
+      ]
+    },
+    {
+      "case_id": "exact-en-31",
+      "language": "en",
+      "query": "written",
+      "expected_form": true,
+      "expected_senses": []
+    },
+    {
+      "case_id": "exact-ar-32",
+      "language": "ar",
+      "query": "يكتب",
+      "expected_form": true,
+      "expected_senses": []
+    },
+    {
+      "case_id": "exact-ar-33",
+      "language": "ar",
+      "query": "يقرأ",
+      "expected_form": true,
+      "expected_senses": []
+    },
+    {
+      "case_id": "exact-ar-34",
+      "language": "ar",
+      "query": "يفحص",
+      "expected_form": true,
+      "expected_senses": []
+    },
+    {
+      "case_id": "exact-ar-35",
+      "language": "ar",
+      "query": "يبني",
+      "expected_form": true,
+      "expected_senses": []
+    },
+    {
+      "case_id": "exact-en-36",
+      "language": "en",
+      "query": "it",
+      "expected_form": true,
+      "expected_senses": [
+        "en:pronoun.it"
+      ]
+    },
+    {
+      "case_id": "exact-en-37",
+      "language": "en",
+      "query": "they",
+      "expected_form": true,
+      "expected_senses": [
+        "en:pronoun.them",
+        "en:pronoun.they"
+      ]
+    },
+    {
+      "case_id": "exact-en-38",
+      "language": "en",
+      "query": "them",
+      "expected_form": true,
+      "expected_senses": []
+    },
+    {
+      "case_id": "exact-en-39",
+      "language": "en",
+      "query": "he",
+      "expected_form": true,
+      "expected_senses": [
+        "en:pronoun.he"
+      ]
+    },
+    {
+      "case_id": "exact-en-40",
+      "language": "en",
+      "query": "she",
+      "expected_form": true,
+      "expected_senses": [
+        "en:pronoun.she"
+      ]
+    },
+    {
+      "case_id": "exact-ar-41",
+      "language": "ar",
+      "query": "هو",
+      "expected_form": true,
+      "expected_senses": [
+        "ar:pronoun.huwa"
+      ]
+    },
+    {
+      "case_id": "exact-ar-42",
+      "language": "ar",
+      "query": "هي",
+      "expected_form": true,
+      "expected_senses": [
+        "ar:pronoun.hiya"
+      ]
+    },
+    {
+      "case_id": "exact-ar-43",
+      "language": "ar",
+      "query": "هم",
+      "expected_form": true,
+      "expected_senses": [
+        "ar:pronoun.hum"
+      ]
+    },
+    {
+      "case_id": "exact-ar-44",
+      "language": "ar",
+      "query": "هن",
+      "expected_form": true,
+      "expected_senses": [
+        "ar:pronoun.hunna"
+      ]
+    },
+    {
+      "case_id": "exact-ar-45",
+      "language": "ar",
+      "query": "الرسائل",
+      "expected_form": true,
+      "expected_senses": []
+    },
+    {
+      "case_id": "exact-ar-46",
+      "language": "ar",
+      "query": "الكتب",
+      "expected_form": true,
+      "expected_senses": []
+    }
+  ],
+  "wrong_language_negative_cases": [
+    {
+      "case_id": "wrong-language-01",
+      "language": "ar",
+      "query": "Ada",
+      "expected_form": false,
+      "expected_senses": []
+    },
+    {
+      "case_id": "wrong-language-02",
+      "language": "ar",
+      "query": "Mira",
+      "expected_form": false,
+      "expected_senses": []
+    },
+    {
+      "case_id": "wrong-language-03",
+      "language": "ar",
+      "query": "Omar",
+      "expected_form": false,
+      "expected_senses": []
+    },
+    {
+      "case_id": "wrong-language-04",
+      "language": "ar",
+      "query": "Lina",
+      "expected_form": false,
+      "expected_senses": []
+    },
+    {
+      "case_id": "wrong-language-05",
+      "language": "ar",
+      "query": "Noah",
+      "expected_form": false,
+      "expected_senses": []
+    },
+    {
+      "case_id": "wrong-language-06",
+      "language": "ar",
+      "query": "write",
+      "expected_form": false,
+      "expected_senses": []
+    },
+    {
+      "case_id": "wrong-language-07",
+      "language": "ar",
+      "query": "read",
+      "expected_form": false,
+      "expected_senses": []
+    },
+    {
+      "case_id": "wrong-language-08",
+      "language": "ar",
+      "query": "build",
+      "expected_form": false,
+      "expected_senses": []
+    },
+    {
+      "case_id": "wrong-language-09",
+      "language": "ar",
+      "query": "test",
+      "expected_form": false,
+      "expected_senses": []
+    },
+    {
+      "case_id": "wrong-language-10",
+      "language": "ar",
+      "query": "code",
+      "expected_form": false,
+      "expected_senses": []
+    },
+    {
+      "case_id": "wrong-language-11",
+      "language": "ar",
+      "query": "report",
+      "expected_form": false,
+      "expected_senses": []
+    },
+    {
+      "case_id": "wrong-language-12",
+      "language": "ar",
+      "query": "model",
+      "expected_form": false,
+      "expected_senses": []
+    },
+    {
+      "case_id": "wrong-language-13",
+      "language": "ar",
+      "query": "system",
+      "expected_form": false,
+      "expected_senses": []
+    },
+    {
+      "case_id": "wrong-language-14",
+      "language": "ar",
+      "query": "note",
+      "expected_form": false,
+      "expected_senses": []
+    },
+    {
+      "case_id": "wrong-language-15",
+      "language": "ar",
+      "query": "bank",
+      "expected_form": false,
+      "expected_senses": []
+    },
+    {
+      "case_id": "wrong-language-16",
+      "language": "en",
+      "query": "كتب",
+      "expected_form": false,
+      "expected_senses": []
+    },
+    {
+      "case_id": "wrong-language-17",
+      "language": "en",
+      "query": "قرأ",
+      "expected_form": false,
+      "expected_senses": []
+    },
+    {
+      "case_id": "wrong-language-18",
+      "language": "en",
+      "query": "فحص",
+      "expected_form": false,
+      "expected_senses": []
+    },
+    {
+      "case_id": "wrong-language-19",
+      "language": "en",
+      "query": "بنى",
+      "expected_form": false,
+      "expected_senses": []
+    },
+    {
+      "case_id": "wrong-language-20",
+      "language": "en",
+      "query": "طالب",
+      "expected_form": false,
+      "expected_senses": []
+    },
+    {
+      "case_id": "wrong-language-21",
+      "language": "en",
+      "query": "معلم",
+      "expected_form": false,
+      "expected_senses": []
+    },
+    {
+      "case_id": "wrong-language-22",
+      "language": "en",
+      "query": "طبيب",
+      "expected_form": false,
+      "expected_senses": []
+    },
+    {
+      "case_id": "wrong-language-23",
+      "language": "en",
+      "query": "مهندس",
+      "expected_form": false,
+      "expected_senses": []
+    },
+    {
+      "case_id": "wrong-language-24",
+      "language": "en",
+      "query": "باحث",
+      "expected_form": false,
+      "expected_senses": []
+    },
+    {
+      "case_id": "wrong-language-25",
+      "language": "en",
+      "query": "رسالة",
+      "expected_form": false,
+      "expected_senses": []
+    },
+    {
+      "case_id": "wrong-language-26",
+      "language": "en",
+      "query": "كتاب",
+      "expected_form": false,
+      "expected_senses": []
+    },
+    {
+      "case_id": "wrong-language-27",
+      "language": "en",
+      "query": "عينة",
+      "expected_form": false,
+      "expected_senses": []
+    },
+    {
+      "case_id": "wrong-language-28",
+      "language": "en",
+      "query": "نموذج",
+      "expected_form": false,
+      "expected_senses": []
+    },
+    {
+      "case_id": "wrong-language-29",
+      "language": "en",
+      "query": "عين",
+      "expected_form": false,
+      "expected_senses": []
+    },
+    {
+      "case_id": "wrong-language-30",
+      "language": "ar",
+      "query": "student",
+      "expected_form": false,
+      "expected_senses": []
+    },
+    {
+      "case_id": "wrong-language-31",
+      "language": "ar",
+      "query": "written",
+      "expected_form": false,
+      "expected_senses": []
+    },
+    {
+      "case_id": "wrong-language-32",
+      "language": "en",
+      "query": "يكتب",
+      "expected_form": false,
+      "expected_senses": []
+    },
+    {
+      "case_id": "wrong-language-33",
+      "language": "en",
+      "query": "يقرأ",
+      "expected_form": false,
+      "expected_senses": []
+    },
+    {
+      "case_id": "wrong-language-34",
+      "language": "en",
+      "query": "يفحص",
+      "expected_form": false,
+      "expected_senses": []
+    },
+    {
+      "case_id": "wrong-language-35",
+      "language": "en",
+      "query": "يبني",
+      "expected_form": false,
+      "expected_senses": []
+    },
+    {
+      "case_id": "wrong-language-36",
+      "language": "ar",
+      "query": "it",
+      "expected_form": false,
+      "expected_senses": []
+    },
+    {
+      "case_id": "wrong-language-37",
+      "language": "ar",
+      "query": "they",
+      "expected_form": false,
+      "expected_senses": []
+    },
+    {
+      "case_id": "wrong-language-38",
+      "language": "ar",
+      "query": "them",
+      "expected_form": false,
+      "expected_senses": []
+    },
+    {
+      "case_id": "wrong-language-39",
+      "language": "ar",
+      "query": "he",
+      "expected_form": false,
+      "expected_senses": []
+    },
+    {
+      "case_id": "wrong-language-40",
+      "language": "ar",
+      "query": "she",
+      "expected_form": false,
+      "expected_senses": []
+    },
+    {
+      "case_id": "wrong-language-41",
+      "language": "en",
+      "query": "هو",
+      "expected_form": false,
+      "expected_senses": []
+    },
+    {
+      "case_id": "wrong-language-42",
+      "language": "en",
+      "query": "هي",
+      "expected_form": false,
+      "expected_senses": []
+    },
+    {
+      "case_id": "wrong-language-43",
+      "language": "en",
+      "query": "هم",
+      "expected_form": false,
+      "expected_senses": []
+    },
+    {
+      "case_id": "wrong-language-44",
+      "language": "en",
+      "query": "هن",
+      "expected_form": false,
+      "expected_senses": []
+    },
+    {
+      "case_id": "wrong-language-45",
+      "language": "en",
+      "query": "الرسائل",
+      "expected_form": false,
+      "expected_senses": []
+    },
+    {
+      "case_id": "wrong-language-46",
+      "language": "en",
+      "query": "الكتب",
+      "expected_form": false,
+      "expected_senses": []
+    }
+  ],
+  "oov_negative_cases": [
+    {
+      "case_id": "oov-01",
+      "language": "en",
+      "query": "qzxv",
+      "expected_form": false,
+      "expected_senses": []
+    },
+    {
+      "case_id": "oov-02",
+      "language": "ar",
+      "query": "zzzxq",
+      "expected_form": false,
+      "expected_senses": []
+    },
+    {
+      "case_id": "oov-03",
+      "language": "en",
+      "query": "unlisted-token-01",
+      "expected_form": false,
+      "expected_senses": []
+    },
+    {
+      "case_id": "oov-04",
+      "language": "ar",
+      "query": "unlisted-token-02",
+      "expected_form": false,
+      "expected_senses": []
+    },
+    {
+      "case_id": "oov-05",
+      "language": "en",
+      "query": "unlisted-token-03",
+      "expected_form": false,
+      "expected_senses": []
+    },
+    {
+      "case_id": "oov-06",
+      "language": "ar",
+      "query": "unlisted-token-04",
+      "expected_form": false,
+      "expected_senses": []
+    },
+    {
+      "case_id": "oov-07",
+      "language": "en",
+      "query": "unlisted-token-05",
+      "expected_form": false,
+      "expected_senses": []
+    },
+    {
+      "case_id": "oov-08",
+      "language": "ar",
+      "query": "unlisted-token-06",
+      "expected_form": false,
+      "expected_senses": []
+    },
+    {
+      "case_id": "oov-09",
+      "language": "en",
+      "query": "unlisted-token-07",
+      "expected_form": false,
+      "expected_senses": []
+    },
+    {
+      "case_id": "oov-10",
+      "language": "ar",
+      "query": "unlisted-token-08",
+      "expected_form": false,
+      "expected_senses": []
+    }
+  ],
+  "polysemy_cases": [
+    {
+      "language": "en",
+      "query": "bank",
+      "expected_senses": [
+        "en:noun.bank.financial",
+        "en:noun.bank.river"
+      ]
+    },
+    {
+      "language": "ar",
+      "query": "عين",
+      "expected_senses": [
+        "ar:noun.eye",
+        "ar:noun.spring"
+      ]
+    }
+  ]
+}
