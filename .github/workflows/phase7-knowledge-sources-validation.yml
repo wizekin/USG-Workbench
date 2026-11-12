@@ -6,11 +6,14 @@ on:
       - 'tools/phase7_knowledge_sources/**'
       - 'tools/phase7_knowledge_contract/**'
       - 'tools/phase7_knowledge_repository/**'
+      - 'tools/phase7_knowledge_relations/**'
+      - 'specifications/usg-knowledge-relation-registry-0.1.0.json'
       - 'tools/usg_external_lexical_v0_1_0/adapter.py'
       - 'specifications/usg-knowledge-0.1.0.schema.json'
       - 'specifications/usg-lexical-candidates-0.1.0.schema.json'
       - 'specifications/usg-sem-1.0.schema.json'
       - 'tests/test_phase7_knowledge_sources.py'
+      - 'tests/test_phase7_knowledge_relations.py'
       - '.github/workflows/phase7-knowledge-sources-validation.yml'
   workflow_dispatch:
 
@@ -30,10 +33,12 @@ jobs:
           python-version: '3.11'
       - name: Install pinned validator
         run: python -m pip install 'jsonschema==4.23.0'
-      - name: Compile source adapters
-        run: python -m compileall -q tools/phase7_knowledge_sources
+      - name: Compile Phase 7 knowledge packages
+        run: python -m compileall -q tools/phase7_knowledge_sources tools/phase7_knowledge_relations
       - name: Run rights-aware source adapter tests
         run: python -m unittest discover -s tests -p 'test_phase7_knowledge_sources.py' -v
+      - name: Run typed relation and reconciliation tests
+        run: python -m unittest discover -s tests -p 'test_phase7_knowledge_relations.py' -v
       - name: Protect prior semantic and interpretation contracts
         run: |
           git diff --exit-code origin/main...HEAD -- specifications/USG-SEM-1.0.md specifications/usg-sem-1.0.schema.json
