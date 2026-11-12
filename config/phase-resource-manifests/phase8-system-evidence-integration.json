@@ -167,6 +167,118 @@
       "known_limitations": [
         "Historical assessment metrics are not current until refreshed from live data sources."
       ]
+    },
+    {
+      "source_family_id": "python_native_model_packages",
+      "source_path": "implementations/python-kernel/",
+      "version": "versioned model packages",
+      "sha256": null,
+      "use_mode": "runtime",
+      "requirement": "optional",
+      "runtime_integration_verified": false,
+      "rights_status": "repository-owned",
+      "evidence_refs": [
+        "documentation/USG-SYSTEM-EVIDENCE-AND-RESOURCE-INTEGRATION.md"
+      ],
+      "known_limitations": [
+        "Availability and file indexing do not prove active runtime consumption; verify import/call paths and tests."
+      ]
+    },
+    {
+      "source_family_id": "javascript_semantic_workbench",
+      "source_path": "implementations/semantic-workbench-js/",
+      "version": "versioned browser workbench",
+      "sha256": null,
+      "use_mode": "runtime",
+      "requirement": "optional",
+      "runtime_integration_verified": false,
+      "rights_status": "repository-owned",
+      "evidence_refs": [
+        "documentation/USG-SYSTEM-EVIDENCE-AND-RESOURCE-INTEGRATION.md"
+      ],
+      "known_limitations": [
+        "Availability and file indexing do not prove active runtime consumption; verify import/call paths and tests."
+      ]
+    },
+    {
+      "source_family_id": "morphology_and_pos_experiments",
+      "source_path": "tools/phase6_external_pud_v0_*/",
+      "version": "PUD morphology experiment family",
+      "sha256": null,
+      "use_mode": "benchmark_only",
+      "requirement": "optional",
+      "runtime_integration_verified": false,
+      "rights_status": "pinned UD/PUD data and repository candidate code",
+      "evidence_refs": [
+        "documentation/USG-SYSTEM-EVIDENCE-AND-RESOURCE-INTEGRATION.md"
+      ],
+      "known_limitations": [
+        "Availability and file indexing do not prove active runtime consumption; verify import/call paths and tests."
+      ]
+    },
+    {
+      "source_family_id": "kernel_lab_and_local_api",
+      "source_path": "tools/usg-kernel-lab/ and tools/usg_local_api_v1_0_0/",
+      "version": "local APIs and interface",
+      "sha256": null,
+      "use_mode": "runtime",
+      "requirement": "optional",
+      "runtime_integration_verified": true,
+      "rights_status": "repository-owned",
+      "evidence_refs": [
+        "documentation/USG-SYSTEM-EVIDENCE-AND-RESOURCE-INTEGRATION.md"
+      ],
+      "known_limitations": [
+        "Availability and file indexing do not prove active runtime consumption; verify import/call paths and tests."
+      ]
+    },
+    {
+      "source_family_id": "automation_workflows_and_actions",
+      "source_path": ".github/workflows/",
+      "version": "GitHub Actions processing workflows",
+      "sha256": null,
+      "use_mode": "planning_only",
+      "requirement": "required",
+      "runtime_integration_verified": false,
+      "rights_status": "GitHub Actions run data",
+      "evidence_refs": [
+        "documentation/USG-SYSTEM-EVIDENCE-AND-RESOURCE-INTEGRATION.md"
+      ],
+      "known_limitations": [
+        "Availability and file indexing do not prove active runtime consumption; verify import/call paths and tests."
+      ]
+    },
+    {
+      "source_family_id": "regression_and_acceptance_suites",
+      "source_path": "tests/ and benchmarks/",
+      "version": "contract and acceptance regressions",
+      "sha256": null,
+      "use_mode": "benchmark_only",
+      "requirement": "required",
+      "runtime_integration_verified": false,
+      "rights_status": "repository-owned test fixtures",
+      "evidence_refs": [
+        "documentation/USG-SYSTEM-EVIDENCE-AND-RESOURCE-INTEGRATION.md"
+      ],
+      "known_limitations": [
+        "Availability and file indexing do not prove active runtime consumption; verify import/call paths and tests."
+      ]
+    },
+    {
+      "source_family_id": "system_evidence_catalogue_and_phase_manifest",
+      "source_path": "tools/system_evidence/ and config/phase-resource-manifests/",
+      "version": "this Phase 8 evidence/control plane",
+      "sha256": null,
+      "use_mode": "planning_only",
+      "requirement": "required",
+      "runtime_integration_verified": false,
+      "rights_status": "repository-owned",
+      "evidence_refs": [
+        "documentation/USG-SYSTEM-EVIDENCE-AND-RESOURCE-INTEGRATION.md"
+      ],
+      "known_limitations": [
+        "Availability and file indexing do not prove active runtime consumption; verify import/call paths and tests."
+      ]
     }
   ],
   "evidence_inputs": [
@@ -214,6 +326,15 @@
       "purpose": "Identify implementation/version/entry-point and conformance coverage gaps.",
       "independence_status": "repository inventory; common semantic agreement not established",
       "semantic_gold": "structural_only"
+    },
+    {
+      "evidence_id": "live-github-actions-workflow-status",
+      "population": "runtime_regression",
+      "source_path": "evaluations/system-wide/evidence-catalogue/<snapshot-id>/github-actions-workflows.json",
+      "commit_or_version": "USG-GITHUB-ACTIONS-EVIDENCE/0.1.0",
+      "purpose": "Distinguish workflow definitions from actual latest non-PR run results across repository subsystems.",
+      "independence_status": "repository Actions execution status; operational evidence only",
+      "semantic_gold": "none"
     }
   ],
   "dependencies": [
@@ -296,6 +417,16 @@
       "evidence_required": [
         "manifest JSON schema",
         "phase manifest policy test"
+      ],
+      "promotion_effect": "no_runtime_change"
+    },
+    {
+      "gate_id": "P8-WORKFLOW-EVIDENCE",
+      "description": "Collect latest non-pull-request run status for repository workflows and preserve failures, disabled/no-run states, and collection errors distinctly.",
+      "evidence_required": [
+        "GitHub Actions API response snapshot",
+        "workflow collector tests",
+        "schema-valid evidence catalogue"
       ],
       "promotion_effect": "no_runtime_change"
     }
