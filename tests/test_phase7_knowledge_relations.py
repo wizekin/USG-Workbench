@@ -40,7 +40,7 @@ def make_bundle():
         evidence_ids.append(eid)
     bundle["relations"] = [{
         "id": "relation:claim-a", "subject_record_id": concepts[0]["id"],
-        "predicate": "RELATED_TO", "object_record_id": concepts[1]["id"],
+        "predicate": "RELATED_TO", "object_record_id": second["id"],
         "direction": "DIRECTED", "state": "CANDIDATE",
         "evidence_ids": evidence_ids, "context_ids": [],
         "relation_registry_version": RELATION_REGISTRY_VERSION,
