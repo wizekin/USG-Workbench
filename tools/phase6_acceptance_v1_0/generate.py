@@ -227,9 +227,9 @@ def _shared_argument_case(lang: str, index: int,
         role = node_by_role[node["id"]]
         candidates = [item for item in spans if item["role"] == role]
         if node["id"] == "agent-1":
-            item = candidates[0] if lang == "en" else candidates[1]
+            item = candidates[0]
         elif node["id"] == "agent-2":
-            item = candidates[1] if lang == "en" else candidates[2]
+            item = candidates[1]
         else:
             item = next(value for value in candidates if value["surface"] ==
                         node["semantic_value"])
