@@ -26,10 +26,12 @@ def _apply_resource_limits(case: dict[str, Any]) -> None:
     wall_seconds = max(1, int(math.ceil(float(limits["wall_time_seconds"]))))
     memory_bytes = int(limits["memory_megabytes"]) * 1024 * 1024
 
+    browser_target = case.get("target", {}).get("interface") == "browser_ui"
+    file_limit = 256 if browser_target else 64
     for name, value in (
         ("RLIMIT_CPU", (wall_seconds, wall_seconds + 1)),
         ("RLIMIT_FSIZE", (8 * 1024 * 1024, 8 * 1024 * 1024)),
-        ("RLIMIT_NOFILE", (64, 64)),
+        ("RLIMIT_NOFILE", (file_limit, file_limit)),
         ("RLIMIT_AS", (memory_bytes, memory_bytes)),
     ):
         limit_id = getattr(resource, name, None)
