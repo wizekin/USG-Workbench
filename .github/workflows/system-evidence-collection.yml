@@ -141,14 +141,18 @@ jobs:
           if git fetch --no-tags --depth=1 origin usg-external-lexical-data; then
             git worktree add --detach "$EVIDENCE_DIR/external-lexical-data" FETCH_HEAD
             branch_sha="$(git -C "$EVIDENCE_DIR/external-lexical-data" rev-parse HEAD)"
-            test -s "$EVIDENCE_DIR/external-lexical-data/state/manifest.json"
-            test -s "$EVIDENCE_DIR/external-lexical-data/state/checkpoint.json"
-            cp "$EVIDENCE_DIR/external-lexical-data/state/manifest.json" "$EVIDENCE_DIR/external-lexical-manifest.json"
-            cp "$EVIDENCE_DIR/external-lexical-data/state/checkpoint.json" "$EVIDENCE_DIR/external-lexical-checkpoint.json"
-            echo "available=true" >> "$GITHUB_OUTPUT"
-            echo "branch_sha=$branch_sha" >> "$GITHUB_OUTPUT"
             echo "EXTERNAL_BRANCH_SHA=$branch_sha" >> "$GITHUB_ENV"
-            echo "External lexical data branch SHA: $branch_sha" >> "$GITHUB_STEP_SUMMARY"
+            if [ -s "$EVIDENCE_DIR/external-lexical-data/state/manifest.json" ] && [ -s "$EVIDENCE_DIR/external-lexical-data/state/checkpoint.json" ]; then
+              cp "$EVIDENCE_DIR/external-lexical-data/state/manifest.json" "$EVIDENCE_DIR/external-lexical-manifest.json"
+              cp "$EVIDENCE_DIR/external-lexical-data/state/checkpoint.json" "$EVIDENCE_DIR/external-lexical-checkpoint.json"
+              echo "available=true" >> "$GITHUB_OUTPUT"
+              echo "branch_sha=$branch_sha" >> "$GITHUB_OUTPUT"
+              echo "External lexical data branch SHA: $branch_sha" >> "$GITHUB_STEP_SUMMARY"
+            else
+              echo "available=false" >> "$GITHUB_OUTPUT"
+              printf '{"error":"EXTERNAL_LEXICAL_STATE_FILES_MISSING","branch_sha":"%s"}\n' "$branch_sha" > "$EVIDENCE_DIR/external-lexical-collection-error.json"
+              echo "External lexical branch exists but manifest/checkpoint is missing; collection will report unavailable state." >> "$GITHUB_STEP_SUMMARY"
+            fi
           else
             echo "available=false" >> "$GITHUB_OUTPUT"
             echo "EXTERNAL_BRANCH_SHA=unavailable" >> "$GITHUB_ENV"
