@@ -29,13 +29,49 @@ def extract_candidate_graph(source, language):
     if language=="en" and len(words)==5 and words[1].casefold()=="and" and words[0][:1].isupper() and words[2][:1].isupper():
         template="en.coordinated.subjects.v1"
         add_nodes([(0,"subject_1","PERSON"),(2,"subject_2","PERSON"),(3,"predicate","EVENT"),(4,"object","THING")])
-        graph["relations"]=[{"type":"AND","source":"subject_1","target":"subject_2","feature":"COORDINATION","evidence":_evidence(source,tokens[1])}]
-        graph["features"]=["COORDINATION"]
-    elif language=="ar" and len(words)==5 and words[2]=="و":
+        for node, role in zip(graph["nodes"], ("AGENT","AGENT","ACTION","PATIENT")):
+            node["role"] = role
+        graph["relations"]=[
+            {"type":"AND","source":"subject_1","target":"subject_2","feature":"COORDINATION","evidence":_evidence(source,tokens[1])},
+            {"type":"AGENT","source":"predicate","target":"subject_1","evidence":_evidence(source,tokens[0])},
+            {"type":"AGENT","source":"predicate","target":"subject_2","evidence":_evidence(source,tokens[2])},
+            {"type":"PATIENT","source":"predicate","target":"object","evidence":_evidence(source,tokens[4])},
+        ]
+        graph["features"]=["COORDINATION","PREDICATE_ARGUMENT"]
+    elif language=="ar" and (
+        (len(words)==5 and words[2]=="و")
+        or (len(words)==4 and words[2].startswith("و") and len(words[2])>1)
+    ):
         template="ar.coordinated.subjects.v1"
-        add_nodes([(0,"predicate","EVENT"),(1,"subject_1","PERSON"),(3,"subject_2","PERSON"),(4,"object","THING")])
-        graph["relations"]=[{"type":"AND","source":"subject_1","target":"subject_2","feature":"COORDINATION","evidence":_evidence(source,tokens[2])}]
-        graph["features"]=["COORDINATION"]
+        if len(words)==5:
+            second_subject = tokens[3]
+            marker_token = tokens[2]
+            object_token = tokens[4]
+        else:
+            second_surface = tokens[2]["surface"][1:]
+            second_subject = {
+                "surface": second_surface,
+                "start": tokens[2]["start"] + 1,
+                "end": tokens[2]["end"],
+            }
+            marker_token = {
+                "surface": "و",
+                "start": tokens[2]["start"],
+                "end": tokens[2]["start"] + 1,
+            }
+            object_token = tokens[3]
+        add_nodes([(0,"predicate","EVENT"),(1,"subject_1","PERSON")])
+        graph["nodes"].append(_node(source, second_subject, "subject_2", "PERSON"))
+        graph["nodes"].append(_node(source, object_token, "object", "THING"))
+        for node, role in zip(graph["nodes"], ("ACTION","AGENT","AGENT","PATIENT")):
+            node["role"] = role
+        graph["relations"]=[
+            {"type":"AND","source":"subject_1","target":"subject_2","feature":"COORDINATION","evidence":_evidence(source,marker_token)},
+            {"type":"AGENT","source":"predicate","target":"subject_1","evidence":_evidence(source,tokens[1])},
+            {"type":"AGENT","source":"predicate","target":"subject_2","evidence":_evidence(source,second_subject)},
+            {"type":"PATIENT","source":"predicate","target":"object","evidence":_evidence(source,object_token)},
+        ]
+        graph["features"]=["COORDINATION","PREDICATE_ARGUMENT"]
     elif language=="en" and len(words)==5 and words[2].casefold()=="that" and words[0][:1].isupper() and words[3][:1].isupper():
         template="en.embedded.complement.v1"
         add_nodes([(0,"matrix_subject","PERSON"),(1,"matrix_predicate","EVENT"),(3,"embedded_subject","PERSON"),(4,"embedded_predicate","EVENT")])
