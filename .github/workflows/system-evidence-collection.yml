@@ -171,6 +171,7 @@ jobs:
           import hashlib
           import json
           import os
+          import re
           from pathlib import Path
           root = Path(os.environ["EVIDENCE_DIR"]) / "external-lexical-data" / "shards"
           manifest_path = Path(os.environ["EVIDENCE_DIR"]) / "external-lexical-manifest.json"
@@ -184,18 +185,45 @@ jobs:
                   "sha256": hashlib.sha256(payload).hexdigest(),
                   "git_blob_sha1": hashlib.sha1(b"blob " + str(len(payload)).encode("ascii") + bytes([0]) + payload).hexdigest(),
               })
+          batches = {}
+          for item in files:
+              match = re.search(r"(?:^|/)batch-(\\d{6})-[^/]+\\.jsonl\\.gz$", item["path"])
+              if match:
+                  batches.setdefault(int(match.group(1)), []).append(item)
+          conflicting_batches = sorted(
+              number for number, copies in batches.items()
+              if len({copy["sha256"] for copy in copies}) > 1
+          )
+          duplicate_physical_copy_count = sum(
+              len(copies) - 1 for copies in batches.values()
+              if len({copy["sha256"] for copy in copies}) == 1
+          )
+          logical_batch_count = len(batches)
+          matches_manifest = (
+              logical_batch_count == int(manifest.get("batch_count", -1))
+              and not conflicting_batches
+          )
           report = {
               "status": "available",
               "snapshot_id": manifest.get("source_snapshot_id"),
               "file_count": len(files),
+              "physical_file_count": len(files),
+              "logical_batch_count": logical_batch_count,
+              "duplicate_physical_copy_count": duplicate_physical_copy_count,
+              "conflicting_batch_numbers": conflicting_batches,
               "total_size_bytes": sum(item["size_bytes"] for item in files),
               "manifest_batch_count": manifest.get("batch_count"),
-              "matches_manifest": len(files) == int(manifest.get("batch_count", -1)),
+              "matches_manifest": matches_manifest,
+              "consistency_status": "matched" if matches_manifest else "mismatch",
               "files": files,
           }
           output = Path(os.environ["EVIDENCE_DIR"]) / "external-lexical-shard-inventory.json"
           output.write_text(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True) + chr(10), encoding="utf-8")
-          print(json.dumps({k: report[k] for k in ("file_count", "total_size_bytes", "manifest_batch_count", "matches_manifest")}, indent=2))
+          print(json.dumps({k: report[k] for k in (
+              "physical_file_count", "logical_batch_count", "duplicate_physical_copy_count",
+              "total_size_bytes", "manifest_batch_count", "matches_manifest",
+              "conflicting_batch_numbers"
+          )}, indent=2))
           PY
       - name: Recalculate English PUD lexical and morphology candidate coverage
         id: pud

@@ -73,6 +73,24 @@ class ExternalLexicalPudEvaluationTests(unittest.TestCase):
         self.assertAlmostEqual(ambiguity["mean_candidate_labels_when_seen"], 4 / 3)
         self.assertFalse(ambiguity["candidate_precision_measured"])
 
+    def test_identical_physical_shards_are_deduplicated_for_evaluation(self):
+        record = {"entries": [
+            {"lemma": "bank", "part_of_speech": "noun", "forms": []},
+        ]}
+        with TemporaryDirectory() as temp:
+            first = Path(temp) / "batch-000001-first.jsonl.gz"
+            second = Path(temp) / "batch-000001-retry-copy.jsonl.gz"
+            with gzip.open(first, "wt", encoding="utf-8") as stream:
+                stream.write(json.dumps(record) + "\\n")
+            second.write_bytes(first.read_bytes())
+            evidence = load_candidate_evidence(temp)
+        self.assertEqual(evidence["physical_shard_count"], 2)
+        self.assertEqual(evidence["shard_count"], 1)
+        self.assertEqual(evidence["duplicate_shard_count"], 1)
+        self.assertEqual(evidence["entry_count"], 1)
+        self.assertEqual(evidence["forms"]["bank"], {"NOUN"})
+        self.assertEqual(len(evidence["shard_content_sha256"]), 1)
+
     def test_morphology_candidates_are_compared_with_pinned_ud_features(self):
         sentences = [{"tokens": [
             {"form": "books", "lemma": "book", "upos": "NOUN", "feats": (("Number", "Plur"),)},

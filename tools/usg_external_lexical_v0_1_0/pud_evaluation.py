@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import argparse
 import gzip
+import hashlib
 import json
 from collections import Counter, defaultdict
 from pathlib import Path
@@ -40,9 +41,19 @@ def normalize(form: str, language: str = "en") -> str:
 def load_candidate_evidence(data_dir: str | Path, language: str = "en") -> dict:
     """Read every gzip JSONL shard; reject corrupt JSON and malformed entry containers."""
     root = Path(data_dir)
-    shards = sorted(root.rglob("*.jsonl.gz"))
-    if not shards:
+    physical_shards = sorted(root.rglob("*.jsonl.gz"))
+    if not physical_shards:
         raise ValueError(f"no .jsonl.gz lexical shards found under {root}")
+    shards = []
+    seen_shard_digests: set[str] = set()
+    duplicate_shard_count = 0
+    for shard in physical_shards:
+        digest = hashlib.sha256(shard.read_bytes()).hexdigest()
+        if digest in seen_shard_digests:
+            duplicate_shard_count += 1
+            continue
+        seen_shard_digests.add(digest)
+        shards.append(shard)
     forms: dict[str, set[str]] = defaultdict(set)
     lemmas: dict[str, set[str]] = defaultdict(set)
     observed_forms: dict[str, set[str]] = defaultdict(set)
@@ -119,6 +130,9 @@ def load_candidate_evidence(data_dir: str | Path, language: str = "en") -> dict:
         "observed_forms": dict(observed_forms),
         "entry_count": entry_count,
         "shard_count": len(shards),
+        "physical_shard_count": len(physical_shards),
+        "duplicate_shard_count": duplicate_shard_count,
+        "shard_content_sha256": sorted(seen_shard_digests),
         "form_tag_counts": dict(sorted(form_tag_counts.items())),
         "tagged_form_records": tagged_form_records,
         "morphology_candidates": dict(morphology_candidates),
@@ -352,6 +366,9 @@ def run(data_dir: str | Path) -> dict:
         "lexical_source": "wizekin/USG-Workbench@usg-external-lexical-data",
         "lexical_source_is_candidate_only": True,
         "lexical_shard_count": evidence["shard_count"],
+        "lexical_physical_shard_count": evidence["physical_shard_count"],
+        "lexical_duplicate_shard_copies": evidence["duplicate_shard_count"],
+        "lexical_shard_content_sha256": evidence["shard_content_sha256"],
         "mapped_dictionary_entry_count": evidence["entry_count"],
         "observed_form_count": len(evidence["observed_forms"]),
         "observed_form_tag_inventory": {

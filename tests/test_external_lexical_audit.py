@@ -44,6 +44,8 @@ class TestExternalLexicalStateAudit(unittest.TestCase):
         self.assertEqual(report["status"], "passed_with_warnings")
         self.assertTrue(report["checks"]["duplicate_batches"][0]["identical_blob"])
         self.assertEqual(report["checks"]["physical_stored_bytes"], 500)
+        self.assertEqual(report["checks"]["logical_batch_count"], 2)
+        self.assertEqual(report["checks"]["duplicate_physical_copy_count"], 1)
 
     def test_checkpoint_manifest_counter_mismatch_fails(self):
         checkpoint, manifest, shards = self.fixture()

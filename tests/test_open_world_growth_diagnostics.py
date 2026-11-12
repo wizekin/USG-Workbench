@@ -159,6 +159,26 @@ class FirstBlockingStageTests(unittest.TestCase):
             {"phase5-bounded-interpreter:phase5-interpretation-integration/9.9.9": 1},
         )
 
+    def test_historical_pipeline_version_mismatches_are_counted_without_stage_attribution(self):
+        version = "phase5-interpretation-integration/0.3.0"
+        cases = [case(f"historical-{index}") for index in range(1058)]
+        results = []
+        for item in cases:
+            output = {"target_result": {
+                "pipeline_contract": "USG-INTERPRET/0.2.0",
+                "pipeline_version": version,
+                "diagnostics": [{"stage": "lexical", "code": "LEXICAL_UNRESOLVED_TOKEN"}],
+            }}
+            results.append(result(item["case_id"], "partial", inline_output=output))
+        report = build_stage_attribution(cases, results)
+        self.assertEqual(report["analyzed_actual_attempt_count"], 1058)
+        self.assertEqual(
+            report["pipeline_version_mismatch_record_counts"],
+            {"phase5-bounded-interpreter:" + version: 1058},
+        )
+        self.assertEqual(report["first_blocking_stage_counts"], {})
+        self.assertEqual(report["dependency_related_later_stage_counts"], {})
+
     def test_warnings_do_not_become_blocking_diagnostics(self):
         output = {"target_result": {
             "pipeline_contract": "USG-INTERPRET/0.2.0",
