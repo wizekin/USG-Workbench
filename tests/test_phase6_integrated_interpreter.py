@@ -29,7 +29,7 @@ class Phase6IntegratedInterpreterTests(unittest.TestCase):
         self.assertEqual(len(interpretation["graph"]["relations"]), 2)
 
     def test_clause_coordination_and_attachment_are_composed(self):
-        status, result = self.call("Ada writes code and Ben reads reports.")
+        status, result = self.call("Ada writes code and Omar reads reports.")
         self.assertEqual(status, 200, result)
         graph = result["interpretation"]["graph"]
         self.assertIn("COORDINATION", graph["features"])
@@ -37,11 +37,11 @@ class Phase6IntegratedInterpreterTests(unittest.TestCase):
         self.assertEqual(len(graph["clauses"]), 2)
 
     def test_causal_subordination_is_preserved_without_asserting_truth(self):
-        status, result = self.call("Ada writes code because Ben reads reports.")
+        status, result = self.call("Ada writes code because Omar reads reports.")
         self.assertEqual(status, 200, result)
         interpretation = result["interpretation"]
         graph = interpretation["graph"]
-        self.assertIn("EMBEDDED_CLAUSE", graph["features"])
+        self.assertIn("SUBORDINATE_CLAUSE", graph["features"])
         self.assertTrue(any(edge["type"] == "CAUSAL" for edge in graph["relations"]))
         self.assertFalse(interpretation["composition"]["safety"]["canonical_assertions_emitted"])
 
