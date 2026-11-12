@@ -192,3 +192,8 @@ python -m tools.phase6_acceptance_v1_0.evaluate
 ```
 
 The evaluator writes the bilingual corpus and schema-validated report to the documented benchmark/artifact paths. A successful execution means the evaluation completed; the report's per-step status remains authoritative for Phase 6 acceptance.
+
+
+## Phase 7 knowledge contract
+
+Run `python -m pip install jsonschema==4.23.0` then `python -m unittest discover -s tests -p 'test_phase7_knowledge_contract.py' -v`. Validate the example with `python -m tools.phase7_knowledge_contract.validate`.
