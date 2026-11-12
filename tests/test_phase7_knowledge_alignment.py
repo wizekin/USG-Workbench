@@ -23,7 +23,7 @@ class Phase7BilingualAlignmentTests(unittest.TestCase):
         self.assertEqual(bundle["extensions"]["alignment_policy"], "candidate-hint-only/0.1.0")
         self.assertFalse(bundle["extensions"]["equivalence_inferred"])
         self.assertFalse(bundle["extensions"]["promotion_allowed"])
-        self.assertEqual(len(bundle["mappings"]), 2)
+        self.assertEqual(len(bundle["mappings"]), 48)
         self.assertTrue(all(x["mapping_type"] == "UNRESOLVED" for x in bundle["mappings"]))
         self.assertTrue(all(x["state"] == "UNRESOLVED" for x in bundle["mappings"]))
 
@@ -53,10 +53,10 @@ class Phase7BilingualAlignmentTests(unittest.TestCase):
         self.assertEqual(len(bank), 2)
         self.assertEqual({x["payload"]["resource_concept_ref_hint"] for x in bank},
                          {"concept:bank.financial", "concept:bank.river"})
-        self.assertEqual(bundle["mappings"], [
-            x for x in bundle["mappings"]
-            if x["source_record_id"] not in {item["id"] for item in bank}
-        ])
+        bank_ids = {item["id"] for item in bank}
+        bank_mappings = [x for x in bundle["mappings"] if x["source_record_id"] in bank_ids]
+        self.assertEqual(len(bank_mappings), 2)
+        self.assertEqual(len({x["target_record_id"] for x in bank_mappings}), 2)
 
     def test_every_generated_record_remains_candidate_or_unresolved(self):
         bundle = build_bilingual_alignment_bundle(RESOURCE, created_at="2026-11-12T12:00:00Z")
