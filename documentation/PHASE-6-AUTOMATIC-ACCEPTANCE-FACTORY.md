@@ -57,7 +57,7 @@ Ambiguous cases can pass by preserving their alternatives or by a clean abstenti
 ## Steps 6.12–6.14
 
 - **6.12:** the factory checks that candidate outputs are preserved in a schema-valid OPAQUE document, that the preserved graph matches the composed graph, and that no canonical assertions are emitted. The report can mark Step 6.12 **accepted for the bounded `OPAQUE_PRESERVATION_ONLY` scope** when every candidate result is schema-valid, its complete graph and exact source/digest are preserved, and no canonical assertions are emitted. The separate `semantic_assertion_projection_accepted` field remains `false`.
-- **6.13:** the factory runs the integrated API in English and MSA Arabic, stores candidate runs in the existing SQLite store, and checks deterministic replay. The workflow additionally runs the existing Kernel Lab and integrated API regressions.
+- **6.13:** the factory runs the integrated API and the executable `phase6-interpret` CLI in English and MSA Arabic, stores candidate runs in the existing SQLite store, and checks deterministic replay. The workflow also performs an editable package installation, exercises the CLI entry point, and runs the Kernel Lab and integrated API regressions.
 - **6.14:** the final step is marked accepted only if every preceding factory gate passes. It does not override an open step or turn candidate-only outputs into supported semantic capabilities.
 
 The report is validated against [the versioned report schema](../specifications/phase6-automatic-acceptance-report-1.0.schema.json).
@@ -69,7 +69,7 @@ The report is validated against [the versioned report schema](../specifications/
 - Report schema: `specifications/phase6-automatic-acceptance-report-1.0.schema.json`
 - CI workflow: [Phase 6 Automatic Acceptance Factory](../.github/workflows/phase6-automatic-acceptance.yml)
 
-The report includes the corpus digest, each profile's metrics and failed case IDs, per-step status, source/preservation checks, API/SQLite/replay checks, and the explicit capability-claim policy. The generated files are CI artifacts; they are not committed as mutable benchmark fixtures by the workflow.
+The report includes the corpus digest, each profile's metrics and failed case IDs, per-step status, source/preservation checks, API/CLI/SQLite/replay checks, and the explicit capability-claim policy. The generated files are CI artifacts; they are not committed as mutable benchmark fixtures by the workflow.
 
 ## Gate policy and interpretation
 
