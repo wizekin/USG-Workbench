@@ -22,6 +22,7 @@ from tools.system_evidence.long_term_plan_sync import (
 ROOT = Path(__file__).resolve().parents[1]
 PLAN_PATH = ROOT / "config/usg-long-term-development-plan-0.1.0.json"
 SCHEMA_PATH = ROOT / "specifications/usg-long-term-development-plan-0.1.0.schema.json"
+WORKFLOW_PATH = ROOT / ".github/workflows/usg-long-term-roadmap-sync.yml"
 
 
 class LongTermPlanSyncTests(unittest.TestCase):
@@ -40,6 +41,18 @@ class LongTermPlanSyncTests(unittest.TestCase):
 
     def tearDown(self):
         self.temp.cleanup()
+
+    def test_sync_workflow_has_valid_github_expression_markers_and_safe_triggers(self):
+        workflow = WORKFLOW_PATH.read_text(encoding="utf-8")
+        self.assertIn("EVENT_BEFORE: ${{ github.event.before }}", workflow)
+        self.assertIn("EVENT_NAME: ${{ github.event_name }}", workflow)
+        self.assertIn("EVENT_SHA: ${{ github.sha }}", workflow)
+        self.assertIn("token: ${{ secrets.GITHUB_TOKEN }}", workflow)
+        self.assertNotIn("EVENT_BEFORE: {{", workflow)
+        self.assertIn("workflow_dispatch:", workflow)
+        self.assertIn("schedule:", workflow)
+        self.assertIn("evaluations/roadmap/plan-sync/latest.json", workflow)
+        self.assertNotIn("evaluations/roadmap/plan-sync/**", workflow)
 
     def test_master_plan_validates_against_its_schema(self):
         schema = read_json(SCHEMA_PATH)
