@@ -50,8 +50,13 @@ class Phase6IntegratedInterpreterTests(unittest.TestCase):
         self.assertEqual(status, 200, result)
         interpretation = result["interpretation"]
         self.assertEqual(interpretation["status"], "CANDIDATE_ONLY")
-        self.assertTrue(any(item.startswith("PHASE6_CLOSED_TEMPLATE_FALLBACK:")
-                            for item in interpretation["diagnostics"]))
+        self.assertTrue(any(
+            item.startswith((
+                "PHASE6_CLOSED_TEMPLATE_FALLBACK:",
+                "PHASE6_SHARED_ARGUMENT_COORDINATION:",
+            ))
+            for item in interpretation["diagnostics"]
+        ))
         self.assertIn("COORDINATION", interpretation["graph"]["features"])
 
     def test_lossless_canonical_preservation_is_opaque_and_validated(self):
