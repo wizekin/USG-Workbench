@@ -187,6 +187,8 @@
 
 ### Phase 7 — semantic knowledge integration and contextual knowledge layer
 
+- [SQLite knowledge repository](../tools/phase7_knowledge_repository/repository.py) — Append-only snapshots and typed indexes on the existing canonical SQLite connection.
+
 - [USG-KNOWLEDGE/0.1.0 contract](../specifications/USG-KNOWLEDGE-0.1.0.md) — Normative knowledge bundle contract.
 - [Knowledge record-kinds registry](../specifications/USG-KNOWLEDGE-RECORD-KINDS-0.1.0.md) — Typed forms, lemmas, senses, concepts, classes, and frames.
 - [Phase 7 contract validator](../tools/phase7_knowledge_contract/validate.py) — Structural and cross-reference validation.
