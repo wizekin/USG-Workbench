@@ -97,23 +97,70 @@ def extract_candidate_graph(source, language):
     elif language=="en" and len(words)==4 and words[1].casefold() in {"may","might","must","can","could","should"} and words[2].casefold() in {"not","never"} and words[0][:1].isupper():
         template="en.modal.negation.scope.v1"
         add_nodes([(0,"subject","PERSON"),(3,"predicate","EVENT")])
-        graph["operators"]=[{"type":"MODALITY","target_id":"predicate","scope":"CLAUSE","span":_evidence(source,tokens[1])},{"type":"NEGATION","target_id":"predicate","scope":"CLAUSE","span":_evidence(source,tokens[2])}]
+        ambiguous_scope = words[1].casefold() == "must"
+        scope = "UNRESOLVED" if ambiguous_scope else "CLAUSE"
+        graph["operators"]=[
+            {"type":"MODALITY","target_id":"predicate","scope":scope,"span":_evidence(source,tokens[1])},
+            {"type":"NEGATION","target_id":"predicate","scope":scope,"span":_evidence(source,tokens[2])},
+        ]
         graph["features"]=["OPERATOR"]
+        if ambiguous_scope:
+            graph["scope_alternatives"]=["MODALITY_OVER_NEGATION","NEGATION_OVER_MODALITY"]
+            graph["ambiguity"]="NESTED_OPERATOR_SCOPE_AMBIGUITY"
     elif language=="ar" and len(words)==4 and words[0]=="قد" and words[1]=="لا":
         template="ar.modal.negation.scope.v1"
         add_nodes([(2,"predicate","EVENT"),(3,"subject","PERSON")])
-        graph["operators"]=[{"type":"MODALITY","target_id":"predicate","scope":"CLAUSE","span":_evidence(source,tokens[0])},{"type":"NEGATION","target_id":"predicate","scope":"CLAUSE","span":_evidence(source,tokens[1])}]
+        graph["operators"]=[
+            {"type":"MODALITY","target_id":"predicate","scope":"CLAUSE","span":_evidence(source,tokens[0])},
+            {"type":"NEGATION","target_id":"predicate","scope":"CLAUSE","span":_evidence(source,tokens[1])},
+        ]
         graph["features"]=["OPERATOR"]
-    elif language=="en" and len(words)==5 and words[0][:1].isupper() and words[2][:1].isupper() and words[3].casefold() in {"he","she","they","it"}:
+    elif language=="ar" and len(words)==4 and words[0]=="ربما" and words[1]=="لا":
+        template="ar.modal.negation.scope.ambiguous.v1"
+        add_nodes([(2,"predicate","EVENT"),(3,"subject","PERSON")])
+        graph["operators"]=[
+            {"type":"MODALITY","target_id":"predicate","scope":"UNRESOLVED","span":_evidence(source,tokens[0])},
+            {"type":"NEGATION","target_id":"predicate","scope":"UNRESOLVED","span":_evidence(source,tokens[1])},
+        ]
+        graph["scope_alternatives"]=["MODALITY_OVER_NEGATION","NEGATION_OVER_MODALITY"]
+        graph["ambiguity"]="NESTED_OPERATOR_SCOPE_AMBIGUITY"
+        graph["features"]=["OPERATOR"]
+    elif language=="en" and len(words)==5 and words[3].casefold() in {"he","she","they","it"}:
         template="en.discourse.pronoun.candidates.v1"
-        add_nodes([(0,"antecedent_candidate","PERSON"),(2,"antecedent_candidate_2","PERSON"),(3,"mention","MENTION"),(4,"predicate","EVENT")])
-        graph["references"]=[{"mention_id":"mention","antecedent_candidates":["antecedent_candidate","antecedent_candidate_2"],"uniqueness_evidence":False}]
+        add_nodes([(0,"antecedent_candidate","PERSON"),(3,"mention","MENTION"),(4,"predicate","EVENT")])
+        for node, role in zip(graph["nodes"],("ANTECEDENT","MENTION","PREDICATE")):
+            node["role"]=role
+        graph["references"]=[{"mention_id":"mention","antecedent_candidates":["antecedent_candidate"],
+                              "resolved_antecedent":None,"status":"UNRESOLVED","uniqueness_evidence":False}]
         graph["features"]=["DISCOURSE_REFERENCE"]
+    elif language=="en" and len(words)==8 and words[6].casefold() in {"they","he","she"}:
+        template="en.discourse.ambiguous.pronoun.candidates.v1"
+        add_nodes([(0,"antecedent_candidate_1","PERSON"),(3,"antecedent_candidate_2","PERSON"),
+                   (6,"mention","MENTION"),(7,"predicate","EVENT")])
+        for node, role in zip(graph["nodes"],("ANTECEDENT","ANTECEDENT","MENTION","PREDICATE")):
+            node["role"]=role
+        graph["references"]=[{"mention_id":"mention","antecedent_candidates":["antecedent_candidate_1","antecedent_candidate_2"],
+                              "resolved_antecedent":None,"status":"UNRESOLVED","uniqueness_evidence":False}]
+        graph["features"]=["DISCOURSE_REFERENCE"]
+        graph["ambiguity"]="MULTIPLE_POSSIBLE_ANTECEDENTS"
     elif language=="ar" and len(words)==5 and words[3] in {"هو","هي","هم","هن"}:
         template="ar.discourse.pronoun.candidates.v1"
-        add_nodes([(1,"antecedent_candidate","PERSON"),(2,"antecedent_candidate_2","PERSON"),(3,"mention","MENTION"),(4,"predicate","EVENT")])
-        graph["references"]=[{"mention_id":"mention","antecedent_candidates":["antecedent_candidate","antecedent_candidate_2"],"uniqueness_evidence":False}]
+        add_nodes([(1,"antecedent_candidate","PERSON"),(3,"mention","MENTION"),(4,"predicate","EVENT")])
+        for node, role in zip(graph["nodes"],("ANTECEDENT","MENTION","PREDICATE")):
+            node["role"]=role
+        graph["references"]=[{"mention_id":"mention","antecedent_candidates":["antecedent_candidate"],
+                              "resolved_antecedent":None,"status":"UNRESOLVED","uniqueness_evidence":False}]
         graph["features"]=["DISCOURSE_REFERENCE"]
+    elif language=="ar" and len(words)==8 and words[6] in {"هما","هم","هن"}:
+        template="ar.discourse.ambiguous.pronoun.candidates.v1"
+        add_nodes([(1,"antecedent_candidate_1","PERSON"),(4,"antecedent_candidate_2","PERSON"),
+                   (6,"mention","MENTION"),(7,"predicate","EVENT")])
+        for node, role in zip(graph["nodes"],("ANTECEDENT","ANTECEDENT","MENTION","PREDICATE")):
+            node["role"]=role
+        graph["references"]=[{"mention_id":"mention","antecedent_candidates":["antecedent_candidate_1","antecedent_candidate_2"],
+                              "resolved_antecedent":None,"status":"UNRESOLVED","uniqueness_evidence":False}]
+        graph["features"]=["DISCOURSE_REFERENCE"]
+        graph["ambiguity"]="MULTIPLE_POSSIBLE_ANTECEDENTS"
     if template is None:
         return {"status":"ABSTAIN","language":language,"template_id":None,"graph":graph,"diagnostics":[{"code":"NO_CLOSED_TEMPLATE_MATCH","message":"No registered Phase 6 candidate template matched the exact token pattern."}],"capability_state":"CANDIDATE_ONLY"}
     graph["provenance"]=[{"rule_id":template,"resource_id":"phase6.closed-template-grammar/0.1.0"}]
