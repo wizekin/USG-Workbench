@@ -549,6 +549,172 @@
         "A missing measurement is not zero.",
         "Changes to accepted phases require traceable amendments and regression protection."
       ]
+    },
+    {
+      "id": "python_native_model_packages",
+      "title": "Python native model generations and adapters",
+      "category": "native_models",
+      "description": "Versioned Python native model packages, record-family implementations, document adapters, and composed interoperability adapters.",
+      "patterns": [
+        "implementations/python-kernel/v*/**/*",
+        "interoperability/python_adapter/**/*",
+        "tests/test_python_kernel*.py",
+        "tests/test_python_kernel*adapter*.py"
+      ],
+      "consumers": [
+        "P1",
+        "P2",
+        "P3",
+        "P6",
+        "P8"
+      ],
+      "use_mode": "runtime",
+      "evidence_class": "accepted_component_evidence",
+      "refresh": "on_repository_change",
+      "guardrails": [
+        "Different native model versions are separate implementation lines until conformance tests establish agreement.",
+        "An import test does not establish semantic correctness."
+      ]
+    },
+    {
+      "id": "javascript_semantic_workbench",
+      "title": "JavaScript Semantic Workbench",
+      "category": "browser_runtime",
+      "description": "Versioned browser Workbench releases, browser execution adapter, canonical interchange bridge, and JavaScript regression suites.",
+      "patterns": [
+        "implementations/semantic-workbench-js/v*/**/*",
+        "interoperability/workbench_adapter/**/*",
+        "tests/test_workbench*.js",
+        "tests/test_open_world_browser*.py"
+      ],
+      "consumers": [
+        "P1",
+        "P4",
+        "P8"
+      ],
+      "use_mode": "runtime",
+      "evidence_class": "accepted_component_evidence",
+      "refresh": "on_repository_change_and_browser_campaign",
+      "guardrails": [
+        "The tested browser path is English-only for the registered version; do not infer Arabic coverage.",
+        "Browser execution and canonical serialization do not establish semantic correctness."
+      ]
+    },
+    {
+      "id": "morphology_and_pos_experiments",
+      "title": "Morphology, POS, and external treebank experiments",
+      "category": "morphology_research",
+      "description": "Pinned PUD morphology experiments, cross-validation, Stanza/spaCy/UD adapters, POS diagnostics, and language-specific morphology resources.",
+      "patterns": [
+        "tools/phase6_external_pud_v0_*/**/*",
+        "tools/phase6_external_pud_v0_4/**/*",
+        "tools/phase6_nominal_candidate_v0_4_1/**/*",
+        "documentation/PHASE-6-STEP-6.4-*.md",
+        "documentation/PHASE-6-STEP-6.6-*-PUD*.md",
+        "documentation/PHASE-6-STEP-6.6-*-SPACY*.md",
+        "documentation/PHASE-6-STEP-6.6-*-STANZA*.md",
+        "documentation/PHASE-6-STEP-6.6-*-UD*.md"
+      ],
+      "consumers": [
+        "P4",
+        "P5",
+        "P6",
+        "P8"
+      ],
+      "use_mode": "benchmark_only",
+      "evidence_class": "diagnostic_experiment",
+      "refresh": "on_experiment_or_source_pin_change",
+      "guardrails": [
+        "Treebank UPOS/FEATS are not USG semantic-role gold.",
+        "Fold-trained morphology rules remain experimental candidate generators; they are not active runtime morphology."
+      ]
+    },
+    {
+      "id": "kernel_lab_and_local_api",
+      "title": "Kernel Lab and local application interfaces",
+      "category": "developer_interface",
+      "description": "Loopback-only Kernel Lab, Phase 2/3 local API/CLI, Phase 4/5/6 interpretation endpoints, and Phase 7 knowledge inspection panel.",
+      "patterns": [
+        "tools/usg-kernel-lab/**/*",
+        "tools/usg_local_api_v1_0_0/**/*",
+        "tests/test_phase3_local_api_cli.py",
+        "tests/test_phase4_integrated_api.py",
+        "tests/test_phase5_integrated_api.py",
+        "tests/test_phase7_knowledge_inspection.py"
+      ],
+      "consumers": [
+        "P3",
+        "P4",
+        "P5",
+        "P6",
+        "P7",
+        "P8"
+      ],
+      "use_mode": "runtime",
+      "evidence_class": "accepted_component_evidence",
+      "refresh": "on_repository_change",
+      "guardrails": [
+        "Kernel Lab binds to loopback only.",
+        "Phase-specific APIs return different contracts; do not collapse envelopes into canonical documents."
+      ]
+    },
+    {
+      "id": "automation_workflows_and_actions",
+      "title": "GitHub Actions and scheduled system automation",
+      "category": "automation",
+      "description": "CI validation, six-hour lexical crawl, daily growth planner, Open-World campaigns, naturalistic pilots, phase continuation trackers, and reporting workflows.",
+      "patterns": [
+        ".github/workflows/**/*.yml",
+        ".github/workflows/**/*.yaml",
+        "documentation/USG-EXTERNAL-LEXICAL-SCHEDULED-CRAWLER-v0.1.0.md",
+        "documentation/USG-OPEN-WORLD-CONTINUOUS-EXPLORATION.md"
+      ],
+      "consumers": [
+        "P1",
+        "P2",
+        "P3",
+        "P4",
+        "P5",
+        "P6",
+        "P7",
+        "P8"
+      ],
+      "use_mode": "planning_only",
+      "evidence_class": "planning_evidence",
+      "refresh": "on_workflow_change_and_each_run",
+      "guardrails": [
+        "Workflow configuration is not evidence that a run succeeded.",
+        "Scheduled work may be skipped or blocked by permissions; always collect actual run and artifact status."
+      ]
+    },
+    {
+      "id": "regression_and_acceptance_suites",
+      "title": "Regression, contract, and phase acceptance test suites",
+      "category": "test_evidence",
+      "description": "Versioned unit, contract, integration, adapter, browser, benchmark, package-install, replay, and phase exit tests.",
+      "patterns": [
+        "tests/**/*.py",
+        "tests/**/*.js",
+        "implementations/**/tests/**/*",
+        "benchmarks/**/*"
+      ],
+      "consumers": [
+        "P1",
+        "P2",
+        "P3",
+        "P4",
+        "P5",
+        "P6",
+        "P7",
+        "P8"
+      ],
+      "use_mode": "benchmark_only",
+      "evidence_class": "accepted_component_evidence",
+      "refresh": "on_test_change_and_each_acceptance_run",
+      "guardrails": [
+        "A test only validates its declared assertion and corpus.",
+        "Skipped, not-executed, or infrastructure-failed tests are not passes."
+      ]
     }
   ]
 }
