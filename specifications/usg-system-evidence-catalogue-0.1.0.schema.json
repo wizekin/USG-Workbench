@@ -13,7 +13,8 @@
     "external_lexical",
     "growth_plan",
     "discoveries",
-    "governance"
+    "governance",
+    "workflow_evidence"
   ],
   "properties": {
     "contract": {
@@ -314,6 +315,58 @@
         },
         "amendments_require_review": {
           "const": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "workflow_evidence": {
+      "type": "object",
+      "required": [
+        "status",
+        "workflow_count",
+        "latest_run_count",
+        "status_counts",
+        "workflows",
+        "collection_errors",
+        "interpretation_boundary"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "collected",
+            "not_collected",
+            "collection_error"
+          ]
+        },
+        "workflow_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "latest_run_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "status_counts": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "workflows": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "collection_errors": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "interpretation_boundary": {
+          "type": "string"
         }
       },
       "additionalProperties": true
