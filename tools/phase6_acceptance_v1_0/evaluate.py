@@ -337,8 +337,8 @@ def _evaluate_corpus(corpus: dict[str, Any], predictions: list[dict[str, Any]]) 
 
 
 PROFILE_SPECS_BY_KEY = {
-    f"{lang}/{profile}": {"step": step}
-    for (lang, profile), (step, _family) in PROFILE_SPECS.items()
+    f"{lang}/{family}": {"step": step}
+    for (lang, _profile), (step, family) in PROFILE_SPECS.items()
 }
 
 
