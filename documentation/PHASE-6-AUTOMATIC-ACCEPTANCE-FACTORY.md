@@ -56,7 +56,7 @@ Ambiguous cases can pass by preserving their alternatives or by a clean abstenti
 
 ## Steps 6.12–6.14
 
-- **6.12:** the factory checks that candidate outputs are preserved in a schema-valid OPAQUE document, that the preserved graph matches the composed graph, and that no canonical assertions are emitted. The report records `PRESERVATION_ONLY`; it does **not** mark semantic-assertion projection accepted.
+- **6.12:** the factory checks that candidate outputs are preserved in a schema-valid OPAQUE document, that the preserved graph matches the composed graph, and that no canonical assertions are emitted. The report can mark Step 6.12 **accepted for the bounded `OPAQUE_PRESERVATION_ONLY` scope** when every candidate result is schema-valid, its complete graph and exact source/digest are preserved, and no canonical assertions are emitted. The separate `semantic_assertion_projection_accepted` field remains `false`.
 - **6.13:** the factory runs the integrated API in English and MSA Arabic, stores candidate runs in the existing SQLite store, and checks deterministic replay. The workflow additionally runs the existing Kernel Lab and integrated API regressions.
 - **6.14:** the final step is marked accepted only if every preceding factory gate passes. It does not override an open step or turn candidate-only outputs into supported semantic capabilities.
 
