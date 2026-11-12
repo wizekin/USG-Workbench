@@ -300,6 +300,9 @@ jobs:
           set +e
           python -m tools.system_evidence.acceptance \
             --catalogue "$EVIDENCE_DIR/system-evidence-catalogue.json" \
+            --validated-commit-sha "$GITHUB_SHA" \
+            --workflow-run-id "$GITHUB_RUN_ID" \
+            --workflow-run-attempt "$GITHUB_RUN_ATTEMPT" \
             --output "$EVIDENCE_DIR/phase8-integrated-acceptance.json"
           acceptance_exit=$?
           set -e

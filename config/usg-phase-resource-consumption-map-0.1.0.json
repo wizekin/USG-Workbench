@@ -245,7 +245,7 @@
       ],
       "prohibited_uses": [
         "single aggregate intelligence score",
-        "silent phase status mutation",
+        "phase status mutation outside the exact-head formal acceptance protocol",
         "semantic promotion without independent acceptance"
       ]
     }
