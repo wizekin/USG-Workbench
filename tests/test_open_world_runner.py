@@ -70,12 +70,12 @@ class OpenWorldExecutionRunnerTests(unittest.TestCase):
         )
         self.assertEqual(validate_instance("execution_result", record), [])
 
-    def test_browser_target_is_explicitly_not_executed_not_a_usg_failure(self):
-        case = make_case("js-semantic-workbench-v054")
+    def test_browser_target_marks_unsupported_language_without_silent_mapping(self):
+        case = make_case("js-semantic-workbench-v054", "الطالب كتب الدرس.", "ar")
         record = execute_case(case, commit_sha=COMMIT)
-        self.assertEqual(record["outcome"], "not_executed")
+        self.assertEqual(record["outcome"], "unsupported")
         payload = record["capture"]["inline_output"]
-        self.assertIn("no Playwright/browser adapter", payload["reason"])
+        self.assertIn("English-only", payload["reason"])
         self.assertEqual(validate_instance("execution_result", record), [])
 
     def test_arabic_language_profile_is_passed_to_phase4(self):
