@@ -2,9 +2,9 @@
   "contract": "USG-PHASE-RESOURCE-MANIFEST/0.1.0",
   "manifest_version": "0.1.0",
   "phase_id": "P8",
-  "phase_step_id": null,
+  "phase_step_id": "8.5-8.7-8.10",
   "created_at": "2026-11-12T12:00:00Z",
-  "purpose": "Declare the existing USG system evidence, contracts, resources, campaigns, and planning outputs Phase 8 consumes to coordinate future development.",
+  "purpose": "Declare the exact evidence, source resources, freshness/contradiction diagnostics, phase routing, review-only proposal generation, and integrated acceptance checks consumed by Phase 8.",
   "resources": [
     {
       "source_family_id": "canonical_semantic_interchange",
@@ -274,10 +274,19 @@
       "runtime_integration_verified": false,
       "rights_status": "repository-owned",
       "evidence_refs": [
-        "documentation/USG-SYSTEM-EVIDENCE-AND-RESOURCE-INTEGRATION.md"
+        "documentation/USG-SYSTEM-EVIDENCE-AND-RESOURCE-INTEGRATION.md",
+        "tools/system_evidence/freshness.py",
+        "tools/system_evidence/discovery.py",
+        "tools/system_evidence/acceptance.py",
+        "tests/test_system_evidence_freshness.py",
+        "tests/test_system_evidence_discovery.py",
+        "tests/test_phase8_integrated_acceptance.py"
       ],
       "known_limitations": [
-        "Availability and file indexing do not prove active runtime consumption; verify import/call paths and tests."
+        "Catalogue and proposals are planning artifacts, not semantic truth or runtime knowledge.",
+        "Proposal records are draft-only and cannot change accepted phase status, canonical contracts, or runtime resources.",
+        "The integrated acceptance gate establishes structural and governance readiness for human review, not semantic accuracy or phase acceptance.",
+        "Snapshots remain append-only; source rights and population boundaries must be preserved."
       ]
     }
   ],
@@ -427,6 +436,36 @@
         "GitHub Actions API response snapshot",
         "workflow collector tests",
         "schema-valid evidence catalogue"
+      ],
+      "promotion_effect": "no_runtime_change"
+    },
+    {
+      "gate_id": "P8-FRESHNESS",
+      "description": "Evidence timestamps and cross-source counts are checked; stale, invalid, future, and unavailable states remain distinct and contradictions are surfaced.",
+      "evidence_required": [
+        "freshness diagnostic tests",
+        "campaign population/accounting reconciliation tests",
+        "lexical shard reconciliation tests"
+      ],
+      "promotion_effect": "no_runtime_change"
+    },
+    {
+      "gate_id": "P8-PROPOSALS",
+      "description": "Every deduplicated finding receives a stable review-only proposal routed to an existing continuation, accepted-phase amendment, migration review, cross-cutting review, or evidence remediation.",
+      "evidence_required": [
+        "proposal identity tests",
+        "phase routing tests",
+        "proposal governance checks"
+      ],
+      "promotion_effect": "no_runtime_change"
+    },
+    {
+      "gate_id": "P8-INTEGRATED-ACCEPTANCE",
+      "description": "An automated integrated gate validates Phase 8 source coverage, manifest, evidence sections, priorities, proposals, workflow observability, and governance without accepting the phase.",
+      "evidence_required": [
+        "integrated acceptance tests",
+        "exact-head GitHub Actions validation",
+        "reviewable catalogue snapshot"
       ],
       "promotion_effect": "no_runtime_change"
     }
