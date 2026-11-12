@@ -1,7 +1,7 @@
 # USG Phase 7 — Semantic Knowledge Integration and Contextual Knowledge Layer
 
 **Phase:** 7 — Semantic knowledge integration and contextual knowledge retrieval  
-**Status:** STEPS 7.1–7.2 IMPLEMENTED IN PR; pending exact-head validation and merge. Steps 7.3–7.10 remain unstarted.  
+**Status:** STEPS 7.1–7.2 MERGED; Step 7.3 implemented in PR and pending exact-head validation. Steps 7.4–7.10 remain unstarted.  
 **Primary objective:** build a governed, persistent semantic knowledge layer that connects lexical forms, lexical senses, language-neutral concepts, semantic classes, typed relations, source evidence, contexts, and validated canonical documents.  
 **Prerequisites:** accepted Phase 1–5 foundations; Phase 6 bounded automatic exit accepted for its registered scope.  
 **Non-blocking parallel work:** Phase 6 construction expansion continues through the [Phase 6 Continuation Tracker](PHASE-6-CONTINUATION-TRACKER.md). No unfinished Phase 6 continuation item is a prerequisite for Phase 7 unless a specific Phase 7 step explicitly adopts it.  
@@ -188,6 +188,14 @@ The steps are ordered by contract and data dependencies. Steps explicitly marked
 | **7.9** | Knowledge inspection API, CLI, and Kernel Lab | Query concepts/senses/relations, inspect provenance/conflicts, compare alternatives, and replay an acquisition run | API, CLI, and UI share the same application/repository services; every result shows source, state, version, context, and unresolved alternatives. |
 | **7.10** | Evaluation, performance, and Phase 7 exit acceptance | Frozen multilingual retrieval/mapping/reconciliation suite, adversarial negatives, rights/provenance checks, replay, and integrated regressions | Each enabled language/source/relation profile passes its own gates; false merges and unsupported promotion are zero in the acceptance set; limitations and unsupported profiles are published. |
 
+## 7.3 Step 7.3 — Persistent knowledge repository
+
+**Deliverables:** an append-only SQLite knowledge snapshot repository, integrated with the existing canonical store's role-scoped connection session; immutable bundle snapshots; typed record/source/evidence/context/mapping/relation indexes; digest verification; idempotent writes; per-bundle versioning; and rollback-safe tests.
+
+The repository receives the exact connection owned by Phase 3's CanonicalDocumentStore. It never opens another database, commits, or rolls back. The host store owns all transaction boundaries. The canonical JSON bundle is the authoritative knowledge snapshot; normalized tables are query indexes. All snapshot and index rows are append-only and protected by update/delete triggers.
+
+**Acceptance boundary:** repository writes require the caller-owned transaction. A repeated identical bundle is idempotent; changed content creates a new immutable bundle version. Reads verify the canonical digest, schema/references, and index counts. The repository is initialized by the local application but no external source ingestion, candidate promotion, or new API routes are introduced here; those belong to Steps 7.4 and 7.9.
+
 ## 7.1 Step 7.1 — Knowledge integration contract and inventory
 
 **Deliverables:** [USG-KNOWLEDGE/0.1.0](../specifications/USG-KNOWLEDGE-0.1.0.md), [JSON Schema](../specifications/usg-knowledge-0.1.0.schema.json), example bundle, deterministic validator, cross-reference tests, and an isolated GitHub Actions validation workflow.
@@ -272,4 +280,4 @@ No Phase 7 task may rewrite a previously accepted phase's meaning or make that p
 6. Integrate read-only adapters and inspection interfaces.
 7. Close Phase 7 with profile-specific tests, reproducible reports, and protected baseline regressions.
 
-**Next mainline implementation: Step 7.3 — persistent knowledge repository.** Steps 7.1–7.2 define the initial contract and typed model; their PR-specific acceptance depends on passing exact-head workflows. This does not imply completion of the full Phase 7 roadmap.
+**Next mainline implementation: Step 7.4 — rights-aware source adapters and incremental acquisition.** Steps 7.1–7.2 are merged; Step 7.3 is implemented and awaits its exact-head CI gate. This does not imply completion of the full Phase 7 roadmap.
