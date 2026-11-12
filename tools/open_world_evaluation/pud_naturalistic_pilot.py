@@ -306,7 +306,7 @@ def build_naturalistic_cases(
         },
         "translation_profile": {
             "english": "PUD contains news/Wikipedia sentences; 750 are originally English and 250 are translations from other European languages.",
-            "arabic": "PUD is a parallel news/Wikipedia set; a substantial portion is translated via English and is not representative of all native MSA usage.",
+            "arabic": "All Arabic PUD sentences are translations: 750 originate in English and 250 originate in German, French, Italian, or Spanish and are translated via English; this is not a native-MSA distribution.",
         },
         "case_count": len(cases),
         "cases_jsonl_sha256": None,
