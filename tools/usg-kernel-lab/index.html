@@ -114,12 +114,13 @@ details{border:1px solid var(--line);border-radius:10px;background:#0d1626}summa
 <section class="panel" style="margin-bottom:16px">
 <div class="panel-head"><div><div class="eyebrow">00C / phase 6 candidate composition</div><h2>Compose and validate broader semantic structures</h2></div><span class="eyebrow">USG-INTERPRET/0.3.0 · CANDIDATE ONLY</span></div>
 <div class="panel-body">
-<p class="hint">Supply a source-grounded candidate graph to validate coordination, embedded clauses, voice/speech acts, operator scope, and unresolved reference candidates. This tool composes explicit candidates; it does not claim to extract them automatically from raw text or establish truth.</p>
+<p class="hint">Run the integrated bilingual pipeline over the source text. It reuses the lexical, clause, syntax, operator, and discourse stages, composes their Phase 6 candidates, and preserves uncertainty. The generated graph remains candidate-only; canonical preservation uses an OPAQUE record and emits no semantic assertions.</p>
 <div class="interpret-grid">
 <textarea id="phase6SourceInput" aria-label="Phase 6 source text" spellcheck="false" style="min-height:90px;height:90px">Lina and Omar read books.</textarea>
 <div class="interpret-controls">
 <select id="phase6Language" aria-label="Phase 6 language"><option value="en">English</option><option value="ar">Modern Standard Arabic</option></select>
 <label style="display:flex;gap:7px;align-items:center;color:var(--muted);font-size:12px"><input id="phase6Persist" type="checkbox" checked> Save immutable run</label>
+<button class="primary" id="phase6InterpretBtn">Run integrated Phase 6 interpretation</button>
 <button class="subtle" id="phase6ExtractBtn">Extract candidate graph from text</button>
 <button class="primary" id="phase6ComposeBtn">Compose candidate graph</button>
 </div>
@@ -603,6 +604,30 @@ $("phase5InterpretBtn").onclick=async()=>{
   $("phase5Output").textContent=JSON.stringify({error:e.message},null,2);
   setStatus(e.message,"err");
  }finally{$("phase5InterpretBtn").disabled=false}
+};
+$("phase6InterpretBtn").onclick=async()=>{
+ try{
+  $("phase6InterpretBtn").disabled=true;
+  setStatus("Running the integrated Phase 6 bilingual interpretation path...");
+  const result=await apiRequest("POST","/v3/phase6/interpret",{
+   source:$("phase6SourceInput").value,language:$("phase6Language").value,persist:$("phase6Persist").checked
+  });
+  const interpretation=result.interpretation;
+  if(interpretation && interpretation.graph)
+   $("phase6GraphInput").value=JSON.stringify(interpretation.graph,null,2);
+  $("phase6Output").textContent=JSON.stringify(result,null,2);
+  if(result.persistence){
+   $("phase6RunId").value=result.persistence.run_id;
+   setStatus("Integrated Phase 6 candidate run saved · "+result.persistence.run_id,"ok");
+  }else if(result.phase6_status==="CANDIDATE_ONLY"){
+   setStatus("Integrated Phase 6 candidate graph composed · no semantic promotion","ok");
+  }else{
+   setStatus("Integrated Phase 6 abstained: no licensed construction candidate","ok");
+  }
+ }catch(e){
+  $("phase6Output").textContent=JSON.stringify({error:e.message},null,2);
+  setStatus(e.message,"err");
+ }finally{$("phase6InterpretBtn").disabled=false}
 };
 $("phase6ExtractBtn").onclick=async()=>{
  try{
