@@ -36,7 +36,7 @@ VOCAB = {
   "subjects": ["Mona","Sami","Lina","Omar","Maya","Noor","Adam","Layla","Karim","Huda","Rami","Salma","Yara","Ali","Dina","Tarek","Farah","Ziad","Fadi","Amal"],
   "verbs": ["arrived","departed","returned","spoke","resigned","traveled","visited","opened","closed","started","ended","changed","moved","reported","escaped","waited","appeared","landed","called","agreed"],
   "times": ["yesterday","today","tomorrow","recently","earlier","tonight","Monday","Friday","annually","eventually","immediately","previously","later","now","soon","already","before","afterward","presently","finally"],
-  "ambiguous_pairs": [("light","house"),("paper","bag"),("green","card"),("iron","gate"),("stone","wall"),("silver","screen"),("cold","case"),("fast","track"),("dark","room"),("public","school")]
+  "ambiguous_pairs": [("light","house"),("paper","bag"),("green","card"),("iron","gate"),("plastic","wall"),("silver","screen"),("cold","case"),("fast","track"),("dark","room"),("public","school")]
  },
  "ar": {
   "adjectives": ["الجميل","الواسع","القديم","الجديد","الصغير","الكبير","الواضح","السريع","القوي","الهادئ","النظيف","القريب","الطويل","الثقيل","الخفيف","الذكي","الأخضر","الأزرق","الأبيض","المرتفع"],
@@ -49,7 +49,7 @@ VOCAB = {
   "subjects": ["سامي","ليلى","مريم","عمر","نور","آدم","هدى","كريم","رامي","سلمى","يارا","علي","دينا","طارق","فرح","زياد","فادي","أمل","منى","خالد"],
   "verbs": ["وصل","عاد","سافر","افتتح","أغلق","بدأ","انتهى","تحرك","ظهر","هبط","غادر","أعلن","التقى","اتصل","استقال","زار","انتقل","نجح","تغير","استيقظ"],
   "times": ["أمس","اليوم","غدا","مؤخرا","سابقا","لاحقا","الآن","قريبا","مبكرا","مساء","صباحا","أخيرا","فورا","سنويا","قبلا","حينئذ","آنذاك","دائما","حاليا","ليلا"],
-  "ambiguous_pairs": [("البنك","المركزي"),("السوق","السوداء"),("الطريق","السريع"),("البيت","الأبيض"),("الكتاب","المفتوح"),("المركز","الطبي"),("المدرسة","العليا"),("الميناء","الجوي"),("المتحف","التاريخي"),("الحقل","النفطي")]
+  "ambiguous_pairs": [("البنك","المركزي"),("السوق","السوداء"),("الطريق","الرئيسي"),("البيت","الأبيض"),("الكتاب","المفتوح"),("المركز","الطبي"),("المدرسة","العليا"),("الميناء","الجوي"),("المتحف","التاريخي"),("الحقل","النفطي")]
  }
 }
 SENSES = {
