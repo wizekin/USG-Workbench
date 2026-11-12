@@ -53,6 +53,17 @@ class Phase7KnowledgeContractTests(unittest.TestCase):
         self.assertTrue(any("relation:bad" in e and "existing records" in e for e in errors))
         self.assertTrue(any("relation:bad" in e and "unknown evidence" in e for e in errors))
 
+    def test_each_record_kind_requires_its_typed_payload_minimum(self):
+        bundle = copy.deepcopy(self.fixture)
+        form = next(x for x in bundle["records"] if x["kind"] == "LEXICAL_FORM")
+        del form["payload"]["script"]
+        self.assertTrue(any("script" in e for e in validate_bundle(bundle)))
+
+    def test_unknown_record_kind_is_rejected(self):
+        bundle = copy.deepcopy(self.fixture)
+        bundle["records"][0]["kind"] = "UNKNOWN_KIND"
+        self.assertTrue(validate_bundle(bundle))
+
     def test_candidate_state_is_not_auto_promoted(self):
         bundle = copy.deepcopy(self.fixture)
         self.assertTrue(all(x["state"] in {"CANDIDATE", "UNRESOLVED"} for x in bundle["records"]))
