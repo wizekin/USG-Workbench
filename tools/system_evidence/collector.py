@@ -88,6 +88,7 @@ def read_campaigns(root: Path, limit: int) -> list[dict[str, Any]]:
         populations = coverage.get("population_case_counts", {})
         attribution = coverage.get("stage_attribution", {})
         accounting = coverage.get("execution_accounting")
+        bundle_manifest = read_json(directory / "bundle-manifest.json")
         output.append({
             "campaign_id": report.get("campaign_id", directory.name),
             "created_at": created or None, "status": report.get("status", "not_reported"),
@@ -99,11 +100,11 @@ def read_campaigns(root: Path, limit: int) -> list[dict[str, Any]]:
             "execution_accounting": accounting if isinstance(accounting, dict) else {
                 "status": "not_recorded_in_report_version"},
             "campaign_report_sha256": digest(report_path),
-            "bundle_manifest": read_json(directory / "bundle-manifest.json"),
+            "bundle_manifest": bundle_manifest,
             "artifact_hashes": (
-                {item["name"]: item["sha256"] for item in read_json(directory / "bundle-manifest.json").get("files", [])
+                {item["name"]: item["sha256"] for item in bundle_manifest.get("files", [])
                  if isinstance(item, dict) and item.get("name") and item.get("sha256")}
-                if read_json(directory / "bundle-manifest.json") else {}
+                if bundle_manifest and isinstance(bundle_manifest.get("files"), list) else {}
             ),
             "first_blocking_stage_counts": attribution.get("first_blocking_stage_counts", {})
                 if isinstance(attribution, dict) else {},
@@ -133,9 +134,9 @@ def external_lexical(manifest_path: Path | None, checkpoint_path: Path | None,
     morphology = pud.get("morphology_evaluation", {}).get("totals", {}) if pud else {}
     last = manifest.get("last_batch", {})
     budget = int(manifest.get("storage_budget_bytes", 0) or 0)
-    pud_fresh = bool(pud is not None and shards == batches)
     shard_count = int(shard_inventory.get("file_count", 0) or 0) if shard_inventory else None
     shard_inventory_match = bool(shard_inventory is not None and shard_count == batches)
+    pud_fresh = bool(pud is not None and shards == batches and shard_inventory_match)
     return {
         "status": manifest.get("status", "unknown"), "manifest_available": True,
         "checkpoint_available": checkpoint is not None, "external_branch_commit": branch_commit,
