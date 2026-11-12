@@ -15,7 +15,9 @@
         "phase_development_history"
       ],
       "optional_sources": [
-        "cross_implementation_conformance"
+        "cross_implementation_conformance",
+        "python_native_model_packages",
+        "regression_and_acceptance_suites"
       ],
       "consume_modes": [
         "normative",
@@ -36,7 +38,9 @@
       ],
       "optional_sources": [
         "phase7_knowledge_layer",
-        "open_world_evaluation_foundation"
+        "open_world_evaluation_foundation",
+        "python_native_model_packages",
+        "regression_and_acceptance_suites"
       ],
       "consume_modes": [
         "normative",
@@ -58,7 +62,9 @@
       ],
       "optional_sources": [
         "phase7_knowledge_layer",
-        "cross_implementation_conformance"
+        "cross_implementation_conformance",
+        "python_native_model_packages",
+        "regression_and_acceptance_suites"
       ],
       "consume_modes": [
         "normative",
@@ -83,7 +89,10 @@
         "lexical_candidate_adapter",
         "external_lexical_acquisition",
         "naturalistic_pud_population",
-        "open_world_evaluation_foundation"
+        "open_world_evaluation_foundation",
+        "morphology_and_pos_experiments",
+        "regression_and_acceptance_suites",
+        "automation_workflows_and_actions"
       ],
       "consume_modes": [
         "normative",
@@ -113,7 +122,10 @@
         "phase7_knowledge_layer",
         "open_world_evaluation_foundation",
         "evidence_driven_growth_planner",
-        "naturalistic_pud_population"
+        "naturalistic_pud_population",
+        "morphology_and_pos_experiments",
+        "regression_and_acceptance_suites",
+        "automation_workflows_and_actions"
       ],
       "consume_modes": [
         "normative",
@@ -143,7 +155,10 @@
         "external_lexical_acquisition",
         "phase7_knowledge_layer",
         "evidence_driven_growth_planner",
-        "naturalistic_pud_population"
+        "naturalistic_pud_population",
+        "morphology_and_pos_experiments",
+        "regression_and_acceptance_suites",
+        "automation_workflows_and_actions"
       ],
       "consume_modes": [
         "normative",
@@ -170,7 +185,10 @@
         "external_lexical_acquisition",
         "oov_and_ambiguity_regressions",
         "open_world_evaluation_foundation",
-        "evidence_driven_growth_planner"
+        "evidence_driven_growth_planner",
+        "kernel_lab_and_local_api",
+        "regression_and_acceptance_suites",
+        "automation_workflows_and_actions"
       ],
       "consume_modes": [
         "normative",
@@ -206,7 +224,13 @@
         "oov_and_ambiguity_regressions",
         "naturalistic_pud_population",
         "cross_implementation_conformance",
-        "versioned_lexical_construction_and_operator_resources"
+        "versioned_lexical_construction_and_operator_resources",
+        "python_native_model_packages",
+        "javascript_semantic_workbench",
+        "morphology_and_pos_experiments",
+        "kernel_lab_and_local_api",
+        "automation_workflows_and_actions",
+        "regression_and_acceptance_suites"
       ],
       "consume_modes": [
         "normative",
