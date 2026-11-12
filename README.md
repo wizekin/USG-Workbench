@@ -6,7 +6,7 @@
 [![Default branch](https://img.shields.io/badge/branch-main-blue)](https://github.com/wizekin/USG-Workbench/tree/main)
 [![Phase 6](https://img.shields.io/badge/Phase%206-in%20progress-orange)](documentation/PHASE-6-DEFINITIONS-ROADMAP.md)
 
-> **Status snapshot:** 12 November 2026 · Main branch last reviewed at [`e9fdeed`](https://github.com/wizekin/USG-Workbench/commit/e9fdeed28e3051c89ab5ef5e3e9874701e6c10e7). Live workflow and campaign links below take precedence over this dated snapshot.
+> **Status snapshot:** 12 November 2026 · Main branch last reviewed at [`1177c59`](https://github.com/wizekin/USG-Workbench/commit/1177c59e23e9ad5f124888bdfb71292fd863786c). Live workflow and campaign links below take precedence over this dated snapshot.
 
 ---
 
@@ -17,7 +17,8 @@ Start here — jump directly to any major section:
 | | Section | |
 |---|---|---|
 | 1 | [USG Workbench definition](#usg-workbench-definition) | What this project is and what it is not |
-| 2 | [Central documentation hub](documentation/README.md) | One index for all USG documentation across the repository |\n| 3 | [Documentation and maintenance policy](#documentation-and-maintenance-policy) | How technical documentation is organized and kept current |
+| 2 | [Central documentation hub](documentation/README.md) | One index for all USG documentation across the repository |
+| 3 | [Documentation and maintenance policy](#documentation-and-maintenance-policy) | How technical documentation is organized and kept current |
 | 4 | [Current running tasks](#current-running-tasks) | Active and scheduled GitHub Actions work |
 | 5 | [Complete major tasks](#complete-major-tasks) | Accepted phases and implemented foundations |
 | 6 | [Incomplete major tasks](#incomplete-major-tasks) | Remaining work and current blockers |
@@ -191,9 +192,9 @@ These are the major open workstreams. Detailed step definitions, dependencies, a
 | **6.13** | API, CLI, resource lifecycle, and Kernel Lab integration | Pending |
 | **6.14** | Full Phase 6 benchmark and integrated exit acceptance | Pending |
 
-The main blocker is the lack of a rights-cleared, independently annotated bilingual gold set covering the internal nominal and modifier constructions required by Step 6.6. PUD syntax annotations and external parser outputs are useful diagnostics, but are not semantic-role gold.
+The candidate recognizer, generated development/held-out diagnostics, and independent-gold intake validator are implemented. The main blocker remains the lack of a rights-cleared, independently human-annotated bilingual gold set covering the internal nominal and modifier constructions required by Step 6.6. PUD syntax annotations and external parser outputs are useful diagnostics, but are not semantic-role gold.
 
-References: [Phase 6 roadmap](documentation/PHASE-6-DEFINITIONS-ROADMAP.md) · [Independent gold dataset audit](documentation/PHASE-6-STEP-6.6-INDEPENDENT-GOLD-DATASET-AUDIT.md) · [Step 6.6 external PUD audit](documentation/PHASE-6-STEP-6.6-EXTERNAL-PUD-AUDIT.md).
+References: [Phase 6 roadmap](documentation/PHASE-6-DEFINITIONS-ROADMAP.md) · [Independent gold dataset audit](documentation/PHASE-6-STEP-6.6-INDEPENDENT-GOLD-DATASET-AUDIT.md) · [Independent gold acceptance protocol](documentation/PHASE-6-STEP-6.6-INDEPENDENT-GOLD-ACCEPTANCE-PROTOCOL.md) · [Step 6.6 external PUD audit](documentation/PHASE-6-STEP-6.6-EXTERNAL-PUD-AUDIT.md).
 
 ### 2. External lexical knowledge — crawl, evaluate, and safely integrate
 
