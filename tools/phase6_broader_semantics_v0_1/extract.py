@@ -72,6 +72,36 @@ def extract_candidate_graph(source, language):
             {"type":"PATIENT","source":"predicate","target":"object","evidence":_evidence(source,object_token)},
         ]
         graph["features"]=["COORDINATION","PREDICATE_ARGUMENT"]
+    elif language=="en" and len(words)==7 and words[3].casefold()=="as":
+        template="en.embedded.ambiguous.as.v1"
+        add_nodes([(1,"main_predicate","EVENT"),(5,"embedded_predicate","EVENT")])
+        for node in graph["nodes"]:
+            node["role"]="ACTION"
+        marker=_evidence(source,tokens[3])
+        graph["relations"]=[
+            {"type":"CAUSAL","source":"main_predicate","target":"embedded_predicate",
+             "feature":"SUBORDINATE_CLAUSE","evidence":marker,"alternative_group":"attachment-1"},
+            {"type":"TEMPORAL","source":"main_predicate","target":"embedded_predicate",
+             "feature":"SUBORDINATE_CLAUSE","evidence":marker,"alternative_group":"attachment-1"},
+        ]
+        graph["features"]=["SUBORDINATE_CLAUSE"]
+        graph["alternatives"]=["CAUSAL","TEMPORAL"]
+        graph["ambiguity"]="AMBIGUOUS_CAUSAL_OR_TEMPORAL_ATTACHMENT"
+    elif language=="ar" and len(words)==7 and words[3]=="إذ":
+        template="ar.embedded.ambiguous.ith.v1"
+        add_nodes([(0,"main_predicate","EVENT"),(4,"embedded_predicate","EVENT")])
+        for node in graph["nodes"]:
+            node["role"]="ACTION"
+        marker=_evidence(source,tokens[3])
+        graph["relations"]=[
+            {"type":"CAUSAL","source":"main_predicate","target":"embedded_predicate",
+             "feature":"SUBORDINATE_CLAUSE","evidence":marker,"alternative_group":"attachment-1"},
+            {"type":"TEMPORAL","source":"main_predicate","target":"embedded_predicate",
+             "feature":"SUBORDINATE_CLAUSE","evidence":marker,"alternative_group":"attachment-1"},
+        ]
+        graph["features"]=["SUBORDINATE_CLAUSE"]
+        graph["alternatives"]=["CAUSAL","TEMPORAL"]
+        graph["ambiguity"]="AMBIGUOUS_CAUSAL_OR_TEMPORAL_ATTACHMENT"
     elif language=="en" and len(words)==5 and words[2].casefold()=="that" and words[0][:1].isupper() and words[3][:1].isupper():
         template="en.embedded.complement.v1"
         add_nodes([(0,"matrix_subject","PERSON"),(1,"matrix_predicate","EVENT"),(3,"embedded_subject","PERSON"),(4,"embedded_predicate","EVENT")])
