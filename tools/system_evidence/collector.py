@@ -161,11 +161,16 @@ def external_lexical(manifest_path: Path | None, checkpoint_path: Path | None,
                            "senses": last.get("senses"), "stop_reason": last.get("stop_reason")},
         },
         "shard_inventory": {
-            "status": ("matches_manifest" if shard_inventory_match else
+            "status": (shard_inventory.get("status") if shard_inventory_match else
                        ("count_mismatch" if shard_inventory is not None else "not_collected")),
             "file_count": shard_count,
+            "unique_content_count": shard_inventory.get("unique_content_count", shard_count) if shard_inventory else None,
+            "physical_file_count": shard_inventory.get("physical_file_count") if shard_inventory else None,
+            "duplicate_file_count": shard_inventory.get("duplicate_file_count", 0) if shard_inventory else None,
+            "duplicate_groups": shard_inventory.get("duplicate_groups", []) if shard_inventory else [],
             "manifest_batch_count": batches,
             "total_size_bytes": shard_inventory.get("total_size_bytes") if shard_inventory else None,
+            "unique_content_size_bytes": shard_inventory.get("unique_content_size_bytes") if shard_inventory else None,
             "files": shard_inventory.get("files", []) if shard_inventory else [],
             "inventory_sha256": digest(shard_inventory_path) if shard_inventory_path and shard_inventory_path.is_file() else None,
         },
@@ -264,16 +269,27 @@ def discover(phases: list[dict[str, Any]], external: dict[str, Any],
             "external_lexical_manifest_unavailable",
             "The external lexical branch manifest was not collected. Its absence is not an empty inventory or zero progress.",
             ["external_lexical.manifest"], ["P8"], phases, "high", "evidence_collection"))
-    if external.get("manifest_available") and external.get("shard_inventory", {}).get("status") != "matches_manifest":
+    if external.get("manifest_available") and external.get("shard_inventory", {}).get("status") not in {"matches_manifest", "matches_manifest_with_duplicates"}:
         inventory_status = external.get("shard_inventory", {}).get("status")
         findings.append(make_finding(
             "external_lexical_shard_inventory_mismatch" if inventory_status == "count_mismatch" else "external_lexical_shard_inventory_unavailable",
-            "The physical external lexical shard inventory is missing or does not reconcile with the cumulative crawl manifest; investigate before treating crawl totals or PUD metrics as current.",
+            "The unique-content external lexical shard inventory is missing or does not reconcile with the cumulative crawl manifest; investigate before treating crawl totals or PUD metrics as current.",
             ["external_lexical.manifest_sha256", "external_lexical.shard_inventory"],
             ["P5", "P6", "P7", "P8"], phases, "high", "existing_external_lexical_workstream",
             {"manifest_batch_count": external.get("progress", {}).get("batch_count"),
-             "physical_shard_count": external.get("shard_inventory", {}).get("file_count"),
+             "unique_shard_count": external.get("shard_inventory", {}).get("file_count"),
+             "physical_shard_count": external.get("shard_inventory", {}).get("physical_file_count"),
              "inventory_status": inventory_status}))
+    if external.get("manifest_available") and int(external.get("shard_inventory", {}).get("duplicate_file_count", 0) or 0) > 0:
+        findings.append(make_finding(
+            "external_lexical_duplicate_shard_content",
+            "The external lexical branch contains multiple physical shard paths with identical content. PUD evaluation uses each unique content hash once; retain the duplicate path evidence for crawl/audit reconciliation.",
+            ["external_lexical.shard_inventory"],
+            ["P5", "P6", "P7", "P8"], phases, "informational", "existing_external_lexical_workstream",
+            {"physical_shard_count": external.get("shard_inventory", {}).get("physical_file_count"),
+             "unique_content_count": external.get("shard_inventory", {}).get("unique_content_count"),
+             "duplicate_file_count": external.get("shard_inventory", {}).get("duplicate_file_count"),
+             "duplicate_groups": external.get("shard_inventory", {}).get("duplicate_groups")}))
     failed_conclusions = {"failure", "timed_out", "action_required", "startup_failure"}
     if workflows.get("status") == "collected":
         phase_impact_rules = [
@@ -493,7 +509,7 @@ def render_markdown(report: dict[str, Any]) -> str:
               "", "## External lexical acquisition", ""]
     if ext.get("manifest_available"):
         lines += [f"- Status: {ext.get('status')}; snapshot: {ext.get('source', {}).get('snapshot_id')}.",
-                  f"- Physical shards: {ext.get('shard_inventory', {}).get('file_count')} / {ext.get('shard_inventory', {}).get('manifest_batch_count')} ({ext.get('shard_inventory', {}).get('status')}); total compressed bytes: {ext.get('shard_inventory', {}).get('total_size_bytes')}.",
+                  f"- Unique-content shards: {ext.get('shard_inventory', {}).get('file_count')} / {ext.get('shard_inventory', {}).get('manifest_batch_count')} ({ext.get('shard_inventory', {}).get('status')}); physical files: {ext.get('shard_inventory', {}).get('physical_file_count')}; exact duplicates: {ext.get('shard_inventory', {}).get('duplicate_file_count')}; total compressed bytes: {ext.get('shard_inventory', {}).get('total_size_bytes')}.",
                   f"- Processed headwords: {progress.get('processed_headwords')} / {progress.get('expected_headwords')} ({progress.get('headword_completion_percent')}%).",
                   f"- Entries / senses: {progress.get('processed_entries')} / {progress.get('processed_senses')}.",
                   f"- Batches: {progress.get('batch_count')}; stored bytes: {progress.get('stored_bytes')} / {progress.get('storage_budget_bytes')}.",
