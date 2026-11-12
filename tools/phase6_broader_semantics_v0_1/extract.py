@@ -99,17 +99,22 @@ def extract_candidate_graph(source, language):
         add_nodes([(0,"subject","PERSON"),(3,"predicate","EVENT")])
         ambiguous_scope = words[1].casefold() == "must"
         scope = "UNRESOLVED" if ambiguous_scope else "CLAUSE"
+        for node, role in zip(graph["nodes"], ("AGENT", "ACTION")):
+            node["role"] = role
         graph["operators"]=[
             {"type":"MODALITY","target_id":"predicate","scope":scope,"span":_evidence(source,tokens[1])},
             {"type":"NEGATION","target_id":"predicate","scope":scope,"span":_evidence(source,tokens[2])},
         ]
         graph["features"]=["OPERATOR"]
         if ambiguous_scope:
+            template="en.modal.negation.scope.ambiguous.v1"
             graph["scope_alternatives"]=["MODALITY_OVER_NEGATION","NEGATION_OVER_MODALITY"]
             graph["ambiguity"]="NESTED_OPERATOR_SCOPE_AMBIGUITY"
     elif language=="ar" and len(words)==4 and words[0]=="قد" and words[1]=="لا":
         template="ar.modal.negation.scope.v1"
         add_nodes([(2,"predicate","EVENT"),(3,"subject","PERSON")])
+        for node, role in zip(graph["nodes"], ("ACTION", "AGENT")):
+            node["role"] = role
         graph["operators"]=[
             {"type":"MODALITY","target_id":"predicate","scope":"CLAUSE","span":_evidence(source,tokens[0])},
             {"type":"NEGATION","target_id":"predicate","scope":"CLAUSE","span":_evidence(source,tokens[1])},
@@ -118,6 +123,8 @@ def extract_candidate_graph(source, language):
     elif language=="ar" and len(words)==4 and words[0]=="ربما" and words[1]=="لا":
         template="ar.modal.negation.scope.ambiguous.v1"
         add_nodes([(2,"predicate","EVENT"),(3,"subject","PERSON")])
+        for node, role in zip(graph["nodes"], ("ACTION", "AGENT")):
+            node["role"] = role
         graph["operators"]=[
             {"type":"MODALITY","target_id":"predicate","scope":"UNRESOLVED","span":_evidence(source,tokens[0])},
             {"type":"NEGATION","target_id":"predicate","scope":"UNRESOLVED","span":_evidence(source,tokens[1])},
