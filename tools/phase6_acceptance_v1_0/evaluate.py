@@ -40,7 +40,7 @@ def _graph_observation(response: dict[str, Any], expected_source: str) -> dict[s
                        "speech_act": graph.get("speech_act", "UNKNOWN")}
     relations = graph.get("relations", [])
     operators = graph.get("operators", [])
-    references = composed_graph.get("references") or graph.get("references", [])
+    references = graph.get("references") or composed_graph.get("references", [])
     nodes = graph.get("nodes", [])
     spans_valid = True
     source = interpretation.get("source", {}).get("text")
