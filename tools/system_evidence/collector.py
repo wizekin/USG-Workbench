@@ -195,6 +195,24 @@ def external_lexical(manifest_path: Path | None, checkpoint_path: Path | None,
         "checkpoint_sha256": digest(checkpoint_path) if checkpoint_path and checkpoint_path.is_file() else None,
     }
 
+def workflow_evidence(path: Path | None) -> dict[str, Any]:
+    payload = read_json(path)
+    if payload is None:
+        return {"status": "not_collected", "workflow_count": 0, "latest_run_count": 0,
+                "status_counts": {}, "workflows": [], "collection_errors": [],
+                "interpretation_boundary": "Live workflow status was not collected; workflow configuration is not evidence of execution or success."}
+    if payload.get("contract") != "USG-GITHUB-ACTIONS-EVIDENCE/0.1.0":
+        return {"status": "collection_error", "workflow_count": 0, "latest_run_count": 0,
+                "status_counts": {}, "workflows": [], "collection_errors": [
+                    {"error": "unsupported or missing USG-GITHUB-ACTIONS-EVIDENCE contract"}],
+                "interpretation_boundary": "Malformed workflow evidence is not counted as a pass."}
+    return {"status": "collected", "workflow_count": int(payload.get("workflow_count", 0) or 0),
+            "latest_run_count": int(payload.get("latest_run_count", 0) or 0),
+            "status_counts": payload.get("status_counts", {}),
+            "workflows": payload.get("workflows", []),
+            "collection_errors": payload.get("collection_errors", []),
+            "interpretation_boundary": payload.get("interpretation_boundary", "Workflow status is operational evidence, not semantic correctness.")}
+
 def route_for_phases(phase_impacts: list[str], phases: list[dict[str, Any]]) -> str:
     by_id = {item["id"]: item for item in phases}
     if "P6" in phase_impacts and by_id.get("P6", {}).get("status") == "bounded_exit_accepted_continuation_open":
@@ -215,7 +233,7 @@ def make_finding(kind: str, summary: str, refs: list[str], impacts: list[str],
 
 def discover(phases: list[dict[str, Any]], external: dict[str, Any],
              campaigns: list[dict[str, Any]], growth: dict[str, Any] | None,
-             sources: list[dict[str, Any]]) -> list[dict[str, Any]]:
+             sources: list[dict[str, Any]], workflows: dict[str, Any]) -> list[dict[str, Any]]:
     findings = []
     if external.get("manifest_available"):
         progress = external.get("progress", {})
@@ -251,6 +269,51 @@ def discover(phases: list[dict[str, Any]], external: dict[str, Any],
             ["P5", "P6", "P7", "P8"], phases, "high", "existing_external_lexical_workstream",
             {"manifest_batch_count": external.get("progress", {}).get("batch_count"),
              "physical_shard_count": external.get("shard_inventory", {}).get("file_count")}))
+    failed_conclusions = {"failure", "timed_out", "action_required", "startup_failure"}
+    if workflows.get("status") == "collected":
+        phase_impact_rules = [
+            ("phase1", ["P1"]), ("phase2", ["P2"]), ("phase3", ["P3"]),
+            ("phase4", ["P4"]), ("phase5", ["P5"]), ("phase6", ["P6"]),
+            ("phase7", ["P7"]), ("phase8", ["P8"]),
+        ]
+        for workflow in workflows.get("workflows", []):
+            latest_run = workflow.get("latest_run") or {}
+            conclusion = latest_run.get("conclusion")
+            path = str(workflow.get("path") or "").lower()
+            if conclusion not in failed_conclusions:
+                continue
+            impacts = next((values for marker, values in phase_impact_rules if marker in path), None)
+            if impacts is None and "external-lexical" in path:
+                impacts = ["P5", "P6", "P7", "P8"]
+            elif impacts is None and ("open-world" in path or "pud" in path):
+                impacts = ["P4", "P5", "P6", "P8"]
+            elif impacts is None and "growth" in path:
+                impacts = ["P5", "P6", "P7", "P8"]
+            elif impacts is None and "system-evidence" in path:
+                impacts = ["P8"]
+            if impacts is None:
+                impacts = ["P8"]
+            findings.append(make_finding(
+                "latest_github_workflow_run_failed",
+                f"The latest recorded run for workflow '{workflow.get('name')}' concluded {conclusion}.",
+                [str(latest_run.get("html_url") or workflow.get("html_url") or workflow.get("path"))],
+                impacts, phases, "high" if conclusion == "failure" else "medium",
+                "existing_workflow_or_phase_continuation",
+                {"workflow_path": workflow.get("path"), "workflow_id": workflow.get("workflow_id"),
+                 "run_id": latest_run.get("run_id"), "run_sha": latest_run.get("head_sha"),
+                 "event": latest_run.get("event"), "conclusion": conclusion}))
+        if workflows.get("collection_errors"):
+            findings.append(make_finding(
+                "github_actions_status_collection_incomplete",
+                f"Live GitHub Actions status collection could not resolve {len(workflows['collection_errors'])} workflow(s); unavailable statuses are not passes.",
+                ["workflow_evidence.collection_errors"], ["P8"], phases, "medium", "evidence_collection",
+                {"collection_error_count": len(workflows["collection_errors"])}))
+    else:
+        findings.append(make_finding(
+            "github_actions_status_not_collected",
+            "Live latest-run status for repository workflows is unavailable in this catalogue snapshot.",
+            ["workflow_evidence"], ["P8"], phases, "medium", "evidence_collection",
+            {"collection_status": workflows.get("status")}))
     if campaigns:
         latest = campaigns[0]
         if latest.get("naturalistic_case_count", 0) == 0:
@@ -296,6 +359,7 @@ def collect_catalogue(root: Path = ROOT, *, registry_path: Path = REGISTRY_PATH,
                       external_checkpoint_path: Path | None = None,
                       pud_evaluation_path: Path | None = None, pud_error_path: Path | None = None,
                       external_shard_inventory_path: Path | None = None,
+                      workflow_runs_path: Path | None = None,
                       growth_plan_path: Path | None = None, external_branch_commit: str | None = None,
                       repository_name: str = "wizekin/USG-Workbench", branch: str = "main",
                       commit_sha: str = "unknown", tree_sha: str | None = None,
@@ -314,7 +378,8 @@ def collect_catalogue(root: Path = ROOT, *, registry_path: Path = REGISTRY_PATH,
                                 pud_evaluation_path, pud_error_path,
                                 external_shard_inventory_path, external_branch_commit)
     growth = read_json(growth_plan_path)
-    findings = discover(phases, external, campaigns, growth, sources)
+    workflows = workflow_evidence(workflow_runs_path)
+    findings = discover(phases, external, campaigns, growth, sources, workflows)
     latest = campaigns[0] if campaigns else None
     selected_naturalistic = sum(item.get("naturalistic_case_count", 0) for item in campaigns)
     report = {
@@ -343,6 +408,7 @@ def collect_catalogue(root: Path = ROOT, *, registry_path: Path = REGISTRY_PATH,
                 "aggregation_note": "Sum across immutable report populations, not a unique corpus count."},
             "interpretation_boundary": "Execution, structural validity, and semantic correctness are separate; randomized, controlled-diagnostic, and naturalistic populations are not pooled."},
         "external_lexical": external,
+        "workflow_evidence": workflows,
         "growth_plan": {
             "status": "available" if growth else "not_collected",
             "contract": growth.get("contract") if growth else None,
@@ -426,7 +492,20 @@ def render_markdown(report: dict[str, Any]) -> str:
     else:
         lines.append("- Manifest unavailable; absence is not treated as zero progress.")
     lines += ["", "External records remain candidate evidence. Exact coverage is not contextual POS prediction, morphology prediction, sense accuracy, or semantic correctness.",
-              "", "## Growth planner", ""]
+              "", "## GitHub Actions execution status", ""]
+    workflow_summary = report["workflow_evidence"]
+    lines.append(f"Workflow definitions collected: {workflow_summary['workflow_count']}; with a latest non-PR run: {workflow_summary['latest_run_count']}.")
+    lines.append(f"Latest run status counts: {json.dumps(workflow_summary['status_counts'], sort_keys=True)}.")
+    failed_runs = [item for item in workflow_summary["workflows"]
+                   if (item.get("latest_run") or {}).get("conclusion") in {"failure", "timed_out", "action_required", "startup_failure"}]
+    for item in failed_runs[:20]:
+        latest_run = item.get("latest_run") or {}
+        lines.append(f"- {item.get('name')} ({item.get('path')}): {latest_run.get('conclusion')} — {latest_run.get('html_url')}.")
+    if workflow_summary.get("collection_errors"):
+        lines.append(f"- Workflow status collection errors: {len(workflow_summary['collection_errors'])}.")
+    if workflow_summary["status"] == "not_collected":
+        lines.append("- Live workflow statuses were not collected in this snapshot.")
+    lines += ["", workflow_summary["interpretation_boundary"], "", "## Growth planner", ""]
     growth = report["growth_plan"]
     if growth["status"] == "available":
         lines.append(f"Plan generated: {growth.get('generated_at')}; campaigns analyzed: {growth.get('campaigns_analyzed')}.")
@@ -456,6 +535,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--pud-evaluation", type=Path)
     parser.add_argument("--pud-error", type=Path)
     parser.add_argument("--external-shard-inventory", type=Path)
+    parser.add_argument("--workflow-runs", type=Path)
     parser.add_argument("--growth-plan", type=Path)
     parser.add_argument("--max-campaigns", type=int, default=20)
     parser.add_argument("--repository", default="wizekin/USG-Workbench")
@@ -470,6 +550,7 @@ def main(argv: list[str] | None = None) -> int:
         external_checkpoint_path=args.external_checkpoint, external_branch_commit=args.external_branch_commit,
         pud_evaluation_path=args.pud_evaluation, pud_error_path=args.pud_error,
         external_shard_inventory_path=args.external_shard_inventory,
+        workflow_runs_path=args.workflow_runs,
         growth_plan_path=args.growth_plan, repository_name=args.repository, branch=args.branch,
         commit_sha=args.commit_sha, tree_sha=args.tree_sha, max_campaigns=args.max_campaigns)
     args.output.parent.mkdir(parents=True, exist_ok=True)
