@@ -475,7 +475,8 @@
       "description": "Every scheduled/manual evidence snapshot stores the integrated acceptance gate result beside the catalogue, including blocked results.",
       "evidence_required": [
         "operational Phase 8 acceptance report",
-        "append-only snapshot artifact"
+        "append-only snapshot artifact",
+        "operational workflow static regression"
       ],
       "promotion_effect": "no_runtime_change"
     }
