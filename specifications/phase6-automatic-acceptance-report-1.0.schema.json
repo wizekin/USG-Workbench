@@ -1,0 +1,214 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wizekin.github.io/USG-Workbench/schemas/phase6-automatic-acceptance-report-1.0.json",
+  "title": "USG Phase 6 Automatic Acceptance Report 1.0",
+  "type": "object",
+  "required": [
+    "benchmark_id",
+    "benchmark_version",
+    "evaluation_scope",
+    "license",
+    "corpus_sha256",
+    "case_count",
+    "profile_count",
+    "factory_execution_status",
+    "steps",
+    "profile_evaluations",
+    "step_6_12_projection_boundary",
+    "step_6_13_integration",
+    "phase6_final_acceptance",
+    "capability_claim_policy",
+    "case_results"
+  ],
+  "properties": {
+    "benchmark_id": {
+      "const": "usg-phase6-automatic-acceptance/1.0.0"
+    },
+    "benchmark_version": {
+      "const": "1.0.0"
+    },
+    "evaluation_scope": {
+      "type": "string",
+      "minLength": 1
+    },
+    "license": {
+      "const": "CC0-1.0"
+    },
+    "corpus_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "case_count": {
+      "const": 500
+    },
+    "profile_count": {
+      "const": 10
+    },
+    "factory_execution_status": {
+      "const": "COMPLETED"
+    },
+    "factory_execution_ms": {
+      "type": "number",
+      "minimum": 0
+    },
+    "generation_independence": {
+      "type": "object"
+    },
+    "step_6_6_bounded_synthetic_gate": {
+      "type": "object",
+      "required": [
+        "passed",
+        "profile_count",
+        "naturalistic_accuracy_claimed"
+      ],
+      "properties": {
+        "passed": {
+          "type": "boolean"
+        },
+        "profile_count": {
+          "const": 10
+        },
+        "naturalistic_accuracy_claimed": {
+          "const": false
+        }
+      },
+      "additionalProperties": true
+    },
+    "steps": {
+      "type": "object",
+      "required": [
+        "6.7",
+        "6.8",
+        "6.9",
+        "6.10",
+        "6.11",
+        "6.12",
+        "6.13",
+        "6.14"
+      ],
+      "properties": {
+        "6.7": {
+          "$ref": "#/$defs/step"
+        },
+        "6.8": {
+          "$ref": "#/$defs/step"
+        },
+        "6.9": {
+          "$ref": "#/$defs/step"
+        },
+        "6.10": {
+          "$ref": "#/$defs/step"
+        },
+        "6.11": {
+          "$ref": "#/$defs/step"
+        },
+        "6.12": {
+          "$ref": "#/$defs/step"
+        },
+        "6.13": {
+          "$ref": "#/$defs/step"
+        },
+        "6.14": {
+          "$ref": "#/$defs/step"
+        }
+      },
+      "additionalProperties": false
+    },
+    "profile_evaluations": {
+      "type": "object",
+      "minProperties": 10
+    },
+    "step_6_12_projection_boundary": {
+      "type": "object",
+      "required": [
+        "status",
+        "semantic_assertion_projection_accepted"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "PRESERVATION_ONLY",
+            "OPEN"
+          ]
+        },
+        "semantic_assertion_projection_accepted": {
+          "const": false
+        }
+      },
+      "additionalProperties": true
+    },
+    "step_6_13_integration": {
+      "type": "object",
+      "required": [
+        "status",
+        "checks"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "ACCEPTED",
+            "OPEN"
+          ]
+        },
+        "checks": {
+          "type": "object"
+        }
+      },
+      "additionalProperties": true
+    },
+    "phase6_final_acceptance": {
+      "enum": [
+        "ACCEPTED",
+        "OPEN"
+      ]
+    },
+    "capability_claim_policy": {
+      "type": "object",
+      "required": [
+        "candidate_only_results_promoted",
+        "synthetic_accuracy_claimed_as_naturalistic",
+        "unsupported_constructions_marked_accepted",
+        "human_annotations_required"
+      ],
+      "properties": {
+        "candidate_only_results_promoted": {
+          "const": false
+        },
+        "synthetic_accuracy_claimed_as_naturalistic": {
+          "const": false
+        },
+        "unsupported_constructions_marked_accepted": {
+          "const": false
+        },
+        "human_annotations_required": {
+          "const": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "case_results": {
+      "type": "array",
+      "minItems": 500,
+      "maxItems": 500
+    }
+  },
+  "$defs": {
+    "step": {
+      "type": "object",
+      "required": [
+        "status"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "ACCEPTED",
+            "OPEN",
+            "PRESERVATION_ONLY"
+          ]
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}
