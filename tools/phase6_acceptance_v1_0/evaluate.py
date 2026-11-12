@@ -361,7 +361,6 @@ def _check_preservation(rows: list[dict[str, Any]]) -> dict[str, Any]:
             row["preservation"]["no_assertions"] for row in candidate_rows
         ),
         "preservation_integrity_passed": bool(candidate_rows) and valid == len(candidate_rows),
-        "semantic_assertion_projection_accepted": False,
         "status": "ACCEPTED" if candidate_rows and valid == len(candidate_rows) else "OPEN",
         "accepted_scope": "OPAQUE_PRESERVATION_ONLY",
         "semantic_assertion_projection_accepted": False,
