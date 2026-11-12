@@ -53,9 +53,11 @@ def validate_candidate_package(package: dict[str, Any]) -> dict[str, Any]:
             findings.append({"code": "duplicate_candidate_id", "severity": "error", "index": str(index)})
         else:
             seen.add(candidate_id)
-        for field in ("lemma", "language", "source_provider", "source_id", "source_entry_id", "source_sense_id"):
+        for field in ("lemma", "language", "source_provider", "source_id", "source_entry_id"):
             if not isinstance(candidate.get(field), str) or not candidate[field]:
                 findings.append({"code": "candidate_missing_" + field, "severity": "error", "index": str(index)})
+        if "source_sense_id" not in candidate:
+            findings.append({"code": "candidate_missing_source_sense_id", "severity": "error", "index": str(index)})
         if candidate.get("promotion_status") != "candidate_only":
             findings.append({"code": "candidate_not_candidate_only", "severity": "error", "index": str(index)})
         if not isinstance(candidate.get("examples", []), list):
