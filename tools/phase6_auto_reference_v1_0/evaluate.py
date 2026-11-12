@@ -22,6 +22,7 @@ def _score(corpus: dict, lexicon: dict) -> dict:
         try:
             report = {}
             failed = []
+            failure_diagnostics = []
             for key in sorted(corpus["construction_inventory"]):
                 rows = [c for c in corpus["cases"] if f"{c['language']}/{c['target_construction']}" == key]
                 pos = [c for c in rows if c["gold_class"] == "POSITIVE"]
@@ -63,6 +64,15 @@ def _score(corpus: dict, lexicon: dict) -> dict:
                         false_unique += int(not ok)
                     if not ok:
                         failed.append(case["id"])
+                        failure_diagnostics.append({
+                            "case_id": case["id"],
+                            "language": case["language"],
+                            "text": case["text"],
+                            "expected_roles": case["expected_role_bindings"],
+                            "expected_relation": case["expected_relation_type"],
+                            "expected_status": case["expected_status"],
+                            "prediction": prediction,
+                        })
                 npos, nneg, namb = len(pos), len(neg), len(amb)
                 report[key] = {
                     "positive": npos,
@@ -100,6 +110,7 @@ def _score(corpus: dict, lexicon: dict) -> dict:
         "benchmark_enabled_constructions": [],
         "runtime_capability_state": "CANDIDATE_ONLY",
         "failed_case_ids": failed,
+        "failure_diagnostics": failure_diagnostics,
     }
 
 
