@@ -5,7 +5,9 @@ on:
     paths:
       - "tools/phase6_acceptance_v1_0/**"
       - "tools/phase6_broader_semantics_v0_1/**"
+      - "tools/usg_local_api_v1_0_0/cli.py"
       - "tests/test_phase6_acceptance_v1_0.py"
+      - "tests/test_phase6_cli_acceptance.py"
       - "tests/test_phase6_integrated_interpreter.py"
       - "tests/test_phase6_candidate_provider_integration.py"
       - "specifications/phase6-automatic-acceptance-report-1.0.schema.json"
@@ -19,7 +21,9 @@ on:
     paths:
       - "tools/phase6_acceptance_v1_0/**"
       - "tools/phase6_broader_semantics_v0_1/**"
+      - "tools/usg_local_api_v1_0_0/cli.py"
       - "tests/test_phase6_acceptance_v1_0.py"
+      - "tests/test_phase6_cli_acceptance.py"
       - "tests/test_phase6_integrated_interpreter.py"
       - "tests/test_phase6_candidate_provider_integration.py"
       - "specifications/phase6-automatic-acceptance-report-1.0.schema.json"
@@ -55,9 +59,16 @@ jobs:
           python -m compileall -q tools/usg_local_api_v1_0_0
           python -m json.tool specifications/phase6-automatic-acceptance-report-1.0.schema.json > /dev/null
 
-      - name: Test deterministic graph-first corpus generation
+      - name: Verify clean CLI package installation
+        run: |
+          python -m pip install -e . --no-deps
+          usg-workbench --help > /dev/null
+          usg-workbench phase6-interpret --help > /dev/null
+
+      - name: Test deterministic graph-first corpus generation and CLI
         run: |
           python -m unittest discover -s tests -p 'test_phase6_acceptance_v1_0.py' -v
+          python -m unittest discover -s tests -p 'test_phase6_cli_acceptance.py' -v
           python -m unittest discover -s tests -p 'test_phase6_auto_reference_v1_0.py' -v
 
       - name: Run Phase 6 integrated and protected capability regressions
