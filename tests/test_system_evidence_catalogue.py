@@ -113,6 +113,8 @@ class SystemEvidenceCatalogueTests(unittest.TestCase):
                          {f"P{i}" for i in range(1, 9)})
         self.assertIn("existing_phase_amendment_proposal",
                       {item["route"] for item in value["dependency_rules"]})
+        phase8 = next(item for item in value["phases"] if item["phase_id"] == "P8")
+        self.assertIn("system_evidence_catalogue_and_phase_manifest", phase8["required_sources"])
 
     def test_catalogue_indexes_source_families_and_exact_asset_hashes(self):
         report = self.collect()
