@@ -8,7 +8,7 @@ import unittest
 
 from tools.system_evidence.discovery import (
     classify_impacts, deduplicate_discoveries, discovery_key,
-    integrated_priorities, related_backlog_items,
+    build_review_proposals, integrated_priorities, related_backlog_items,
 )
 
 
@@ -85,6 +85,35 @@ class Phase8DiscoveryTests(unittest.TestCase):
         self.assertNotIn("combined_score", result[0])
         self.assertFalse(result[0]["runtime_change_allowed"])
         self.assertTrue(result[0]["review_required"])
+
+    def test_review_proposals_are_stable_and_never_implement_or_mutate(self):
+        finding = self.finding()
+        finding["discovery_key"] = discovery_key(finding)
+        finding["impact_classification"] = {
+            "migration_review_required": False,
+            "impacts": [{"phase_id": "P7", "phase_status": "accepted"}],
+        }
+        finding["route"] = "existing_phase_amendment_proposal"
+        first = build_review_proposals([finding], [
+            {"id": "P7", "name": "Knowledge layer", "status": "accepted", "open_work": "bounded"}
+        ])
+        second = build_review_proposals([finding], [
+            {"id": "P7", "name": "Knowledge layer", "status": "accepted", "open_work": "bounded"}
+        ])
+        self.assertEqual(first[0]["proposal_id"], second[0]["proposal_id"])
+        self.assertEqual(first[0]["proposal_type"], "accepted_phase_amendment")
+        self.assertEqual(first[0]["review_status"], "draft_requires_review")
+        self.assertEqual(first[0]["implementation_status"], "not_implemented")
+        self.assertFalse(first[0]["phase_status_mutation_allowed"])
+        self.assertFalse(first[0]["canonical_contract_mutation_allowed"])
+        self.assertFalse(first[0]["runtime_promotion_allowed"])
+
+    def test_contract_change_proposal_requires_versioned_migration(self):
+        finding = self.finding()
+        finding["discovery_key"] = discovery_key(finding)
+        finding["impact_classification"] = {"migration_review_required": True}
+        proposals = build_review_proposals([finding], [])
+        self.assertEqual(proposals[0]["proposal_type"], "versioned_contract_migration_review")
 
 
 if __name__ == "__main__":
