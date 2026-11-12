@@ -1,63 +1,320 @@
-# USG Workbench Repository
+# USG Workbench
 
-This repository preserves the distinct implementation baselines and the specifications/documentation used to evolve the Universal Semantic Grammar (USG) project.
+**Universal Semantic Grammar — research, implementation, evaluation, and development workbench**
+
+[![Repository](https://img.shields.io/badge/GitHub-wizekin%2FUSG--Workbench-181717?logo=github)](https://github.com/wizekin/USG-Workbench)
+[![Default branch](https://img.shields.io/badge/branch-main-blue)](https://github.com/wizekin/USG-Workbench/tree/main)
+[![Phase 6](https://img.shields.io/badge/Phase%206-in%20progress-orange)](documentation/PHASE-6-DEFINITIONS-ROADMAP.md)
+
+> **Status snapshot:** 12 November 2026 · Main branch last reviewed at [`e9fdeed`](https://github.com/wizekin/USG-Workbench/commit/e9fdeed28e3051c89ab5ef5e3e9874701e6c10e7). Live workflow and campaign links below take precedence over this dated snapshot.
+
+---
+
+## Navigation
+
+Start here — jump directly to any major section:
+
+| | Section | |
+|---|---|---|
+| 1 | [USG Workbench definition](#usg-workbench-definition) | What this project is and what it is not |
+| 2 | [Documentation and maintenance policy](#documentation-and-maintenance-policy) | Where the full technical documentation lives and how it must be updated |
+| 3 | [Current running tasks](#current-running-tasks) | Active and scheduled GitHub Actions work |
+| 4 | [Complete major tasks](#complete-major-tasks) | Accepted phases and implemented foundations |
+| 5 | [Incomplete major tasks](#incomplete-major-tasks) | Remaining work and current blockers |
+| 6 | [Architecture and reliability rules](#architecture-and-reliability-rules) | Contracts, data, uncertainty, and evidence boundaries |
+| 7 | [How to explore and test USG](#how-to-explore-and-test-usg) | Start the interface and find tests |
+| 8 | [Repository structure](#repository-structure) | Where code, specifications, evidence, and data are stored |
+
+---
+
+## USG Workbench definition
+
+**USG (Universal Semantic Grammar) Workbench** is a modular, versioned research and engineering project for representing the meaning expressed by language in explicit, inspectable, source-grounded structures. It brings together semantic models, interpretation pipelines, lexical and grammatical resources, symbolic reasoning services, persistent storage, evaluation tools, and development interfaces.
+
+The intended processing path is:
+
+1. Preserve the original source text and its provenance.
+2. Segment the source into sentences, clauses, and other relevant units.
+3. produce lexical and morphological candidates while retaining unknown forms and ambiguity.
+4. Build syntactic, construction, and attachment candidates.
+5. Compose typed predicates, arguments, semantic roles, operators, relations, and discourse structures.
+6. Validate structures and preserve evidence, derivations, resource versions, and unresolved content.
+7. Store, query, replay, inspect, and export supported results.
+8. Apply only the reasoning rules and operations that have explicit contracts and adequate evidence.
+
+The architecture is modular: these stages are implemented at different maturity levels and are not all enabled for every input or language.
+
+### What the Workbench is — and is not
+
+- It is a research workbench and a collection of versioned implementations and services, not one unified general-purpose chatbot.
+- It is designed to complement language models with explicit semantic structures, deterministic validation, provenance, and bounded symbolic reasoning.
+- It does **not** yet provide unrestricted English or Arabic understanding, universal semantic coverage, objective truth verification, human-equivalent reasoning, or AGI.
+- A schema-valid graph is not automatically a correct interpretation. A successful workflow is not automatically evidence of semantic accuracy.
+- The JavaScript Semantic Workbench, Python reference kernels, Python interpretation pipelines, native model packages, and adapters remain distinct implementation lines until common conformance tests demonstrate otherwise.
+
+The long-term objective is a reusable semantic representation and reasoning architecture that can grow through explicit, traceable, independently evaluated capabilities.
+
+---
+
+## Documentation and maintenance policy
+
+Documentation is part of the implementation, not an optional activity after coding. It must explain the Workbench's architecture, contracts, modules, interfaces, data, evaluation, operation, limitations, and current development state.
+
+### Documentation rule for every feature
+
+**Every new feature or meaningful change must update its relevant detailed documentation in the same pull request.** Documentation must be updated as soon as the feature is implemented and before that change is considered complete.
+
+A feature's documentation should explain, where applicable:
+
+- its purpose and the problem it solves;
+- its place in the USG architecture and its dependencies;
+- its inputs, outputs, data structures, and processing behavior;
+- relevant schemas, contracts, versions, and compatibility constraints;
+- resource, storage, caching, and provenance behavior;
+- how to run, configure, inspect, and test it;
+- tests, benchmark results, acceptance criteria, and reproducibility instructions;
+- failure behavior, uncertainty, unsupported cases, security boundaries, and known limitations.
+
+### README update rule
+
+Update this README in the same change whenever a feature affects the project's major architecture, user entry points, roadmap, running automations, accepted milestones, or incomplete-task list. Routine internal fixes do not need a README rewrite when they do not change the project overview or status.
+
+Before a feature pull request is merged:
+
+1. Update the relevant detailed documentation.
+2. Update this README if the project overview, navigation, current-task status, or milestone/backlog status changes.
+3. Add or update tests and acceptance evidence.
+4. Change a task to **complete** only after its required implementation is merged and its stated acceptance checks pass.
+5. Keep limitations visible; do not promote candidate-only or unverified capabilities to accepted status.
+
+When a workflow, campaign, or scheduled task changes, update the corresponding documentation and the **Current running tasks** section. When a task is completed, move it from **Incomplete major tasks** to **Complete major tasks** and link the completion evidence.
+
+### Documentation index
+
+| Documentation area | Main entry point |
+|---|---|
+| Documentation index | [documentation/README.md](documentation/README.md) |
+| Normative specifications and schemas | [specifications/README.md](specifications/README.md) |
+| Archived implementation inventory and baseline evidence | [ARCHIVE_INVENTORY.md](ARCHIVE_INVENTORY.md) |
+| Implementation line index | [implementations/README.md](implementations/README.md) |
+| Interoperability and adapters | [interoperability/README.md](interoperability/README.md) |
+| Local testing interface | [USG Kernel Lab guide](tools/usg-kernel-lab/README.md) |
+| System-wide capability assessment | [Assessment — 12 November 2026](documentation/USG-SYSTEM-WIDE-CAPABILITY-ASSESSMENT-2026-11-12.md) |
+| Prioritized improvement backlog | [System improvement backlog](documentation/USG-SYSTEM-IMPROVEMENT-BACKLOG.md) |
+| Cross-implementation status | [Cross-implementation conformance matrix](documentation/USG-CROSS-IMPLEMENTATION-CONFORMANCE-MATRIX.md) |
+
+The phase roadmaps and implementation-specific documents are the detailed sources of truth for their respective components. The README is the high-level navigation and status dashboard; it must not replace those documents.
+
+---
+
+## Current running tasks
+
+This section distinguishes a workflow that was observed running from workflows that are configured to run on a schedule or event. **GitHub Actions is the live source of execution status**; a scheduled task is not necessarily running at this moment.
+
+| Task | Trigger / cadence | Last verified state and purpose |
+|---|---|---|
+| [External lexical incremental crawl](https://github.com/wizekin/USG-Workbench/actions/workflows/usg-external-lexical-crawl.yml) | Every 6 hours (`23 */6 * * *`) | **Running at last check.** [Run 43177652622](https://github.com/wizekin/USG-Workbench/actions/runs/43177652622) had its resumable crawl step in progress on 12 Nov 2026. It writes compressed, source-linked candidate evidence and a checkpoint to the separate `usg-external-lexical-data` branch. |
+| [Open-World continuous exploration](https://github.com/wizekin/USG-Workbench/actions/workflows/open-world-continuous.yml) | Daily at 02:15 UTC; weekly deep campaign Monday at 03:30 UTC; also release and manual triggers | **Scheduled.** Generates reproducible randomized campaigns, runs registered targets, scores outcomes, analyzes failures, and publishes append-only evidence. |
+| [Evidence-driven growth planner](https://github.com/wizekin/USG-Workbench/actions/workflows/usg-evidence-driven-growth-controller.yml) | Daily at 04:45 UTC; also manual | **Scheduled.** Reviews recent Open-World evidence and publishes a ranked growth plan. It plans improvements; it does not modify or promote runtime semantic rules. |
+| [Bilingual naturalistic PUD pilot](https://github.com/wizekin/USG-Workbench/actions/workflows/open-world-naturalistic-pud-pilot.yml) | Weekly Monday at 04:00 UTC; also manual | **Scheduled; full campaign result not yet verified.** The source/sample validation passed. The default campaign samples 50 English and 50 Arabic sentences and evaluates the registered bounded targets. Arabic PUD is translated text, not a representative native-Arabic or conversational corpus. |
+| [External lexical PUD evaluation](https://github.com/wizekin/USG-Workbench/actions/workflows/external-lexical-pud-evaluation.yml) | After successful crawler runs, relevant pushes, or manual dispatch | **Event-driven.** Measures external lexical candidate coverage against pinned English PUD data. It is an inventory diagnostic, not an accuracy score for contextual interpretation. |
+
+Useful live views:
+
+- [All repository Actions runs](https://github.com/wizekin/USG-Workbench/actions)
+- [All workflows](https://github.com/wizekin/USG-Workbench/actions/workflows)
+- [External lexical data branch](https://github.com/wizekin/USG-Workbench/tree/usg-external-lexical-data)
+- [Open-World campaign reports](evaluations/open-world/campaigns/)
+
+**Operational note:** the lexical crawler uses resumable batches and pauses before the GitHub Actions job timeout. Its checkpoint, manifest, and compressed shards are stored on `usg-external-lexical-data`, not in the main source tree. The initial cumulative shard-storage budget is 700 MiB.
+
+---
+
+## Complete major tasks
+
+The following work is accepted or implemented for its explicitly documented scope. Completion does not imply unrestricted language understanding.
+
+### Accepted development phases
+
+| Phase | Accepted scope | Main documentation |
+|---|---|---|
+| **Phase 1** | Normative semantic contract and initial interoperability acceptance | [Phase 1 exit acceptance](interoperability/PHASE-1-EXIT-ACCEPTANCE.md) |
+| **Phase 2** | Evidence-grounded, rule-governed semantic reasoning foundation; steps 2.1–2.10 accepted | [Phase 2 roadmap](documentation/PHASE-2-ROADMAP.md) · [Step 2.10 exit acceptance](documentation/PHASE-2-STEP-2.10-EXIT-ACCEPTANCE.md) |
+| **Phase 3** | Persistent semantic graph, SQLite-backed workspace, queries, API/CLI, and Kernel Lab integration; steps 3.1–3.9 accepted | [Phase 3 roadmap](documentation/PHASE-3-ROADMAP.md) · [Completion record](documentation/PHASE-3-COMPLETION-RECORD.md) |
+| **Phase 4** | Bounded offline raw-text interpretation demonstrator; steps 4.1–4.13 accepted | [Phase 4 roadmap](documentation/PHASE-4-DEFINITIONS-ROADMAP.md) · [Completion record](documentation/PHASE-4-COMPLETION-RECORD.md) |
+| **Phase 5** | Bounded bilingual interpretation pipeline, resource catalogue, immutable run persistence/replay, API/CLI, and Kernel Lab integration; steps 5.1–5.11 accepted | [Phase 5 roadmap](documentation/PHASE-5-DEFINITIONS-ROADMAP.md) · [Completion record](documentation/PHASE-5-COMPLETION-RECORD.md) · [Step 5.11 benchmark acceptance](documentation/PHASE-5-STEP-5.11-BENCHMARK-EXIT-ACCEPTANCE.md) |
+
+Phase 5's accepted benchmark demonstrated its stated simple-transitive English and MSA Arabic constructions. Its results must not be generalized to arbitrary English or Arabic input.
+
+### Other completed or implemented foundations
+
+- **Canonical semantic interchange:** the versioned `USG-SEM/1.0` contract and schema are preserved as the canonical interchange boundary.
+- **Persistent workspace:** Phase 3 SQLite remains the authoritative canonical persistence backend for the Kernel Lab workspace.
+- **Kernel Lab:** local interface for inspecting structured semantic documents, running bounded Phase 4/5 interpretation, viewing stage evidence, managing versioned resources, querying, replaying, and exporting.
+- **Lexical candidate adapter:** versioned `USG-LEXICAL-CANDIDATES/0.1.0` contract and read-only adapter preserve source provenance and ambiguity. Candidate evidence is not automatically promoted into active runtime resources.
+- **OOV and ambiguity regressions:** English unknown-word and polysemy cases, plus Arabic OOV cases, have explicit regression coverage.
+- **Open-World foundation:** repository inventory, evaluation protocol, randomized scenario generator, isolated execution, scoring, campaign reporting, continuous exploration, adaptive discovery, and a coverage ledger are implemented as versioned components.
+- **Execution diagnostics:** case/target/attempt accounting and dependency-aware first-blocker attribution are implemented for registered Phase 4/5 profiles.
+- **JavaScript Workbench browser adapter:** real Chromium/Playwright execution is implemented for the tested English browser path. It does not establish Arabic support or semantic correctness.
+- **Phase 5 Kernel Lab explanations:** per-stage explanations and expandable stage evidence are available for the Phase 5 interpretation pipeline.
+- **Evidence-driven growth planner:** daily evidence aggregation and ranked improvement-plan generation are implemented; automated code repair and semantic-rule promotion are not.
+
+Related evidence: [system improvement backlog](documentation/USG-SYSTEM-IMPROVEMENT-BACKLOG.md), [Open-World documentation](documentation/USG-OPEN-WORLD-RANDOMIZED-EVALUATION-PLAN.md), and [cross-implementation matrix](documentation/USG-CROSS-IMPLEMENTATION-CONFORMANCE-MATRIX.md).
+
+---
+
+## Incomplete major tasks
+
+These are the major open workstreams. Detailed step definitions, dependencies, and acceptance criteria remain in the linked roadmaps and backlog.
+
+### 1. Phase 6 — broader semantic interpretation
+
+**Status: IN PROGRESS.** Steps 6.1–6.5 are accepted for their bounded scope. Step 6.6 is the immediate blocker; Step 6.7 depends on it.
+
+| Step | Capability | Current status |
+|---|---|---|
+| **6.6** | Nominal, property, possession, and modifier semantics | **In progress / blocked on independent bilingual semantic gold and data-rights verification** |
+| **6.7** | Intra-clause coordination and shared arguments | Blocked pending 6.6 |
+| **6.8** | Embedded and subordinate clauses | Pending |
+| **6.9** | Voice and speech-act structures | Pending |
+| **6.10** | Cross-construction operator and quantifier scope | Pending |
+| **6.11** | Bounded discourse-reference resolution | Pending |
+| **6.12** | Loss-aware projection to canonical semantic documents | Pending |
+| **6.13** | API, CLI, resource lifecycle, and Kernel Lab integration | Pending |
+| **6.14** | Full Phase 6 benchmark and integrated exit acceptance | Pending |
+
+The main blocker is the lack of a rights-cleared, independently annotated bilingual gold set covering the internal nominal and modifier constructions required by Step 6.6. PUD syntax annotations and external parser outputs are useful diagnostics, but are not semantic-role gold.
+
+References: [Phase 6 roadmap](documentation/PHASE-6-DEFINITIONS-ROADMAP.md) · [Independent gold dataset audit](documentation/PHASE-6-STEP-6.6-INDEPENDENT-GOLD-DATASET-AUDIT.md) · [Step 6.6 external PUD audit](documentation/PHASE-6-STEP-6.6-EXTERNAL-PUD-AUDIT.md).
+
+### 2. External lexical knowledge — crawl, evaluate, and safely integrate
+
+**Status: IMPLEMENTED FOUNDATION; DATA COLLECTION AND RUNTIME INTEGRATION IN PROGRESS.**
+
+The crawler, recovery, state reconciliation, structured analysis, evaluation, and candidate adapter are implemented. The full upstream headword snapshot has not been crawled. Candidate entries must remain separate from accepted runtime lexical resources until their quality, provenance, licensing, and integration criteria are satisfied.
+
+Remaining work includes:
+
+- continue the resumable six-hour crawl and verify checkpoint/manifest/shard consistency;
+- evaluate the current durable inventory against pinned external data and track coverage changes;
+- improve candidate coverage, sense ambiguity, morphology, and relation evidence using measured gaps;
+- define and implement a controlled acceptance and runtime-integration path;
+- preserve provenance, source-specific rights, versioning, and reproducibility throughout.
+
+References: [External retrieval and incremental analysis](documentation/EXTERNAL-LEXICAL-RETRIEVAL-AND-INCREMENTAL-LEARNING-v0.1.0.md) · [Scheduled crawler](documentation/USG-EXTERNAL-LEXICAL-SCHEDULED-CRAWLER-v0.1.0.md) · [External lexical PUD evaluation](documentation/EXTERNAL-LEXICAL-PUD-EVALUATION-v0.1.0.md).
+
+### 3. Open-World coverage and naturalistic evaluation
+
+**Status: PARTIALLY IMPLEMENTED; COVERAGE AND CAMPAIGNS STILL EXPANDING.**
+
+The evaluation framework is substantial, but its results must remain separated by population and claim type. Outstanding work includes:
+
+- complete and review the first full bilingual naturalistic PUD campaign;
+- expand executable target coverage across the remaining native models, kernel versions, adapters, Phase 2/3/6 services, and interfaces;
+- keep operation-level contract checks separate from randomized language-input outcomes;
+- maintain reliable replay of accepted failure cases and regressions;
+- add new naturalistic sources only after their licenses, provenance, attribution, and privacy boundaries are verified.
+
+The PUD pilot is news/Wikipedia text, not conversational user requests. Arabic PUD is translated and is not representative of the full native MSA distribution. It supplies no USG semantic gold.
+
+References: [Naturalistic PUD pilot](documentation/USG-NATURALISTIC-PUD-PILOT.md) · [Continuous Open-World exploration](documentation/USG-OPEN-WORLD-CONTINUOUS-EXPLORATION.md) · [Expanding coverage ledger](documentation/USG-OPEN-WORLD-EXPANDING-COVERAGE.md).
+
+### 4. Cross-implementation conformance
+
+**Status: INVENTORY PUBLISHED; COMMON CONFORMANCE GATES NOT YET DEMONSTRATED.**
+
+The JavaScript Workbench, Python reference kernel, Python Phase 4/5 interpreters, Phase 6 candidate modules, native models, and adapters need to be tested against common, frozen inputs and independently authored expected outputs.
+
+The remaining gates are:
+
+1. CIC-01 — define the shared fixture and expected-output contract.
+2. CIC-02 — execute each implementation independently on the same supported cases.
+3. CIC-03 — compare normalized spans, candidates, roles, ambiguity, abstention, and diagnostics.
+4. CIC-04 — publish language-specific and construction-specific agreements and disagreements.
+5. CIC-05 — use independent semantic gold before making semantic-correctness claims.
+
+Reference: [Cross-implementation conformance matrix](documentation/USG-CROSS-IMPLEMENTATION-CONFORMANCE-MATRIX.md).
+
+### 5. Governed autonomous improvement
+
+**Status: PLANNER IMPLEMENTED; AUTOMATIC REPAIR AND CANDIDATE GROWTH NOT COMPLETE.**
+
+- **SYS-14:** extend pinned deterministic replay from the initial smoke implementation to the accepted failure corpus and every accepted repair.
+- **SYS-16:** implement a bounded automatic repair executor for deterministic tests, reports, schemas, and evaluation infrastructure. Repairs must use isolated branches, tests, replay, and reviewable pull requests.
+- **SYS-17:** implement a candidate semantic and lexical growth loop that derives proposals from measured failures, evaluates them independently, preserves held-out data, and promotes only accepted candidates.
+
+The growth planner does not currently modify runtime rules or automatically promote lexical/semantic knowledge. Human-governed acceptance and explicit validation boundaries must remain intact.
+
+Reference: [System improvement backlog](documentation/USG-SYSTEM-IMPROVEMENT-BACKLOG.md) · [Autonomous growth and governance](documentation/USG-AUTONOMOUS-GROWTH-AND-GOVERNANCE.md).
+
+---
+
+## Architecture and reliability rules
+
+These rules apply across implementation lines and future features.
+
+1. **Versioned contracts:** schemas, interpretation contracts, resources, and adapters must be versioned. Do not silently change an accepted contract to fit a new implementation.
+2. **One canonical persistence authority:** SQLite remains the authoritative canonical document store for the Kernel Lab workspace. Caches, indexes, and candidate inventories are not competing semantic sources of truth.
+3. **Preserve the source:** retain exact original text, source digests, source spans, provenance, and the rules/resources that produced each interpretation.
+4. **Keep uncertainty explicit:** unknown words, ambiguous senses, competing parses, unsupported constructions, unresolved references, and resource limits must not be turned into unjustified unique interpretations.
+5. **Candidate data is not accepted knowledge:** external lexical evidence, provisional associations, parser output, and model proposals cannot modify canonical semantic resources without their explicit acceptance process.
+6. **Separate testing from correctness:** schema validity, passing unit tests, import success, browser execution, and cross-implementation agreement each support different claims. None alone proves broad semantic correctness.
+7. **Protect accepted baselines:** preserve archives, historical implementations, Phase 1–5 contracts, frozen corpora, and their regression gates.
+8. **No hidden scope expansion:** list unsupported languages, constructions, interfaces, and evaluation gaps rather than implying that an untested component is complete.
+
+---
+
+## How to explore and test USG
+
+### Start with the Kernel Lab
+
+The [USG Kernel Lab README](tools/usg-kernel-lab/README.md) explains how to launch the local browser interface, use the interpretation panels, inspect stage diagnostics and structured records, query stored documents, and export results.
+
+The Kernel Lab currently provides the local interface for the Python v0.7.0 Mention adapter and Phase 3 SQLite-backed semantic workspace, with bounded Phase 4 and Phase 5 interpretation panels. It is not a unified runtime for every implementation in this repository.
+
+### Where to find tests and evaluation evidence
+
+- [Tests README](tests/README.md) — test organization and running guidance.
+- [Phase roadmaps](documentation/README.md) — phase-specific implementation and acceptance documents.
+- [Open-World campaign bundles](evaluations/open-world/campaigns/) — immutable campaign inputs, results, and reports.
+- [System assessment snapshot](evaluations/system-wide/2026-11-12/assessment.json) — machine-readable assessment evidence.
+- [GitHub Actions](https://github.com/wizekin/USG-Workbench/actions) — live CI, scheduled jobs, artifacts, and workflow results.
+
+Run the version-specific test commands documented with each implementation. Do not assume one test command or one Python environment covers every versioned package.
+
+---
 
 ## Repository structure
 
-- archives/: original, checksum-verified release ZIPs; preserved unchanged.
-- implementations/semantic-workbench-js/: JavaScript/browser Semantic Workbench releases.
-- implementations/python-kernel/: Python reference kernel releases.
-- specifications/: normative semantic contracts and schemas.
-- resources/: bundled, versioned lexical and operator assets packaged with the Python workbench.
-- documentation/: architecture decisions, design notes, and project documentation.
-- interoperability/: adapters and conformance work connecting implementations through explicit contracts.
-- tests/: cross-implementation fixtures and conformance tests.
-- ARCHIVE_INVENTORY.md: archive hashes, baseline inspection, test evidence, and limitations.
+| Path | Purpose |
+|---|---|
+| `archives/` | Original checksum-verified release archives; preserve unchanged. |
+| `implementations/semantic-workbench-js/` | JavaScript/browser Semantic Workbench releases. |
+| `implementations/python-kernel/` | Versioned Python reference-kernel releases and native semantic models. |
+| `specifications/` | Normative semantic contracts and JSON Schemas. |
+| `resources/` | Bundled, versioned lexical, morphology, and operator resources. |
+| `tools/usg_interpretation_*/` | Versioned Python interpretation pipelines. |
+| `tools/usg-kernel-lab/` | Local Kernel Lab application and interface. |
+| `tools/usg_external_lexical_*/` | External lexical retrieval, analysis, crawling, and candidate adapters. |
+| `tools/open_world_evaluation/` | Randomized evaluation, target adapters, execution, scoring, replay, reporting, and growth planning. |
+| `interoperability/` | Versioned adapters and cross-implementation conformance work. |
+| `benchmarks/` and `evaluations/` | Frozen benchmark fixtures, reports, and reproducible evaluation outputs. |
+| `documentation/` | Architecture, roadmaps, implementation guides, acceptance records, and project status. |
+| `tests/` | Regression, contract, adapter, benchmark, and workflow-support tests. |
+| `.github/workflows/` | CI validation, scheduled crawlers, evaluation campaigns, and growth-planning automation. |
+| `ARCHIVE_INVENTORY.md` | Archive hashes, baseline inspection, test evidence, and limitations. |
 
-## Important architecture boundary
+---
 
-The JavaScript Semantic Workbench and Python reference kernel are separate implementation lines. Their versions and internal representations are not interchangeable. A feature present in one must not be assumed to exist in the other. Interoperability must be explicit, versioned, and tested; unsupported mappings must be reported rather than silently coerced or discarded.
+## Status and evidence conventions
 
-## Baseline status
+Use these meanings consistently in documentation, workflow summaries, and future status updates:
 
-The archive inventory records fresh tests and limitations for the original packages. Passing package tests do not establish unrestricted natural-language understanding or general semantic correctness.
+- **Complete / accepted:** implementation is merged and its defined acceptance criteria passed.
+- **Implemented:** code exists, but the required integrated or independent acceptance may still be outstanding.
+- **In progress:** active implementation, scheduled execution, evaluation, or integration remains.
+- **Blocked:** a stated dependency, rights issue, missing corpus, or required acceptance gate prevents progress.
+- **Candidate-only:** evidence or proposed structures are preserved but are not accepted runtime knowledge.
+- **Not assessed / not tested:** no adequate evidence exists; do not infer success or failure.
 
-## Interactive testing interface
-
-- [USG Kernel Lab](tools/usg-kernel-lab/README.md) is the local browser interface for the v0.7.0 Mention adapter and Phase 3 SQLite-backed semantic workspace. It includes the bounded Phase 4 raw-text-to-USG-SEM panel and the Phase 5 USG-INTERPRET/0.2.0 multi-stage analysis panel, versioned resource catalogue, provisional association retrieval, immutable run persistence/replay, structured-document inspection, persistent queries, integrity checks, and complete JSON export.
-- It remains separate from the JavaScript Semantic Workbench v0.5.4 and does not claim a unified runtime for every USG module.
-- Native Assertion model v0.8.0 and its document adapter are available as Python APIs; Native Evidence model v0.9.0 is available as a model-only Python API.
-
-## Current phase
-
-- **Phase 1:** COMPLETE. See [Phase 1 exit acceptance](interoperability/PHASE-1-EXIT-ACCEPTANCE.md).
-- **Phase 2:** COMPLETE for the implemented and tested scope. Steps 2.1–2.10 are merged and the final integrated acceptance gate passed. See the [Phase 2 roadmap](documentation/PHASE-2-ROADMAP.md) and [Step 2.10 acceptance record](documentation/PHASE-2-STEP-2.10-EXIT-ACCEPTANCE.md). Deferred capabilities remain explicitly out of scope.
-- **Phase 3:** COMPLETE for the defined and tested scope. Steps 3.1–3.9 are merged; SQLite remains the sole authoritative canonical backend. See the [Phase 3 roadmap](documentation/PHASE-3-ROADMAP.md), [completion record](documentation/PHASE-3-COMPLETION-RECORD.md), and [storage backend decision](documentation/STORAGE-BACKEND-EVALUATIONS.md).
-- **Phase 4:** COMPLETE for the v0.1.0 bounded offline demonstrator. Steps 4.1–4.13 are merged. See the [Phase 4 roadmap](documentation/PHASE-4-DEFINITIONS-ROADMAP.md), [completion record](documentation/PHASE-4-COMPLETION-RECORD.md), and [Step 4.13 exit gate](documentation/PHASE-4-STEP-4.13-EXIT-ACCEPTANCE.md). This is not unrestricted English/Arabic understanding.
-- **Phase 5:** COMPLETE for its documented and benchmarked scope. Steps 5.1–5.11 are accepted. The v0.2.1 benchmark measured 100% precision/recall, role/span accuracy, and negative/ambiguous target abstention for the three simple-transitive English/MSA Arabic target constructions; it does not establish broad language coverage. See the [Phase 5 roadmap](documentation/PHASE-5-DEFINITIONS-ROADMAP.md), [completion record](documentation/PHASE-5-COMPLETION-RECORD.md), and [Step 5.11 acceptance report](documentation/PHASE-5-STEP-5.11-BENCHMARK-EXIT-ACCEPTANCE.md).
-- **Phase 6:** IN PROGRESS. Steps 6.1–6.5 are accepted for their bounded, benchmarked scope. Step 6.6 remains in progress; the candidate interpreter and external PUD parser baselines do not provide independent semantic-role gold. The [Step 6.6 independent gold dataset audit](documentation/PHASE-6-STEP-6.6-INDEPENDENT-GOLD-DATASET-AUDIT.md) records that SemEval-2007 Task 4 and Task 18 are narrow candidates only: exact data access and redistribution rights remain unverified; WojoodRelations is an additional MSA candidate whose download requires institutional affiliation and whose entity-level relations do not directly annotate internal phrase modifiers. These sources do not cover all internal modifier relations. No external corpus has been imported; Step 6.7 remains blocked pending Step 6.6 acceptance. See the [Phase 6 roadmap](documentation/PHASE-6-DEFINITIONS-ROADMAP.md).
-
-## System-wide capability assessment
-
-- [USG System-Wide Capability Assessment — 2026-11-12](documentation/USG-SYSTEM-WIDE-CAPABILITY-ASSESSMENT-2026-11-12.md) synthesizes the Open-World campaign, Phase 4–6 benchmarks, lexical diagnostics, and independent evaluation gaps.
-- [USG System Improvement Backlog](documentation/USG-SYSTEM-IMPROVEMENT-BACKLOG.md) records prioritized, dependency-ordered modifications. The machine-readable evidence snapshot is stored at [assessment.json](evaluations/system-wide/2026-11-12/assessment.json).
-
-## External lexical retrieval and incremental analysis
-
-- [External lexical retrieval and incremental analysis](documentation/EXTERNAL-LEXICAL-RETRIEVAL-AND-INCREMENTAL-LEARNING-v0.1.0.md) retrieves individual English words from the public providers on demand and caches only requested words locally.
-- [Scheduled incremental lexical crawler](documentation/USG-EXTERNAL-LEXICAL-SCHEDULED-CRAWLER-v0.1.0.md) describes the six-hour GitHub Actions worker. Its resumable, pinned-snapshot outputs are stored on the separate usg-external-lexical-data branch, not in main. The crawler stores compact source-linked lexical evidence, not raw definition or example passages, and does not modify the runtime interpreter or LexicalResource.
-- The initial persistent shard budget is 700 MiB; reaching it pauses the crawl without deleting previous batches.
-
-## Open-world randomized evaluation
-
-- [USG Open-World Randomized Evaluation Program](documentation/USG-OPEN-WORLD-RANDOMIZED-EVALUATION-PLAN.md) defines a continuously expanding, seed-reproducible test campaign for realistic, unconstrained, adversarial, and diagnostic requests. It separates the evaluation of the harness from claims about USG capability and specifies append-only reports stored in this repository.
-- [OW-0 repository inventory](documentation/USG-OPEN-WORLD-REPOSITORY-INVENTORY.md) records the actual implementation and capability boundaries.
-- [OW-1 evaluation protocol](documentation/USG-OPEN-WORLD-EVALUATION-PROTOCOL.md) defines versioned scenario, source-provenance, execution-result, and campaign-report contracts.
-- [OW-2 randomized scenario generator](documentation/USG-OPEN-WORLD-RANDOM-SCENARIO-GENERATOR.md) creates seeded, protocol-validated cases for the initial real evaluation targets.
-- [OW-3 isolated execution runner](documentation/USG-OPEN-WORLD-EXECUTION-RUNNER.md) executes Phase 4 and Phase 5 in fresh child processes and explicitly records targets that are not yet executable.
-- [OW-4 scoring and validation](documentation/USG-OPEN-WORLD-SCORING-AND-VALIDATION.md) separates deterministic structural checks from semantic claims requiring independent oracles.
-- [OW-5 campaign reporting](documentation/USG-OPEN-WORLD-CAMPAIGN-REPORTING.md) builds validated JSON/Markdown reports, hashes every artifact, clusters failures, optionally minimizes reproducers, and stores write-once campaign bundles.
-- [OW-6 first pilot](documentation/USG-OPEN-WORLD-FIRST-PILOT.md) runs a broad seeded random target matrix plus separately annotated Phase 4/5 diagnostic fixtures, and publishes the report with explicit missing-population gaps.
-- [OW-7 continuous exploration](documentation/USG-OPEN-WORLD-CONTINUOUS-EXPLORATION.md) schedules bounded daily, weekly, release, and manual campaigns and publishes each report as a new append-only PR.
-- [OW-8 adaptive discovery](documentation/USG-OPEN-WORLD-ADAPTIVE-DISCOVERY.md) compares failure clusters with prior campaigns and generates capped formatting-only follow-ups for reproducible structural/runtime failures.
-- [OW-9+ expanding coverage ledger](documentation/USG-OPEN-WORLD-EXPANDING-COVERAGE.md) maps evaluated entry points against every inventoried USG component and keeps untested scope visible.
+A task is not complete merely because its workflow file exists, a pull request was created, a component imports successfully, or a report was generated. Always link status claims to the implementation, test, benchmark, or acceptance evidence that supports them.
