@@ -20,6 +20,10 @@ on:
       - "tools/open_world_evaluation/coverage_ledger.py"
       - "tools/open_world_evaluation/target_profiles.json"
       - "tools/open_world_evaluation/worker.py"
+      - "tools/open_world_evaluation/browser_adapter.py"
+      - "tools/open_world_evaluation/execute_cases.py"
+      - "tools/open_world_evaluation/generate_scenarios.py"
+      - "tests/test_open_world_browser_adapter.py"
       - "tools/open_world_evaluation/operation_oracles.py"
       - "tools/open_world_evaluation/schemas/coverage-ledger.schema.json"
       - "tests/test_open_world_continuous.py"
@@ -67,6 +71,9 @@ on:
 permissions:
   contents: write
   pull-requests: write
+
+env:
+  PLAYWRIGHT_BROWSERS_PATH: ${{ runner.temp }}/ms-playwright
 
 concurrency:
   group: usg-open-world-continuous
