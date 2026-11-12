@@ -57,9 +57,9 @@ jobs:
       - name: Collect changed paths
         shell: bash
         env:
-          EVENT_BEFORE: {{ github.event.before }}
-          EVENT_NAME: {{ github.event_name }}
-          EVENT_SHA: {{ github.sha }}
+          EVENT_BEFORE: ${{ github.event.before }}
+          EVENT_NAME: ${{ github.event_name }}
+          EVENT_SHA: ${{ github.sha }}
         run: |
           set -euo pipefail
           if [ "$EVENT_NAME" = "push" ] && [ -n "$EVENT_BEFORE" ] && [ "$EVENT_BEFORE" != "0000000000000000000000000000000000000000" ]; then
@@ -80,7 +80,7 @@ jobs:
       - name: Publish refreshed status report
         uses: peter-evans/create-pull-request@v7
         with:
-          token: {{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           branch: automation/long-term-roadmap-status
           base: main
           add-paths: |
