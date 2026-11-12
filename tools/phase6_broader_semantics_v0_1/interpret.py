@@ -83,6 +83,166 @@ def _merge_template_graph(base: dict, template: dict) -> None:
         base["speech_act"] = template["speech_act"]
 
 
+def _candidate_node(graph: dict, source: str, span: dict, role: str,
+                    kind: str, construction_id: str, provider: str) -> str:
+    checked = _source_span(source, span.get("start"), span.get("end"))
+    if span.get("surface", checked["surface"]) != checked["surface"]:
+        raise CompositionError("candidate provider span surface differs from exact source")
+    node_id = _stable("p6provider", [provider, construction_id, role, checked["start"], checked["end"]])
+    if node_id not in {item["id"] for item in graph["nodes"]}:
+        graph["nodes"].append({
+            "id": node_id, "kind": kind, "role": role, "span": checked,
+            "origin": provider, "construction_id": construction_id,
+            "capability_state": "CANDIDATE_ONLY",
+        })
+    return node_id
+
+
+def _candidate_evidence(source: str, provider_result: dict, role_spans: dict) -> dict:
+    markers = provider_result.get("grammatical_markers") or []
+    if markers:
+        marker = markers[0]
+        return _source_span(source, marker["start"], marker["end"])
+    predicate = provider_result.get("predicate_span")
+    if predicate:
+        return _source_span(source, predicate["start"], predicate["end"])
+    if role_spans:
+        span = next(iter(role_spans.values()))
+        return _source_span(source, span["start"], span["end"])
+    raise CompositionError("candidate provider supplied no evidence span")
+
+
+def _predicate_argument_graph(source: str, language: str, result: dict) -> tuple[dict, list[str]]:
+    graph = {"nodes": [], "relations": [], "clauses": [], "operators": [],
+             "references": [], "features": ["PREDICATE_ARGUMENT"],
+             "speech_act": "UNKNOWN", "voice": "UNKNOWN", "provenance": []}
+    construction = result["construction_id"]
+    spans = result.get("role_spans", {})
+    role_ids = {}
+    kind_by_role = {
+        "AGENT": "ENTITY", "RECIPIENT": "ENTITY", "THEME": "ENTITY",
+        "ENTITY": "ENTITY", "ATTRIBUTE": "PROPERTY", "LOCATION": "ENTITY",
+    }
+    for role, span in spans.items():
+        role_ids[role] = _candidate_node(
+            graph, source, span, role, kind_by_role.get(role, "ENTITY"),
+            construction, "PHASE6_PREDICATE_ARGUMENT_PROVIDER",
+        )
+    predicate_span = result.get("predicate_span")
+    predicate_id = None
+    if predicate_span:
+        same_as_attribute = any(
+            role == "ATTRIBUTE" and span["start"] == predicate_span["start"]
+            and span["end"] == predicate_span["end"]
+            for role, span in spans.items()
+        )
+        if not same_as_attribute:
+            predicate_id = _candidate_node(
+                graph, source, predicate_span, "PREDICATE", "EVENT",
+                construction, "PHASE6_PREDICATE_ARGUMENT_PROVIDER",
+            )
+    evidence = _candidate_evidence(source, result, spans)
+    if "ENTITY" in role_ids and "ATTRIBUTE" in role_ids:
+        graph["relations"].append({
+            "type": "ATTRIBUTE", "source": role_ids["ENTITY"],
+            "target": role_ids["ATTRIBUTE"], "evidence": evidence,
+            "feature": "NOMINAL_PROPERTY", "construction_id": construction,
+        })
+        graph["features"].extend(["NOMINAL_PROPERTY", "MODIFIER"])
+    elif "ENTITY" in role_ids and "LOCATION" in role_ids:
+        graph["relations"].append({
+            "type": "LOCATIVE_NOMINAL_MODIFIER", "source": role_ids["ENTITY"],
+            "target": role_ids["LOCATION"], "evidence": evidence,
+            "feature": "MODIFIER", "construction_id": construction,
+        })
+        graph["features"].append("MODIFIER")
+    elif predicate_id:
+        for role in ("AGENT", "RECIPIENT", "THEME"):
+            if role in role_ids:
+                graph["relations"].append({
+                    "type": role, "source": predicate_id,
+                    "target": role_ids[role], "evidence": spans[role],
+                    "feature": "PREDICATE_ARGUMENT", "construction_id": construction,
+                })
+    graph["provenance"].append({
+        "rule_id": result["derivation"]["rule_id"],
+        "resource_id": result["derivation"]["lexical_resource"],
+        "frame_registry": result["derivation"]["frame_registry"],
+        "frame_id": result.get("frame_id"),
+        "provider": "phase6_predicate_argument_v0_3_0",
+    })
+    return graph, []
+
+
+def _nominal_candidate_graph(source: str, result: dict) -> tuple[dict, list[str]]:
+    graph = {"nodes": [], "relations": [], "clauses": [], "operators": [],
+             "references": [], "features": ["MODIFIER"],
+             "speech_act": "UNKNOWN", "voice": "UNKNOWN", "provenance": []}
+    construction = result["construction_id"]
+    spans = result.get("role_spans", {})
+    ids = {}
+    for role, span in spans.items():
+        kind = "PROPERTY" if role in {"MODIFIER", "ATTRIBUTE", "TIME"} else "ENTITY"
+        ids[role] = _candidate_node(
+            graph, source, span, role, kind, construction,
+            "PHASE6_NOMINAL_CANDIDATE_PROVIDER",
+        )
+    relation_type = result.get("semantic_relation_candidate") or result.get("relation_type")
+    source_role = target_role = None
+    if {"HEAD", "MODIFIER"}.issubset(ids):
+        source_role, target_role = "HEAD", "MODIFIER"
+    elif {"GENITIVE_HEAD", "GENITIVE_DEPENDENT"}.issubset(ids):
+        source_role, target_role = "GENITIVE_HEAD", "GENITIVE_DEPENDENT"
+    elif {"HEAD", "LOCATION"}.issubset(ids):
+        source_role, target_role = "HEAD", "LOCATION"
+    elif {"EVENT", "TIME"}.issubset(ids):
+        source_role, target_role = "EVENT", "TIME"
+    if relation_type and source_role and target_role:
+        evidence = _candidate_evidence(source, result, spans)
+        feature = "NOMINAL_PROPERTY" if relation_type == "ATTRIBUTE" else "MODIFIER"
+        graph["relations"].append({
+            "type": relation_type, "source": ids[source_role],
+            "target": ids[target_role], "evidence": evidence,
+            "feature": feature, "construction_id": construction,
+        })
+        if feature == "NOMINAL_PROPERTY":
+            graph["features"].append("NOMINAL_PROPERTY")
+        if relation_type == "GENITIVE_UNSPECIFIED":
+            graph["features"].append("POSSESSION")
+            # Preserve the explicit non-entailment: this is a genitive form,
+            # not a claim that the dependent is owned by the head.
+            graph["provenance"].append({
+                "rule_id": "phase6.genitive.unspecified.v1",
+                "resource_id": result.get("derivation", {}).get("lexical_resource"),
+                "semantic_commitment": "GENITIVE_UNSPECIFIED_NOT_POSSESSION",
+            })
+    if result.get("predicate_span"):
+        predicate_span = result["predicate_span"]
+        if not any(span["start"] == predicate_span["start"] and span["end"] == predicate_span["end"]
+                   for span in spans.values()):
+            _candidate_node(
+                graph, source, predicate_span, "PREDICATE", "EVENT",
+                construction, "PHASE6_NOMINAL_CANDIDATE_PROVIDER",
+            )
+    graph["provenance"].append({
+        "rule_id": result.get("derivation", {}).get("rule_id", construction),
+        "resource_id": result.get("derivation", {}).get("lexical_resource"),
+        "evaluation_scope": result.get("derivation", {}).get("evaluation_scope"),
+        "provider": "phase6_nominal_candidate_v0_4_1",
+    })
+    return graph, []
+
+
+def _append_provider_graph(base: dict, extra: dict) -> None:
+    existing = {item["id"] for item in base["nodes"]}
+    if any(item["id"] in existing for item in extra["nodes"]):
+        raise CompositionError("candidate provider node ID collision")
+    base["nodes"].extend(extra["nodes"])
+    base["relations"].extend(extra["relations"])
+    base["features"] = sorted(set(base["features"]) | set(extra["features"]))
+    base["provenance"].extend(extra["provenance"])
+
+
 def _phase5_graph(source: str, phase5: dict) -> tuple[dict, list[str]]:
     graph = {
         "nodes": [], "relations": [], "clauses": [], "operators": [],
@@ -336,10 +496,42 @@ class Phase6IntegratedInterpreter:
             source, language, resource_manifest_digest=self.resource_manifest_digest,
         )
         graph, diagnostics = _phase5_graph(source, phase5)
+        provider_results: dict[str, Any] = {}
+        has_predicate = any(node.get("role") == "ACTION" for node in graph["nodes"])
+
+        # Expand coverage using the existing dedicated Phase 6 candidate
+        # analyzers. They are candidate providers, not independent truth or
+        # benchmark promotions. Only unique provider matches are composed.
+        if not has_predicate and not graph["nodes"]:
+            from tools.phase6_predicate_argument_v0_3_0.analyzer import analyze as analyze_predicate_argument
+            pa_result = analyze_predicate_argument(source, language)
+            provider_results["predicate_argument"] = pa_result
+            if pa_result.get("status") == "COMPLETE":
+                provider_graph, provider_diagnostics = _predicate_argument_graph(source, language, pa_result)
+                _append_provider_graph(graph, provider_graph)
+                diagnostics.extend(provider_diagnostics)
+                diagnostics.append("PHASE6_PREDICATE_ARGUMENT_PROVIDER:" + pa_result["construction_id"])
+            elif pa_result.get("status") == "AMBIGUOUS":
+                alternatives = [item.get("construction_id") for item in pa_result.get("alternatives", [])]
+                diagnostics.append("PHASE6_PREDICATE_ARGUMENT_AMBIGUOUS:" + ",".join(str(x) for x in alternatives))
+
+        if not graph["nodes"]:
+            from tools.phase6_nominal_candidate_v0_4_1.analyzer import analyze as analyze_nominal
+            nominal_result = analyze_nominal(source, language)
+            provider_results["nominal"] = nominal_result
+            if nominal_result.get("status") == "CANDIDATE":
+                provider_graph, provider_diagnostics = _nominal_candidate_graph(source, nominal_result)
+                _append_provider_graph(graph, provider_graph)
+                diagnostics.extend(provider_diagnostics)
+                diagnostics.append("PHASE6_NOMINAL_PROVIDER:" + nominal_result["construction_id"])
+            elif nominal_result.get("status") == "AMBIGUOUS":
+                alternatives = [item.get("construction_id") for item in nominal_result.get("alternatives", [])]
+                diagnostics.append("PHASE6_NOMINAL_AMBIGUOUS:" + ",".join(str(x) for x in alternatives))
+
         template = extract_candidate_graph(source, language)
-        # A strict Phase 6 construction probe is a fallback for cases where the
-        # existing grammatical stages did not produce any predicate candidates.
-        if not any(node.get("role") == "ACTION" for node in graph["nodes"]) and template["status"] == "CANDIDATE_PATTERN_MATCH":
+        # Strict-template fallback remains last so it cannot override a richer
+        # lexically licensed Phase 6 provider candidate.
+        if not graph["nodes"] and template["status"] == "CANDIDATE_PATTERN_MATCH":
             _merge_template_graph(graph, template["graph"])
             diagnostics.append("PHASE6_CLOSED_TEMPLATE_FALLBACK:" + str(template["template_id"]))
         graph["features"] = sorted(set(graph["features"]))
@@ -370,6 +562,7 @@ class Phase6IntegratedInterpreter:
             "composition": composition,
             "projection": project_loss_aware(composition),
             "phase5": phase5,
+            "candidate_provider_results": provider_results,
             "diagnostics": diagnostics,
             "capability_boundary": {
                 "benchmark_enabled_constructions": [],
