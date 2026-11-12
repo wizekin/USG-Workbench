@@ -276,8 +276,8 @@ class ScenarioGenerator:
                     },
                     "oracle": {"type": "none", "independent": False},
                     "resource_limits": {
-                        "wall_time_seconds": 15,
-                        "memory_megabytes": 512,
+                        "wall_time_seconds": 45 if target.get("interface") == "browser_ui" else 15,
+                        "memory_megabytes": 2048 if target.get("interface") == "browser_ui" else 512,
                         "max_input_bytes": 100_000,
                         "network_access": False,
                     },
