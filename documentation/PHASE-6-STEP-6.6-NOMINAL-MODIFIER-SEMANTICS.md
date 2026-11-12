@@ -1,6 +1,6 @@
 # Phase 6 — Step 6.6: Nominal, Property, Possession, and Modifier Semantics
 
-**Status:** DEFINITION ACCEPTED — candidate interpreter implemented; independent benchmark gate pending  
+**Status:** DEFINITION ACCEPTED — candidate interpreter and generated development/held-out diagnostics implemented; independent human semantic-gold acceptance gate blocked  
 **Contract:** `USG-INTERPRET/0.3.0`  
 **Candidate inventory:** `phase6.nominal-modifier-rules.candidate/0.3.0`
 
@@ -48,3 +48,18 @@ This PR accepts definitions and evidence requirements only. It does not add runt
 ## Additive genitive semantics refinement
 
 The v0.4.0 candidate benchmark used `POSSESSED`/`POSSESSOR` labels for all English *of*-phrases and MSA Arabic iḍāfa examples. Those forms do not uniquely entail ownership or a single semantic relation. The additive v0.4.1 benchmark therefore uses `GENITIVE_HEAD` and `GENITIVE_DEPENDENT` with `GENITIVE_UNSPECIFIED` semantics. Specific possession, authorship, part-whole, and other relations require independent lexical/construction evidence; they are not inferred from genitive form alone. See [the v0.4.1 refinement record](PHASE-6-STEP-6.6-BENCHMARK-V0.4.1.md).
+
+
+## 7. Implementation and acceptance status — 2026-11-12
+
+The repository now contains the following engineering components:
+
+- A closed-profile candidate recognizer in `tools/phase6_nominal_candidate_v0_4_1/`.
+- A 500-case development corpus and a 500-case generated held-out role-combination diagnostic across the ten language/construction profiles.
+- Exact role/span/marker/predicate/relation and abstention measurements for those candidate diagnostics.
+- An explicit independent-gold annotation protocol at [PHASE-6-STEP-6.6-INDEPENDENT-GOLD-ACCEPTANCE-PROTOCOL.md](PHASE-6-STEP-6.6-INDEPENDENT-GOLD-ACCEPTANCE-PROTOCOL.md).
+- A versioned manifest schema and fail-closed validator at [phase6-independent-gold-manifest-1.0.schema.json](../specifications/phase6-independent-gold-manifest-1.0.schema.json) and `tools/phase6_independent_gold_v1_0/`.
+
+These components make candidate behavior and future gold intake testable. They do **not** satisfy the independent-gold gate: the development lexicon is fixture-derived, the generated holdout uses that same closed lexicon, and external parser/UD data supplies syntax rather than the required semantic labels. No independent gold manifest or qualifying dataset is currently present.
+
+**Capability state:** all five construction families in English and all five in MSA Arabic remain `CANDIDATE_ONLY`; none is benchmark-enabled, and no runtime promotion is authorized. Step 6.7 remains blocked until the independent gold gate is passed.
