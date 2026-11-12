@@ -1,0 +1,142 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wizekin.github.io/USG-Workbench/schemas/usg-system-evidence-source-registry-0.1.0.schema.json",
+  "title": "USG System Evidence Source Registry 0.1.0",
+  "type": "object",
+  "required": [
+    "contract",
+    "version",
+    "purpose",
+    "evidence_classes",
+    "use_modes",
+    "phases",
+    "source_families"
+  ],
+  "properties": {
+    "contract": {
+      "const": "USG-SYSTEM-EVIDENCE-SOURCE-REGISTRY/0.1.0"
+    },
+    "version": {
+      "const": "0.1.0"
+    },
+    "purpose": {
+      "type": "string",
+      "minLength": 1
+    },
+    "evidence_classes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "use_modes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "phases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "status",
+          "roadmap",
+          "open_work"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "roadmap": {
+            "type": "string"
+          },
+          "acceptance": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "open_work": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "source_families": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "category",
+          "description",
+          "patterns",
+          "consumers",
+          "use_mode",
+          "evidence_class",
+          "refresh",
+          "guardrails"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9_]+$"
+          },
+          "title": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "patterns": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1
+          },
+          "consumers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          },
+          "use_mode": {
+            "type": "string"
+          },
+          "evidence_class": {
+            "type": "string"
+          },
+          "refresh": {
+            "type": "string"
+          },
+          "guardrails": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
