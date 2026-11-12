@@ -6,7 +6,7 @@ import traceback
 from dataclasses import asdict
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-from urllib.parse import urlparse
+from urllib.parse import parse_qs, urlparse
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
@@ -24,6 +24,9 @@ from usg_discourse_v07 import (  # noqa: E402
 )
 from tools.semantic_query_interface_v1_0_0.interface import QueryInterface  # noqa: E402
 from tools.usg_local_api_v1_0_0 import USGApplication  # noqa: E402
+from tools.semantic_graph_store_v1_0_0.store import RESOURCE_CATALOGUE_ROLE  # noqa: E402
+from tools.phase7_knowledge_repository import SQLiteKnowledgeRepository  # noqa: E402
+from tools.phase7_knowledge_inspection import KnowledgeInspectionService  # noqa: E402
 
 QUERY_BENCHMARK_PATH = ROOT / "benchmarks" / "semantic-reasoning" / "query-v1.0.0" / "fixtures.json"
 EXECUTOR_BENCHMARK_PATH = ROOT / "benchmarks" / "semantic-reasoning" / "executor-v1.0.0" / "fixtures.json"
@@ -188,7 +191,27 @@ class Handler(BaseHTTPRequestHandler):
         self.wfile.write(data)
 
     def do_GET(self):
-        path = urlparse(self.path).path
+        parsed = urlparse(self.path)
+        path = parsed.path
+        if path.startswith("/api/knowledge/"):
+            try:
+                if path == "/api/knowledge/bundles":
+                    payload = self.server.knowledge_inspection.list_bundles()
+                elif path == "/api/knowledge/conflicts":
+                    payload = self.server.knowledge_inspection.list_conflicts()
+                elif path == "/api/knowledge/record":
+                    record_id = parse_qs(parsed.query).get("record_id", [""])[0]
+                    payload = self.server.knowledge_inspection.inspect_record(record_id)
+                    if payload is None:
+                        self._send(404, {"error": "KNOWLEDGE_RECORD_NOT_FOUND"})
+                        return
+                else:
+                    self._send(404, {"error": "Not found"})
+                    return
+                self._send(200, {"ok": True, **payload})
+            except Exception as exc:
+                self._send(400, {"ok": False, "error": str(exc), "errorType": type(exc).__name__})
+            return
         if path.startswith(("/v1/", "/v2/", "/v3/")):
             status, payload = self.server.usg_application.dispatch("GET", self.path)
             self._send(status, payload)
@@ -208,6 +231,8 @@ class Handler(BaseHTTPRequestHandler):
                 "phase6CandidatePipeline": "USG-INTERPRET/0.3.0",
                 "phase6CandidateCapabilities": "CANDIDATE_ONLY",
                 "resourceCatalogue": "sqlite-semantic-resource-catalogue/0.1.0",
+                "phase7KnowledgeInspection": "USG-KNOWLEDGE-INSPECTION/0.1.0",
+                "phase7KnowledgeAdapter": "usg-knowledge-read-adapter/0.1.0",
             })
         elif path == "/api/fixtures":
             bundle = _query_benchmark()
@@ -225,6 +250,25 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         path = urlparse(self.path).path
+        if path == "/api/knowledge/query":
+            try:
+                length = int(self.headers.get("Content-Length", "0"))
+                if length <= 0 or length > 1_000_000:
+                    raise ValueError("Request body must be between 1 byte and 1 MB")
+                request = json.loads(self.rfile.read(length).decode("utf-8"))
+                if not isinstance(request.get("query"), str):
+                    raise ValueError("query must be a string")
+                payload = self.server.knowledge_inspection.query(
+                    request["query"], consumer=request.get("consumer", "PHASE2"),
+                    language=request.get("language"),
+                    context_filters=request.get("context_filters"),
+                    include_candidate_evidence=request.get("include_candidate_evidence", False),
+                    limit=request.get("limit", 20),
+                )
+                self._send(200, {"ok": True, **payload})
+            except Exception as exc:
+                self._send(400, {"ok": False, "error": str(exc), "errorType": type(exc).__name__})
+            return
         if path.startswith(("/v1/", "/v2/", "/v3/")):
             try:
                 length = int(self.headers.get("Content-Length", "0"))
@@ -306,6 +350,15 @@ class KernelLabHTTPServer(ThreadingHTTPServer):
 
     def __init__(self, address, database_path):
         self.usg_application = USGApplication(database_path)
+        try:
+            with self.usg_application.store.resource_catalogue_session(
+                role=RESOURCE_CATALOGUE_ROLE, write=True
+            ) as connection:
+                knowledge_repository = SQLiteKnowledgeRepository(connection)
+            self.knowledge_inspection = KnowledgeInspectionService(knowledge_repository)
+        except Exception:
+            self.usg_application.close()
+            raise
         super().__init__(address, Handler)
 
     def server_close(self):
