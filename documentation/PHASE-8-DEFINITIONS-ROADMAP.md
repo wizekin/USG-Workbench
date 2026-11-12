@@ -1,7 +1,7 @@
 # USG Phase 8 — System-Wide Evidence, Resource, and Development Intelligence
 
 **Phase:** 8  
-**Status:** DEFINITION AND FIRST IMPLEMENTATION IN PROGRESS  
+**Status:** AUTOMATED FORMAL ACCEPTANCE ENABLED; exact-head CI determines the recorded Phase 8 decision  
 **Primary objective:** make every incoming USG phase and implementation decision use the latest traceable information from the entire repository: canonical contracts, seven development phases, runtime components, adapters, lexical and semantic resources, regression tests, evaluation populations, Open-World campaigns, external lexical acquisition, cross-implementation results, and evidence-driven growth plans.
 
 ## 1. Why Phase 8 exists
@@ -30,7 +30,7 @@ It does not:
 - auto-resolve Phase 7 unresolved mappings;
 - infer semantic correctness from execution success or structural validity;
 - replace SQLite as the canonical document store;
-- modify accepted phase status or canonical contracts automatically;
+- modify any previously accepted phase, canonical contracts, or runtime resources automatically;
 - collapse all system capability into one score.
 
 ## 3. Phase inputs and evidence classes
@@ -68,7 +68,7 @@ Use modes must also remain explicit: normative, runtime, read-only adapter, cand
 | 8.7 | Phase-aware routing and amendment proposals | Existing continuation is preferred; accepted phases can receive explicit amendment proposals; contract changes route through migration plans | Stable draft-only proposal records implemented on main; no phase, contract, or runtime mutation is permitted |
 | 8.8 | Mandatory phase resource manifest | Every Phase 8+ roadmap has a schema-valid phase resource manifest; future step changes must update it with exact resource/evidence dependencies and candidate/runtime boundaries | Implemented for Phase 8 baseline; CI policy gate active |
 | 8.9 | Growth-planner integration | Growth plan, Open-World findings, lexical gaps, conformance gaps, and knowledge-layer findings are prioritized in one explainable view without overriding source-specific metrics | Cross-source queue now includes explicit cross-runtime capability/gate gaps and Phase 7 unresolved mapping candidates; source metrics remain separate and no combined semantic score is calculated |
-| 8.10 | Integrated Phase 8 exit acceptance | Exact-head CI verifies registry, collector, PUD refresh handling, Open-World extraction, routing, immutable snapshots, freshness rules, and protected contracts | Structural/governance gate and operational snapshot invocation implemented on main; each snapshot records eligible-for-review or blocked, never auto-accepts Phase 8 |
+| 8.10 | Integrated Phase 8 exit acceptance | The required validation job passes on the exact catalogue commit and every integrated acceptance check passes; the decision records its commit, workflow run, attempt, checks, and deterministic decision ID | Automatic formal acceptance is implemented; failures remain blocked and preserve diagnostics |
 
 ## 4A. Discovery management and integrated prioritization (8.6–8.9)
 
@@ -103,7 +103,7 @@ Routing order:
 3. **Use a versioned migration for normative changes.** Any change to USG-SEM/1.0, accepted schemas, canonical persistence invariants, or interpretation contracts requires a dedicated migration, compatibility adapter, and all affected regression gates.
 4. **Create a new phase only for genuinely cross-cutting work.** Phase 9 and later are not pre-locked. Their definitions should arise from collected evidence, dependency analysis, and the remaining system-wide capability map.
 
-The collector may create observations and candidate proposals automatically. It must not autonomously mark a phase accepted, rewrite gold labels, weaken thresholds, promote candidate resources, or silently rewrite normative contracts. Those actions require an explicit reviewable implementation and acceptance process.
+The collector may create observations and candidate proposals automatically. The dedicated Phase 8 acceptance evaluator may automatically accept only Phase 8's bounded evidence/development-intelligence control-plane scope, and only after the upstream GitHub Actions validation job succeeds on the exact catalogue commit and every integrated gate passes. It records a traceable decision. A blocked result cannot be overridden by manual approval; missing evidence or failed checks must be corrected and the workflow rerun. This authority does not extend to other phases, gold-label changes, threshold weakening, candidate-resource promotion, runtime semantic changes, or normative-contract changes; those remain separately governed.
 
 ## 7. Initial evidence baseline and warnings
 
