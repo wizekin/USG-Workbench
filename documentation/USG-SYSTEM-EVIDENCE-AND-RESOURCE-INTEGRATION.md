@@ -12,11 +12,12 @@ This integration layer indexes those assets and results so future development be
 
 - `config/usg-system-evidence-source-registry-0.1.0.json` — stable source-family IDs, repository path patterns, use modes, consumers, refresh policies, and guardrails.
 - `config/usg-phase-resource-consumption-map-0.1.0.json` — required/optional source families for each phase, allowed use modes, and routing policy.
+- `config/usg-long-term-development-plan-0.1.0.json` plus `documentation/USG-LONG-TERM-DEVELOPMENT-PLAN.md` — proposed long-horizon trajectory, explicit future work packets, dependencies, exit criteria, and plan-maintenance policy. Future phases are planning labels, not implementation authorization.
 - `specifications/usg-system-evidence-source-registry-0.1.0.schema.json` — registry schema.
 - `specifications/usg-system-evidence-catalogue-0.1.0.schema.json` — generated catalogue schema.
 - `specifications/usg-phase-resource-manifest-0.1.0.schema.json` and `templates/phase-resource-manifest-0.1.0.template.json` — mandatory dependency/evidence description for incoming phase steps.
 
-The registry includes the canonical USG-SEM/1.0 boundary, Phase 1–7 records, structured reasoning, SQLite persistence, Phase 4/5 interpreters, Phase 6 candidate expansion, Phase 7 knowledge, lexical candidate adapter, OOV/ambiguity regressions, Open-World evaluation, evidence-driven growth planning, external lexical acquisition, naturalistic input-only evaluation, cross-implementation conformance, bundled resources, and system assessments/backlog.
+The registry includes the canonical USG-SEM/1.0 boundary, Phase 1–7 records, structured reasoning, SQLite persistence, Phase 4/5 interpreters, Phase 6 candidate expansion, Phase 7 knowledge, lexical candidate adapter, OOV/ambiguity regressions, Open-World evaluation, evidence-driven growth planning, external lexical acquisition, naturalistic input-only evaluation, cross-implementation conformance, bundled resources, system assessments/backlog, and the long-term development plan.
 
 The phase/resource map declares intent to reuse a source. It does not prove that the runtime imports it. Actual integration must be verified in code and tests.
 
@@ -76,6 +77,26 @@ Every registered source carries:
 - intended consumer phases and explicit limitations/guardrails.
 
 Those labels prevent an available file from being mistaken for an accepted runtime dependency. External lexical shards are candidate evidence even when their crawl/audit is successful. UD/PUD input is not semantic gold. Open-World execution results are not a universal correctness denominator. Phase 7 unresolved mappings remain unresolved.
+
+## Long-term roadmap synchronization
+
+The repository maintains a separate long-term development plan in
+`documentation/USG-LONG-TERM-DEVELOPMENT-PLAN.md` and
+`config/usg-long-term-development-plan-0.1.0.json`. The plan is a planning
+artifact, not a semantic runtime or a phase acceptance authority.
+
+The workflow `.github/workflows/usg-long-term-roadmap-sync.yml` runs on relevant
+main-branch changes, weekly, and manually. Its deterministic synchronizer reads
+the phase registry, SYS backlog implementation-status table, Phase 6
+continuation tracker, and Phase 8 exact-head decision artifact. It fingerprints
+the plan's source files, reports affected workstreams from changed paths, and
+publishes a status-only pull request.
+
+The synchronizer does not edit the strategic plan or source-of-truth trackers,
+infer completion from a merge, start future phases, promote candidate resources,
+or change runtime/canonical semantics. New strategy, priority changes, phase
+boundary changes, and semantic acceptance remain explicit proposals with their
+own evidence and gates.
 
 ## Mandatory manifest for incoming steps
 
