@@ -82,6 +82,8 @@ jobs:
         run: python -m unittest discover -s tests -p "test_system_evidence_catalogue.py" -v
       - name: Enforce Phase 8+ resource manifest policy
         run: python -m unittest discover -s tests -p "test_phase_resource_manifest_policy.py" -v
+      - name: Test GitHub Actions workflow evidence collector
+        run: python -m unittest discover -s tests -p "test_system_evidence_github_actions.py" -v
       - name: Validate machine-readable registry and phase map
         run: |
           python - <<'PY'
