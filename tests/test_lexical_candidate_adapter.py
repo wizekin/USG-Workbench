@@ -103,7 +103,7 @@ class LexicalCandidateAdapterTests(unittest.TestCase):
     def test_duplicate_candidate_ids_and_missing_source_identity_are_rejected(self):
         candidate_package = package()
         candidate_package["candidates"][1]["candidate_id"] = "sense-river"
-        candidate_package["candidates"][0]["source_sense_id"] = None
+        candidate_package["candidates"][0].pop("source_sense_id")
         result = validate_candidate_package(candidate_package)
         codes = {item["code"] for item in result["findings"]}
         self.assertIn("duplicate_candidate_id", codes)
