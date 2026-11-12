@@ -194,6 +194,8 @@ These are the major open workstreams. Detailed step definitions, dependencies, a
 
 Step 6.6 now uses a deterministic graph-first bilingual synthetic reference benchmark: 500 cases across ten English/MSA construction profiles, with 20 positive, 20 negative, and 10 ambiguous cases per profile. It uses no human annotations, model-generated labels, external corpus, development fixtures, or candidate lexicon to create its reference cases. All ten synthetic profile gates pass. This is controlled conformance evidence only—not a naturalistic semantic-accuracy claim—and all runtime constructions remain candidate-only.
 
+The [Phase 6 Automatic Acceptance Factory](documentation/PHASE-6-AUTOMATIC-ACCEPTANCE-FACTORY.md) now generates a separate 500-case bilingual corpus for Steps 6.7–6.11, evaluates the real integrated API, verifies OPAQUE preservation and SQLite replay, and publishes a schema-validated report. A successful factory run is not itself a semantic acceptance: any construction profile that misses its gates remains open.
+
 References: [Phase 6 roadmap](documentation/PHASE-6-DEFINITIONS-ROADMAP.md) · [Integrated interpreter and bridge validation](documentation/PHASE-6-INTEGRATED-INTERPRETER-AND-BRIDGE-VALIDATION.md) · [Steps 6.7–6.14 implementation record](documentation/PHASE-6-STEPS-6.7-6.14-COMPLETION-IMPLEMENTATION.md) · [Automatic synthetic-reference protocol](documentation/PHASE-6-STEP-6.6-AUTOMATIC-SYNTHETIC-REFERENCE-PROTOCOL.md) · [Historical external dataset feasibility audit](documentation/PHASE-6-STEP-6.6-INDEPENDENT-GOLD-DATASET-AUDIT.md) · [Historical independent-gold protocol](documentation/PHASE-6-STEP-6.6-INDEPENDENT-GOLD-ACCEPTANCE-PROTOCOL.md).
 
 ### 2. External lexical knowledge — crawl, evaluate, and safely integrate
