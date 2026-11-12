@@ -33,6 +33,25 @@ class Phase6AutomaticAcceptanceFactoryTests(unittest.TestCase):
                 key,
             )
 
+    def test_step_6_7_positive_cases_exercise_shared_arguments(self):
+        for language in ("en", "ar"):
+            positives = [
+                case for case in self.corpus["cases"]
+                if case["language"] == language
+                and case["profile"] == "coordination"
+                and case["gold_class"] == "POSITIVE"
+            ]
+            self.assertEqual(len(positives), 20)
+            for case in positives:
+                spans = case["expected"]["required_role_spans"]
+                self.assertEqual(sum(item["role"] == "AGENT" for item in spans), 2)
+                self.assertEqual(sum(item["role"] == "ACTION" for item in spans), 1)
+                self.assertEqual(sum(item["role"] == "PATIENT" for item in spans), 1)
+                self.assertEqual(
+                    {item["type"] for item in case["reference_graph"]["relations"]},
+                    {"AND", "AGENT", "PATIENT"},
+                )
+
     def test_generation_oracle_is_created_without_runtime_predictions(self):
         metadata = self.corpus["generation"]
         self.assertTrue(metadata["reference_graph_created_before_text_realization"])
