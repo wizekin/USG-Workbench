@@ -8,12 +8,13 @@
 
 1. [Main repository README](../README.md) — project definition, current status, active tasks, milestones, and limitations.
 2. [System-wide capability assessment](USG-SYSTEM-WIDE-CAPABILITY-ASSESSMENT-2026-11-12.md) — what is implemented, what has evidence, and what remains unverified.
-3. [System improvement backlog](USG-SYSTEM-IMPROVEMENT-BACKLOG.md) — prioritized engineering gaps and next work.
-4. [Normative specifications](../specifications/README.md) — versioned contracts and schemas.
-5. [Implementation index](../implementations/README.md) — distinct implementation lines and baselines.
-6. [Interoperability index](../interoperability/README.md) — adapters, registries, and conformance work.
-7. [Kernel Lab guide](../tools/usg-kernel-lab/README.md) — how to run and explore the local interface.
-8. [Tests index](../tests/README.md) — cross-implementation test suites and commands.
+3. [Long-term USG development plan](USG-LONG-TERM-DEVELOPMENT-PLAN.md) — proposed P9–P20 trajectory, dependencies, implementation packets, acceptance gates, and automatic plan synchronization.
+4. [System improvement backlog](USG-SYSTEM-IMPROVEMENT-BACKLOG.md) — prioritized engineering gaps and next work.
+5. [Normative specifications](../specifications/README.md) — versioned contracts and schemas.
+6. [Implementation index](../implementations/README.md) — distinct implementation lines and baselines.
+7. [Interoperability index](../interoperability/README.md) — adapters, registries, and conformance work.
+8. [Kernel Lab guide](../tools/usg-kernel-lab/README.md) — how to run and explore the local interface.
+9. [Tests index](../tests/README.md) — cross-implementation test suites and commands.
 
 ## Navigation
 
@@ -77,6 +78,7 @@
 - [USG OPEN WORLD RANDOMIZED EVALUATION PLAN](USG-OPEN-WORLD-RANDOMIZED-EVALUATION-PLAN.md) — Evaluation design, results, fixtures, or limitations.
 - [USG OPEN WORLD REPOSITORY INVENTORY](USG-OPEN-WORLD-REPOSITORY-INVENTORY.md) — Randomized evaluation design, execution, coverage, or reporting.
 - [USG OPEN WORLD SCORING AND VALIDATION](USG-OPEN-WORLD-SCORING-AND-VALIDATION.md) — Randomized evaluation design, execution, coverage, or reporting.
+- [USG LONG TERM DEVELOPMENT PLAN](USG-LONG-TERM-DEVELOPMENT-PLAN.md) — Proposed long-term architecture, dependency-ordered future phases, implementation packets, acceptance criteria, and continuous plan maintenance.
 - [USG SYSTEM IMPROVEMENT BACKLOG](USG-SYSTEM-IMPROVEMENT-BACKLOG.md) — Detailed technical documentation, implementation notes, or supporting evidence.
 - [USG SYSTEM WIDE CAPABILITY ASSESSMENT 2026 11 12](USG-SYSTEM-WIDE-CAPABILITY-ASSESSMENT-2026-11-12.md) — Detailed technical documentation, implementation notes, or supporting evidence.
 
