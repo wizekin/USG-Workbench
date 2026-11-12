@@ -151,6 +151,29 @@ details{border:1px solid var(--line);border-radius:10px;background:#0d1626}summa
 <details open style="margin-top:12px"><summary>Phase 6 composition and projection diagnostics</summary><pre id="phase6Output" class="phase5-result">Supply a candidate graph and choose Compose candidate graph.</pre></details>
 </div>
 </section>
+<section class="panel" style="margin-bottom:16px">
+<div class="panel-head"><div><div class="eyebrow">00D / phase 7 knowledge layer</div><h2>Knowledge search and provenance inspection</h2></div><span class="eyebrow">READ ONLY · CANDIDATE SAFE</span></div>
+<div class="panel-body">
+<p class="hint">Search stored knowledge bundles, inspect the exact source/evidence behind a record, and review provider conflicts. Phase 2/4/5 consumers see accepted or profile-validated records by default; Phase 6 results remain candidate-only.</p>
+<div class="query-grid">
+ <div class="field"><label>Exact lexical query</label><input id="knowledgeQuery" value="bank" placeholder="e.g. bank"></div>
+ <div class="field"><label>Consumer view</label><select id="knowledgeConsumer"><option value="PHASE2">Phase 2 reasoning</option><option value="PHASE4">Phase 4 interpreter</option><option value="PHASE5">Phase 5 interpreter</option><option value="PHASE6">Phase 6 candidates only</option></select></div>
+ <div class="field"><label>Language profile</label><select id="knowledgeLanguage"><option value="">Any language</option><option value="en">English</option><option value="ar">MSA Arabic</option></select></div>
+ <div class="field"><label>Domain filter (optional)</label><input id="knowledgeDomain" placeholder="e.g. finance"></div>
+</div>
+<div class="query-actions">
+ <label style="display:flex;gap:7px;align-items:center;color:var(--muted);font-size:12px"><input id="knowledgeIncludeCandidates" type="checkbox"> Include candidate evidence (Phase 2/4/5 only; never promotes)</label>
+ <button class="primary" id="knowledgeSearchBtn">Search knowledge</button>
+ <button class="subtle" id="knowledgeBundlesBtn">List bundles</button>
+ <button class="subtle" id="knowledgeConflictsBtn">Inspect provider conflicts</button>
+</div>
+<div class="query-grid">
+ <div class="field"><label>Exact knowledge record ID</label><input id="knowledgeRecordId" placeholder="sense:..."></div>
+ <div class="field" style="justify-content:end"><label>&nbsp;</label><button class="subtle" id="knowledgeInspectBtn">Inspect record provenance</button></div>
+</div>
+<details open><summary>Knowledge retrieval and inspection output</summary><pre id="knowledgeOutput" class="phase5-result">Knowledge inspection is read-only. Choose an operation to inspect stored bundles, records, and evidence.</pre></details>
+</div>
+</section>
 <div class="layout">
 <section class="panel">
 <div class="panel-head"><div><div class="eyebrow">01 / canonical input</div><h2>USG-SEM/1.0 document</h2></div><span class="eyebrow">JSON</span></div>
@@ -691,6 +714,37 @@ $("phase5AssociationsBtn").onclick=async()=>{
   setStatus("Retrieved "+result.count+" provisional association candidates","ok");
  }catch(e){$("phase5AssociationsOutput").textContent=JSON.stringify({error:e.message},null,2);setStatus(e.message,"err")}
 };
+$("knowledgeSearchBtn").onclick=async()=>{
+ try{
+  $("knowledgeSearchBtn").disabled=true;
+  const context_filters={};
+  const domain=$("knowledgeDomain").value.trim();if(domain)context_filters.DOMAIN=domain;
+  const result=await apiRequest("POST","/api/knowledge/query",{
+   query:$("knowledgeQuery").value,consumer:$("knowledgeConsumer").value,
+   language:$("knowledgeLanguage").value||undefined,
+   context_filters,include_candidate_evidence:$("knowledgeIncludeCandidates").checked
+  });
+  $("knowledgeOutput").textContent=JSON.stringify(result,null,2);
+  setStatus("Phase 7 read-only knowledge query returned "+result.retrieval.result_count+" records","ok");
+ }catch(e){$("knowledgeOutput").textContent=JSON.stringify({error:e.message},null,2);setStatus(e.message,"err")}
+ finally{$("knowledgeSearchBtn").disabled=false}
+};
+$("knowledgeBundlesBtn").onclick=async()=>{
+ try{const result=await apiRequest("GET","/api/knowledge/bundles");$("knowledgeOutput").textContent=JSON.stringify(result,null,2);setStatus("Loaded "+result.count+" knowledge bundle snapshots","ok")}
+ catch(e){$("knowledgeOutput").textContent=JSON.stringify({error:e.message},null,2);setStatus(e.message,"err")}
+};
+$("knowledgeConflictsBtn").onclick=async()=>{
+ try{const result=await apiRequest("GET","/api/knowledge/conflicts");$("knowledgeOutput").textContent=JSON.stringify(result,null,2);setStatus("Provider conflict inspection completed; no winner selected","ok")}
+ catch(e){$("knowledgeOutput").textContent=JSON.stringify({error:e.message},null,2);setStatus(e.message,"err")}
+};
+$("knowledgeInspectBtn").onclick=async()=>{
+ try{
+  const recordId=$("knowledgeRecordId").value.trim();if(!recordId)throw new Error("Enter an exact knowledge record ID");
+  const result=await apiRequest("GET","/api/knowledge/record?record_id="+encodeURIComponent(recordId));
+  $("knowledgeOutput").textContent=JSON.stringify(result,null,2);setStatus("Loaded record provenance and evidence","ok")
+ }catch(e){$("knowledgeOutput").textContent=JSON.stringify({error:e.message},null,2);setStatus(e.message,"err")}
+};
+
 $("sampleBtn").click();
 loadQueryFixtureList();
 </script>
