@@ -190,7 +190,7 @@
 - [Phase 8 definitions roadmap](PHASE-8-DEFINITIONS-ROADMAP.md) — Ten-step plan for collecting repository-wide evidence, routing discoveries, and making future phase planning resource-aware.
 - [System-wide evidence and resource integration](USG-SYSTEM-EVIDENCE-AND-RESOURCE-INTEGRATION.md) — Source registry, operational collection, evidence classes, mandatory per-step manifests, and phase amendment/migration policy.
 - [System evidence source registry](../config/usg-system-evidence-source-registry-0.1.0.json) — Machine-readable catalogue of contracts, phases, runtime/resource families, evaluation systems, and guardrails.
-- [Phase/resource consumption map](../config/usg-phase-resource-consumption-map-0.1.0.json) — Declares which source families each phase should consider and how they may be consumed.
+- [Phase/resource consumption map](../config/usg-phase-resource-consumption-map-0.1.0.json) and [schema](../specifications/usg-phase-resource-consumption-map-0.1.0.schema.json) — Declares which source families each phase should consider and how they may be consumed.
 - [Phase resource manifest schema](../specifications/usg-phase-resource-manifest-0.1.0.schema.json) and [template](../templates/phase-resource-manifest-0.1.0.template.json) — Required resource/evidence/dependency declaration for Phase 8+ steps.
 - [System evidence collection workflow](../.github/workflows/system-evidence-collection.yml) — Daily evidence refresh, current external lexical/PUD evaluation, Open-World campaign summary, growth planner integration, and append-only snapshot publication.
 
