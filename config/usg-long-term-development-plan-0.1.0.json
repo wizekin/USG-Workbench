@@ -1386,5 +1386,165 @@
       "path": "evaluations/system-wide/evidence-catalogue/",
       "purpose": "Latest append-only system evidence snapshots and Phase 8 acceptance artifacts."
     }
+  ],
+  "operating_sequence": [
+    "Complete and verify Phase 8 automatic formal acceptance from a fresh post-merge evidence snapshot; diagnose and repair blocked checks without weakening the gate.",
+    "Only after Phase 8 is accepted, explicitly start Phase 9. First deliverable: shared conformance fixture contract; do not start broad runtime expansion.",
+    "Run the existing naturalistic PUD pilot to completion and publish its input-only limitations; use it for failure discovery, not semantic gold.",
+    "Build common cross-runtime fixture execution and deterministic replay, then use the resulting failure graph to select one high-value construction.",
+    "Prepare independent evaluation and held-out evidence before enabling that construction.",
+    "Continue the external lexical crawl and measure candidate quality; keep all lexical/morphology candidates out of runtime until the separate promotion gate.",
+    "Develop one bounded construction increment at a time, prioritizing existing Phase 6 continuation IDs and avoiding duplicate workstreams.",
+    "Integrate Phase 7 knowledge through proven read-only runtime adapters, then extend bounded reasoning.",
+    "Automate deterministic CI/test/report repairs before candidate semantic generation; keep semantic promotion separately governed."
+  ],
+  "path_trigger_rules": [
+    {
+      "phase_id": "P9",
+      "patterns": [
+        "implementations/**",
+        "interoperability/**",
+        "tests/**",
+        "benchmarks/**",
+        "tools/**",
+        "evaluations/open-world/**",
+        "documentation/USG-CROSS-IMPLEMENTATION-CONFORMANCE-MATRIX.md"
+      ],
+      "rationale": "Shared runtime fixtures, execution adapters, replay, and cross-runtime diagnostics may need re-evaluation."
+    },
+    {
+      "phase_id": "P10",
+      "patterns": [
+        "benchmarks/**",
+        "evaluations/**",
+        "resources/**",
+        "documentation/*PUD*",
+        "documentation/*CORPUS*",
+        "documentation/*EVALUATION*",
+        "tools/open_world_evaluation/**"
+      ],
+      "rationale": "Corpus evidence, gold sets, population accounting, and evaluation definitions may have changed."
+    },
+    {
+      "phase_id": "P11",
+      "patterns": [
+        "tools/usg_external_lexical_v0_1_0/**",
+        "resources/**",
+        "evaluations/external-lexical/**",
+        "tests/*lexical*",
+        "tests/*morph*",
+        "documentation/EXTERNAL-LEXICAL*"
+      ],
+      "rationale": "Lexical acquisition, candidate interfaces, morphology, and OOV evidence may have changed."
+    },
+    {
+      "phase_id": "P12",
+      "patterns": [
+        "implementations/**",
+        "resources/**",
+        "tools/usg_interpreter/**",
+        "tests/*interpret*",
+        "tests/*construction*",
+        "documentation/PHASE-6*"
+      ],
+      "rationale": "Construction grammar, morphology, attachment, and Phase 6 continuation work may affect the construction roadmap."
+    },
+    {
+      "phase_id": "P13",
+      "patterns": [
+        "specifications/**",
+        "implementations/**",
+        "interoperability/**",
+        "tools/**",
+        "tests/**",
+        "documentation/PHASE-2*",
+        "documentation/PHASE-3*"
+      ],
+      "rationale": "Composition, stage interfaces, canonical projection, or persistence behavior may have changed."
+    },
+    {
+      "phase_id": "P14",
+      "patterns": [
+        "implementations/**",
+        "resources/**",
+        "tools/**",
+        "tests/*operator*",
+        "tests/*scope*",
+        "documentation/PHASE-6*"
+      ],
+      "rationale": "Operator and scope changes may affect the planned operator workstream."
+    },
+    {
+      "phase_id": "P15",
+      "patterns": [
+        "implementations/**",
+        "resources/**",
+        "tools/**",
+        "tests/*discourse*",
+        "tests/*reference*",
+        "documentation/PHASE-5*",
+        "documentation/PHASE-6*"
+      ],
+      "rationale": "Discourse and reference behavior may affect the discourse roadmap."
+    },
+    {
+      "phase_id": "P16",
+      "patterns": [
+        "implementations/**",
+        "tools/**",
+        "resources/**",
+        "config/**",
+        "evaluations/phase7/**",
+        "tests/*knowledge*",
+        "documentation/PHASE-7*"
+      ],
+      "rationale": "Knowledge-layer contracts, mappings, retrieval, and runtime consumption may have changed."
+    },
+    {
+      "phase_id": "P17",
+      "patterns": [
+        "implementations/**",
+        "tools/**",
+        "specifications/**",
+        "tests/*reason*",
+        "tests/*evidence*",
+        "documentation/PHASE-2*"
+      ],
+      "rationale": "Reasoning, evidence assessment, and explanation dependencies may have changed."
+    },
+    {
+      "phase_id": "P18",
+      "patterns": [
+        ".github/workflows/**",
+        "tools/system_evidence/**",
+        "tools/open_world_evaluation/**",
+        "evaluations/**",
+        "documentation/USG-GROWTH*",
+        "documentation/USG-AUTONOMOUS*"
+      ],
+      "rationale": "Automation, growth planning, repair execution, and candidate governance may have changed."
+    },
+    {
+      "phase_id": "P19",
+      "patterns": [
+        "tools/usg-kernel-lab/**",
+        "api/**",
+        "implementations/**",
+        "pyproject.toml",
+        "package.json",
+        "README.md",
+        "documentation/**"
+      ],
+      "rationale": "Workbench interfaces, packaging, operation, and developer documentation may have changed."
+    },
+    {
+      "phase_id": "P20",
+      "patterns": [
+        "multimodal/**",
+        "resources/multimodal/**",
+        "evaluations/multimodal/**"
+      ],
+      "rationale": "Only explicit modality-related additions should reopen this deferred exploratory horizon."
+    }
   ]
 }
