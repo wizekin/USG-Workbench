@@ -32,8 +32,8 @@ This backlog converts the system-wide assessment into bounded, dependency-ordere
 | SYS-02 | **Core implementation merged; attribution-completeness follow-up in validation** | PR #185 added initial first-blocker attribution. Follow-up PR #188 adds diagnostic-code counts, resource fingerprints, and strict pipeline-version matching before applying a dependency profile. |
 | SYS-07 | **Complete for registered Phase 4/5 profiles** | PR #186 merged to main; merge commit 39fd60d2c9ab4089820a7441a29d90aa957cac3a. Phase-specific DAG dependencies preserve parallel blockers and avoid a false global linear order. |
 | SYS-14 | **Initial implementation in validation** | PR #187 adds pinned replay, target-result comparison, explicit volatile-field policy, and CI smoke replay. Full automatic replay of every accepted repair and frozen failure corpus remains a follow-up acceptance step. |
-| SYS-05 | **Implemented in PR #190; awaiting merge** | Versioned `USG-LEXICAL-CANDIDATES/0.1.0` JSON Schema plus deterministic `USG-LEXICAL-ADAPTER/0.1.0` read-only adapter, provenance/identity checks, and candidate-only enforcement. | 
-| SYS-06 | **Implemented in PR #190; awaiting merge** | English OOV and polysemy regressions plus Arabic OOV regression; unknown forms remain unresolved and bank remains ambiguous. |
+| SYS-05 | **Complete** | Versioned `USG-LEXICAL-CANDIDATES/0.1.0` JSON Schema plus deterministic `USG-LEXICAL-ADAPTER/0.1.0` read-only adapter, provenance/identity checks, and candidate-only enforcement. | 
+| SYS-06 | **Complete** | English OOV and polysemy regressions plus Arabic OOV regression; unknown forms remain unresolved and bank remains ambiguous. |
 
 These are implementation states, not claims that USG's semantic accuracy has improved. The work so far improves evaluation trustworthiness and repeatability; it does not add new accepted language-understanding capabilities.
 
