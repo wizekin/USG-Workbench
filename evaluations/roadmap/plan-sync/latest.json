@@ -1,0 +1,525 @@
+{
+  "backlog_statuses": [
+    {
+      "id": "SYS-01",
+      "reported_status": "Complete"
+    },
+    {
+      "id": "SYS-02",
+      "reported_status": "Complete for registered Phase 4/5 profiles"
+    },
+    {
+      "id": "SYS-03",
+      "reported_status": "Pilot generator and source validation complete; first full campaign scheduled"
+    },
+    {
+      "id": "SYS-04",
+      "reported_status": "Complete for English browser execution"
+    },
+    {
+      "id": "SYS-05",
+      "reported_status": "Complete"
+    },
+    {
+      "id": "SYS-06",
+      "reported_status": "Complete"
+    },
+    {
+      "id": "SYS-07",
+      "reported_status": "Complete for registered Phase 4/5 profiles"
+    },
+    {
+      "id": "SYS-12",
+      "reported_status": "Initial inventory complete; cross-runtime conformance not yet tested"
+    },
+    {
+      "id": "SYS-13",
+      "reported_status": "Complete for Phase 5 Kernel Lab explanations"
+    },
+    {
+      "id": "SYS-14",
+      "reported_status": "Initial implementation merged; corpus-wide replay remains open"
+    },
+    {
+      "id": "SYS-15",
+      "reported_status": "Complete for evidence aggregation and prioritization"
+    }
+  ],
+  "change_observation": {
+    "changed_path_count": 12,
+    "changed_paths": [
+      ".github/workflows/system-evidence-collection.yml",
+      ".github/workflows/usg-long-term-roadmap-sync.yml",
+      "README.md",
+      "config/usg-long-term-development-plan-0.1.0.json",
+      "config/usg-phase-resource-consumption-map-0.1.0.json",
+      "config/usg-system-evidence-source-registry-0.1.0.json",
+      "documentation/README.md",
+      "documentation/USG-LONG-TERM-DEVELOPMENT-PLAN.md",
+      "documentation/USG-SYSTEM-EVIDENCE-AND-RESOURCE-INTEGRATION.md",
+      "specifications/usg-long-term-development-plan-0.1.0.schema.json",
+      "tests/test_long_term_plan_sync.py",
+      "tools/system_evidence/long_term_plan_sync.py"
+    ],
+    "impacted_workstreams": [
+      {
+        "matched_paths": [
+          "tests/test_long_term_plan_sync.py",
+          "tools/system_evidence/long_term_plan_sync.py"
+        ],
+        "phase_id": "P9",
+        "rationale": "Shared runtime fixtures, execution adapters, replay, and cross-runtime diagnostics may need re-evaluation."
+      },
+      {
+        "matched_paths": [
+          "specifications/usg-long-term-development-plan-0.1.0.schema.json",
+          "tests/test_long_term_plan_sync.py",
+          "tools/system_evidence/long_term_plan_sync.py"
+        ],
+        "phase_id": "P13",
+        "rationale": "Composition, stage interfaces, canonical projection, or persistence behavior may have changed."
+      },
+      {
+        "matched_paths": [
+          "tools/system_evidence/long_term_plan_sync.py"
+        ],
+        "phase_id": "P14",
+        "rationale": "Operator and scope changes may affect the planned operator workstream."
+      },
+      {
+        "matched_paths": [
+          "tools/system_evidence/long_term_plan_sync.py"
+        ],
+        "phase_id": "P15",
+        "rationale": "Discourse and reference behavior may affect the discourse roadmap."
+      },
+      {
+        "matched_paths": [
+          "config/usg-long-term-development-plan-0.1.0.json",
+          "config/usg-phase-resource-consumption-map-0.1.0.json",
+          "config/usg-system-evidence-source-registry-0.1.0.json",
+          "tools/system_evidence/long_term_plan_sync.py"
+        ],
+        "phase_id": "P16",
+        "rationale": "Knowledge-layer contracts, mappings, retrieval, and runtime consumption may have changed."
+      },
+      {
+        "matched_paths": [
+          "specifications/usg-long-term-development-plan-0.1.0.schema.json",
+          "tools/system_evidence/long_term_plan_sync.py"
+        ],
+        "phase_id": "P17",
+        "rationale": "Reasoning, evidence assessment, and explanation dependencies may have changed."
+      },
+      {
+        "matched_paths": [
+          ".github/workflows/system-evidence-collection.yml",
+          ".github/workflows/usg-long-term-roadmap-sync.yml",
+          "tools/system_evidence/long_term_plan_sync.py"
+        ],
+        "phase_id": "P18",
+        "rationale": "Automation, growth planning, repair execution, and candidate governance may have changed."
+      },
+      {
+        "matched_paths": [
+          "README.md",
+          "documentation/README.md",
+          "documentation/USG-LONG-TERM-DEVELOPMENT-PLAN.md",
+          "documentation/USG-SYSTEM-EVIDENCE-AND-RESOURCE-INTEGRATION.md"
+        ],
+        "phase_id": "P19",
+        "rationale": "Workbench interfaces, packaging, operation, and developer documentation may have changed."
+      }
+    ],
+    "interpretation": "Changed paths identify workstreams that should be re-evaluated; they do not prove task completion or semantic capability.",
+    "requires_plan_review": true
+  },
+  "commit_sha": "4fa85a3206659d1389d8650e83ed23c7610a861a",
+  "contract": "USG-LONG-TERM-PLAN-SYNC/0.1.0",
+  "event_name": "push",
+  "generated_at": "2026-11-12T15:36:43Z",
+  "governance": {
+    "candidate_promotion_allowed": false,
+    "future_phase_implementation_started": false,
+    "normative_contract_mutation_allowed": false,
+    "phase_acceptance_inferred_from_merge": false,
+    "semantic_runtime_mutation_allowed": false,
+    "source_of_truth_files_modified": false,
+    "strategic_plan_modified": false
+  },
+  "maintenance_actions": [
+    "Refresh impacted workstream dependencies and source links before starting affected tasks.",
+    "Phase 8 formal acceptance remains unverified or blocked; resolve it before starting Phase 9."
+  ],
+  "phase6_continuation_statuses": [
+    {
+      "id": "P6-CONT-01",
+      "reported_status": "backlog"
+    },
+    {
+      "id": "P6-CONT-02",
+      "reported_status": "backlog"
+    },
+    {
+      "id": "P6-CONT-03",
+      "reported_status": "backlog"
+    },
+    {
+      "id": "P6-CONT-04",
+      "reported_status": "candidate_only"
+    },
+    {
+      "id": "P6-CONT-05",
+      "reported_status": "candidate_only"
+    },
+    {
+      "id": "P6-CONT-06",
+      "reported_status": "backlog"
+    },
+    {
+      "id": "P6-CONT-07",
+      "reported_status": "backlog"
+    },
+    {
+      "id": "P6-CONT-08",
+      "reported_status": "candidate_only"
+    }
+  ],
+  "phase8_formal_acceptance": {
+    "artifact": "evaluations/system-wide/evidence-catalogue/43236793438-1/phase8-integrated-acceptance.json",
+    "decision_id": null,
+    "phase_accepted": false,
+    "reason": "Latest artifact does not prove accepted exact-head Phase 8 formal acceptance.",
+    "source_commit_sha": null,
+    "status": "eligible_for_review",
+    "validated_commit_sha": null,
+    "workflow_run_attempt": null,
+    "workflow_run_id": null
+  },
+  "phase_snapshots": [
+    {
+      "authoritative_registry_status": null,
+      "dependencies": [
+        "P8 formal acceptance artifact",
+        "existing SYS-12 inventory",
+        "existing browser adapter"
+      ],
+      "linked_backlog": [
+        {
+          "id": "SYS-12",
+          "status": "Initial inventory complete; cross-runtime conformance not yet tested"
+        },
+        {
+          "id": "SYS-14",
+          "status": "Initial implementation merged; corpus-wide replay remains open"
+        },
+        {
+          "id": "SYS-04",
+          "status": "Complete for English browser execution"
+        }
+      ],
+      "linked_phase6_continuations": [],
+      "phase_id": "P9",
+      "planned_status": "planned_not_started",
+      "title": "Cross-runtime conformance and reproducible evaluation foundation"
+    },
+    {
+      "authoritative_registry_status": null,
+      "dependencies": [
+        "P9.1",
+        "P9.3",
+        "P9.5"
+      ],
+      "linked_backlog": [
+        {
+          "id": "SYS-03",
+          "status": "Pilot generator and source validation complete; first full campaign scheduled"
+        },
+        {
+          "id": "SYS-09",
+          "status": "not_reported"
+        },
+        {
+          "id": "SYS-10",
+          "status": "not_reported"
+        },
+        {
+          "id": "SYS-11",
+          "status": "not_reported"
+        }
+      ],
+      "linked_phase6_continuations": [],
+      "phase_id": "P10",
+      "planned_status": "planned_not_started",
+      "title": "Independent evaluation and language evidence programme"
+    },
+    {
+      "authoritative_registry_status": null,
+      "dependencies": [
+        "P9.1",
+        "P10.1",
+        "P10.5"
+      ],
+      "linked_backlog": [
+        {
+          "id": "SYS-05",
+          "status": "Complete"
+        },
+        {
+          "id": "SYS-06",
+          "status": "Complete"
+        },
+        {
+          "id": "SYS-17",
+          "status": "not_reported"
+        }
+      ],
+      "linked_phase6_continuations": [],
+      "phase_id": "P11",
+      "planned_status": "planned_not_started",
+      "title": "Lexical, morphology, and contextual candidate quality"
+    },
+    {
+      "authoritative_registry_status": null,
+      "dependencies": [
+        "P9",
+        "P10.6",
+        "P11.3"
+      ],
+      "linked_backlog": [
+        {
+          "id": "SYS-08",
+          "status": "not_reported"
+        },
+        {
+          "id": "SYS-09",
+          "status": "not_reported"
+        }
+      ],
+      "linked_phase6_continuations": [
+        {
+          "id": "P6-CONT-01",
+          "status": "backlog"
+        },
+        {
+          "id": "P6-CONT-02",
+          "status": "backlog"
+        },
+        {
+          "id": "P6-CONT-03",
+          "status": "backlog"
+        }
+      ],
+      "phase_id": "P12",
+      "planned_status": "planned_not_started",
+      "title": "Construction grammar and syntactic coverage expansion"
+    },
+    {
+      "authoritative_registry_status": null,
+      "dependencies": [
+        "P9",
+        "P10.6",
+        "P12"
+      ],
+      "linked_backlog": [],
+      "linked_phase6_continuations": [
+        {
+          "id": "P6-CONT-06",
+          "status": "backlog"
+        }
+      ],
+      "phase_id": "P13",
+      "planned_status": "planned_not_started",
+      "title": "Semantic composition and canonical meaning projection"
+    },
+    {
+      "authoritative_registry_status": null,
+      "dependencies": [
+        "P10.6",
+        "P12",
+        "P13.1"
+      ],
+      "linked_backlog": [],
+      "linked_phase6_continuations": [
+        {
+          "id": "P6-CONT-04",
+          "status": "candidate_only"
+        }
+      ],
+      "phase_id": "P14",
+      "planned_status": "planned_not_started",
+      "title": "Operator, scope, time and modality system"
+    },
+    {
+      "authoritative_registry_status": null,
+      "dependencies": [
+        "P10.6",
+        "P12",
+        "P13.1"
+      ],
+      "linked_backlog": [],
+      "linked_phase6_continuations": [
+        {
+          "id": "P6-CONT-05",
+          "status": "candidate_only"
+        }
+      ],
+      "phase_id": "P15",
+      "planned_status": "planned_not_started",
+      "title": "Discourse, reference and entity tracking"
+    },
+    {
+      "authoritative_registry_status": null,
+      "dependencies": [
+        "P9",
+        "P11.3",
+        "P13.1"
+      ],
+      "linked_backlog": [],
+      "linked_phase6_continuations": [],
+      "phase_id": "P16",
+      "planned_status": "planned_not_started",
+      "title": "Knowledge-layer integration and contextual retrieval"
+    },
+    {
+      "authoritative_registry_status": null,
+      "dependencies": [
+        "P13",
+        "P14",
+        "P15",
+        "P16"
+      ],
+      "linked_backlog": [],
+      "linked_phase6_continuations": [],
+      "phase_id": "P17",
+      "planned_status": "planned_not_started",
+      "title": "Evidence-grounded semantic reasoning and explanation"
+    },
+    {
+      "authoritative_registry_status": null,
+      "dependencies": [
+        "P9",
+        "P10",
+        "P11",
+        "P12",
+        "P13"
+      ],
+      "linked_backlog": [
+        {
+          "id": "SYS-15",
+          "status": "Complete for evidence aggregation and prioritization"
+        },
+        {
+          "id": "SYS-16",
+          "status": "not_reported"
+        },
+        {
+          "id": "SYS-17",
+          "status": "not_reported"
+        }
+      ],
+      "linked_phase6_continuations": [],
+      "phase_id": "P18",
+      "planned_status": "planned_not_started",
+      "title": "Governed autonomous development and candidate learning"
+    },
+    {
+      "authoritative_registry_status": null,
+      "dependencies": [
+        "P9",
+        "P13",
+        "P16",
+        "P17"
+      ],
+      "linked_backlog": [
+        {
+          "id": "SYS-13",
+          "status": "Complete for Phase 5 Kernel Lab explanations"
+        }
+      ],
+      "linked_phase6_continuations": [],
+      "phase_id": "P19",
+      "planned_status": "planned_not_started",
+      "title": "Workbench integration, release engineering and operational hardening"
+    },
+    {
+      "authoritative_registry_status": null,
+      "dependencies": [
+        "P10",
+        "P13",
+        "P16",
+        "P17"
+      ],
+      "linked_backlog": [],
+      "linked_phase6_continuations": [],
+      "phase_id": "P20",
+      "planned_status": "exploratory_only_not_scheduled",
+      "title": "Optional multimodal and grounded-world research horizon"
+    }
+  ],
+  "plan_contract": "USG-LONG-TERM-DEVELOPMENT-PLAN/0.1.0",
+  "plan_version": "0.1.0",
+  "repository": "wizekin/USG-Workbench",
+  "source_fingerprints": [
+    {
+      "exists": true,
+      "file_count": 1,
+      "path": "config/usg-system-evidence-source-registry-0.1.0.json",
+      "sha256": "81167cbb12380ba129c30b5a68df81921a8d43e95a6426271d73e87c0acb47f8"
+    },
+    {
+      "exists": true,
+      "file_count": 1,
+      "path": "config/usg-phase-resource-consumption-map-0.1.0.json",
+      "sha256": "e0932b37e58954efb87e54d6de1a45a69186b8bab26e8a8e48467f75e8ba98ac"
+    },
+    {
+      "exists": true,
+      "file_count": 1,
+      "path": "documentation/USG-SYSTEM-IMPROVEMENT-BACKLOG.md",
+      "sha256": "34a14bade6d222479fe5c5be6f87eb8a52e4984b4d78f913f47c083aa3e29ef1"
+    },
+    {
+      "exists": true,
+      "file_count": 1,
+      "path": "evaluations/phase6-continuation/tracker.json",
+      "sha256": "5561a9d5d856f8652f2e2811337bfd8bb88a3e2981cf949bb07543cc0e78b65f"
+    },
+    {
+      "exists": true,
+      "file_count": 1,
+      "path": "documentation/PHASE-7-DEFINITIONS-ROADMAP.md",
+      "sha256": "ff5beffb2c0eed07679fde616de2a4b532efcfc23df68ba33aabdb14c6d30880"
+    },
+    {
+      "exists": true,
+      "file_count": 1,
+      "path": "documentation/PHASE-8-DEFINITIONS-ROADMAP.md",
+      "sha256": "fbd95f5356bfe94cbd7ddd0c05d399b5bc939a1e9b8a37d46f8a25e4a807f89a"
+    },
+    {
+      "exists": true,
+      "file_count": 1,
+      "path": "documentation/USG-GROWTH-POLICY-AND-AUTONOMY.md",
+      "sha256": "3468261cb07c6ee67fdc7991e710bd0c2526527535f88fd719131078540b3dac"
+    },
+    {
+      "exists": true,
+      "file_count": 1,
+      "path": "documentation/USG-CROSS-IMPLEMENTATION-CONFORMANCE-MATRIX.md",
+      "sha256": "0fda1660216bebdd05c5ffe80f0d470006c62a2e0ab580f27001c91be9a66d76"
+    },
+    {
+      "exists": true,
+      "file_count": 1,
+      "path": "documentation/USG-SYSTEM-WIDE-CAPABILITY-ASSESSMENT-2026-11-12.md",
+      "sha256": "93b4f2d2fbfc6567ef3617aa786e1a1594686570505f9076d4ec16939e7d2b7e"
+    },
+    {
+      "exists": true,
+      "file_count": 11,
+      "path": "evaluations/system-wide/evidence-catalogue/",
+      "sha256": "a82028e84bc21a8922adb297723248355b09034a5b6872ea90fdfee31678597e"
+    }
+  ]
+}
