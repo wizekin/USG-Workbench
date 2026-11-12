@@ -1,6 +1,7 @@
 """GitHub Actions evidence collector tests with deterministic API fixtures."""
 from __future__ import annotations
 import json
+from pathlib import Path
 import unittest
 
 from tools.system_evidence.github_actions import collect_workflow_runs
@@ -114,6 +115,18 @@ class GitHubActionsEvidenceTests(unittest.TestCase):
             collect_workflow_runs("not-a-repository", "token")
         with self.assertRaises(ValueError):
             collect_workflow_runs("wizekin/USG-Workbench", "")
+
+    def test_operational_workflow_runs_acceptance_and_preserves_blocked_reports(self):
+        root = Path(__file__).resolve().parents[1]
+        workflow = (root / ".github/workflows/system-evidence-collection.yml").read_text(encoding="utf-8")
+        collector = workflow.index('python -m tools.system_evidence.collector "$@"')
+        acceptance = workflow.index("python -m tools.system_evidence.acceptance")
+        snapshot = workflow.index("Assemble append-only evidence snapshot")
+        self.assertLess(collector, acceptance)
+        self.assertLess(acceptance, snapshot)
+        self.assertIn('phase8-integrated-acceptance.json', workflow)
+        self.assertIn('acceptance_exit=$?', workflow)
+        self.assertIn('The integrated gate is blocked; the evidence snapshot will still be preserved', workflow)
 
 
 if __name__ == "__main__":
