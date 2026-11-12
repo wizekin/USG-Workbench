@@ -80,12 +80,39 @@ def build_bilingual_alignment_bundle(resource: dict[str, Any], *, created_at: st
             skipped += 1
             continue
         sense_key = entry["sense_id"]
-        if sense_key in seen_senses:
-            if seen_senses[sense_key] != entry:
-                raise AlignmentProposalError(f"conflicting duplicate sense_id: {sense_key}")
-            continue
-        seen_senses[sense_key] = entry
+        signature = (language, entry["lemma"], entry["part_of_speech"], entry["concept_ref"])
         context_id = _id("context", "language", language)
+        if sense_key in seen_senses:
+            if seen_senses[sense_key] != signature:
+                raise AlignmentProposalError(f"conflicting duplicate sense_id: {sense_key}")
+            # Multiple forms/features may belong to one lexical sense. Preserve each
+            # form and its evidence, but do not duplicate the sense or mapping.
+            duplicate_evidence_id = _id("evidence", resource_id, version, sense_key, entry["form"], _id("entry", _canonical(entry).hex()))
+            evidence.append({
+                "id": duplicate_evidence_id, "source_id": source_id, "evidence_type": "OTHER",
+                "support_status": "UNASSESSED",
+                "locator": f"repository-resource:{resource_id}@{version}#sense:{sense_key}#form:{entry['form']}",
+                "text_digest": sha256(_canonical(entry)).hexdigest(), "captured_at": created_at,
+                "transformation_ids": [],
+                "notes": "Additional surface-form observation for an existing lexical sense; not a separate sense.",
+            })
+            sense_record_id = _id("lexical-sense", resource_id, version, sense_key)
+            sense_record = next(x for x in records if x["id"] == sense_record_id)
+            sense_record["evidence_ids"].append(duplicate_evidence_id)
+            mapping_record = next(x for x in mappings if x["source_record_id"] == sense_record_id)
+            mapping_record["evidence_ids"].append(duplicate_evidence_id)
+            form_id = _id("lexical-form", language, entry["form"])
+            if not any(x["id"] == form_id for x in records):
+                records.append({
+                    "id": form_id, "kind": "LEXICAL_FORM", "version": 1, "state": "CANDIDATE",
+                    "created_at": created_at, "source_ids": [source_id], "evidence_ids": [duplicate_evidence_id],
+                    "context_ids": [context_id],
+                    "payload": {"form": entry["form"], "language": language,
+                                "script": "Latn" if language == "en" else "Arab",
+                                "features": deepcopy(entry.get("features", {}))},
+                })
+            continue
+        seen_senses[sense_key] = signature
         contexts.setdefault(context_id, {
             "id": context_id, "context_type": "LANGUAGE", "value": language,
             "language_profile": language,
@@ -129,7 +156,7 @@ def build_bilingual_alignment_bundle(resource: dict[str, Any], *, created_at: st
                 "created_at": created_at, "source_ids": [source_id], "evidence_ids": [entry_evidence_id],
                 "context_ids": [context_id],
                 "payload": {"form": entry["form"], "language": language,
-                            "script": "Latn" if language == "en" else "Arab"},
+                            "script": "Latn" if language == "en" else "Arab", "features": deepcopy(entry.get("features", {}))},
             })
         concept_ref = entry["concept_ref"]
         concept_id = concepts.get(concept_ref)
