@@ -8,6 +8,9 @@ on:
       - "tests/test_phase6_step_6_5_predicate_argument.py"
       - "documentation/PHASE-6-STEP-6.5-PREDICATE-ARGUMENT-STRUCTURES.md"
       - ".github/workflows/phase6-step-6-5-predicate-argument.yml"
+      - "tools/phase6_broader_semantics_v0_1/**"
+      - "tests/test_phase6_broader_semantics.py"
+      - "documentation/PHASE-6-STEPS-6.7-6.12-CANDIDATE-COMPOSITION.md"
   push:
     branches: [main]
     paths:
@@ -16,6 +19,8 @@ on:
       - "tools/phase6_predicate_argument_v0_3_0/**"
       - "tests/test_phase6_step_6_5_predicate_argument.py"
       - ".github/workflows/phase6-step-6-5-predicate-argument.yml"
+      - "tools/phase6_broader_semantics_v0_1/**"
+      - "tests/test_phase6_broader_semantics.py"
   workflow_dispatch:
 permissions:
   contents: read
@@ -38,6 +43,8 @@ jobs:
           python -m tools.phase6_predicate_argument_v0_3_0.validate
           python -m tools.phase6_predicate_argument_v0_3_0.run
           python -m unittest discover -s tests -p 'test_phase6_step_6_5_predicate_argument.py' -v
+          python -m compileall -q tools/phase6_broader_semantics_v0_1
+          python -m unittest discover -s tests -p 'test_phase6_broader_semantics.py' -v
       - name: Verify Phase 1–5 and canonical semantic contracts remain unchanged
         run: |
           git diff --exit-code origin/main...HEAD -- documentation/PHASE-[1-5]* specifications/USG-SEM-1.0.md specifications/usg-sem-1.0.schema.json specifications/usg-interpret-expression-graph-0.2.0.schema.json tools/usg_interpretation_v0_1_0 tools/usg_interpretation_v0_2_0 archives/ implementations/
