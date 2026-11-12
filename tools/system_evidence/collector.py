@@ -135,7 +135,11 @@ def external_lexical(manifest_path: Path | None, checkpoint_path: Path | None,
     last = manifest.get("last_batch", {})
     budget = int(manifest.get("storage_budget_bytes", 0) or 0)
     shard_count = int(shard_inventory.get("file_count", 0) or 0) if shard_inventory else None
-    shard_inventory_match = bool(shard_inventory is not None and shard_count == batches)
+    shard_inventory_match = bool(
+        shard_inventory is not None
+        and shard_count == batches
+        and shard_inventory.get("status") in {"matches_manifest", "matches_manifest_with_duplicates"}
+    )
     pud_fresh = bool(pud is not None and shards == batches and shard_inventory_match)
     return {
         "status": manifest.get("status", "unknown"), "manifest_available": True,
