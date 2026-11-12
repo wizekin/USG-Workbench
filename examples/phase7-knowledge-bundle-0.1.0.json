@@ -1,0 +1,171 @@
+{
+  "contract": "USG-KNOWLEDGE/0.1.0",
+  "namespace": "urn:usg:example",
+  "bundle_id": "phase7-example-001",
+  "created_at": "2026-11-12T00:00:00Z",
+  "records": [
+    {
+      "id": "form:en:bank",
+      "kind": "LEXICAL_FORM",
+      "version": 1,
+      "state": "CANDIDATE",
+      "created_at": "2026-11-12T00:00:00Z",
+      "source_ids": [
+        "source:demo"
+      ],
+      "evidence_ids": [
+        "evidence:form"
+      ],
+      "context_ids": [
+        "context:en"
+      ],
+      "payload": {
+        "form": "bank",
+        "language": "en",
+        "script": "Latn"
+      }
+    },
+    {
+      "id": "lemma:en:bank",
+      "kind": "LEMMA",
+      "version": 1,
+      "state": "CANDIDATE",
+      "created_at": "2026-11-12T00:00:00Z",
+      "source_ids": [
+        "source:demo"
+      ],
+      "evidence_ids": [
+        "evidence:lemma"
+      ],
+      "context_ids": [
+        "context:en"
+      ],
+      "payload": {
+        "lemma": "bank",
+        "language": "en",
+        "part_of_speech": "NOUN"
+      }
+    },
+    {
+      "id": "sense:en:bank:financial",
+      "kind": "LEXICAL_SENSE",
+      "version": 1,
+      "state": "CANDIDATE",
+      "created_at": "2026-11-12T00:00:00Z",
+      "source_ids": [
+        "source:demo"
+      ],
+      "evidence_ids": [
+        "evidence:sense"
+      ],
+      "context_ids": [
+        "context:finance"
+      ],
+      "payload": {
+        "lemma_record_id": "lemma:en:bank",
+        "language": "en",
+        "definition": "A financial institution.",
+        "sense_source_id": "source:demo"
+      }
+    },
+    {
+      "id": "concept:financial-institution",
+      "kind": "CONCEPT",
+      "version": 1,
+      "state": "UNRESOLVED",
+      "created_at": "2026-11-12T00:00:00Z",
+      "source_ids": [
+        "source:demo"
+      ],
+      "evidence_ids": [
+        "evidence:concept"
+      ],
+      "context_ids": [
+        "context:finance"
+      ],
+      "payload": {
+        "concept_type": "INSTITUTION",
+        "namespace": "urn:usg:example",
+        "label": "financial institution"
+      }
+    }
+  ],
+  "sources": [
+    {
+      "id": "source:demo",
+      "provider": "USG example fixture",
+      "source_type": "OTHER",
+      "source_locator": null,
+      "retrieved_at": "2026-11-12T00:00:00Z",
+      "license_id": null,
+      "rights_status": "INTERNAL",
+      "redistribution": "NOT_APPLICABLE",
+      "attribution": "Synthetic example authored for schema tests.",
+      "content_digest": null,
+      "adapter_id": null,
+      "adapter_version": null
+    }
+  ],
+  "evidence": [
+    {
+      "id": "evidence:form",
+      "source_id": "source:demo",
+      "evidence_type": "EXAMPLE",
+      "support_status": "UNASSESSED",
+      "locator": null,
+      "text_digest": null,
+      "captured_at": "2026-11-12T00:00:00Z",
+      "transformation_ids": [],
+      "notes": "Synthetic form fixture."
+    },
+    {
+      "id": "evidence:lemma",
+      "source_id": "source:demo",
+      "evidence_type": "EXAMPLE",
+      "support_status": "UNASSESSED",
+      "locator": null,
+      "text_digest": null,
+      "captured_at": "2026-11-12T00:00:00Z",
+      "transformation_ids": [],
+      "notes": "Synthetic lemma fixture."
+    },
+    {
+      "id": "evidence:sense",
+      "source_id": "source:demo",
+      "evidence_type": "EXAMPLE",
+      "support_status": "UNASSESSED",
+      "locator": null,
+      "text_digest": null,
+      "captured_at": "2026-11-12T00:00:00Z",
+      "transformation_ids": [],
+      "notes": "Synthetic sense fixture."
+    },
+    {
+      "id": "evidence:concept",
+      "source_id": "source:demo",
+      "evidence_type": "EXAMPLE",
+      "support_status": "UNASSESSED",
+      "locator": null,
+      "text_digest": null,
+      "captured_at": "2026-11-12T00:00:00Z",
+      "transformation_ids": [],
+      "notes": "Concept remains unresolved in this illustrative fixture."
+    }
+  ],
+  "contexts": [
+    {
+      "id": "context:en",
+      "context_type": "LANGUAGE",
+      "value": "en",
+      "language_profile": "en"
+    },
+    {
+      "id": "context:finance",
+      "context_type": "DOMAIN",
+      "value": "finance",
+      "scope": "illustrative only"
+    }
+  ],
+  "mappings": [],
+  "relations": []
+}
