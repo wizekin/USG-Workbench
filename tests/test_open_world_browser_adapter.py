@@ -7,6 +7,7 @@ import unittest
 from tools.open_world_evaluation.browser_adapter import (
     ADAPTER_ID,
     stable_workbench_projection,
+    browser_request_is_allowed,
 )
 from tools.open_world_evaluation.execute_cases import execute_case
 from tools.open_world_evaluation.generate_scenarios import ScenarioGenerator
@@ -45,6 +46,14 @@ class BrowserAdapterProjectionTests(unittest.TestCase):
         self.assertEqual(first["claim_count"], 1)
         self.assertEqual(first["claims"][0]["predicate"], "MEASURES")
         self.assertEqual(first["source"]["sha256"] and len(first["source"]["sha256"]), 64)
+
+    def test_browser_network_policy_allows_only_local_workbench(self):
+        self.assertTrue(browser_request_is_allowed("http://127.0.0.1:8765/"))
+        self.assertTrue(browser_request_is_allowed("http://localhost:8765/api/health"))
+        self.assertTrue(browser_request_is_allowed("data:text/plain,fixture"))
+        self.assertFalse(browser_request_is_allowed("https://example.com/"))
+        self.assertFalse(browser_request_is_allowed("http://192.168.1.1/"))
+        self.assertFalse(browser_request_is_allowed("file:///etc/passwd"))
 
     def test_non_english_input_is_explicitly_unsupported(self):
         case = {"input": {"text": "الطالب يقرأ الكتاب.", "language_hint": "ar"}}
