@@ -23,7 +23,7 @@ The new route is \`POST /v3/phase6/interpret\`. It returns the Phase 5 stage env
 
 ## Steps 6.7–6.11: integrated construction candidates
 
-- **6.7 Coordination:** clause-level AND/OR/CONTRAST candidates are carried from explicit Phase 5 segmentation boundaries. Strict bilingual fallback templates cover one bounded coordinated-subject pattern in each language. Shared-argument behavior is retained only where the underlying stage emits it; the current integration does not claim general phrase-level coordination coverage.
+- **6.7 Coordination:** clause-level AND/OR/CONTRAST candidates are carried from explicit Phase 5 segmentation boundaries. The strict bilingual coordinated-subject template also represents two agents sharing one predicate and patient, reusing exact Phase 5 role/span nodes where available and adding only missing participant/coordination edges. This is a bounded candidate pattern, not productive general coordination.
 - **6.8 Embedded/subordinate clauses:** clause boundaries are preserved with parent/child clause links. COMPLEMENT, CAUSAL, CONDITIONAL, and TEMPORAL markers are attached as typed candidate relations when both clauses have predicate candidates. Unsupported or unlicensed attachments remain diagnostics.
 - **6.9 Voice/speech acts:** the bounded passive-question templates remain available as candidate fallback. The general Phase 5 stage does not yet provide a full passive/imperative recognizer; those constructions are not benchmark-enabled.
 - **6.10 Operators:** existing Phase 5 negation, modality, tense, aspect, and quantifier candidates are projected into the Phase 6 graph with exact marker spans and explicit local targets. Scope ambiguity and unsupported targets remain visible; no sentence-wide scope is guessed.
