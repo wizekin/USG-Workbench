@@ -36,7 +36,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: usg-system-evidence-collection-\${{ github.event_name }}
+  group: usg-system-evidence-collection-${{ github.event_name }}
   cancel-in-progress: false
 
 jobs:
@@ -81,9 +81,9 @@ jobs:
       contents: write
       pull-requests: write
     env:
-      GITHUB_TOKEN: \${{ github.token }}
-      MAX_CAMPAIGNS: \${{ inputs.max_campaigns || '20' }}
-      REFRESH_EXTERNAL_PUD: \${{ inputs.refresh_external_pud || 'true' }}
+      GITHUB_TOKEN: ${{ github.token }}
+      MAX_CAMPAIGNS: ${{ inputs.max_campaigns || '20' }}
+      REFRESH_EXTERNAL_PUD: ${{ inputs.refresh_external_pud || 'true' }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -135,7 +135,7 @@ jobs:
         run: |
           if [ ! -s "$EVIDENCE_DIR/external-lexical-pud-evaluation.json" ]; then
             reason="PUD_EVALUATION_NOT_RUN"
-            if [ "\${{ steps.lexical-data.outputs.available }}" != "true" ]; then
+            if [ "${{ steps.lexical-data.outputs.available }}" != "true" ]; then
               reason="EXTERNAL_LEXICAL_DATA_BRANCH_UNAVAILABLE"
             elif [ "$REFRESH_EXTERNAL_PUD" = "false" ]; then
               reason="PUD_REFRESH_DISABLED_FOR_THIS_RUN"
@@ -158,17 +158,17 @@ jobs:
       - name: Record growth planner collection failure
         if: steps.growth.outcome != 'success'
         run: |
-          printf '{"error":"GROWTH_PLANNER_FAILED","outcome":"%s"}\n' "\${{ steps.growth.outcome }}" \
+          printf '{"error":"GROWTH_PLANNER_FAILED","outcome":"%s"}\n' "${{ steps.growth.outcome }}" \
             > "$EVIDENCE_DIR/usg-growth-plan-error.json"
           echo "Growth planner did not return a fresh plan; this is recorded as missing planning evidence." >> "$GITHUB_STEP_SUMMARY"
       - name: Generate schema-validated system evidence catalogue
         run: |
           set -- --root . \
             --registry config/usg-system-evidence-source-registry-0.1.0.json \
-            --repository "\${GITHUB_REPOSITORY}" \
+            --repository "${GITHUB_REPOSITORY}" \
             --branch main \
-            --commit-sha "\${GITHUB_SHA}" \
-            --external-branch-commit "\${EXTERNAL_BRANCH_SHA}" \
+            --commit-sha "${GITHUB_SHA}" \
+            --external-branch-commit "${EXTERNAL_BRANCH_SHA}" \
             --max-campaigns "$MAX_CAMPAIGNS" \
             --output "$EVIDENCE_DIR/system-evidence-catalogue.json" \
             --markdown "$EVIDENCE_DIR/system-evidence-catalogue.md"
@@ -190,7 +190,7 @@ jobs:
       - name: Assemble append-only evidence snapshot
         id: snapshot
         run: |
-          snapshot_id="\${GITHUB_RUN_ID}-\${GITHUB_RUN_ATTEMPT}"
+          snapshot_id="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
           snapshot_dir="evaluations/system-wide/evidence-catalogue/$snapshot_id"
           mkdir -p "$snapshot_dir"
           cp "$EVIDENCE_DIR/system-evidence-catalogue.json" "$snapshot_dir/catalogue.json"
@@ -225,8 +225,8 @@ jobs:
       - name: Upload evidence snapshot artifact
         uses: actions/upload-artifact@v4
         with:
-          name: usg-system-evidence-\${{ github.run_id }}-\${{ github.run_attempt }}
-          path: \${{ steps.snapshot.outputs.SNAPSHOT_DIR }}/
+          name: usg-system-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ steps.snapshot.outputs.SNAPSHOT_DIR }}/
           if-no-files-found: error
           retention-days: 90
       - name: Publish append-only system evidence snapshot PR
@@ -234,17 +234,17 @@ jobs:
         continue-on-error: true
         uses: peter-evans/create-pull-request@v7
         with:
-          token: \${{ secrets.GITHUB_TOKEN }}
-          branch: reports/system-evidence-\${{ github.run_id }}-\${{ github.run_attempt }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: reports/system-evidence-${{ github.run_id }}-${{ github.run_attempt }}
           base: main
-          add-paths: \${{ steps.snapshot.outputs.SNAPSHOT_DIR }}/**
-          commit-message: "Phase 8: publish system evidence snapshot \${{ github.run_id }}-\${{ github.run_attempt }}"
-          title: "Phase 8 evidence snapshot: \${{ github.run_id }}-\${{ github.run_attempt }}"
+          add-paths: ${{ steps.snapshot.outputs.SNAPSHOT_DIR }}/**
+          commit-message: "Phase 8: publish system evidence snapshot ${{ github.run_id }}-${{ github.run_attempt }}"
+          title: "Phase 8 evidence snapshot: ${{ github.run_id }}-${{ github.run_attempt }}"
           body: |
             Append-only repository-wide USG evidence/resource snapshot.
 
-            - Main commit observed: \${{ github.sha }}
-            - External lexical data commit: \${{ env.EXTERNAL_BRANCH_SHA }}
+            - Main commit observed: ${{ github.sha }}
+            - External lexical data commit: ${{ env.EXTERNAL_BRANCH_SHA }}
             - Source registry: USG-SYSTEM-EVIDENCE-SOURCE-REGISTRY/0.1.0
             - Catalogue: USG-SYSTEM-EVIDENCE-CATALOGUE/0.1.0
             - Candidate lexical/semantic resources remain unpromoted.
@@ -255,13 +255,13 @@ jobs:
           {
             echo ""
             echo "## System evidence collection"
-            echo "- Main commit: \${GITHUB_SHA}"
-            echo "- External lexical branch commit: \${EXTERNAL_BRANCH_SHA}"
-            echo "- Snapshot: \${{ steps.snapshot.outputs.SNAPSHOT_DIR }}"
-            if [ -n "\${{ steps.snapshot-pr.outputs.pull-request-number }}" ]; then
-              echo "- Snapshot PR: \${{ steps.snapshot-pr.outputs.pull-request-number }}"
+            echo "- Main commit: ${GITHUB_SHA}"
+            echo "- External lexical branch commit: ${EXTERNAL_BRANCH_SHA}"
+            echo "- Snapshot: ${{ steps.snapshot.outputs.SNAPSHOT_DIR }}"
+            if [ -n "${{ steps.snapshot-pr.outputs.pull-request-number }}" ]; then
+              echo "- Snapshot PR: ${{ steps.snapshot-pr.outputs.pull-request-number }}"
             else
               echo "- Snapshot PR was not created. The artifact was uploaded; check repository Actions pull-request permissions."
             fi
             echo "- Collection does not modify semantic runtime resources or phase statuses."
-          } >> "\${GITHUB_STEP_SUMMARY}"
+          } >> "${GITHUB_STEP_SUMMARY}"
