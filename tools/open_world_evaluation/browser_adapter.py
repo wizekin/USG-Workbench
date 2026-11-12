@@ -176,16 +176,7 @@ def interpret_in_browser(case: dict[str, Any]) -> dict[str, Any]:
     page_errors: list[str] = []
     try:
         with sync_playwright() as playwright:
-            browser = playwright.chromium.launch(
-                headless=True,
-                args=[
-                    "--no-sandbox",
-                    "--disable-background-networking",
-                    "--disable-sync",
-                    "--disable-default-apps",
-                    "--no-first-run",
-                ],
-            )
+            browser = playwright.chromium.launch(headless=True)
             context = browser.new_context(service_workers="block")
             page = context.new_page()
 
