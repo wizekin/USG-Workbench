@@ -165,7 +165,7 @@ class FirstBlockingStageTests(unittest.TestCase):
         results = []
         for item in cases:
             output = {"target_result": {
-                "pipeline_contract": "USG-INTERPRET/0.2.0",
+                "pipeline_contract": "USG-INTERPRET/0.1.0",
                 "pipeline_version": version,
                 "diagnostics": [{"stage": "lexical", "code": "LEXICAL_UNRESOLVED_TOKEN"}],
             }}
@@ -175,6 +175,10 @@ class FirstBlockingStageTests(unittest.TestCase):
         self.assertEqual(
             report["pipeline_version_mismatch_record_counts"],
             {"phase5-bounded-interpreter:" + version: 1058},
+        )
+        self.assertEqual(
+            report["pipeline_identity_mismatch_record_counts"],
+            {"phase5-bounded-interpreter:USG-INTERPRET/0.1.0@" + version: 1058},
         )
         self.assertEqual(report["first_blocking_stage_counts"], {})
         self.assertEqual(report["dependency_related_later_stage_counts"], {})
