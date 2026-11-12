@@ -1,0 +1,260 @@
+{
+  "contract": "USG-PHASE-RESOURCE-CONSUMPTION-MAP/0.1.0",
+  "version": "0.1.0",
+  "policy": {
+    "purpose": "Record where existing repository resources can be reused by each phase and how that reuse is allowed.",
+    "semantics": "Listed consumer relationships are intended integrations or available evidence sources; they do not imply every listed consumer already loads every asset at runtime.",
+    "default_rule": "Every new phase step must declare consumed source_family_ids, exact version/path dependencies, evidence requirements, and candidate/runtime boundary."
+  },
+  "phases": [
+    {
+      "phase_id": "P1",
+      "objective": "Maintain the canonical semantic interchange and native-adapter compatibility boundary.",
+      "required_sources": [
+        "canonical_semantic_interchange",
+        "phase_development_history"
+      ],
+      "optional_sources": [
+        "cross_implementation_conformance"
+      ],
+      "consume_modes": [
+        "normative",
+        "evaluation_only"
+      ],
+      "prohibited_uses": [
+        "silent schema mutation",
+        "treating adapter serialization as a parser"
+      ]
+    },
+    {
+      "phase_id": "P2",
+      "objective": "Grounded structured reasoning and evidence assessment.",
+      "required_sources": [
+        "canonical_semantic_interchange",
+        "structured_reasoning",
+        "canonical_persistence_and_workspace"
+      ],
+      "optional_sources": [
+        "phase7_knowledge_layer",
+        "open_world_evaluation_foundation"
+      ],
+      "consume_modes": [
+        "normative",
+        "runtime",
+        "read_only_adapter",
+        "evaluation_only"
+      ],
+      "prohibited_uses": [
+        "unlicensed candidate promotion",
+        "truth inference from structural validity"
+      ]
+    },
+    {
+      "phase_id": "P3",
+      "objective": "Canonical SQLite persistence, queries, integrity, and local service.",
+      "required_sources": [
+        "canonical_semantic_interchange",
+        "canonical_persistence_and_workspace"
+      ],
+      "optional_sources": [
+        "phase7_knowledge_layer",
+        "cross_implementation_conformance"
+      ],
+      "consume_modes": [
+        "normative",
+        "runtime",
+        "read_only_adapter",
+        "evaluation_only"
+      ],
+      "prohibited_uses": [
+        "creating a competing canonical store without accepted migration"
+      ]
+    },
+    {
+      "phase_id": "P4",
+      "objective": "Conservative bounded raw-text interpretation.",
+      "required_sources": [
+        "canonical_semantic_interchange",
+        "interpretation_pipelines",
+        "versioned_lexical_construction_and_operator_resources",
+        "oov_and_ambiguity_regressions"
+      ],
+      "optional_sources": [
+        "lexical_candidate_adapter",
+        "external_lexical_acquisition",
+        "naturalistic_pud_population",
+        "open_world_evaluation_foundation"
+      ],
+      "consume_modes": [
+        "normative",
+        "runtime",
+        "candidate_only",
+        "benchmark_only",
+        "evaluation_only"
+      ],
+      "prohibited_uses": [
+        "candidate lexical auto-promotion",
+        "unbounded claims from six-case acceptance"
+      ]
+    },
+    {
+      "phase_id": "P5",
+      "objective": "Expand and evaluate staged bilingual interpretation.",
+      "required_sources": [
+        "canonical_semantic_interchange",
+        "interpretation_pipelines",
+        "versioned_lexical_construction_and_operator_resources",
+        "oov_and_ambiguity_regressions"
+      ],
+      "optional_sources": [
+        "lexical_candidate_adapter",
+        "external_lexical_acquisition",
+        "phase6_candidate_expansion",
+        "phase7_knowledge_layer",
+        "open_world_evaluation_foundation",
+        "evidence_driven_growth_planner",
+        "naturalistic_pud_population"
+      ],
+      "consume_modes": [
+        "normative",
+        "runtime",
+        "read_only_adapter",
+        "candidate_only",
+        "benchmark_only",
+        "evaluation_only",
+        "planning_only"
+      ],
+      "prohibited_uses": [
+        "mixing random and naturalistic denominators",
+        "treating POS candidate recall as contextual prediction"
+      ]
+    },
+    {
+      "phase_id": "P6",
+      "objective": "Continue semantic construction coverage while retaining candidate-only and OPAQUE safeguards.",
+      "required_sources": [
+        "canonical_semantic_interchange",
+        "phase6_candidate_expansion",
+        "interpretation_pipelines",
+        "open_world_evaluation_foundation"
+      ],
+      "optional_sources": [
+        "lexical_candidate_adapter",
+        "external_lexical_acquisition",
+        "phase7_knowledge_layer",
+        "evidence_driven_growth_planner",
+        "naturalistic_pud_population"
+      ],
+      "consume_modes": [
+        "normative",
+        "runtime",
+        "candidate_only",
+        "benchmark_only",
+        "evaluation_only",
+        "planning_only"
+      ],
+      "prohibited_uses": [
+        "semantic assertion projection under the accepted OPAQUE-only boundary",
+        "promotion from synthetic reference alone"
+      ]
+    },
+    {
+      "phase_id": "P7",
+      "objective": "Provide typed, rights-aware, persistent knowledge and read-only retrieval/inspection.",
+      "required_sources": [
+        "canonical_semantic_interchange",
+        "phase7_knowledge_layer",
+        "lexical_candidate_adapter"
+      ],
+      "optional_sources": [
+        "external_lexical_acquisition",
+        "oov_and_ambiguity_regressions",
+        "open_world_evaluation_foundation",
+        "evidence_driven_growth_planner"
+      ],
+      "consume_modes": [
+        "normative",
+        "read_only_adapter",
+        "candidate_only",
+        "benchmark_only",
+        "evaluation_only",
+        "planning_only"
+      ],
+      "prohibited_uses": [
+        "automatically resolving unresolved concept mappings",
+        "changing runtime semantics by retrieval"
+      ]
+    },
+    {
+      "phase_id": "P8",
+      "objective": "Continuously aggregate resource, implementation, and evaluation evidence and route discoveries into the correct phase.",
+      "required_sources": [
+        "canonical_semantic_interchange",
+        "phase_development_history",
+        "phase7_knowledge_layer",
+        "open_world_evaluation_foundation",
+        "evidence_driven_growth_planner",
+        "external_lexical_acquisition",
+        "system_assessments_and_backlog"
+      ],
+      "optional_sources": [
+        "structured_reasoning",
+        "canonical_persistence_and_workspace",
+        "interpretation_pipelines",
+        "phase6_candidate_expansion",
+        "lexical_candidate_adapter",
+        "oov_and_ambiguity_regressions",
+        "naturalistic_pud_population",
+        "cross_implementation_conformance",
+        "versioned_lexical_construction_and_operator_resources"
+      ],
+      "consume_modes": [
+        "normative",
+        "runtime",
+        "read_only_adapter",
+        "candidate_only",
+        "benchmark_only",
+        "evaluation_only",
+        "planning_only",
+        "historical_only"
+      ],
+      "prohibited_uses": [
+        "single aggregate intelligence score",
+        "silent phase status mutation",
+        "semantic promotion without independent acceptance"
+      ]
+    }
+  ],
+  "dependency_rules": [
+    {
+      "rule_id": "PHASE-ROUTE-01",
+      "condition": "A finding belongs to an existing phase's declared open scope or continuation tracker.",
+      "route": "existing_phase_continuation",
+      "priority": "first"
+    },
+    {
+      "rule_id": "PHASE-ROUTE-02",
+      "condition": "A finding would extend an already accepted phase beyond its accepted profile.",
+      "route": "existing_phase_amendment_proposal",
+      "requires": "phase owner scope amendment and regression acceptance"
+    },
+    {
+      "rule_id": "PHASE-ROUTE-03",
+      "condition": "A finding changes a normative contract, canonical persistence invariant, or accepted output semantics.",
+      "route": "versioned_migration_proposal",
+      "requires": "explicit migration contract, compatibility adapter, and all affected exit/regression gates"
+    },
+    {
+      "rule_id": "PHASE-ROUTE-04",
+      "condition": "A finding is cross-cutting and no current phase or backlog item owns it.",
+      "route": "new_phase_or_cross_cutting_workstream_candidate",
+      "requires": "dependency analysis and evidence-backed phase definition"
+    },
+    {
+      "rule_id": "PHASE-ROUTE-05",
+      "condition": "Evidence is stale, missing, synthetic-only, or rights-unclear.",
+      "route": "evidence_collection_or_candidate_only",
+      "requires": "no runtime promotion"
+    }
+  ]
+}
