@@ -130,6 +130,39 @@ jobs:
             printf '{"error":"EXTERNAL_LEXICAL_DATA_BRANCH_UNAVAILABLE","branch":"usg-external-lexical-data"}\n' > "$EVIDENCE_DIR/external-lexical-collection-error.json"
             echo "External lexical data branch unavailable; collection will record missing evidence, not zero coverage." >> "$GITHUB_STEP_SUMMARY"
           fi
+      - name: Inventory immutable external lexical shards
+        if: steps.lexical-data.outputs.available == 'true'
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+          root = Path(os.environ["EVIDENCE_DIR"]) / "external-lexical-data" / "shards"
+          manifest_path = Path(os.environ["EVIDENCE_DIR"]) / "external-lexical-manifest.json"
+          manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+          files = []
+          for path in sorted(root.rglob("*.jsonl.gz")):
+              payload = path.read_bytes()
+              files.append({
+                  "path": path.relative_to(root).as_posix(),
+                  "size_bytes": len(payload),
+                  "sha256": hashlib.sha256(payload).hexdigest(),
+                  "git_blob_sha1": hashlib.sha1(f"blob {len(payload)}\\0".encode("ascii") + payload).hexdigest(),
+              })
+          report = {
+              "status": "available",
+              "snapshot_id": manifest.get("source_snapshot_id"),
+              "file_count": len(files),
+              "total_size_bytes": sum(item["size_bytes"] for item in files),
+              "manifest_batch_count": manifest.get("batch_count"),
+              "matches_manifest": len(files) == int(manifest.get("batch_count", -1)),
+              "files": files,
+          }
+          output = Path(os.environ["EVIDENCE_DIR"]) / "external-lexical-shard-inventory.json"
+          output.write_text(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True) + "\\n", encoding="utf-8")
+          print(json.dumps({k: report[k] for k in ("file_count", "total_size_bytes", "manifest_batch_count", "matches_manifest")}, indent=2))
+          PY
       - name: Recalculate English PUD lexical and morphology candidate coverage
         id: pud
         if: steps.lexical-data.outputs.available == 'true' && env.REFRESH_EXTERNAL_PUD != 'false'
@@ -188,6 +221,9 @@ jobs:
           if [ -s "$EVIDENCE_DIR/external-lexical-checkpoint.json" ]; then
             set -- "$@" --external-checkpoint "$EVIDENCE_DIR/external-lexical-checkpoint.json"
           fi
+          if [ -s "$EVIDENCE_DIR/external-lexical-shard-inventory.json" ]; then
+            set -- "$@" --external-shard-inventory "$EVIDENCE_DIR/external-lexical-shard-inventory.json"
+          fi
           if [ -s "$EVIDENCE_DIR/external-lexical-pud-evaluation.json" ]; then
             set -- "$@" --pud-evaluation "$EVIDENCE_DIR/external-lexical-pud-evaluation.json"
           elif [ -s "$EVIDENCE_DIR/external-lexical-pud-error.json" ]; then
@@ -208,6 +244,7 @@ jobs:
           for item in \
             external-lexical-manifest.json \
             external-lexical-checkpoint.json \
+            external-lexical-shard-inventory.json \
             external-lexical-pud-evaluation.json \
             external-lexical-pud-error.json \
             external-lexical-collection-error.json \
