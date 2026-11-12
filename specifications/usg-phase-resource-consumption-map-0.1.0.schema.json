@@ -100,8 +100,7 @@
         "required": [
           "rule_id",
           "condition",
-          "route",
-          "requires"
+          "route"
         ],
         "properties": {
           "rule_id": {
@@ -114,6 +113,9 @@
             "type": "string"
           },
           "requires": {
+            "type": "string"
+          },
+          "priority": {
             "type": "string"
           }
         },
