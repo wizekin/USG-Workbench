@@ -29,9 +29,13 @@ The scheduled workflow `.github/workflows/system-evidence-collection.yml` runs d
 3. recalculates English PUD exact-form/lemma candidate coverage and mapped morphology-candidate metrics against the currently published lexical shards;
 4. runs the existing evidence-driven growth planner against recent immutable Open-World campaigns;
 5. collects population-specific campaign counts and execution accounting;
-6. collects the latest non-PR run status for each GitHub Actions workflow and distinguishes success, failure, in-progress, no-run, disabled, and collection-error states;\n7. creates a schema-validated system evidence catalogue, discovery list, and phase-impact routes;
-7. stores the full snapshot in an append-only run-specific directory and uploads it as an Actions artifact;
-8. attempts to publish the snapshot through a pull request.
+6. collects the latest non-PR run status for each GitHub Actions workflow and distinguishes success, failure, in-progress, no-run, disabled, and collection-error states;
+7. creates a schema-validated system evidence catalogue, discovery list, freshness diagnostics, and phase-impact routes;
+8. generates stable review-only phase proposals and evaluates the integrated Phase 8 structural/governance gate;
+9. stores the catalogue, acceptance result, and source evidence in an append-only run-specific directory and uploads it as an Actions artifact;
+10. attempts to publish the snapshot through a pull request.
+
+The integrated acceptance result is either `eligible_for_review` or `blocked`. A blocked result is preserved with the snapshot rather than discarded. Neither result changes Phase 8's accepted status; human review remains required.
 
 A missing branch, evaluation error, missing campaign, or absent report is recorded as unavailable evidence; it is never interpreted as a zero score. The latest committed snapshot is the latest published snapshot, not necessarily the latest workflow attempt if publication was blocked.
 
