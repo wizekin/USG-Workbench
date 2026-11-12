@@ -167,7 +167,7 @@ def external_lexical(manifest_path: Path | None, checkpoint_path: Path | None,
             "manifest_batch_count": batches,
             "total_size_bytes": shard_inventory.get("total_size_bytes") if shard_inventory else None,
             "files": shard_inventory.get("files", []) if shard_inventory else [],
-            "inventory_sha256": _digest(shard_inventory_path) if shard_inventory_path and shard_inventory_path.is_file() else None,
+            "inventory_sha256": digest(shard_inventory_path) if shard_inventory_path and shard_inventory_path.is_file() else None,
         },
         "pud_evaluation": {
             "status": "fresh_for_current_shard_count" if pud_fresh else (
