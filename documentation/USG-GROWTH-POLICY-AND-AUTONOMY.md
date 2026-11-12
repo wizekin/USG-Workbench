@@ -94,4 +94,4 @@ A growth plan is a prioritization artifact, not a correctness score. A completed
 
 ## Current autonomy boundary
 
-USG can already run scheduled lexical retrieval, scheduled evaluation workflows, deterministic diagnostics, candidate-only lexical adaptation, and replay checks. The new growth controller adds an unattended evidence aggregation and prioritization cycle. Full autonomous semantic self-correction is not yet established: it requires the independent gold, naturalistic data, safe candidate sandbox, acceptance, and rollback gates above.
+USG can already run scheduled lexical retrieval, scheduled evaluation workflows, deterministic diagnostics, candidate-only lexical adaptation, and replay checks. The new growth controller adds an unattended evidence aggregation and prioritization cycle. Full autonomous semantic self-correction is not yet established. A bounded English/Arabic news-and-Wikipedia naturalistic pilot is now available, but it is not a conversational request corpus and its Arabic portion is translated. Independent semantic gold, a safe candidate sandbox, explicit acceptance, and rollback gates are still required.
