@@ -203,17 +203,21 @@ def external_lexical(manifest_path: Path | None, checkpoint_path: Path | None,
 def workflow_evidence(path: Path | None) -> dict[str, Any]:
     payload = read_json(path)
     if payload is None:
-        return {"status": "not_collected", "workflow_count": 0, "latest_run_count": 0,
+        return {"status": "not_collected", "workflow_count": 0, "api_total_workflow_count": 0,
+                "workflow_list_complete": False, "latest_run_count": 0,
                 "status_counts": {}, "workflows": [], "collection_errors": [],
                 "artifact_collection_errors": [],
                 "interpretation_boundary": "Live workflow status was not collected; workflow configuration is not evidence of execution or success."}
     if payload.get("contract") != "USG-GITHUB-ACTIONS-EVIDENCE/0.1.0":
-        return {"status": "collection_error", "workflow_count": 0, "latest_run_count": 0,
+        return {"status": "collection_error", "workflow_count": 0, "api_total_workflow_count": 0,
+                "workflow_list_complete": False, "latest_run_count": 0,
                 "status_counts": {}, "workflows": [], "collection_errors": [
                     {"error": "unsupported or missing USG-GITHUB-ACTIONS-EVIDENCE contract"}],
                 "artifact_collection_errors": [],
                 "interpretation_boundary": "Malformed workflow evidence is not counted as a pass."}
     return {"status": "collected", "workflow_count": int(payload.get("workflow_count", 0) or 0),
+            "api_total_workflow_count": int(payload.get("api_total_workflow_count", payload.get("workflow_count", 0)) or 0),
+            "workflow_list_complete": bool(payload.get("workflow_list_complete", True)),
             "latest_run_count": int(payload.get("latest_run_count", 0) or 0),
             "status_counts": payload.get("status_counts", {}),
             "workflows": payload.get("workflows", []),
@@ -323,6 +327,13 @@ def discover(phases: list[dict[str, Any]], external: dict[str, Any],
                 {"workflow_path": workflow.get("path"), "workflow_id": workflow.get("workflow_id"),
                  "run_id": latest_run.get("run_id"), "run_sha": latest_run.get("head_sha"),
                  "event": latest_run.get("event"), "conclusion": conclusion}))
+        if not workflows.get("workflow_list_complete", True):
+            findings.append(make_finding(
+                "github_actions_workflow_list_incomplete",
+                "The GitHub Actions API workflow listing was only partially collected; the catalogue cannot claim coverage of every repository workflow.",
+                ["workflow_evidence.workflow_list_complete"], ["P8"], phases, "high", "evidence_collection",
+                {"collected_workflow_count": workflows.get("workflow_count"),
+                 "api_total_workflow_count": workflows.get("api_total_workflow_count")}))
         if workflows.get("collection_errors"):
             findings.append(make_finding(
                 "github_actions_status_collection_incomplete",
@@ -526,7 +537,7 @@ def render_markdown(report: dict[str, Any]) -> str:
     lines += ["", "External records remain candidate evidence. Exact coverage is not contextual POS prediction, morphology prediction, sense accuracy, or semantic correctness.",
               "", "## GitHub Actions execution status", ""]
     workflow_summary = report["workflow_evidence"]
-    lines.append(f"Workflow definitions collected: {workflow_summary['workflow_count']}; with a latest non-PR run: {workflow_summary['latest_run_count']}.")
+    lines.append(f"Workflow definitions collected: {workflow_summary['workflow_count']} / {workflow_summary.get('api_total_workflow_count', workflow_summary['workflow_count'])} (complete={workflow_summary.get('workflow_list_complete')}); with a latest non-PR run: {workflow_summary['latest_run_count']}.")
     lines.append(f"Latest run status counts: {json.dumps(workflow_summary['status_counts'], sort_keys=True)}.")
     failed_runs = [item for item in workflow_summary["workflows"]
                    if (item.get("latest_run") or {}).get("conclusion") in {"failure", "timed_out", "action_required", "startup_failure"}]
