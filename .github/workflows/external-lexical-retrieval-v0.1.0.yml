@@ -5,6 +5,8 @@ on:
     paths:
       - "tools/usg_external_lexical_v0_1_0/**"
       - "tests/test_external_lexical_retrieval.py"
+      - "tests/test_lexical_candidate_adapter.py"
+      - "specifications/usg-lexical-candidates-0.1.0.schema.json"
       - "documentation/EXTERNAL-LEXICAL-RETRIEVAL-AND-INCREMENTAL-LEARNING-v0.1.0.md"
       - ".github/workflows/external-lexical-retrieval-v0.1.0.yml"
   push:
@@ -28,9 +30,15 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+      - name: Install schema validation dependency
+        run: python -m pip install "jsonschema>=4.18,<5"
       - name: Compile lexical subsystem
         run: python -m compileall -q tools/usg_external_lexical_v0_1_0
       - name: Run lexical retrieval tests
         run: python -m unittest discover -s tests -p "test_external_lexical_retrieval.py" -v
+      - name: Run lexical candidate adapter and OOV regressions
+        run: python -m unittest discover -s tests -p "test_lexical_candidate_adapter.py" -v
+      - name: Validate published candidate contract schema
+        run: python -c "import json; from jsonschema import Draft202012Validator; s=json.load(open('specifications/usg-lexical-candidates-0.1.0.schema.json', encoding='utf-8')); Draft202012Validator.check_schema(s)"
       - name: Run offline structural benchmark
         run: python -m tools.usg_external_lexical_v0_1_0 benchmark
