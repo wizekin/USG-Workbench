@@ -169,6 +169,36 @@ class SystemEvidenceCatalogueTests(unittest.TestCase):
         self.assertFalse(action["runtime_change_allowed"])
         self.assertEqual(action["review_status"], "observed_requires_review")
 
+    def test_live_workflow_failure_is_preserved_and_routed(self):
+        workflow_path = self.root / "workflow-runs.json"
+        workflow_path.write_text(json.dumps({
+            "contract": "USG-GITHUB-ACTIONS-EVIDENCE/0.1.0",
+            "repository": "wizekin/USG-Workbench",
+            "workflow_count": 1, "latest_run_count": 1,
+            "status_counts": {"failure": 1},
+            "workflows": [{
+                "workflow_id": 42, "name": "Phase 5 Integrated Acceptance",
+                "path": ".github/workflows/phase5-step-5-10-integration.yml",
+                "state": "active", "status": "failure",
+                "latest_run": {"run_id": 123, "conclusion": "failure", "head_sha": "deadbeef",
+                               "html_url": "https://example.test/run/123", "event": "push"}
+            }],
+            "collection_errors": [],
+            "interpretation_boundary": "Operational workflow result only; not semantic correctness."
+        }), encoding="utf-8")
+        report = collect_catalogue(
+            self.root, registry_path=REGISTRY, external_manifest_path=self.manifest,
+            external_checkpoint_path=self.checkpoint, pud_evaluation_path=self.pud,
+            external_shard_inventory_path=self.shard_inventory, workflow_runs_path=workflow_path,
+            growth_plan_path=self.growth, repository_name="wizekin/USG-Workbench",
+            commit_sha="test-sha", generated_at="2026-11-12T12:00:00Z")
+        self.assertEqual(report["workflow_evidence"]["latest_run_count"], 1)
+        finding = next(item for item in report["discoveries"]
+                       if item["kind"] == "latest_github_workflow_run_failed")
+        self.assertEqual(finding["phase_impacts"], ["P5"])
+        self.assertEqual(finding["details"]["run_id"], 123)
+        self.assertFalse(finding["runtime_change_allowed"])
+
     def test_catalogue_never_mutates_runtime_phase_status_or_contracts(self):
         report = self.collect()
         governance = report["governance"]
