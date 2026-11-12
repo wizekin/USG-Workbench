@@ -4,9 +4,9 @@
 
 [![Repository](https://img.shields.io/badge/GitHub-wizekin%2FUSG--Workbench-181717?logo=github)](https://github.com/wizekin/USG-Workbench)
 [![Default branch](https://img.shields.io/badge/branch-main-blue)](https://github.com/wizekin/USG-Workbench/tree/main)
-[![Phase 6](https://img.shields.io/badge/Phase%206-in%20progress-orange)](documentation/PHASE-6-DEFINITIONS-ROADMAP.md)
+[![Phase 7](https://img.shields.io/badge/Phase%207-roadmap%20defined-blue)](documentation/PHASE-7-DEFINITIONS-ROADMAP.md)
 
-> **Status snapshot:** 12 November 2026 · Main branch last reviewed at [`1177c59`](https://github.com/wizekin/USG-Workbench/commit/1177c59e23e9ad5f124888bdfb71292fd863786c). Live workflow and campaign links below take precedence over this dated snapshot.
+> **Status snapshot:** 12 November 2026 · Main branch baseline reviewed at [`2bd0151`](https://github.com/wizekin/USG-Workbench/commit/2bd0151aed762bc8cff4a01015b3504d507fe4c9). Live workflow and campaign links below take precedence over this dated snapshot.
 
 ---
 
@@ -24,7 +24,7 @@ Start here — jump directly to any major section:
 | 6 | [Incomplete major tasks](#incomplete-major-tasks) | Remaining work and current blockers |
 | 7 | [Architecture and reliability rules](#architecture-and-reliability-rules) | Contracts, data, uncertainty, and evidence boundaries |
 | 8 | [How to explore and test USG](#how-to-explore-and-test-usg) | Start the interface and find tests |
-| 9 | [Repository structure](#repository-structure) | Where code, specifications, evidence, and data are stored |
+| 9 | [Repository structure](#repository-structure) | Where code, specifications, evidence, and data are stored |\n| 10 | [Phase 7 definitions roadmap](documentation/PHASE-7-DEFINITIONS-ROADMAP.md) | The next mainline development phase |
 
 ---
 
@@ -110,7 +110,7 @@ When a workflow, campaign, or scheduled task changes, update the corresponding d
 | Local testing interface | [USG Kernel Lab guide](tools/usg-kernel-lab/README.md) |
 | System-wide capability assessment | [Assessment — 12 November 2026](documentation/USG-SYSTEM-WIDE-CAPABILITY-ASSESSMENT-2026-11-12.md) |
 | Prioritized improvement backlog | [System improvement backlog](documentation/USG-SYSTEM-IMPROVEMENT-BACKLOG.md) |
-| Cross-implementation status | [Cross-implementation conformance matrix](documentation/USG-CROSS-IMPLEMENTATION-CONFORMANCE-MATRIX.md) |
+| Cross-implementation status | [Cross-implementation conformance matrix](documentation/USG-CROSS-IMPLEMENTATION-CONFORMANCE-MATRIX.md) |\n| Phase 7 roadmap | [Phase 7 definitions roadmap](documentation/PHASE-7-DEFINITIONS-ROADMAP.md) |\n| Phase 6 continuation | [Phase 6 Continuation Tracker](documentation/PHASE-6-CONTINUATION-TRACKER.md) |
 
 The phase roadmaps and implementation-specific documents are the detailed sources of truth for their respective components. The README is the high-level navigation and status dashboard; it must not replace those documents.
 
@@ -125,7 +125,7 @@ This section distinguishes a workflow that was observed running from workflows t
 | [External lexical incremental crawl](https://github.com/wizekin/USG-Workbench/actions/workflows/usg-external-lexical-crawl.yml) | Every 6 hours (`23 */6 * * *`) | **Running at last check.** [Run 43177652622](https://github.com/wizekin/USG-Workbench/actions/runs/43177652622) had its resumable crawl step in progress on 12 Nov 2026. It writes compressed, source-linked candidate evidence and a checkpoint to the separate `usg-external-lexical-data` branch. |
 | [Open-World continuous exploration](https://github.com/wizekin/USG-Workbench/actions/workflows/open-world-continuous.yml) | Daily at 02:15 UTC; weekly deep campaign Monday at 03:30 UTC; also release and manual triggers | **Scheduled.** Generates reproducible randomized campaigns, runs registered targets, scores outcomes, analyzes failures, and publishes append-only evidence. |
 | [Evidence-driven growth planner](https://github.com/wizekin/USG-Workbench/actions/workflows/usg-evidence-driven-growth-controller.yml) | Daily at 04:45 UTC; also manual | **Scheduled.** Reviews recent Open-World evidence and publishes a ranked growth plan. It plans improvements; it does not modify or promote runtime semantic rules. |
-| [Bilingual naturalistic PUD pilot](https://github.com/wizekin/USG-Workbench/actions/workflows/open-world-naturalistic-pud-pilot.yml) | Weekly Monday at 04:00 UTC; also manual | **Scheduled; full campaign result not yet verified.** The source/sample validation passed. The default campaign samples 50 English and 50 Arabic sentences and evaluates the registered bounded targets. Arabic PUD is translated text, not a representative native-Arabic or conversational corpus. |
+| [Bilingual naturalistic PUD pilot](https://github.com/wizekin/USG-Workbench/actions/workflows/open-world-naturalistic-pud-pilot.yml) | Weekly Monday at 04:00 UTC; also manual | **Scheduled; full campaign result not yet verified.** The source/sample validation passed. The default campaign samples 50 English and 50 Arabic sentences and evaluates the registered bounded targets. Arabic PUD is translated text, not a representative native-Arabic or conversational corpus. |\n| [Phase 6 Continuation Tracker](https://github.com/wizekin/USG-Workbench/actions/workflows/phase6-continuation-tracker.yml) | Daily at 05:30 UTC; also manual | **Configured; read-only and non-blocking.** Discovers linked Phase 6 PRs, records PR/check-run observations, and uploads a separate status snapshot. It does not gate Phase 7 or modify semantic resources. |
 | [External lexical PUD evaluation](https://github.com/wizekin/USG-Workbench/actions/workflows/external-lexical-pud-evaluation.yml) | After successful crawler runs, relevant pushes, or manual dispatch | **Event-driven.** Measures external lexical candidate coverage against pinned English PUD data. It is an inventory diagnostic, not an accuracy score for contextual interpretation. |
 
 Useful live views:
@@ -151,7 +151,7 @@ The following work is accepted or implemented for its explicitly documented scop
 | **Phase 2** | Evidence-grounded, rule-governed semantic reasoning foundation; steps 2.1–2.10 accepted | [Phase 2 roadmap](documentation/PHASE-2-ROADMAP.md) · [Step 2.10 exit acceptance](documentation/PHASE-2-STEP-2.10-EXIT-ACCEPTANCE.md) |
 | **Phase 3** | Persistent semantic graph, SQLite-backed workspace, queries, API/CLI, and Kernel Lab integration; steps 3.1–3.9 accepted | [Phase 3 roadmap](documentation/PHASE-3-ROADMAP.md) · [Completion record](documentation/PHASE-3-COMPLETION-RECORD.md) |
 | **Phase 4** | Bounded offline raw-text interpretation demonstrator; steps 4.1–4.13 accepted | [Phase 4 roadmap](documentation/PHASE-4-DEFINITIONS-ROADMAP.md) · [Completion record](documentation/PHASE-4-COMPLETION-RECORD.md) |
-| **Phase 5** | Bounded bilingual interpretation pipeline, resource catalogue, immutable run persistence/replay, API/CLI, and Kernel Lab integration; steps 5.1–5.11 accepted | [Phase 5 roadmap](documentation/PHASE-5-DEFINITIONS-ROADMAP.md) · [Completion record](documentation/PHASE-5-COMPLETION-RECORD.md) · [Step 5.11 benchmark acceptance](documentation/PHASE-5-STEP-5.11-BENCHMARK-EXIT-ACCEPTANCE.md) |
+| **Phase 5** | Bounded bilingual interpretation pipeline, resource catalogue, immutable run persistence/replay, API/CLI, and Kernel Lab integration; steps 5.1–5.11 accepted | [Phase 5 roadmap](documentation/PHASE-5-DEFINITIONS-ROADMAP.md) · [Completion record](documentation/PHASE-5-COMPLETION-RECORD.md) · [Step 5.11 benchmark acceptance](documentation/PHASE-5-STEP-5.11-BENCHMARK-EXIT-ACCEPTANCE.md) |\n| **Phase 6** | Bounded automatic exit accepted for registered bilingual profiles and service-integration scope; broader research remains candidate-only or open | [Phase 6 roadmap](documentation/PHASE-6-DEFINITIONS-ROADMAP.md) · [Bounded acceptance record](documentation/PHASE-6-BOUNDED-AUTOMATIC-ACCEPTANCE-RECORD.md) · [Continuation tracker](documentation/PHASE-6-CONTINUATION-TRACKER.md) |
 
 Phase 5's accepted benchmark demonstrated its stated simple-transitive English and MSA Arabic constructions. Its results must not be generalized to arbitrary English or Arabic input.
 
@@ -176,7 +176,21 @@ Related evidence: [system improvement backlog](documentation/USG-SYSTEM-IMPROVEM
 
 These are the major open workstreams. Detailed step definitions, dependencies, and acceptance criteria remain in the linked roadmaps and backlog.
 
-### 1. Phase 6 — broader semantic interpretation
+### 1. Phase 7 — semantic knowledge integration and contextual knowledge layer
+
+**Status: DEFINITIONS ROADMAP PREPARED; READY TO BEGIN AT STEP 7.1.** Phase 7 builds a reusable knowledge layer for lexical forms, senses, concepts, typed relations, provenance, context, and controlled retrieval on top of accepted Phase 1–5 foundations. It does not wait for the broader Phase 6 research queue. The proposed `USG-KNOWLEDGE/0.1.0` contract is additive; `USG-SEM/1.0` and existing SQLite authority remain unchanged.
+
+The initial roadmap defines ten ordered steps: knowledge contract/inventory; typed lexical-sense and concept model; persistent repository; source adapters and incremental acquisition; cross-language alignment; typed relations and reconciliation; contextual retrieval; read-only integration with reasoning/interpreters; API/CLI/Kernel Lab inspection; and profile-specific evaluation/exit acceptance.
+
+Reference: [Phase 7 Definitions Roadmap](documentation/PHASE-7-DEFINITIONS-ROADMAP.md).
+
+### 2. Phase 6 — bounded exit accepted; continuation tracked separately
+
+**Status: BOUNDED AUTOMATIC EXIT ACCEPTED for the registered scopes.** The Phase 6 acceptance record remains valid. Broader construction coverage, naturalistic evaluation, and canonical semantic-assertion projection continue as separate research workstreams. They do not block Phase 7.
+
+The [Phase 6 Continuation Tracker](documentation/PHASE-6-CONTINUATION-TRACKER.md) records the open workstreams, stable PR markers, separate daily GitHub Actions monitoring, and acceptance boundaries. Its workflow is read-only, does not modify runtime knowledge, and is not a required Phase 7 gate.
+
+
 
 **Status: BOUNDED AUTOMATIC EXIT ACCEPTED — Steps 6.7–6.14 passed the graph-first synthetic acceptance suite on the exact PR head; runtime outputs remain candidate-only.** The Phase 6 Automatic Acceptance Factory evaluated 500 generated English/MSA Arabic cases across ten language/construction profiles, each with 20 positive, 20 negative, and 10 ambiguous cases. Every profile passed its precision, recall, exact-span, negative-abstention, and ambiguity-preservation gates. API, CLI, Kernel Lab regression, SQLite persistence, deterministic replay, and OPAQUE preservation checks also passed. This is acceptance of the registered synthetic profiles, not unrestricted language understanding or naturalistic semantic accuracy. Step 6.12 is accepted for OPAQUE preservation only; canonical semantic-assertion projection remains blocked.
 
@@ -198,7 +212,7 @@ The [Phase 6 Automatic Acceptance Factory](documentation/PHASE-6-AUTOMATIC-ACCEP
 
 References: [Phase 6 roadmap](documentation/PHASE-6-DEFINITIONS-ROADMAP.md) · [Integrated interpreter and bridge validation](documentation/PHASE-6-INTEGRATED-INTERPRETER-AND-BRIDGE-VALIDATION.md) · [Steps 6.7–6.14 implementation record](documentation/PHASE-6-STEPS-6.7-6.14-COMPLETION-IMPLEMENTATION.md) · [Automatic synthetic-reference protocol](documentation/PHASE-6-STEP-6.6-AUTOMATIC-SYNTHETIC-REFERENCE-PROTOCOL.md) · [Historical external dataset feasibility audit](documentation/PHASE-6-STEP-6.6-INDEPENDENT-GOLD-DATASET-AUDIT.md) · [Historical independent-gold protocol](documentation/PHASE-6-STEP-6.6-INDEPENDENT-GOLD-ACCEPTANCE-PROTOCOL.md).
 
-### 2. External lexical knowledge — crawl, evaluate, and safely integrate
+### 3. External lexical knowledge — crawl, evaluate, and safely integrate
 
 **Status: IMPLEMENTED FOUNDATION; DATA COLLECTION AND RUNTIME INTEGRATION IN PROGRESS.**
 
@@ -214,7 +228,7 @@ Remaining work includes:
 
 References: [External retrieval and incremental analysis](documentation/EXTERNAL-LEXICAL-RETRIEVAL-AND-INCREMENTAL-LEARNING-v0.1.0.md) · [Scheduled crawler](documentation/USG-EXTERNAL-LEXICAL-SCHEDULED-CRAWLER-v0.1.0.md) · [External lexical PUD evaluation](documentation/EXTERNAL-LEXICAL-PUD-EVALUATION-v0.1.0.md).
 
-### 3. Open-World coverage and naturalistic evaluation
+### 4. Open-World coverage and naturalistic evaluation
 
 **Status: PARTIALLY IMPLEMENTED; COVERAGE AND CAMPAIGNS STILL EXPANDING.**
 
@@ -230,7 +244,7 @@ The PUD pilot is news/Wikipedia text, not conversational user requests. Arabic P
 
 References: [Naturalistic PUD pilot](documentation/USG-NATURALISTIC-PUD-PILOT.md) · [Continuous Open-World exploration](documentation/USG-OPEN-WORLD-CONTINUOUS-EXPLORATION.md) · [Expanding coverage ledger](documentation/USG-OPEN-WORLD-EXPANDING-COVERAGE.md).
 
-### 4. Cross-implementation conformance
+### 5. Cross-implementation conformance
 
 **Status: INVENTORY PUBLISHED; COMMON CONFORMANCE GATES NOT YET DEMONSTRATED.**
 
@@ -246,7 +260,7 @@ The remaining gates are:
 
 Reference: [Cross-implementation conformance matrix](documentation/USG-CROSS-IMPLEMENTATION-CONFORMANCE-MATRIX.md).
 
-### 5. Governed autonomous improvement
+### 6. Governed autonomous improvement
 
 **Status: PLANNER IMPLEMENTED; AUTOMATIC REPAIR AND CANDIDATE GROWTH NOT COMPLETE.**
 
