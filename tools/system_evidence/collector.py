@@ -261,14 +261,16 @@ def discover(phases: list[dict[str, Any]], external: dict[str, Any],
             "external_lexical_manifest_unavailable",
             "The external lexical branch manifest was not collected. Its absence is not an empty inventory or zero progress.",
             ["external_lexical.manifest"], ["P8"], phases, "high", "evidence_collection"))
-    if external.get("manifest_available") and external.get("shard_inventory", {}).get("status") == "count_mismatch":
+    if external.get("manifest_available") and external.get("shard_inventory", {}).get("status") != "matches_manifest":
+        inventory_status = external.get("shard_inventory", {}).get("status")
         findings.append(make_finding(
-            "external_lexical_shard_inventory_mismatch",
-            "The physical shard inventory does not reconcile with the cumulative external lexical manifest batch count; investigate missing or duplicated shard files before trusting crawl totals.",
+            "external_lexical_shard_inventory_mismatch" if inventory_status == "count_mismatch" else "external_lexical_shard_inventory_unavailable",
+            "The physical external lexical shard inventory is missing or does not reconcile with the cumulative crawl manifest; investigate before treating crawl totals or PUD metrics as current.",
             ["external_lexical.manifest_sha256", "external_lexical.shard_inventory"],
             ["P5", "P6", "P7", "P8"], phases, "high", "existing_external_lexical_workstream",
             {"manifest_batch_count": external.get("progress", {}).get("batch_count"),
-             "physical_shard_count": external.get("shard_inventory", {}).get("file_count")}))
+             "physical_shard_count": external.get("shard_inventory", {}).get("file_count"),
+             "inventory_status": inventory_status}))
     failed_conclusions = {"failure", "timed_out", "action_required", "startup_failure"}
     if workflows.get("status") == "collected":
         phase_impact_rules = [
@@ -329,6 +331,11 @@ def discover(phases: list[dict[str, Any]], external: dict[str, Any],
             "open_world_campaign_evidence_missing",
             "No immutable Open-World campaign reports were found in the current repository snapshot.",
             ["evaluations/open-world/campaigns"], ["P8"], phases, "high", "evidence_collection"))
+    if not growth:
+        findings.append(make_finding(
+            "growth_plan_not_collected",
+            "A fresh evidence-driven growth plan was not available in this catalogue snapshot; preserve the planner error/unavailable state and do not infer an empty priority queue.",
+            ["growth_plan"], ["P5", "P6", "P7", "P8"], phases, "medium", "evidence_collection"))
     if growth:
         impact_map = {
             "lexical": ["P5", "P6", "P7", "P8"], "morphology": ["P5", "P6", "P8"],
