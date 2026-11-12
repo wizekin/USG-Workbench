@@ -9,6 +9,7 @@ from typing import Any
 from jsonschema import Draft202012Validator, FormatChecker
 from .discovery import (build_review_proposals, classify_impacts, deduplicate_discoveries, integrated_priorities, related_backlog_items)
 from .freshness import evidence_quality_diagnostics
+from .system_intelligence import collect_system_intelligence
 
 ROOT = Path(__file__).resolve().parents[2]
 REGISTRY_PATH = ROOT / "config/usg-system-evidence-source-registry-0.1.0.json"
@@ -400,6 +401,7 @@ def collect_catalogue(root: Path = ROOT, *, registry_path: Path = REGISTRY_PATH,
     workflows = workflow_evidence(workflow_runs_path)
     diagnostic_items = evidence_quality_diagnostics(
         external, campaigns, growth, generated_at or utc_now())
+    system_intelligence = collect_system_intelligence(root)
     diagnostic_findings = []
     for item in diagnostic_items:
         detail = {key: value for key, value in item.items()
@@ -407,8 +409,14 @@ def collect_catalogue(root: Path = ROOT, *, registry_path: Path = REGISTRY_PATH,
         diagnostic_findings.append(make_finding(
             item["kind"], item["summary"], item["evidence_refs"], ["P8"], phases,
             item["severity"], "evidence_quality_review", detail))
+    system_findings = []
+    for item in system_intelligence["findings"]:
+        system_findings.append(make_finding(
+            item["kind"], item["summary"], item["evidence_refs"], item["phase_impacts"], phases,
+            item["severity"], item.get("route"), item.get("details")))
     findings = deduplicate_discoveries(
-        discover(phases, external, campaigns, growth, sources, workflows) + diagnostic_findings, root)
+        discover(phases, external, campaigns, growth, sources, workflows)
+        + diagnostic_findings + system_findings, root)
     backlog_links = related_backlog_items(findings, root)
     for finding in findings:
         finding["related_backlog_items"] = backlog_links.get(str(finding.get("id")), [])
@@ -461,6 +469,7 @@ def collect_catalogue(root: Path = ROOT, *, registry_path: Path = REGISTRY_PATH,
                 "semantic_contracts_changed": False}},
         "discoveries": findings,
         "evidence_quality_diagnostics": diagnostic_items,
+        "system_intelligence": system_intelligence["summary"],
         "integrated_priorities": priorities,
         "review_proposals": review_proposals,
         "discovery_management": {"deduplication": "stable_kind_evidence_scope_fingerprint",
