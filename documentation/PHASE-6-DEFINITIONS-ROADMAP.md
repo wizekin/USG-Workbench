@@ -1,12 +1,12 @@
 # USG Phase 6 — Definitions and Roadmap
 
-**Status:** IN PROGRESS — Steps 6.1–6.6 accepted for their bounded, benchmarked scope. Step 6.6 uses the graph-first automatic synthetic reference benchmark (500 cases / 10 profiles); its naturalistic semantic accuracy remains unclaimed. All ten Step 6.6 runtime profiles remain candidate-only.  
+**Status:** BOUNDED AUTOMATIC EXIT ACCEPTED — Steps 6.1–6.14 passed the registered acceptance gates on the accepted PR head. Step 6.6 has its separate 500-case / 10-profile nominal benchmark; Steps 6.7–6.11 have a separate 500-case / 10-profile bilingual integration benchmark. Each registered profile passed its individual 20-positive / 20-negative / 10-ambiguous gate. Runtime outputs remain candidate-only. Step 6.12 is accepted for OPAQUE preservation only; canonical semantic-assertion projection remains separately unaccepted. Naturalistic accuracy and unregistered construction families remain outside this bounded acceptance.  
 **Proposed interpretation contract:** `USG-INTERPRET/0.3.0`, additive to the accepted Phase 5 contract.  
 **Accepted starting point:** Phase 5 `USG-INTERPRET/0.2.0`.  
 **Canonical semantic interchange:** `USG-SEM/1.0` remains unchanged.  
 **Canonical persistence:** the existing Phase 3 SQLite store remains authoritative.  
 **Initial language profiles:** English and Modern Standard Arabic (MSA).  
-**Next gate:** Step 6.6 is accepted for its bounded graph-first synthetic-reference domain. The 500-case bilingual nominal benchmark is separate from the new [Phase 6 Automatic Acceptance Factory](PHASE-6-AUTOMATIC-ACCEPTANCE-FACTORY.md), which generates and evaluates 500 additional cases over Steps 6.7–6.11 and checks preservation/integration for Steps 6.12–6.14. The factory executes the integrated API and publishes per-profile results; an `OPEN` result is retained as open, never converted into acceptance merely because CI completed. Candidate runtime status and naturalistic semantic accuracy remain unpromoted. See the [automatic synthetic-reference protocol](PHASE-6-STEP-6.6-AUTOMATIC-SYNTHETIC-REFERENCE-PROTOCOL.md), [automatic acceptance factory](PHASE-6-AUTOMATIC-ACCEPTANCE-FACTORY.md), and [historical dataset feasibility audit](PHASE-6-STEP-6.6-INDEPENDENT-GOLD-DATASET-AUDIT.md).
+**Bounded exit result:** The Phase 6 Automatic Acceptance Factory passed the registered 500-case bilingual set for Steps 6.7–6.11 and the OPAQUE-preservation/service-integration gates for Steps 6.12–6.13; Step 6.14 accepted because every preceding bounded gate passed. The generator creates reference graphs before sentence realization and uses no human annotations or model labels for new cases. The separate Step 6.6 nominal benchmark remains separate. This result does not claim naturalistic accuracy, productive unrestricted grammar, identity resolution, or semantic assertion projection. See the [automatic synthetic-reference protocol](PHASE-6-STEP-6.6-AUTOMATIC-SYNTHETIC-REFERENCE-PROTOCOL.md), [automatic acceptance factory](PHASE-6-AUTOMATIC-ACCEPTANCE-FACTORY.md), and [historical dataset feasibility audit](PHASE-6-STEP-6.6-INDEPENDENT-GOLD-DATASET-AUDIT.md).
 
 ## 1. Purpose and transition from Phase 5
 
@@ -251,7 +251,9 @@ Every Phase 6 implementation PR must verify:
 
 ## 10. Phase 6 exit criteria
 
-Phase 6 is complete only when:
+The registered bounded Phase 6 acceptance set (Steps 6.7–6.14) has passed the automatic exit evaluator. The acceptance boundary and exclusions are recorded in the [bounded acceptance record](PHASE-6-BOUNDED-AUTOMATIC-ACCEPTANCE-RECORD.md). This does not close the broader research objective of naturalistic language coverage; the criteria below define the full project objective beyond the registered synthetic profiles.
+
+Full-scope Phase 6 is complete only when:
 
 1. Steps 6.1–6.14 are merged and the exact-head acceptance workflows pass.
 2. The `USG-INTERPRET/0.3.0` contract and frozen benchmark are published.
