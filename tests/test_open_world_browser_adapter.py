@@ -72,7 +72,7 @@ class BrowserAdapterProjectionTests(unittest.TestCase):
             created_at="2026-11-12T00:00:00Z",
         )
         case = generator.generate(1)[0]
-        self.assertEqual(case["resource_limits"]["memory_megabytes"], 2048)
+        self.assertEqual(case["resource_limits"]["memory_megabytes"], 4096)
         self.assertEqual(case["resource_limits"]["wall_time_seconds"], 45)
         self.assertFalse(case["resource_limits"]["network_access"])
 
