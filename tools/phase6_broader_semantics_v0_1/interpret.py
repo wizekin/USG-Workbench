@@ -208,7 +208,7 @@ def _nominal_candidate_graph(source: str, result: dict) -> tuple[dict, list[str]
         if feature == "NOMINAL_PROPERTY":
             graph["features"].append("NOMINAL_PROPERTY")
         if relation_type == "GENITIVE_UNSPECIFIED":
-                    # Preserve the explicit non-entailment: this is a genitive form,
+            # Preserve the explicit non-entailment: this is a genitive form,
             # not a claim that the dependent is owned by the head.
             graph["provenance"].append({
                 "rule_id": "phase6.genitive.unspecified.v1",

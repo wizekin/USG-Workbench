@@ -20,7 +20,7 @@ class Phase6CandidateProviderIntegrationTests(unittest.TestCase):
         self.assertTrue(any(edge["type"] == "AGENT" for edge in graph["relations"]))
 
     def test_arabic_predicate_argument_provider_adds_bounded_candidate(self):
-        result = self.service.interpret("ينام الطالب", "ar")
+        result = self.service.interpret("نام الرجل", "ar")
         self.assertEqual(result["status"], "CANDIDATE_ONLY")
         self.assertIn("PHASE6_PREDICATE_ARGUMENT_PROVIDER:ar.intransitive.basic", result["diagnostics"])
         self.assertIn("PREDICATE_ARGUMENT", result["graph"]["features"])
