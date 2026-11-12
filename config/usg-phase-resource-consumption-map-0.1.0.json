@@ -217,21 +217,22 @@
         "system_evidence_catalogue_and_phase_manifest"
       ],
       "optional_sources": [
-        "structured_reasoning",
-        "canonical_persistence_and_workspace",
-        "interpretation_pipelines",
-        "phase6_candidate_expansion",
-        "lexical_candidate_adapter",
-        "oov_and_ambiguity_regressions",
-        "naturalistic_pud_population",
-        "cross_implementation_conformance",
-        "versioned_lexical_construction_and_operator_resources",
-        "python_native_model_packages",
-        "javascript_semantic_workbench",
-        "morphology_and_pos_experiments",
-        "kernel_lab_and_local_api",
         "automation_workflows_and_actions",
-        "regression_and_acceptance_suites"
+        "canonical_persistence_and_workspace",
+        "cross_implementation_conformance",
+        "interpretation_pipelines",
+        "javascript_semantic_workbench",
+        "kernel_lab_and_local_api",
+        "lexical_candidate_adapter",
+        "long_term_development_plan",
+        "morphology_and_pos_experiments",
+        "naturalistic_pud_population",
+        "oov_and_ambiguity_regressions",
+        "phase6_candidate_expansion",
+        "python_native_model_packages",
+        "regression_and_acceptance_suites",
+        "structured_reasoning",
+        "versioned_lexical_construction_and_operator_resources"
       ],
       "consume_modes": [
         "normative",
@@ -244,9 +245,10 @@
         "historical_only"
       ],
       "prohibited_uses": [
-        "single aggregate intelligence score",
         "phase status mutation outside the exact-head formal acceptance protocol",
-        "semantic promotion without independent acceptance"
+        "semantic promotion without independent acceptance",
+        "single aggregate intelligence score",
+        "treating a proposed future phase in the long-term development plan as implementation authorization"
       ]
     }
   ],
