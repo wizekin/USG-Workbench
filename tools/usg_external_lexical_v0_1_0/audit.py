@@ -12,6 +12,50 @@ _COUNTERS = (
 )
 
 
+def build_shard_inventory_report(shard_files: list[dict], manifest: dict) -> dict:
+    """Summarize physical shard files and reconcile unique logical batch numbers."""
+    batches: dict[int, list[dict]] = {}
+    unrecognized_paths: list[str] = []
+    for item in shard_files:
+        path = str(item.get("path", ""))
+        match = re.search(r"(?:^|/)batch-(\d{6})-[^/]+\.jsonl\.gz$", path)
+        if not match:
+            unrecognized_paths.append(path)
+            continue
+        batches.setdefault(int(match.group(1)), []).append(item)
+
+    conflicting_batches = sorted(
+        number for number, copies in batches.items()
+        if len({copy.get("sha256") for copy in copies}) > 1
+    )
+    duplicate_physical_copy_count = sum(
+        len(copies) - 1 for copies in batches.values()
+        if len({copy.get("sha256") for copy in copies}) == 1
+    )
+    logical_batch_count = len(batches)
+    manifest_batch_count = int(manifest.get("batch_count", -1))
+    matches_manifest = (
+        logical_batch_count == manifest_batch_count
+        and not conflicting_batches
+        and not unrecognized_paths
+    )
+    return {
+        "status": "available",
+        "snapshot_id": manifest.get("source_snapshot_id"),
+        "file_count": len(shard_files),
+        "physical_file_count": len(shard_files),
+        "logical_batch_count": logical_batch_count,
+        "duplicate_physical_copy_count": duplicate_physical_copy_count,
+        "conflicting_batch_numbers": conflicting_batches,
+        "unrecognized_paths": sorted(unrecognized_paths),
+        "total_size_bytes": sum(int(item.get("size_bytes", 0)) for item in shard_files),
+        "manifest_batch_count": manifest_batch_count,
+        "matches_manifest": matches_manifest,
+        "consistency_status": "matched" if matches_manifest else "mismatch",
+        "files": shard_files,
+    }
+
+
 def audit_crawl_state(checkpoint: dict, manifest: dict, shard_inventory: list[dict]) -> dict:
     """Compare checkpoint, manifest and physical shard metadata without mutating data."""
     errors: list[str] = []

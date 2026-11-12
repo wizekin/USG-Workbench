@@ -179,6 +179,7 @@ def build_growth_plan(
                 "campaign_id": campaign_id,
                 "kind": "pipeline_version_mismatch",
                 "counts": attribution["pipeline_version_mismatch_record_counts"],
+                "identity_counts": attribution.get("pipeline_identity_mismatch_record_counts", {}),
             })
         campaign_summaries.append({
             "campaign_id": campaign_id,
