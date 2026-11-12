@@ -25,7 +25,7 @@ DEFAULT_CORPUS = ROOT / "benchmarks/phase6-automatic-acceptance-v1.0/corpus.json
 DEFAULT_REPORT = ROOT / "artifacts/phase6-automatic-acceptance-report.json"
 
 
-def _graph_observation(response: dict[str, Any]) -> dict[str, Any]:
+def _graph_observation(response: dict[str, Any], expected_source: str) -> dict[str, Any]:
     interpretation = response.get("interpretation", {})
     graph = interpretation.get("graph", {}) if isinstance(interpretation, dict) else {}
     composition = interpretation.get("composition", {}) if isinstance(interpretation, dict) else {}
@@ -42,6 +42,14 @@ def _graph_observation(response: dict[str, Any]) -> dict[str, Any]:
     source = interpretation.get("source", {}).get("text")
     if not isinstance(source, str):
         source = ""
+    composition_source = composition.get("source", {})
+    source_integrity = (
+        source == expected_source
+        and composition_source.get("text") == expected_source
+        and composition_source.get("sha256") == __import__("hashlib").sha256(
+            expected_source.encode("utf-8")
+        ).hexdigest()
+    )
     for node in nodes:
         span = node.get("span", {})
         if span:
@@ -88,6 +96,7 @@ def _graph_observation(response: dict[str, Any]) -> dict[str, Any]:
         "relation_types": {item.get("type") for item in relations if isinstance(item, dict)},
         "operator_types": {item.get("type") for item in operators if isinstance(item, dict)},
         "spans_valid": spans_valid,
+        "source_integrity": source_integrity,
     }
 
 
@@ -135,6 +144,10 @@ def _positive_match(case: dict[str, Any], observed: dict[str, Any]) -> tuple[boo
     roles_ok = _role_span_match(expected.get("required_role_spans", []), observed)
     if not roles_ok:
         failures.append("required_role_spans_not_preserved")
+    if not observed["source_integrity"]:
+        failures.append("source_snapshot_or_digest_mismatch")
+    if not observed["spans_valid"]:
+        failures.append("invalid_source_grounded_span")
     if expected.get("required_operator_target"):
         if any(not item.get("target_id") for item in observed["operators"]):
             failures.append("operator_target_missing")
@@ -383,7 +396,7 @@ def run_acceptance(corpus: dict[str, Any] | None = None) -> dict[str, Any]:
             })
             if status != 200:
                 raise RuntimeError(f"integrated interpreter API failed for {case['id']}: {status} {response}")
-            observation = _graph_observation(response)
+            observation = _graph_observation(response, case["text"])
             interpretation = observation["interpretation"]
             preservation = None
             projection = response.get("canonical_preservation_projection")
