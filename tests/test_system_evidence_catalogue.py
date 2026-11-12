@@ -84,6 +84,24 @@ class SystemEvidenceCatalogueTests(unittest.TestCase):
         self.assertEqual([item["id"] for item in registry["phases"]],
                          ["P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8"])
 
+    def test_phase_resource_manifest_template_validates(self):
+        template_path = ROOT / "templates/phase-resource-manifest-0.1.0.template.json"
+        schema_path = ROOT / "specifications/usg-phase-resource-manifest-0.1.0.schema.json"
+        template = json.loads(template_path.read_text(encoding="utf-8"))
+        schema = json.loads(schema_path.read_text(encoding="utf-8"))
+        Draft202012Validator(schema, format_checker=FormatChecker()).validate(template)
+        self.assertEqual(template["contract"], "USG-PHASE-RESOURCE-MANIFEST/0.1.0")
+        self.assertTrue(template["governance"]["candidate_resources_remain_separate"])
+
+    def test_phase_resource_map_covers_all_eight_phases(self):
+        path = ROOT / "config/usg-phase-resource-consumption-map-0.1.0.json"
+        value = json.loads(path.read_text(encoding="utf-8"))
+        self.assertEqual(value["contract"], "USG-PHASE-RESOURCE-CONSUMPTION-MAP/0.1.0")
+        self.assertEqual({item["phase_id"] for item in value["phases"]},
+                         {f"P{i}" for i in range(1, 9)})
+        self.assertIn("existing_phase_amendment_proposal",
+                      {item["route"] for item in value["dependency_rules"]})
+
     def test_catalogue_indexes_source_families_and_exact_asset_hashes(self):
         report = self.collect()
         canonical = next(item for item in report["source_families"] if item["id"] == "canonical_semantic_interchange")
