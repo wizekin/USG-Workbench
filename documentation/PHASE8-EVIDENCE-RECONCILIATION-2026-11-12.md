@@ -14,7 +14,7 @@ This is a metadata/evaluation correction. It does not rewrite the historical lex
 
 ## Open-World pipeline-version mismatch
 
-Historical execution records whose declared pipeline contract/version does not exactly match the configured target profile are counted under `pipeline_version_mismatch_record_counts` and excluded from stage-dependency attribution. This is intentional: applying a newer dependency graph to an older or unknown pipeline version could mislabel the first blocker and downstream co-occurrences.
+Historical execution records whose declared pipeline contract/version identity does not exactly match the configured target profile are counted under both `pipeline_version_mismatch_record_counts` and `pipeline_identity_mismatch_record_counts`, with the observed contract and version recorded together and excluded from stage-dependency attribution. This is intentional: applying a newer dependency graph to an older or unknown pipeline version could mislabel the first blocker and downstream co-occurrences.
 
 The 1,058 records reported in the 12 November 2026 growth-plan snapshot are therefore retained as a historical version-compatibility warning, not converted into 1,058 proven runtime defects. They can be attributed only when a matching historical stage profile is available, or re-evaluated by rerunning the cases against a declared current profile. No historical execution record is edited to manufacture a match.
 
