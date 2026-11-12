@@ -23,6 +23,7 @@ from tools.semantic_query_interface_v1_0_0 import PersistentQueryService
 from tools.semantic_graph_store_v1_0_0.store import RESOURCE_CATALOGUE_ROLE
 from tools.usg_interpretation_v0_1_0.resources import SemanticAssociation
 from tools.phase6_broader_semantics_v0_1.engine import compose as compose_phase6_candidate, project_loss_aware as project_phase6_loss_aware, CompositionError
+from tools.phase6_broader_semantics_v0_1.extract import extract_candidate_graph
 from tools.phase6_broader_semantics_v0_1.runs import SQLitePhase6CandidateRunStore
 from tools.usg_interpretation_v0_2_0 import (
     Phase5InterpretationService, SQLiteResourceCatalogue,
@@ -181,6 +182,33 @@ class USGApplication:
                         "identity_resolution": False,
                     } for item in results],
                 }
+
+            if method == "POST" and path == "/v3/phase6/extract":
+                if not isinstance(body, dict) or not isinstance(body.get("source"), str) or not isinstance(body.get("language"), str):
+                    raise APIRequestError(400, "PHASE6_EXTRACT_REQUEST_INVALID", "body requires source and language strings")
+                persist = body.get("persist", True)
+                if not isinstance(persist, bool):
+                    raise APIRequestError(400, "PHASE6_EXTRACT_REQUEST_INVALID", "persist must be a boolean")
+                try:
+                    extraction = extract_candidate_graph(body["source"], body["language"])
+                except (TypeError, ValueError) as exc:
+                    raise APIRequestError(400, "PHASE6_EXTRACT_INVALID", str(exc)) from exc
+                response = {"extraction": extraction, "capability_state": "CANDIDATE_ONLY"}
+                if extraction["status"] == "CANDIDATE_PATTERN_MATCH":
+                    try:
+                        composition = compose_phase6_candidate(body["source"], body["language"], extraction["graph"])
+                        projection = project_phase6_loss_aware(composition)
+                    except (CompositionError, TypeError, ValueError) as exc:
+                        raise APIRequestError(400, "PHASE6_EXTRACT_COMPOSITION_INVALID", str(exc)) from exc
+                    stored_result = {"pipeline_contract": composition["pipeline_contract"], "composition": composition, "projection": projection}
+                    response.update({"composition": composition, "projection": projection})
+                    if persist:
+                        manifest_digest = self._catalogue_read(lambda: self.resource_catalogue.digest())
+                        metadata = self._catalogue_write(lambda: self.phase6_candidate_run_store.put(
+                            body["source"], body["language"], extraction["graph"], stored_result, manifest_digest
+                        ))
+                        response["persistence"] = metadata
+                return 200, response
 
             if method == "POST" and path == "/v3/phase6/compose":
                 if not isinstance(body, dict) or not isinstance(body.get("source"), str) or not isinstance(body.get("language"), str) or not isinstance(body.get("graph"), dict):
