@@ -36,6 +36,20 @@ def collect_workflow_runs(repository: str, token: str, opener: Callable = urlope
     workflows = index.get("workflows")
     if not isinstance(workflows, list):
         raise ValueError("GitHub workflow listing did not return a workflows array")
+    api_total_count = int(index.get("total_count", len(workflows)) or 0)
+    page = 2
+    while len(workflows) < api_total_count:
+        page_data = _get_json(f"{base}/actions/workflows?per_page=100&page={page}", token, opener)
+        page_workflows = page_data.get("workflows")
+        if not isinstance(page_workflows, list) or not page_workflows:
+            break
+        workflows.extend(page_workflows)
+        page += 1
+    unique = {}
+    for workflow in workflows:
+        if isinstance(workflow, dict) and workflow.get("id") is not None:
+            unique[int(workflow["id"])] = workflow
+    workflows = [unique[key] for key in sorted(unique)]
 
     def fetch_one(workflow: dict[str, Any]) -> dict[str, Any]:
         workflow_id = workflow.get("id")
@@ -115,6 +129,8 @@ def collect_workflow_runs(repository: str, token: str, opener: Callable = urlope
         "contract": "USG-GITHUB-ACTIONS-EVIDENCE/0.1.0",
         "repository": repository,
         "workflow_count": len(results),
+        "api_total_workflow_count": api_total_count,
+        "workflow_list_complete": len(results) >= api_total_count,
         "latest_run_count": sum(item.get("latest_run") is not None for item in results),
         "status_counts": dict(sorted(counts.items())),
         "workflows": results,
