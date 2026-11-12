@@ -5,6 +5,7 @@ from pathlib import Path
 import tempfile
 import unittest
 
+from jsonschema import Draft202012Validator, FormatChecker
 from tools.system_evidence.collector import collect_catalogue, render_markdown, validate_registry
 
 ROOT = Path(__file__).resolve().parents[1]
