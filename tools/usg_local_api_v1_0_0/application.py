@@ -134,7 +134,7 @@ class USGApplication:
                     "phase5_pipeline": "USG-INTERPRET/0.2.0",
                     "phase6_candidate_pipeline": "USG-INTERPRET/0.3.0",
                     "phase6_candidate_capabilities": "CANDIDATE_ONLY",
-                    "phase6_integrated_interpreter": "usg-phase6-integrated-interpreter/0.1.0",
+                    "phase6_integrated_interpreter": "usg-phase6-integrated-interpreter/0.2.0",
                     "resource_catalogue": "sqlite-semantic-resource-catalogue/0.1.0",
                 }
 

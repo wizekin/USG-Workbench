@@ -178,7 +178,7 @@ These are the major open workstreams. Detailed step definitions, dependencies, a
 
 ### 1. Phase 6 — broader semantic interpretation
 
-**Status: IN PROGRESS — integrated candidate implementation now spans Steps 6.7–6.14.** One bilingual interpretation path reuses the Phase 5 lexical, clause, syntax, operator, and discourse stages, composes their results into a Phase 6 graph, and exposes the same service through API, CLI, and Kernel Lab. Candidate-only status is retained; the final per-construction acceptance gate remains open.
+**Status: IN PROGRESS — integrated candidate implementation now spans Steps 6.7–6.14.** One bilingual interpretation path reuses the Phase 5 lexical, clause, syntax, operator, and discourse stages, composes their results into a Phase 6 graph, and exposes the same service through API, CLI, and Kernel Lab. Candidate-only status is retained; the final per-construction acceptance gate remains open. The same service also invokes the existing eight-profile predicate/argument and ten-profile nominal candidate providers when no Phase 5 predicate candidate is available.
 
 | Step | Capability | Current status |
 |---|---|---|
