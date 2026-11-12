@@ -33,7 +33,7 @@ def fixtures():
     ]
     for index,(lang,source,nodes,profile) in enumerate(examples,1):
         node_rows=[{"id":node_id,"kind":kind,"span":_span(source,surface)} for node_id,kind,surface in nodes]
-        graph={"nodes":node_rows,"relations":[],"clauses":[],"operators":[],"references":[],"provenance":[{"rule_id":f"synthetic.{profile.lower()}.v1","resource_id":"synthetic-template-registry/1"}],"features":[profile],"speech_act":"UNKNOWN","voice":"UNKNOWN"}
+        graph={"nodes":node_rows,"relations":[],"clauses":[],"operators":[],"references":[],"provenance":[{"rule_id":f"synthetic.{profile.lower()}.v1","resource_id":"synthetic-template-registry/1"}],"features":({"VOICE_SPEECH_ACT":["VOICE","SPEECH_ACT"],"OPERATOR_SCOPE":["OPERATOR"]}.get(profile,[profile])),"speech_act":"UNKNOWN","voice":"UNKNOWN"}
         if profile=="COORDINATION":
             conjunction="and" if lang=="en" else "و"
             graph["relations"]=[{"type":"AND","source":nodes[0][0] if lang=="en" else nodes[1][0],"target":nodes[1][0] if lang=="en" else nodes[2][0],"feature":"COORDINATION","evidence":_span(source,conjunction)}]
