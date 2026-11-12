@@ -448,9 +448,6 @@
         "P11.3"
       ],
       "linked_backlog_ids": [
-        "P6-CONT-01",
-        "P6-CONT-02",
-        "P6-CONT-03",
         "SYS-08",
         "SYS-09"
       ],
@@ -541,6 +538,11 @@
         "No accepted capability regresses.",
         "Candidate grammar remains separate until acceptance.",
         "Supported-language scope is explicit."
+      ],
+      "linked_continuation_ids": [
+        "P6-CONT-01",
+        "P6-CONT-02",
+        "P6-CONT-03"
       ]
     },
     {
@@ -554,9 +556,7 @@
         "P10.6",
         "P12"
       ],
-      "linked_backlog_ids": [
-        "P6-CONT-06"
-      ],
+      "linked_backlog_ids": [],
       "work_items": [
         {
           "id": "P13.1",
@@ -628,6 +628,9 @@
         "Accepted cases preserve source-to-semantic derivations.",
         "Projection is loss-detecting and round-trip tested.",
         "Canonical persistence remains authoritative."
+      ],
+      "linked_continuation_ids": [
+        "P6-CONT-06"
       ]
     },
     {
@@ -641,9 +644,7 @@
         "P12",
         "P13.1"
       ],
-      "linked_backlog_ids": [
-        "P6-CONT-04"
-      ],
+      "linked_backlog_ids": [],
       "work_items": [
         {
           "id": "P14.1",
@@ -715,6 +716,9 @@
         "Per-operator and interaction tests pass.",
         "Ambiguity/underspecification is preserved.",
         "Temporal and modal claims remain bounded to evaluated profiles."
+      ],
+      "linked_continuation_ids": [
+        "P6-CONT-04"
       ]
     },
     {
@@ -728,9 +732,7 @@
         "P12",
         "P13.1"
       ],
-      "linked_backlog_ids": [
-        "P6-CONT-05"
-      ],
+      "linked_backlog_ids": [],
       "work_items": [
         {
           "id": "P15.1",
@@ -785,6 +787,9 @@
         "Mention and entity layers are distinct.",
         "Reference resolution reports alternatives and abstention.",
         "Discourse relations have typed evidence and per-language tests."
+      ],
+      "linked_continuation_ids": [
+        "P6-CONT-05"
       ]
     },
     {
