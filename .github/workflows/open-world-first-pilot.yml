@@ -13,6 +13,8 @@ on:
       - "tools/open_world_evaluation/schemas/coverage-ledger.schema.json"
       - "tools/open_world_evaluation/execute_cases.py"
       - "tools/open_world_evaluation/worker.py"
+      - "tools/open_world_evaluation/browser_adapter.py"
+      - "tests/test_open_world_browser_adapter.py"
       - "tools/open_world_evaluation/target_profiles.json"
       - "tools/open_world_evaluation/schemas/scenario.schema.json"
       - "benchmarks/phase4-interpretation/v0.1.0/fixtures.json"
@@ -40,6 +42,7 @@ jobs:
     env:
       PROMPT_COUNT: ${{ github.event.inputs.prompt_count || '1000' }}
       CAMPAIGN_ID: OWC-OW6-${{ github.run_id }}-${{ github.run_attempt }}
+      PLAYWRIGHT_BROWSERS_PATH: ${{ runner.temp }}/ms-playwright
     steps:
       - uses: actions/checkout@v4
         with:
@@ -47,8 +50,13 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Install schema validator
-        run: python -m pip install "jsonschema>=4.18,<5"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install schema and browser dependencies
+        run: |
+          python -m pip install "jsonschema>=4.18,<5" "playwright>=1.48,<2"
+          python -m playwright install --with-deps chromium
       - name: Validate campaign size and run diagnostic importer tests
         run: |
           python - <<'PY'
@@ -100,7 +108,7 @@ jobs:
           rows = [json.loads(line) for line in (root / "ow6-all-cases.jsonl").read_text(encoding="utf-8").splitlines()]
           assert len(rows) == random["case_count"] + diagnostic["case_count"]
           PY
-      - name: Execute registered Python entry points; record browser-only targets as not executed
+      - name: Execute registered Python and browser targets in isolated workers
         run: |
           python -m tools.open_world_evaluation.execute_cases \
             --input "$RUNNER_TEMP/ow6-all-cases.jsonl" \
@@ -157,7 +165,7 @@ jobs:
             Automated, append-only report bundle for the USG Open-World Randomized Evaluation Program.
 
             - Tested commit: ${{ github.sha }}
-            - Random prompts: ${{ env.PROMPT_COUNT }} across three registered targets
+            - Random prompts: ${{ env.PROMPT_COUNT }} across all registered targets
             - Controlled diagnostic sources: Phase 4 v0.1.0 and Phase 5 v0.2.1 repository fixture corpora
             - Naturalistic population: not yet populated; report remains partial
             - Structural validation and diagnostic-oracle scores are reported separately
