@@ -66,7 +66,7 @@ Use modes must also remain explicit: normative, runtime, read-only adapter, cand
 | 8.5 | Freshness and evidence-quality diagnostics | Detect stale PUD shard counts, missing reports, old baselines, population mismatch, rights uncertainty, and unsupported inference from evidence | Initial diagnostics implemented in collector; expansion pending |
 | 8.6 | Discovery deduplication and impact classification | New findings link to existing SYS backlog items, continuation tracker IDs, prior findings, or a stable new discovery record | Planned |
 | 8.7 | Phase-aware routing and amendment proposals | Existing continuation is preferred; accepted phases can receive explicit amendment proposals; contract changes route through migration plans | Routing policy implemented in the source map; proposal automation pending |
-| 8.8 | Mandatory phase resource manifest | Every new phase step declares resource IDs/versions, evidence populations, dependencies, acceptance tests, and candidate/runtime boundaries | Planned |
+| 8.8 | Mandatory phase resource manifest | Every Phase 8+ roadmap has a schema-valid phase resource manifest; future step changes must update it with exact resource/evidence dependencies and candidate/runtime boundaries | Implemented for Phase 8 baseline; CI policy gate active |
 | 8.9 | Growth-planner integration | Growth plan, Open-World findings, lexical gaps, conformance gaps, and knowledge-layer findings are prioritized in one explainable view without overriding source-specific metrics | Planned |
 | 8.10 | Integrated Phase 8 exit acceptance | Exact-head CI verifies registry, collector, PUD refresh handling, Open-World extraction, routing, immutable snapshots, freshness rules, and protected contracts | Pending |
 
