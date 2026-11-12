@@ -22,6 +22,8 @@ from tools.semantic_graph_store_v1_0_0 import (
 from tools.semantic_query_interface_v1_0_0 import PersistentQueryService
 from tools.semantic_graph_store_v1_0_0.store import RESOURCE_CATALOGUE_ROLE
 from tools.usg_interpretation_v0_1_0.resources import SemanticAssociation
+from tools.phase6_broader_semantics_v0_1.engine import compose as compose_phase6_candidate, project_loss_aware as project_phase6_loss_aware, CompositionError
+from tools.phase6_broader_semantics_v0_1.runs import SQLitePhase6CandidateRunStore
 from tools.usg_interpretation_v0_2_0 import (
     Phase5InterpretationService, SQLiteResourceCatalogue,
     SQLiteInterpretationRunStore, bundled_resource_descriptors,
@@ -64,6 +66,7 @@ class USGApplication:
                         "bundled resource changed under an existing ID; register a new resource ID/version: "
                         + descriptor.resource_id
                     )
+            self.phase6_candidate_run_store = SQLitePhase6CandidateRunStore(connection)
 
     def _catalogue_read(self, operation):
         with self.store.resource_catalogue_session(role=RESOURCE_CATALOGUE_ROLE):
@@ -126,6 +129,8 @@ class USGApplication:
                     "storage": "SQLite",
                     "canonical_profile": "USG-SEM/1.0",
                     "phase5_pipeline": "USG-INTERPRET/0.2.0",
+                    "phase6_candidate_pipeline": "USG-INTERPRET/0.3.0",
+                    "phase6_candidate_capabilities": "CANDIDATE_ONLY",
                     "resource_catalogue": "sqlite-semantic-resource-catalogue/0.1.0",
                 }
 
@@ -176,6 +181,59 @@ class USGApplication:
                         "identity_resolution": False,
                     } for item in results],
                 }
+
+            if method == "POST" and path == "/v3/phase6/compose":
+                if not isinstance(body, dict) or not isinstance(body.get("source"), str) or not isinstance(body.get("language"), str) or not isinstance(body.get("graph"), dict):
+                    raise APIRequestError(400, "PHASE6_COMPOSE_REQUEST_INVALID", "body requires source, language, and graph object")
+                persist = body.get("persist", True)
+                if not isinstance(persist, bool):
+                    raise APIRequestError(400, "PHASE6_COMPOSE_REQUEST_INVALID", "persist must be a boolean")
+                try:
+                    composition = compose_phase6_candidate(body["source"], body["language"], body["graph"])
+                    projection = project_phase6_loss_aware(composition)
+                except (CompositionError, TypeError, ValueError) as exc:
+                    raise APIRequestError(400, "PHASE6_COMPOSE_INVALID", str(exc)) from exc
+                result = {"pipeline_contract": composition["pipeline_contract"], "composition": composition, "projection": projection}
+                if persist:
+                    manifest_digest = self._catalogue_read(lambda: self.resource_catalogue.digest())
+                    metadata = self._catalogue_write(lambda: self.phase6_candidate_run_store.put(
+                        body["source"], body["language"], body["graph"], result, manifest_digest
+                    ))
+                    result = {**result, "persistence": metadata}
+                return 200, result
+
+            if method == "GET" and path == "/v3/phase6/runs":
+                try:
+                    limit = int(query.get("limit", ["50"])[0])
+                    runs = self._catalogue_read(lambda: self.phase6_candidate_run_store.list(limit))
+                except (TypeError, ValueError) as exc:
+                    raise APIRequestError(400, "PHASE6_RUN_LIMIT_INVALID", str(exc)) from exc
+                return 200, {"count": len(runs), "runs": list(runs)}
+
+            phase6_parts = [unquote(part) for part in path.split("/") if part]
+            if method == "GET" and len(phase6_parts) == 4 and phase6_parts[:3] == ["v3", "phase6", "runs"]:
+                stored = self._catalogue_read(lambda: self.phase6_candidate_run_store.get(phase6_parts[3]))
+                if stored is None:
+                    raise APIRequestError(404, "PHASE6_RUN_NOT_FOUND", "Phase 6 candidate run was not found")
+                return 200, stored
+
+            if method == "POST" and len(phase6_parts) == 5 and phase6_parts[:3] == ["v3", "phase6", "runs"] and phase6_parts[4] == "replay":
+                stored = self._catalogue_read(lambda: self.phase6_candidate_run_store.get(phase6_parts[3]))
+                if stored is None:
+                    raise APIRequestError(404, "PHASE6_RUN_NOT_FOUND", "Phase 6 candidate run was not found")
+                inputs = stored["input"]
+                try:
+                    composition = compose_phase6_candidate(inputs["source"], inputs["language"], inputs["graph"])
+                    projection = project_phase6_loss_aware(composition)
+                except (CompositionError, TypeError, ValueError) as exc:
+                    raise APIRequestError(409, "PHASE6_REPLAY_FAILED", str(exc)) from exc
+                replayed = {"pipeline_contract": composition["pipeline_contract"], "composition": composition, "projection": projection}
+                from tools.phase6_broader_semantics_v0_1.runs import canonical_bytes
+                from hashlib import sha256 as _sha256
+                replay_digest = _sha256(canonical_bytes(replayed)).hexdigest()
+                return 200, {"run_id": phase6_parts[3], "stored_result_sha256": stored["result_sha256"],
+                             "replayed_result_sha256": replay_digest, "deterministic_match": replay_digest == stored["result_sha256"],
+                             "result": replayed}
 
             if method == "POST" and path == "/v2/interpret":
                 if not isinstance(body, dict) or not isinstance(body.get("text"), str) or not isinstance(body.get("language"), str):
