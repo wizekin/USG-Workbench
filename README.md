@@ -183,7 +183,7 @@ These are the major open workstreams. Detailed step definitions, dependencies, a
 | Step | Capability | Current status |
 |---|---|---|
 | **6.6** | Nominal, property, possession, and modifier semantics | **Accepted for bounded graph-first synthetic reference (500 cases / 10 profiles); runtime remains candidate-only** |
-| **6.7** | Intra-clause coordination and shared arguments | Integrated clause-level coordination candidates; phrase-level fallback remains narrowly templated |
+| **6.7** | Intra-clause coordination and shared arguments | Integrated clause coordination plus a bounded shared-subject/predicate/patient candidate pattern |
 | **6.8** | Embedded and subordinate clauses | Clause hierarchy and complement/causal/conditional/temporal candidate links integrated |
 | **6.9** | Voice and speech-act structures | Passive-question fallback templates integrated; general voice/speech-act coverage remains unaccepted |
 | **6.10** | Cross-construction operator and quantifier scope | Existing Phase 5 operator candidates carried into the Phase 6 graph |
