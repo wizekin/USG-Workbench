@@ -148,9 +148,11 @@ def _positive_match(case: dict[str, Any], observed: dict[str, Any]) -> tuple[boo
         [len(item.get("antecedent_candidates", [])) for item in observed["references"]] or [0]
     ):
         failures.append("antecedent_candidates_missing")
-    if expected.get("require_unique_resolution"):
-        if not any(item.get("resolved_antecedent") for item in observed["references"]):
-            failures.append("unique_reference_not_resolved")
+    if expected.get("require_unresolved_candidate"):
+        if not any(item.get("status") == "UNRESOLVED"
+                   and item.get("resolved_antecedent") is None
+                   for item in observed["references"]):
+            failures.append("unresolved_reference_candidate_not_preserved")
     return not failures, roles_ok, failures
 
 
@@ -236,8 +238,14 @@ def _evaluate_corpus(corpus: dict[str, Any], predictions: list[dict[str, Any]]) 
                 ok, role_ok, failures = _positive_match(case, observed)
                 pos_hits += int(ok)
                 role_span_hits += int(role_ok and observed["spans_valid"])
-                predicted_unique += int(bool(observed["nodes"] or observed["relations"]
-                                              or observed["operators"] or observed["references"]))
+                has_semantic_commitment = bool(
+                    observed["relations"] or observed["operators"] or observed["references"]
+                    or observed["grammatical"].get("voice") not in {None, "UNKNOWN"}
+                    or observed["grammatical"].get("speech_act") not in {None, "UNKNOWN"}
+                )
+                if not ok and has_semantic_commitment:
+                    false_unique += 1
+                predicted_unique += int(has_semantic_commitment)
             elif case["gold_class"] == "NEGATIVE":
                 ok, failures = _negative_match(case, observed)
                 neg_hits += int(ok)
