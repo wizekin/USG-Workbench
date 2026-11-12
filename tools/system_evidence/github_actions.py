@@ -56,6 +56,24 @@ def collect_workflow_runs(repository: str, token: str, opener: Callable = urlope
             if not runs:
                 return {**row, "latest_run": None, "status": "no_runs"}
             run = runs[0]
+            artifact_rows = []
+            artifact_error = None
+            try:
+                artifact_data = _get_json(
+                    f"{base}/actions/runs/{run.get('id')}/artifacts?per_page=100",
+                    token, opener)
+                for artifact in artifact_data.get("artifacts", []):
+                    artifact_rows.append({
+                        "artifact_id": artifact.get("id"),
+                        "name": artifact.get("name"),
+                        "size_in_bytes": artifact.get("size_in_bytes"),
+                        "expired": artifact.get("expired"),
+                        "created_at": artifact.get("created_at"),
+                        "updated_at": artifact.get("updated_at"),
+                        "archive_download_url": artifact.get("archive_download_url"),
+                    })
+            except Exception as exc:
+                artifact_error = f"{type(exc).__name__}: {exc}"
             latest = {
                 "run_id": run.get("id"),
                 "run_number": run.get("run_number"),
@@ -70,6 +88,9 @@ def collect_workflow_runs(repository: str, token: str, opener: Callable = urlope
                 "head_commit_message": run.get("head_commit", {}).get("message")
                     if isinstance(run.get("head_commit"), dict) else None,
                 "html_url": run.get("html_url"),
+                "artifact_count": len(artifact_rows),
+                "artifacts": artifact_rows,
+                "artifact_collection_error": artifact_error,
             }
             return {**row, "latest_run": latest, "status": run.get("conclusion") or run.get("status") or "unknown"}
         except Exception as exc:
