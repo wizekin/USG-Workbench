@@ -114,4 +114,4 @@ The collector creates observations and suggested routes only. The latest Actions
 
 ## Current Phase 8 status
 
-The first implementation inventories source families and phase consumers, collects stored campaign and growth-planner results, fetches external lexical state, refreshes PUD metrics, and records stale/missing evidence. Deduplication across repeated discoveries, full dependency impact analysis, proposal automation, and integrated exit acceptance remain later Phase 8 steps.
+The current implementation inventories source families and phase consumers, collects stored campaign and growth-planner results, refreshes external lexical/PUD evidence, records workflow outcomes, detects stale and contradictory evidence, deduplicates recurring findings, classifies phase impacts, and creates review-only proposal records. The integrated gate checks structural coverage and governance and can only mark the work eligible for human review or blocked; it cannot accept Phase 8. Full production snapshot coverage, review of generated proposals, and explicit Phase 8 acceptance remain outstanding.
