@@ -573,7 +573,7 @@ def render_markdown(report: dict[str, Any]) -> str:
               "|---|---|---|---|---|"]
     for proposal in report.get("review_proposals", []):
         lines.append(f"| {proposal['proposal_id']} — {proposal['title']} | {proposal['proposal_type']} | {proposal['priority_band']} | {proposal['route']} | {proposal['review_status']} |")
-              "", "All observations require review. Existing continuations are preferred; accepted phase changes are amendment proposals; contract changes require explicit versioned migrations. The collector makes no runtime or phase-status changes.", "",
+    lines += ["", "All observations require review. Existing continuations are preferred; accepted phase changes are amendment proposals; contract changes require explicit versioned migrations. The collector makes no runtime or phase-status changes.", "",
               "## Safety", "",
               "- No candidate resource promotion or canonical-contract mutation.",
               "- Missing results are not zero; skipped targets are not passes.",
