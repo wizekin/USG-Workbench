@@ -1,0 +1,117 @@
+{
+  "schema_version": "1.0.0",
+  "tracker_id": "USG-PHASE-6-CONTINUATION-TRACKER",
+  "last_reviewed_utc": "2026-11-12",
+  "phase_status": {
+    "bounded_exit": "accepted_for_registered_scopes",
+    "runtime_capability_claim": "candidate_only_unless_separately_accepted",
+    "naturalistic_accuracy": "not_established",
+    "phase7_blocking": false
+  },
+  "guardrails": [
+    "A bounded Phase 6 acceptance remains accepted and is not reopened by continuation work.",
+    "No continuation item blocks Phase 7 by default.",
+    "Candidate-only outputs remain candidate-only until their own acceptance gate passes.",
+    "A merged PR or successful workflow does not automatically mark a semantic capability accepted.",
+    "Phase 6 data consumed by Phase 7 must pass through a versioned adapter that preserves provenance and candidate state.",
+    "Naturalistic, synthetic, controlled, and operational evaluation populations remain separate."
+  ],
+  "work_items": [
+    {
+      "id": "P6-CONT-01",
+      "phase_step": "6.7",
+      "title": "Productive coordination beyond the registered shared-argument profile",
+      "objective": "Expand coordinated predicates, shared arguments, coordination scope, and multi-conjunct composition beyond the narrow registered profile.",
+      "priority": "high",
+      "status": "backlog",
+      "phase7_blocking": false,
+      "pr_search_marker": "P6-CONT-01",
+      "acceptance_gate": "Per-language positive, negative, ambiguous, and boundary cases; exact source spans; correct shared and non-shared argument bindings; zero false unique outputs; protected Phase 1–5 and bounded Phase 6 regressions.",
+      "notes": "The accepted shared-subject/predicate/patient profile remains accepted; this item covers broader patterns only."
+    },
+    {
+      "id": "P6-CONT-02",
+      "phase_step": "6.8",
+      "title": "Broader embedded, subordinate, relative, and argument-gap attachment",
+      "objective": "Expand attachment and composition for complements, relative clauses, conditionals, temporal clauses, and argument gaps.",
+      "priority": "high",
+      "status": "backlog",
+      "phase7_blocking": false,
+      "pr_search_marker": "P6-CONT-02",
+      "acceptance_gate": "Per-language construction-specific fixtures with attachment alternatives, exact marker/clause spans, negative abstention, ambiguity preservation, and cycle/reference validation.",
+      "notes": "The registered causal and causal/temporal ambiguity profiles remain accepted; broader attachment is separate."
+    },
+    {
+      "id": "P6-CONT-03",
+      "phase_step": "6.9",
+      "title": "Active/passive alternations and speech acts beyond passive questions",
+      "objective": "Extend voice and communicative-form handling to active/passive alternations, imperatives, commands, requests, and other separately defined speech-act forms.",
+      "priority": "medium",
+      "status": "backlog",
+      "phase7_blocking": false,
+      "pr_search_marker": "P6-CONT-03",
+      "acceptance_gate": "Per-language minimal pairs and adversarial cases distinguish grammatical voice, semantic roles, and speech-act force; exact spans and ambiguity/abstention gates pass.",
+      "notes": "The registered passive-question profile remains accepted."
+    },
+    {
+      "id": "P6-CONT-04",
+      "phase_step": "6.10",
+      "title": "Broader nested operator and quantifier scope",
+      "objective": "Expand nested negation, modality, quantifier, conditional, and cross-construction operator scope.",
+      "priority": "high",
+      "status": "candidate_only",
+      "phase7_blocking": false,
+      "pr_search_marker": "P6-CONT-04",
+      "acceptance_gate": "Minimal-pair and scope-contrast sets per language; explicit target/operand structure; alternatives for ambiguous scope; no sentence-wide or keyword-only shortcuts.",
+      "notes": "Current registered modality/negation and nested-scope ambiguity profiles remain accepted; broader scope remains open."
+    },
+    {
+      "id": "P6-CONT-05",
+      "phase_step": "6.11",
+      "title": "Discourse-reference candidate expansion and conservative resolution research",
+      "objective": "Improve mention linking, candidate retrieval, discourse salience evidence, and conservative reference decisions without equating similarity with identity.",
+      "priority": "medium",
+      "status": "candidate_only",
+      "phase7_blocking": false,
+      "pr_search_marker": "P6-CONT-05",
+      "acceptance_gate": "Per-language multi-antecedent and no-antecedent cases; explicit contextual evidence; identity decisions only under separately defined evidence thresholds; otherwise preserve unresolved alternatives.",
+      "notes": "Candidate preservation is accepted for registered profiles; unique real-world identity resolution remains disabled."
+    },
+    {
+      "id": "P6-CONT-06",
+      "phase_step": "6.12",
+      "title": "Canonical semantic-assertion projection beyond OPAQUE preservation",
+      "objective": "Investigate safe mappings from candidate graph structures to canonical USG-SEM/1.0 assertions where the existing contract can represent every required meaning without loss.",
+      "priority": "high",
+      "status": "backlog",
+      "phase7_blocking": false,
+      "pr_search_marker": "P6-CONT-06",
+      "acceptance_gate": "Explicit per-relation mapping contract; round-trip and loss-detection tests; source and derivation completeness; reject any unmapped or unsupported semantics; no USG-SEM/1.0 schema mutation.",
+      "notes": "OPAQUE preservation remains accepted; semantic-assertion projection is not accepted."
+    },
+    {
+      "id": "P6-CONT-07",
+      "phase_step": "6.14",
+      "title": "Rights-cleared naturalistic evaluation for Phase 6 constructions",
+      "objective": "Build separately reported evaluation populations for realistic English and MSA Arabic text without relying on the synthetic acceptance suite as naturalistic gold.",
+      "priority": "high",
+      "status": "backlog",
+      "phase7_blocking": false,
+      "pr_search_marker": "P6-CONT-07",
+      "acceptance_gate": "Source license/rights and privacy review; provenance and deduplication manifest; explicit annotation/reference quality and population limits; per-language/per-construction reporting; no invented semantic labels.",
+      "notes": "Naturalistic semantic accuracy is not established by the current graph-first synthetic suite."
+    },
+    {
+      "id": "P6-CONT-08",
+      "phase_step": "6.6-6.14",
+      "title": "Construction-level runtime enablement and candidate promotion decisions",
+      "objective": "Evaluate candidate construction profiles for any separately justified runtime enablement without changing the bounded accepted baseline.",
+      "priority": "medium",
+      "status": "candidate_only",
+      "phase7_blocking": false,
+      "pr_search_marker": "P6-CONT-08",
+      "acceptance_gate": "A construction can be enabled only after its own per-language quality, ambiguity, abstention, provenance, compatibility, and independent-evidence requirements are met; report all decisions and non-claims.",
+      "notes": "No tracker status or merged PR by itself authorizes runtime promotion."
+    }
+  ]
+}
