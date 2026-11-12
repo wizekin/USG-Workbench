@@ -23,19 +23,24 @@ This backlog converts the system-wide assessment into bounded, dependency-ordere
 | SYS-12 | P2 | Cross-implementation conformance matrix | None | JS Workbench, Python kernel, Python interpreter, and adapters tested separately with explicit version/feature matrix | Adapter/test only |
 | SYS-13 | P2 | Kernel Lab stage explanation improvements | SYS-02, SYS-07 | User can inspect source, candidate evidence, rule/resource versions, alternatives, and exact blocker | UI/diagnostic only |
 | SYS-14 | P2 | Deterministic replay of accepted failure cases | SYS-02 | Every accepted repair adds a minimized case and reruns prior frozen gates | Tests only |
+| SYS-15 | P0 | Evidence-driven unattended growth controller | SYS-01, SYS-02, SYS-07, SYS-14 | Scheduled planner aggregates recent campaign results, ranks first blockers with language/target/resource evidence, and publishes a traceable growth plan without runtime mutation | Planning only |
+| SYS-16 | P1 | Bounded automatic repair executor | SYS-15 | Deterministic CI/report/test-harness repairs can be proposed in isolated branches, validated, replayed, and opened as PRs; semantic runtime promotion remains gated | Harness/test/docs only |
+| SYS-17 | P1 | Candidate semantic and lexical growth loop | SYS-03, SYS-08, SYS-09, SYS-15 | New lexical/morphology/semantic candidates are generated from measured gaps, independently evaluated, held out, and promoted only through explicit acceptance | Candidate resources until accepted |
 
 ## Implementation status — 2026-11-12
 
 | ID | Current state | Evidence |
 |---|---|---|
 | SYS-01 | **Complete** | PR #185 merged to main; merge commit ebfcd46f85f7795f4d736178aab72270e044782c. Explicit result-record, actual-attempt, skipped-target, scenario, target, and population accounting is validated. |
-| SYS-02 | **Core implementation merged; attribution-completeness follow-up in validation** | PR #185 added initial first-blocker attribution. Follow-up PR #188 adds diagnostic-code counts, resource fingerprints, and strict pipeline-version matching before applying a dependency profile. |
+| SYS-02 | **Complete for registered Phase 4/5 profiles** | PR #185 added accounting and initial attribution; PR #188 added diagnostic-code counts, resource fingerprints, and strict pipeline-version matching before applying a dependency profile. |
 | SYS-07 | **Complete for registered Phase 4/5 profiles** | PR #186 merged to main; merge commit 39fd60d2c9ab4089820a7441a29d90aa957cac3a. Phase-specific DAG dependencies preserve parallel blockers and avoid a false global linear order. |
-| SYS-14 | **Initial implementation in validation** | PR #187 adds pinned replay, target-result comparison, explicit volatile-field policy, and CI smoke replay. Full automatic replay of every accepted repair and frozen failure corpus remains a follow-up acceptance step. |
+| SYS-14 | **Initial implementation merged; corpus-wide replay remains open** | PR #187 adds pinned replay, target-result comparison, explicit volatile-field policy, and CI smoke replay. Full automatic replay of every accepted repair and frozen failure corpus remains a follow-up acceptance step. |
 | SYS-12 | **Initial inventory complete; cross-runtime conformance not yet tested** | PR #192 publishes component evidence and five explicit cross-runtime acceptance gates. It deliberately does not claim semantic equivalence. |
 | SYS-13 | **Complete for Phase 5 Kernel Lab explanations** | PR #191 merged; stage guide, first diagnostic location, statuses, source spans, resource version/hash, and expandable stage artifacts are displayed separately from the raw envelope. |
-| SYS-05 | **Complete** | Versioned `USG-LEXICAL-CANDIDATES/0.1.0` JSON Schema plus deterministic `USG-LEXICAL-ADAPTER/0.1.0` read-only adapter, provenance/identity checks, and candidate-only enforcement. | 
-| SYS-06 | **Complete** | English OOV and polysemy regressions plus Arabic OOV regression; unknown forms remain unresolved and bank remains ambiguous. |
+| SYS-05 | **Complete** | PR #190 publishes the versioned `USG-LEXICAL-CANDIDATES/0.1.0` JSON Schema and deterministic `USG-LEXICAL-ADAPTER/0.1.0` read-only adapter with provenance/identity checks and candidate-only enforcement. |
+| SYS-06 | **Complete** | PR #190 adds English OOV and polysemy regressions plus Arabic OOV regression; unknown forms remain unresolved and bank remains ambiguous. |
+| SYS-04 | **Complete for English browser execution** | PR #194 adds a real Chromium/Playwright adapter for JS Semantic Workbench v0.5.4, with loopback-only browser requests, stable result projection, explicit unsupported-language outcomes, and a full isolated-worker smoke test. It does not add Arabic support or semantic correctness guarantees. |
+| SYS-15 | **Initial unattended planner implemented** | This PR adds the scheduled growth controller, which aggregates recent campaign execution results, computes target-specific first-blocker diagnostics, ranks next investigations, and uploads a traceable artifact. It does not edit runtime code or promote resources. |
 
 These are implementation states, not claims that USG's semantic accuracy has improved. The work so far improves evaluation trustworthiness and repeatability; it does not add new accepted language-understanding capabilities.
 
@@ -50,8 +55,12 @@ These are implementation states, not claims that USG's semantic accuracy has imp
 7. Do not modify accepted Phase 1–5 contracts or the canonical `USG-SEM/1.0` schema as incidental cleanup.
 8. Do not claim Step 6.6 or Step 6.7 accepted until the roadmap's independent-gold requirements are satisfied.
 
-## First execution batch
+## Current execution sequence
 
-The first safe batch is SYS-01 + SYS-02. It changes reporting and diagnostics rather than interpretation behavior, and it will make later lexical, syntax, semantic, and discourse work evidence-directed.
+1. **SYS-03 — naturalistic data gate:** identify a legally usable, privacy-reviewed naturalistic corpus. The current baseline has zero naturalistic cases; do not relabel synthetic prompts as naturalistic.
+2. **SYS-16 — bounded repair executor:** automate deterministic infrastructure, report, and regression-test repairs in isolated branches with exact replay and PR checks. Do not auto-promote semantic rules or candidate resources.
+3. **SYS-08 + SYS-09 — construction pilot and independent gold:** select one bilingual construction only after data rights and independent annotation are available.
+4. **SYS-17 — candidate semantic/lexical growth:** use measured failure clusters to generate candidate resources and construction proposals, then require held-out independent acceptance.
+5. **SYS-12 — cross-runtime gates:** build the shared frozen corpus and compare JS/Python outputs without treating agreement as semantic truth.
 
-SYS-03 and SYS-04 can proceed independently once their licensing/privacy and browser automation prerequisites are available. SYS-05 must follow the stage-diagnostic contract so the lexical adapter answers a measured system need rather than adding another isolated resource pipeline.
+The completed SYS-04 browser adapter now makes the JS Workbench observable in Open-World campaigns. Its current profile is English-only and uses the deterministic local rule fallback. The SYS-15 planner is the first unattended whole-system growth coordinator; it currently produces a ranked plan, not code changes.
