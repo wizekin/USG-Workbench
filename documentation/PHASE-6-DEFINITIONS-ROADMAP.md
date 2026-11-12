@@ -6,7 +6,7 @@
 **Canonical semantic interchange:** `USG-SEM/1.0` remains unchanged.  
 **Canonical persistence:** the existing Phase 3 SQLite store remains authoritative.  
 **Initial language profiles:** English and Modern Standard Arabic (MSA).  
-**Next gate:** Step 6.6 is accepted for the bounded graph-first synthetic-reference domain. The 500-case bilingual benchmark covers all ten profiles and is generated without human annotations, model labels, external corpus access, development fixtures, or the candidate lexicon. The current recognizer passes the synthetic profile gates. Step 6.7 is unblocked for candidate development; production promotion and naturalistic semantic accuracy remain unaccepted. See the [automatic synthetic-reference protocol](PHASE-6-STEP-6.6-AUTOMATIC-SYNTHETIC-REFERENCE-PROTOCOL.md) and [historical dataset feasibility audit](PHASE-6-STEP-6.6-INDEPENDENT-GOLD-DATASET-AUDIT.md).
+**Next gate:** Step 6.6 is accepted for its bounded graph-first synthetic-reference domain. The 500-case bilingual nominal benchmark is separate from the new [Phase 6 Automatic Acceptance Factory](PHASE-6-AUTOMATIC-ACCEPTANCE-FACTORY.md), which generates and evaluates 500 additional cases over Steps 6.7–6.11 and checks preservation/integration for Steps 6.12–6.14. The factory executes the integrated API and publishes per-profile results; an `OPEN` result is retained as open, never converted into acceptance merely because CI completed. Candidate runtime status and naturalistic semantic accuracy remain unpromoted. See the [automatic synthetic-reference protocol](PHASE-6-STEP-6.6-AUTOMATIC-SYNTHETIC-REFERENCE-PROTOCOL.md), [automatic acceptance factory](PHASE-6-AUTOMATIC-ACCEPTANCE-FACTORY.md), and [historical dataset feasibility audit](PHASE-6-STEP-6.6-INDEPENDENT-GOLD-DATASET-AUDIT.md).
 
 ## 1. Purpose and transition from Phase 5
 
@@ -151,7 +151,7 @@ Each step is a separate contract/implementation/acceptance gate. The sequence is
 | **6.11** | Bounded discourse-reference resolution | Phase 5 mention and antecedent alternatives carried into Phase 6 without identity merging | Candidate preservation is integrated; automatic unique resolution remains disabled and unresolved links remain explicit. |
 | **6.12** | Loss-aware projection to canonical semantic documents | Validated OPAQUE preservation projection of the full candidate payload; semantic assertion projection remains separately guarded | Exact source and candidate payload are schema/store validated with zero assertions; semantic-meaning projection is not yet accepted. |
 | **6.13** | API, CLI, resource lifecycle, and Kernel Lab integration | Shared `/v3/phase6/interpret` service, CLI command, Kernel Lab action, append-only SQLite runs, and replay | Integrated interfaces and replay tests pass on the merged commit; package-install integration is also required at exit. |
-| **6.14** | Full Phase 6 benchmark and integrated exit acceptance | Frozen Phase 5-to-Phase 6 bridge regression, existing graph contract tests, and full protected regressions | Bridge regression verifies non-regression only; full Phase 6 exit remains open until independent per-construction bilingual gates pass. |
+| **6.14** | Full Phase 6 benchmark and integrated exit acceptance | Graph-first 500-case bilingual automatic acceptance corpus, end-to-end API scoring, OPAQUE preservation validation, SQLite replay, protected regressions, and per-step report | The factory must execute and publish evidence; each prior capability gate must pass separately. Synthetic evidence does not claim naturalistic accuracy. |
 
 ### 6.1 Dependency and sequencing notes
 
@@ -171,6 +171,8 @@ Each step is a separate contract/implementation/acceptance gate. The sequence is
 **Implementation update:** Steps 6.7–6.14 now share one integrated Phase 6 candidate path rather than proceeding as isolated sequential prototypes. See [Phase 6 integrated interpreter and bridge validation](PHASE-6-INTEGRATED-INTERPRETER-AND-BRIDGE-VALIDATION.md) and the [implementation/exit record](PHASE-6-STEPS-6.7-6.14-COMPLETION-IMPLEMENTATION.md). This is implementation progress across all remaining steps, not final semantic acceptance or runtime promotion.
 
 ## 7. Benchmark and acceptance policy
+
+The automatic exit evaluator is documented in [Phase 6 Automatic Acceptance Factory](PHASE-6-AUTOMATIC-ACCEPTANCE-FACTORY.md). It is run with `python -m tools.phase6_acceptance_v1_0.evaluate`. Its report is schema-validated and distinguishes factory execution from semantic acceptance. Steps 6.7–6.11 are scored per language/profile; Step 6.12 reports preservation separately from semantic assertion projection; Step 6.13 checks API, SQLite persistence, and deterministic replay; Step 6.14 is accepted only when all preceding gates are accepted.
 
 The Phase 4 and Phase 5 corpora remain frozen. Phase 6 introduces a new additive, versioned corpus; it never edits earlier gold fixtures or retroactively changes accepted metrics.
 
