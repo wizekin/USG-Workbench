@@ -1,0 +1,1788 @@
+{
+  "artifacts": [
+    {
+      "name": "scenario-cases.jsonl",
+      "sha256": "b6b392092f501c55dcae7a3761563b129f3612643fcb8f40fdd064b7bba0722c",
+      "uri": "scenario-cases.jsonl"
+    },
+    {
+      "name": "execution-results.jsonl",
+      "sha256": "f166d955e5999d3a4518fa3b52631143a12531ab4f78f45d72be253f001dd689",
+      "uri": "execution-results.jsonl"
+    },
+    {
+      "name": "score-results.jsonl",
+      "sha256": "f67f76d46c7adb83d2e53f6f6896a7ddc12d4905d1f5564e148732c82e56b586",
+      "uri": "score-results.jsonl"
+    },
+    {
+      "name": "generation-manifest.json",
+      "sha256": "dd94b2805c68ebd25403ce725475f84f63b14043890c1f67d564336096a834b9",
+      "uri": "generation-manifest.json"
+    },
+    {
+      "name": "coverage-ledger.json",
+      "sha256": "8f6b77a7b3bc279d984249a034fc64e3e2a3da3a8e3d39829c009f7b3ece6c3a",
+      "uri": "coverage-ledger.json"
+    }
+  ],
+  "attempted": 11106,
+  "campaign_id": "OWC-OW6-43164446476-1",
+  "completed": 111,
+  "coverage": {
+    "adaptive_candidate_new_cluster_count": 0,
+    "adaptive_failure_cluster_count": 0,
+    "adaptive_followup_case_count": 0,
+    "adaptive_history_campaign_count": 0,
+    "case_count": 11106,
+    "complete_population_coverage": false,
+    "execution_accounting": {
+      "accounting_version": "1.0.0",
+      "actual_attempt_count": 10106,
+      "legacy_attempted_field_definition": "execution_result_record_count_including_not_executed",
+      "not_executed_record_count": 1000,
+      "result_record_count": 11106,
+      "scenario_count": 11106,
+      "scenario_count_only_not_executed": 1000,
+      "scenario_count_with_actual_attempt": 10106,
+      "scenario_count_with_multiple_result_records": 0,
+      "scenario_count_with_result_record": 11106,
+      "scenario_count_without_result_record": 0,
+      "target_accounting": [
+        {
+          "actual_attempt_count": 1000,
+          "not_executed_record_count": 0,
+          "result_record_count": 1000,
+          "scenario_count_only_not_executed": 0,
+          "scenario_count_with_actual_attempt": 1000,
+          "scenario_count_with_result": 1000,
+          "target_id": "js-semantic-workbench-v054"
+        },
+        {
+          "actual_attempt_count": 1000,
+          "not_executed_record_count": 0,
+          "result_record_count": 1000,
+          "scenario_count_only_not_executed": 0,
+          "scenario_count_with_actual_attempt": 1000,
+          "scenario_count_with_result": 1000,
+          "target_id": "kernel-lab-local-api-cli"
+        },
+        {
+          "actual_attempt_count": 1000,
+          "not_executed_record_count": 0,
+          "result_record_count": 1000,
+          "scenario_count_only_not_executed": 0,
+          "scenario_count_with_actual_attempt": 1000,
+          "scenario_count_with_result": 1000,
+          "target_id": "phase2-structured-semantic-reasoning"
+        },
+        {
+          "actual_attempt_count": 1000,
+          "not_executed_record_count": 0,
+          "result_record_count": 1000,
+          "scenario_count_only_not_executed": 0,
+          "scenario_count_with_actual_attempt": 1000,
+          "scenario_count_with_result": 1000,
+          "target_id": "phase3-canonical-sqlite-store"
+        },
+        {
+          "actual_attempt_count": 1006,
+          "not_executed_record_count": 0,
+          "result_record_count": 1006,
+          "scenario_count_only_not_executed": 0,
+          "scenario_count_with_actual_attempt": 1006,
+          "scenario_count_with_result": 1006,
+          "target_id": "phase4-bounded-interpreter"
+        },
+        {
+          "actual_attempt_count": 1100,
+          "not_executed_record_count": 0,
+          "result_record_count": 1100,
+          "scenario_count_only_not_executed": 0,
+          "scenario_count_with_actual_attempt": 1100,
+          "scenario_count_with_result": 1100,
+          "target_id": "phase5-bounded-interpreter"
+        },
+        {
+          "actual_attempt_count": 1000,
+          "not_executed_record_count": 0,
+          "result_record_count": 1000,
+          "scenario_count_only_not_executed": 0,
+          "scenario_count_with_actual_attempt": 1000,
+          "scenario_count_with_result": 1000,
+          "target_id": "phase6-candidate-expansion"
+        },
+        {
+          "actual_attempt_count": 1000,
+          "not_executed_record_count": 0,
+          "result_record_count": 1000,
+          "scenario_count_only_not_executed": 0,
+          "scenario_count_with_actual_attempt": 1000,
+          "scenario_count_with_result": 1000,
+          "target_id": "python-native-semantic-models-v06-v14"
+        },
+        {
+          "actual_attempt_count": 1000,
+          "not_executed_record_count": 0,
+          "result_record_count": 1000,
+          "scenario_count_only_not_executed": 0,
+          "scenario_count_with_actual_attempt": 1000,
+          "scenario_count_with_result": 1000,
+          "target_id": "python-reference-kernel-v04-v05"
+        },
+        {
+          "actual_attempt_count": 1000,
+          "not_executed_record_count": 0,
+          "result_record_count": 1000,
+          "scenario_count_only_not_executed": 0,
+          "scenario_count_with_actual_attempt": 1000,
+          "scenario_count_with_result": 1000,
+          "target_id": "python-usg-sem-document-adapters-v15"
+        },
+        {
+          "actual_attempt_count": 0,
+          "not_executed_record_count": 1000,
+          "result_record_count": 1000,
+          "scenario_count_only_not_executed": 1000,
+          "scenario_count_with_actual_attempt": 0,
+          "scenario_count_with_result": 1000,
+          "target_id": "workbench-to-canonical-adapter"
+        }
+      ]
+    },
+    "execution_result_count": 11106,
+    "failure_cluster_count": 28,
+    "language_hint_counts": {
+      "ar": 986,
+      "en": 7480,
+      "en-ar": 2640
+    },
+    "population_case_counts": {
+      "controlled_diagnostic": 106,
+      "unconstrained_random": 11000
+    },
+    "scope_ledger": {
+      "candidate_new_generator_families": [
+        "ambiguity",
+        "arabic_request",
+        "code_and_explanation",
+        "context_switch",
+        "contradiction",
+        "format_constraints",
+        "malformed",
+        "mixed_language",
+        "multi_step",
+        "open_domain",
+        "quoted_instruction",
+        "single_request"
+      ],
+      "candidate_new_taxonomy_labels": [
+        "AMBIGUOUS",
+        "NEGATIVE",
+        "POSITIVE",
+        "ambiguity",
+        "ar.ambiguous.01",
+        "ar.ambiguous.02",
+        "ar.ambiguous.03",
+        "ar.ambiguous.04",
+        "ar.ambiguous.05",
+        "ar.ambiguous.06",
+        "ar.ambiguous.07",
+        "ar.ambiguous.08",
+        "ar.ambiguous.09",
+        "ar.ambiguous.10",
+        "ar.negative.01",
+        "ar.negative.03",
+        "ar.negative.04",
+        "ar.negative.05",
+        "ar.negative.06",
+        "ar.negative.07",
+        "ar.negative.08",
+        "ar.negative.09",
+        "ar.negative.10",
+        "ar.negative.11",
+        "ar.negative.12",
+        "ar.negative.13",
+        "ar.negative.14",
+        "ar.negative.15",
+        "ar.negative.16",
+        "ar.negative.17",
+        "ar.negative.18",
+        "ar.negative.19",
+        "ar.negative.20",
+        "ar.negative.21",
+        "ar.positive.01",
+        "ar.positive.02",
+        "ar.positive.03",
+        "ar.positive.04",
+        "ar.positive.05",
+        "ar.positive.06",
+        "ar.positive.07",
+        "ar.positive.08",
+        "ar.positive.09",
+        "ar.positive.10",
+        "ar.positive.11",
+        "ar.positive.12",
+        "ar.positive.13",
+        "ar.positive.14",
+        "ar.positive.15",
+        "ar.positive.16",
+        "ar.positive.17",
+        "ar.positive.18",
+        "ar.positive.19",
+        "ar.positive.svo.01",
+        "ar.vso.complete",
+        "arabic_request",
+        "bounded_interpreter",
+        "code_and_explanation",
+        "context_switch",
+        "contradiction",
+        "en.ambiguous.01",
+        "en.ambiguous.02",
+        "en.ambiguous.03",
+        "en.ambiguous.04",
+        "en.ambiguous.05",
+        "en.ambiguous.06",
+        "en.ambiguous.07",
+        "en.ambiguous.08",
+        "en.ambiguous.09",
+        "en.ambiguous.10",
+        "en.empty.unsupported",
+        "en.known_but_unregistered.unsupported",
+        "en.multi_sentence.unsupported",
+        "en.negative.01",
+        "en.negative.02",
+        "en.negative.03",
+        "en.negative.04",
+        "en.negative.05",
+        "en.negative.06",
+        "en.negative.07",
+        "en.negative.08",
+        "en.negative.09",
+        "en.negative.10",
+        "en.negative.11",
+        "en.negative.12",
+        "en.negative.13",
+        "en.negative.14",
+        "en.negative.15",
+        "en.negative.16",
+        "en.negative.17",
+        "en.negative.18",
+        "en.negative.19",
+        "en.negative.20",
+        "en.positive.01",
+        "en.positive.02",
+        "en.positive.03",
+        "en.positive.04",
+        "en.positive.05",
+        "en.positive.06",
+        "en.positive.07",
+        "en.positive.08",
+        "en.positive.09",
+        "en.positive.10",
+        "en.positive.11",
+        "en.positive.12",
+        "en.positive.13",
+        "en.positive.14",
+        "en.positive.15",
+        "en.positive.16",
+        "en.positive.17",
+        "en.positive.18",
+        "en.positive.19",
+        "en.positive.20",
+        "en.svo.complete",
+        "en.unknown.partial",
+        "format_constraints",
+        "malformed",
+        "mixed_language",
+        "multi_step",
+        "open_domain",
+        "phase4",
+        "phase5",
+        "quoted_instruction",
+        "simple_transitive",
+        "single_request"
+      ],
+      "entrypoint_exercised_component_count": 10,
+      "inventory_component_count": 11,
+      "not_executed_only_component_ids": [
+        "workbench-to-canonical-adapter"
+      ],
+      "not_registered_component_ids": [],
+      "registered_target_profile_count": 11,
+      "unclassified_case_count": 3667
+    },
+    "scored_attempt_count": 11106,
+    "semantic_scored_attempt_count": 106,
+    "stage_attribution": {
+      "analyzed_actual_attempt_count": 10106,
+      "attribution_basis": "target_specific_dependency_dag_ancestry",
+      "attribution_version": "2.0.0",
+      "breakdown_by_target_population_language": [
+        {
+          "first_blocking_stage_counts": {
+            "syntax": 2
+          },
+          "language": "en",
+          "pipeline_version": "usg-interpretation/0.1.0",
+          "population": "controlled_diagnostic",
+          "resource_fingerprint": "stage-refs:c0dc48196f0e57ba3d4ef0d150250db96bf4815102d039dfbdd6bf93d9c52a2a",
+          "target_id": "phase4-bounded-interpreter"
+        },
+        {
+          "first_blocking_stage_counts": {
+            "syntax": 24
+          },
+          "language": "ar",
+          "pipeline_version": "usg-interpretation/0.1.0",
+          "population": "unconstrained_random",
+          "resource_fingerprint": "stage-refs:c0dc48196f0e57ba3d4ef0d150250db96bf4815102d039dfbdd6bf93d9c52a2a",
+          "target_id": "phase4-bounded-interpreter"
+        },
+        {
+          "first_blocking_stage_counts": {
+            "syntax": 20
+          },
+          "language": "en",
+          "pipeline_version": "usg-interpretation/0.1.0",
+          "population": "unconstrained_random",
+          "resource_fingerprint": "stage-refs:c0dc48196f0e57ba3d4ef0d150250db96bf4815102d039dfbdd6bf93d9c52a2a",
+          "target_id": "phase4-bounded-interpreter"
+        },
+        {
+          "first_blocking_stage_counts": {
+            "syntax": 16
+          },
+          "language": "en-ar",
+          "pipeline_version": "usg-interpretation/0.1.0",
+          "population": "unconstrained_random",
+          "resource_fingerprint": "stage-refs:c0dc48196f0e57ba3d4ef0d150250db96bf4815102d039dfbdd6bf93d9c52a2a",
+          "target_id": "phase4-bounded-interpreter"
+        },
+        {
+          "first_blocking_stage_counts": {
+            "lexical": 26,
+            "syntax": 3
+          },
+          "language": "ar",
+          "pipeline_version": "phase5-interpretation-integration/0.3.0",
+          "population": "controlled_diagnostic",
+          "resource_fingerprint": "manifest:76e83880e7932135390553a1becd26b532fc569893882dda068e6f09076aaf3f",
+          "target_id": "phase5-bounded-interpreter"
+        },
+        {
+          "first_blocking_stage_counts": {
+            "discourse": 1,
+            "lexical": 15,
+            "syntax": 10
+          },
+          "language": "en",
+          "pipeline_version": "phase5-interpretation-integration/0.3.0",
+          "population": "controlled_diagnostic",
+          "resource_fingerprint": "manifest:76e83880e7932135390553a1becd26b532fc569893882dda068e6f09076aaf3f",
+          "target_id": "phase5-bounded-interpreter"
+        },
+        {
+          "first_blocking_stage_counts": {
+            "lexical": 85
+          },
+          "language": "ar",
+          "pipeline_version": "phase5-interpretation-integration/0.3.0",
+          "population": "unconstrained_random",
+          "resource_fingerprint": "manifest:76e83880e7932135390553a1becd26b532fc569893882dda068e6f09076aaf3f",
+          "target_id": "phase5-bounded-interpreter"
+        },
+        {
+          "first_blocking_stage_counts": {
+            "lexical": 675
+          },
+          "language": "en",
+          "pipeline_version": "phase5-interpretation-integration/0.3.0",
+          "population": "unconstrained_random",
+          "resource_fingerprint": "manifest:76e83880e7932135390553a1becd26b532fc569893882dda068e6f09076aaf3f",
+          "target_id": "phase5-bounded-interpreter"
+        },
+        {
+          "first_blocking_stage_counts": {
+            "lexical": 240
+          },
+          "language": "en-ar",
+          "pipeline_version": "phase5-interpretation-integration/0.3.0",
+          "population": "unconstrained_random",
+          "resource_fingerprint": "manifest:76e83880e7932135390553a1becd26b532fc569893882dda068e6f09076aaf3f",
+          "target_id": "phase5-bounded-interpreter"
+        }
+      ],
+      "causality_warning": "A first blocker is an observed diagnostic with no other blocked declared ancestor. Parallel first blockers are retained. Dependency-related later blockers are co-occurrences, not proof that an upstream failure caused them.",
+      "dependency_related_later_stage_counts": {
+        "discourse": 557,
+        "operators": 461,
+        "semantic_composition": 1112,
+        "syntax": 1039
+      },
+      "dependency_related_later_stage_diagnostic_counts": {
+        "discourse": {
+          "DISCOURSE_ANTECEDENT_UNRESOLVED": 330,
+          "STAGE_STATUS_AMBIGUOUS": 227,
+          "STAGE_STATUS_PARTIAL": 330
+        },
+        "operators": {
+          "OPERATOR_INCOMPLETE": 461,
+          "STAGE_STATUS_PARTIAL": 461
+        },
+        "semantic_composition": {
+          "SEMANTIC_CLAUSE_UNRESOLVED": 1050,
+          "STAGE_STATUS_PARTIAL": 1040,
+          "STAGE_STATUS_UNRESOLVED": 61,
+          "STAGE_STATUS_UNSUPPORTED": 11,
+          "UNRESOLVED": 61,
+          "UNSUPPORTED": 1
+        },
+        "syntax": {
+          "STAGE_STATUS_PARTIAL": 1039,
+          "SYNTAX_INCOMPLETE": 1039,
+          "UNSUPPORTED_INTERROGATIVE_FORCE": 1
+        }
+      },
+      "example_case_ids_by_first_blocking_stage": {
+        "discourse": [
+          "OW-DIAG-P5-000058"
+        ],
+        "lexical": [
+          "OW-RAND-00000002-4A081351BE",
+          "OW-RAND-00000013-DD00FEEB62",
+          "OW-RAND-00000024-F99C554961",
+          "OW-RAND-00000035-B5F4487B93",
+          "OW-RAND-00000046-1949E473A3",
+          "OW-RAND-00000057-003170640F",
+          "OW-RAND-00000068-003B1E9E1F",
+          "OW-RAND-00000079-46D88783E3"
+        ],
+        "syntax": [
+          "OW-RAND-00000012-BC6F682635",
+          "OW-RAND-00000353-9A0DBC4961",
+          "OW-RAND-00000375-006CB916B1",
+          "OW-RAND-00000485-1796F4E6E8",
+          "OW-RAND-00000760-E1E8D471EE",
+          "OW-RAND-00001068-71E202141D",
+          "OW-RAND-00001134-624E2A1AEC",
+          "OW-RAND-00001288-FAECC77E3C"
+        ]
+      },
+      "first_blocking_diagnostic_counts": {
+        "discourse": {
+          "DISCOURSE_ANTECEDENT_UNRESOLVED": 1,
+          "STAGE_STATUS_PARTIAL": 1
+        },
+        "lexical": {
+          "LEXICAL_AMBIGUOUS_TOKEN": 237,
+          "LEXICAL_UNRESOLVED_TOKEN": 1041,
+          "STAGE_STATUS_AMBIGUOUS": 237,
+          "STAGE_STATUS_PARTIAL": 804
+        },
+        "syntax": {
+          "INCOMPLETE": 61,
+          "STAGE_STATUS_INCOMPLETE": 61,
+          "STAGE_STATUS_PARTIAL": 1,
+          "STAGE_STATUS_UNSUPPORTED": 11,
+          "SYNTAX_UNSUPPORTED": 11,
+          "UNSUPPORTED": 1,
+          "UNSUPPORTED_INTERROGATIVE_FORCE": 3
+        }
+      },
+      "first_blocking_stage_counts": {
+        "discourse": 1,
+        "lexical": 1041,
+        "syntax": 75
+      },
+      "not_executed_record_count_excluded": 1000,
+      "pipeline_version_mismatch_record_counts": {},
+      "profiles": {
+        "phase4-bounded-interpreter": {
+          "pipeline_contract": "USG-INTERPRET/0.1.0",
+          "pipeline_version": "usg-interpretation/0.1.0",
+          "stages": {
+            "discourse": {
+              "depends_on": [
+                "lexical",
+                "segmentation"
+              ]
+            },
+            "document_projection": {
+              "depends_on": [
+                "semantic_composition",
+                "mentions",
+                "discourse"
+              ]
+            },
+            "lexical": {
+              "depends_on": [
+                "source_ingestion"
+              ]
+            },
+            "mentions": {
+              "depends_on": [
+                "lexical"
+              ]
+            },
+            "segmentation": {
+              "depends_on": [
+                "source_ingestion"
+              ]
+            },
+            "semantic_composition": {
+              "depends_on": [
+                "lexical",
+                "syntax"
+              ]
+            },
+            "source_ingestion": {
+              "depends_on": []
+            },
+            "syntax": {
+              "depends_on": [
+                "lexical"
+              ]
+            }
+          }
+        },
+        "phase5-bounded-interpreter": {
+          "pipeline_contract": "USG-INTERPRET/0.2.0",
+          "pipeline_version": "phase5-interpretation-integration/0.3.0",
+          "stages": {
+            "discourse": {
+              "depends_on": [
+                "lexical",
+                "segmentation"
+              ]
+            },
+            "document_projection": {
+              "depends_on": [
+                "semantic_composition",
+                "discourse"
+              ]
+            },
+            "lexical": {
+              "depends_on": []
+            },
+            "operators": {
+              "depends_on": [
+                "lexical",
+                "segmentation"
+              ]
+            },
+            "segmentation": {
+              "depends_on": [
+                "lexical"
+              ]
+            },
+            "semantic_composition": {
+              "depends_on": [
+                "lexical",
+                "segmentation",
+                "operators",
+                "syntax"
+              ]
+            },
+            "syntax": {
+              "depends_on": [
+                "lexical",
+                "segmentation",
+                "operators"
+              ]
+            }
+          }
+        }
+      },
+      "records_with_blocking_diagnostics": 1116,
+      "records_with_multiple_parallel_first_blockers": 1,
+      "records_without_observed_blocking_diagnostic": 8990,
+      "records_without_target_result_payload": 325,
+      "resource_fingerprint_kind_counts": {
+        "resource_manifest_digest": 1054,
+        "stage_resource_references": 62
+      },
+      "stage_dependency_graph_version": "1.0.0",
+      "unconfigured_target_record_counts": {},
+      "unmapped_blocking_stage_counts": {}
+    },
+    "target_case_counts": {
+      "js-semantic-workbench-v054": 1000,
+      "kernel-lab-local-api-cli": 1000,
+      "phase2-structured-semantic-reasoning": 1000,
+      "phase3-canonical-sqlite-store": 1000,
+      "phase4-bounded-interpreter": 1006,
+      "phase5-bounded-interpreter": 1100,
+      "phase6-candidate-expansion": 1000,
+      "python-native-semantic-models-v06-v14": 1000,
+      "python-reference-kernel-v04-v05": 1000,
+      "python-usg-sem-document-adapters-v15": 1000,
+      "workbench-to-canonical-adapter": 1000
+    },
+    "taxonomy_label_counts": {
+      "controlled_diagnostic": {
+        "AMBIGUOUS": 20,
+        "NEGATIVE": 40,
+        "POSITIVE": 40,
+        "ar.ambiguous.01": 1,
+        "ar.ambiguous.02": 1,
+        "ar.ambiguous.03": 1,
+        "ar.ambiguous.04": 1,
+        "ar.ambiguous.05": 1,
+        "ar.ambiguous.06": 1,
+        "ar.ambiguous.07": 1,
+        "ar.ambiguous.08": 1,
+        "ar.ambiguous.09": 1,
+        "ar.ambiguous.10": 1,
+        "ar.negative.01": 1,
+        "ar.negative.03": 1,
+        "ar.negative.04": 1,
+        "ar.negative.05": 1,
+        "ar.negative.06": 1,
+        "ar.negative.07": 1,
+        "ar.negative.08": 1,
+        "ar.negative.09": 1,
+        "ar.negative.10": 1,
+        "ar.negative.11": 1,
+        "ar.negative.12": 1,
+        "ar.negative.13": 1,
+        "ar.negative.14": 1,
+        "ar.negative.15": 1,
+        "ar.negative.16": 1,
+        "ar.negative.17": 1,
+        "ar.negative.18": 1,
+        "ar.negative.19": 1,
+        "ar.negative.20": 1,
+        "ar.negative.21": 1,
+        "ar.positive.01": 1,
+        "ar.positive.02": 1,
+        "ar.positive.03": 1,
+        "ar.positive.04": 1,
+        "ar.positive.05": 1,
+        "ar.positive.06": 1,
+        "ar.positive.07": 1,
+        "ar.positive.08": 1,
+        "ar.positive.09": 1,
+        "ar.positive.10": 1,
+        "ar.positive.11": 1,
+        "ar.positive.12": 1,
+        "ar.positive.13": 1,
+        "ar.positive.14": 1,
+        "ar.positive.15": 1,
+        "ar.positive.16": 1,
+        "ar.positive.17": 1,
+        "ar.positive.18": 1,
+        "ar.positive.19": 1,
+        "ar.positive.svo.01": 1,
+        "ar.vso.complete": 1,
+        "bounded_interpreter": 6,
+        "en.ambiguous.01": 1,
+        "en.ambiguous.02": 1,
+        "en.ambiguous.03": 1,
+        "en.ambiguous.04": 1,
+        "en.ambiguous.05": 1,
+        "en.ambiguous.06": 1,
+        "en.ambiguous.07": 1,
+        "en.ambiguous.08": 1,
+        "en.ambiguous.09": 1,
+        "en.ambiguous.10": 1,
+        "en.empty.unsupported": 1,
+        "en.known_but_unregistered.unsupported": 1,
+        "en.multi_sentence.unsupported": 1,
+        "en.negative.01": 1,
+        "en.negative.02": 1,
+        "en.negative.03": 1,
+        "en.negative.04": 1,
+        "en.negative.05": 1,
+        "en.negative.06": 1,
+        "en.negative.07": 1,
+        "en.negative.08": 1,
+        "en.negative.09": 1,
+        "en.negative.10": 1,
+        "en.negative.11": 1,
+        "en.negative.12": 1,
+        "en.negative.13": 1,
+        "en.negative.14": 1,
+        "en.negative.15": 1,
+        "en.negative.16": 1,
+        "en.negative.17": 1,
+        "en.negative.18": 1,
+        "en.negative.19": 1,
+        "en.negative.20": 1,
+        "en.positive.01": 1,
+        "en.positive.02": 1,
+        "en.positive.03": 1,
+        "en.positive.04": 1,
+        "en.positive.05": 1,
+        "en.positive.06": 1,
+        "en.positive.07": 1,
+        "en.positive.08": 1,
+        "en.positive.09": 1,
+        "en.positive.10": 1,
+        "en.positive.11": 1,
+        "en.positive.12": 1,
+        "en.positive.13": 1,
+        "en.positive.14": 1,
+        "en.positive.15": 1,
+        "en.positive.16": 1,
+        "en.positive.17": 1,
+        "en.positive.18": 1,
+        "en.positive.19": 1,
+        "en.positive.20": 1,
+        "en.svo.complete": 1,
+        "en.unknown.partial": 1,
+        "phase4": 6,
+        "phase5": 100,
+        "simple_transitive": 100
+      },
+      "unconstrained_random": {
+        "ambiguity": 722,
+        "arabic_request": 619,
+        "code_and_explanation": 639,
+        "context_switch": 625,
+        "contradiction": 536,
+        "format_constraints": 534,
+        "malformed": 558,
+        "mixed_language": 545,
+        "multi_step": 594,
+        "open_domain": 659,
+        "quoted_instruction": 660,
+        "single_request": 642
+      }
+    },
+    "unclassified_case_counts": {
+      "unconstrained_random": 3667
+    },
+    "unexecuted_case_count": 0
+  },
+  "created_at": "2026-11-12T06:26:02Z",
+  "evaluator_version": "1.0.0",
+  "failure_families": [
+    {
+      "category": "interpretation_ambiguous",
+      "count": 19,
+      "example_case_ids": [
+        "OW-RAND-00000519-31F6C1A3C9",
+        "OW-RAND-00000585-25348DE1BA",
+        "OW-RAND-00000849-C383E74203",
+        "OW-RAND-00000915-FD9369EBB0",
+        "OW-RAND-00003313-1A843073FE"
+      ],
+      "first_seen_case_id": "OW-RAND-00000519-31F6C1A3C9"
+    },
+    {
+      "category": "interpretation_ambiguous",
+      "count": 58,
+      "example_case_ids": [
+        "OW-RAND-00000134-4302AD2304",
+        "OW-RAND-00000266-A9375D9E20",
+        "OW-RAND-00000277-54DED33D1C",
+        "OW-RAND-00000420-D93282AA38",
+        "OW-RAND-00000728-CBD0D89457"
+      ],
+      "first_seen_case_id": "OW-RAND-00000134-4302AD2304"
+    },
+    {
+      "category": "interpretation_ambiguous",
+      "count": 49,
+      "example_case_ids": [
+        "OW-RAND-00000035-B5F4487B93",
+        "OW-RAND-00000178-69F2217AF2",
+        "OW-RAND-00000882-94F2CF65C1",
+        "OW-RAND-00000893-66E30CBD44",
+        "OW-RAND-00000926-2DD54319A4"
+      ],
+      "first_seen_case_id": "OW-RAND-00000035-B5F4487B93"
+    },
+    {
+      "category": "interpretation_ambiguous",
+      "count": 111,
+      "example_case_ids": [
+        "OW-RAND-00000189-389FE59DE6",
+        "OW-RAND-00000200-8949731C62",
+        "OW-RAND-00000244-5CF494BD33",
+        "OW-RAND-00000255-EF0DB2159C",
+        "OW-RAND-00000299-AA44C4D288"
+      ],
+      "first_seen_case_id": "OW-RAND-00000189-389FE59DE6"
+    },
+    {
+      "category": "interpretation_ambiguous",
+      "count": 87,
+      "example_case_ids": [
+        "OW-RAND-00000002-4A081351BE",
+        "OW-RAND-00000365-8B63FD8A72",
+        "OW-RAND-00001410-CCEA3E5D8F",
+        "OW-RAND-00001707-EECF6A8835",
+        "OW-RAND-00001718-BD11A87FE5"
+      ],
+      "first_seen_case_id": "OW-RAND-00000002-4A081351BE"
+    },
+    {
+      "category": "interpretation_ambiguous",
+      "count": 63,
+      "example_case_ids": [
+        "OW-RAND-00000211-F4B420016C",
+        "OW-RAND-00000409-297BD52AFB",
+        "OW-RAND-00000563-780413C9E1",
+        "OW-RAND-00000838-EEDC5E4E4A",
+        "OW-RAND-00000970-184C284E91"
+      ],
+      "first_seen_case_id": "OW-RAND-00000211-F4B420016C"
+    },
+    {
+      "category": "interpretation_partial",
+      "count": 612,
+      "example_case_ids": [
+        "OW-RAND-00000036-36B20DE1F6",
+        "OW-RAND-00000058-51C8458CD6",
+        "OW-RAND-00000091-FD41184272",
+        "OW-RAND-00000102-0D80D24ED3",
+        "OW-RAND-00000124-3B7FE2030C"
+      ],
+      "first_seen_case_id": "OW-RAND-00000036-36B20DE1F6"
+    },
+    {
+      "category": "interpretation_partial",
+      "count": 1000,
+      "example_case_ids": [
+        "OW-RAND-00000009-02FC996B21",
+        "OW-RAND-00000020-90D8AE9ABB",
+        "OW-RAND-00000031-B0FC8CA848",
+        "OW-RAND-00000042-9E7241384A",
+        "OW-RAND-00000053-64910118B3"
+      ],
+      "first_seen_case_id": "OW-RAND-00000009-02FC996B21"
+    },
+    {
+      "category": "interpretation_partial",
+      "count": 1000,
+      "example_case_ids": [
+        "OW-RAND-00000006-F96FC72B4D",
+        "OW-RAND-00000017-A97804A5AB",
+        "OW-RAND-00000028-186EFF6900",
+        "OW-RAND-00000039-59D32EEE41",
+        "OW-RAND-00000050-71470578D3"
+      ],
+      "first_seen_case_id": "OW-RAND-00000006-F96FC72B4D"
+    },
+    {
+      "category": "interpretation_partial",
+      "count": 1000,
+      "example_case_ids": [
+        "OW-RAND-00000007-4BE1F16029",
+        "OW-RAND-00000018-1A32EA86FE",
+        "OW-RAND-00000029-EC029C2CAE",
+        "OW-RAND-00000040-3DA4E90BD5",
+        "OW-RAND-00000051-C968C50199"
+      ],
+      "first_seen_case_id": "OW-RAND-00000007-4BE1F16029"
+    },
+    {
+      "category": "interpretation_partial",
+      "count": 61,
+      "example_case_ids": [
+        "OW-RAND-00000012-BC6F682635",
+        "OW-RAND-00000353-9A0DBC4961",
+        "OW-RAND-00000375-006CB916B1",
+        "OW-RAND-00000485-1796F4E6E8",
+        "OW-RAND-00000760-E1E8D471EE"
+      ],
+      "first_seen_case_id": "OW-RAND-00000012-BC6F682635"
+    },
+    {
+      "category": "interpretation_partial",
+      "count": 124,
+      "example_case_ids": [
+        "OW-RAND-00000156-301B9D82A0",
+        "OW-RAND-00000442-F6FAE15BD2",
+        "OW-RAND-00000508-816F7DBEF8",
+        "OW-RAND-00000574-85B66F88C9",
+        "OW-RAND-00000607-019C4BBC58"
+      ],
+      "first_seen_case_id": "OW-RAND-00000156-301B9D82A0"
+    },
+    {
+      "category": "interpretation_partial",
+      "count": 129,
+      "example_case_ids": [
+        "OW-RAND-00000101-26DFE1B705",
+        "OW-RAND-00000112-B6688BC1A9",
+        "OW-RAND-00000167-523A898D0A",
+        "OW-RAND-00000431-D5063E1B87",
+        "OW-RAND-00000552-8CD7F3850D"
+      ],
+      "first_seen_case_id": "OW-RAND-00000101-26DFE1B705"
+    },
+    {
+      "category": "interpretation_partial",
+      "count": 2,
+      "example_case_ids": [
+        "OW-DIAG-P5-000049",
+        "OW-DIAG-P5-000053"
+      ],
+      "first_seen_case_id": "OW-DIAG-P5-000049"
+    },
+    {
+      "category": "interpretation_partial",
+      "count": 182,
+      "example_case_ids": [
+        "OW-RAND-00000024-F99C554961",
+        "OW-RAND-00000057-003170640F",
+        "OW-RAND-00000233-794BD92CAD",
+        "OW-RAND-00000310-9A6CC2C208",
+        "OW-RAND-00000321-5E8DACC441"
+      ],
+      "first_seen_case_id": "OW-RAND-00000024-F99C554961"
+    },
+    {
+      "category": "interpretation_partial",
+      "count": 216,
+      "example_case_ids": [
+        "OW-RAND-00000013-DD00FEEB62",
+        "OW-RAND-00000046-1949E473A3",
+        "OW-RAND-00000068-003B1E9E1F",
+        "OW-RAND-00000079-46D88783E3",
+        "OW-RAND-00000090-9AD506CB4F"
+      ],
+      "first_seen_case_id": "OW-RAND-00000013-DD00FEEB62"
+    },
+    {
+      "category": "interpretation_partial",
+      "count": 1,
+      "example_case_ids": [
+        "OW-DIAG-P5-000046"
+      ],
+      "first_seen_case_id": "OW-DIAG-P5-000046"
+    },
+    {
+      "category": "interpretation_partial",
+      "count": 1000,
+      "example_case_ids": [
+        "OW-RAND-00000008-86981340A7",
+        "OW-RAND-00000019-E611320619",
+        "OW-RAND-00000030-744057A511",
+        "OW-RAND-00000041-C1E9194FFB",
+        "OW-RAND-00000052-A56409EEA9"
+      ],
+      "first_seen_case_id": "OW-RAND-00000008-86981340A7"
+    },
+    {
+      "category": "interpretation_partial",
+      "count": 1000,
+      "example_case_ids": [
+        "OW-RAND-00000004-B9A8C777E4",
+        "OW-RAND-00000015-0987B91FD4",
+        "OW-RAND-00000026-EB2E611FD0",
+        "OW-RAND-00000037-3CCE2E48F2",
+        "OW-RAND-00000048-5ACE5A9105"
+      ],
+      "first_seen_case_id": "OW-RAND-00000004-B9A8C777E4"
+    },
+    {
+      "category": "interpretation_partial",
+      "count": 1000,
+      "example_case_ids": [
+        "OW-RAND-00000011-F6A21790F4",
+        "OW-RAND-00000022-240E6632FA",
+        "OW-RAND-00000033-9E3F96B255",
+        "OW-RAND-00000044-0CF9DC9228",
+        "OW-RAND-00000055-6FB1E69052"
+      ],
+      "first_seen_case_id": "OW-RAND-00000011-F6A21790F4"
+    },
+    {
+      "category": "interpretation_partial",
+      "count": 1000,
+      "example_case_ids": [
+        "OW-RAND-00000005-6F065C6F04",
+        "OW-RAND-00000016-41401F7E25",
+        "OW-RAND-00000027-B27CF162AB",
+        "OW-RAND-00000038-B2F32FB4EC",
+        "OW-RAND-00000049-9F190EFA40"
+      ],
+      "first_seen_case_id": "OW-RAND-00000005-6F065C6F04"
+    },
+    {
+      "category": "interpretation_unsupported",
+      "count": 325,
+      "example_case_ids": [
+        "OW-RAND-00000003-F545BBDCB7",
+        "OW-RAND-00000014-A9A1EA7AC2",
+        "OW-RAND-00000025-40EC266C1F",
+        "OW-RAND-00000047-A26168C26D",
+        "OW-RAND-00000080-A0D83581AC"
+      ],
+      "first_seen_case_id": "OW-RAND-00000003-F545BBDCB7"
+    },
+    {
+      "category": "interpretation_unsupported",
+      "count": 942,
+      "example_case_ids": [
+        "OW-RAND-00000001-97F7D9D6E7",
+        "OW-RAND-00000023-16DE596028",
+        "OW-RAND-00000034-C061B7BC35",
+        "OW-RAND-00000045-E0894B6209",
+        "OW-RAND-00000056-0708FDF4CD"
+      ],
+      "first_seen_case_id": "OW-RAND-00000001-97F7D9D6E7"
+    },
+    {
+      "category": "interpretation_unsupported",
+      "count": 1,
+      "example_case_ids": [
+        "OW-DIAG-P4-000005"
+      ],
+      "first_seen_case_id": "OW-DIAG-P4-000005"
+    },
+    {
+      "category": "interpretation_unsupported",
+      "count": 1,
+      "example_case_ids": [
+        "OW-DIAG-P5-000058"
+      ],
+      "first_seen_case_id": "OW-DIAG-P5-000058"
+    },
+    {
+      "category": "interpretation_unsupported",
+      "count": 1,
+      "example_case_ids": [
+        "OW-DIAG-P5-000059"
+      ],
+      "first_seen_case_id": "OW-DIAG-P5-000059"
+    },
+    {
+      "category": "interpretation_unsupported",
+      "count": 9,
+      "example_case_ids": [
+        "OW-DIAG-P5-000040",
+        "OW-DIAG-P5-000041",
+        "OW-DIAG-P5-000042",
+        "OW-DIAG-P5-000044",
+        "OW-DIAG-P5-000045"
+      ],
+      "first_seen_case_id": "OW-DIAG-P5-000040"
+    },
+    {
+      "category": "interpretation_unsupported",
+      "count": 2,
+      "example_case_ids": [
+        "OW-DIAG-P5-000078",
+        "OW-DIAG-P5-000079"
+      ],
+      "first_seen_case_id": "OW-DIAG-P5-000078"
+    }
+  ],
+  "finished_at": "2026-11-12T06:25:44Z",
+  "generator_version": "1.0.1",
+  "limitations": [
+    "A finite campaign samples a bounded set of cases and cannot prove unrestricted real-world coverage.",
+    "Novel clusters are within-campaign groupings and require historical comparison and human review before being called newly discovered failure families.",
+    "Structural validation does not establish semantic correctness or factual truth.",
+    "Semantic metrics are reported only when independent case-specific oracle adapters are available.",
+    "Naturalistic and controlled-diagnostic populations may be empty; missing populations are reported explicitly and keep campaign status partial.",
+    "The registered browser-only JavaScript target is not executed until a real browser automation adapter is available.",
+    "Process isolation is best-effort containment, not a hardened sandbox for hostile native code."
+  ],
+  "master_seed": "c1a42aecc03631adb1ec68024620bba848c8aa4c4ca6b59af157aba2ff4164da",
+  "novel_clusters": [
+    {
+      "case_count": 19,
+      "cluster_id": "OWCL-34BCFFA8B7AB875C",
+      "example_case_ids": [
+        "OW-RAND-00000519-31F6C1A3C9",
+        "OW-RAND-00000585-25348DE1BA",
+        "OW-RAND-00000849-C383E74203",
+        "OW-RAND-00000915-FD9369EBB0",
+        "OW-RAND-00003313-1A843073FE"
+      ],
+      "minimized_reproducer_ids": [],
+      "proposed_label": "interpretation_ambiguous|phase5-bounded-interpreter|discourse:DISCOURSE_ANTECEDENT_UNRESOLVED,lexical:LEXICAL_AMBIGUOUS_TOKEN,lexical:LEXICAL_UNRESOLVED_TOKEN,operators:OPERATOR_INCOMPLETE,semantic_composition:SEMANTIC_CLAUSE_UNRESOLVED",
+      "reviewed": false,
+      "target_ids": [
+        "phase5-bounded-interpreter"
+      ]
+    },
+    {
+      "case_count": 58,
+      "cluster_id": "OWCL-8B877600EA88B01E",
+      "example_case_ids": [
+        "OW-RAND-00000134-4302AD2304",
+        "OW-RAND-00000266-A9375D9E20",
+        "OW-RAND-00000277-54DED33D1C",
+        "OW-RAND-00000420-D93282AA38",
+        "OW-RAND-00000728-CBD0D89457"
+      ],
+      "minimized_reproducer_ids": [],
+      "proposed_label": "interpretation_ambiguous|phase5-bounded-interpreter|discourse:DISCOURSE_ANTECEDENT_UNRESOLVED,lexical:LEXICAL_AMBIGUOUS_TOKEN,lexical:LEXICAL_UNRESOLVED_TOKEN,semantic_composition:SEMANTIC_CLAUSE_UNRESOLVED,syntax:SYNTAX_INCOMPLETE",
+      "reviewed": false,
+      "target_ids": [
+        "phase5-bounded-interpreter"
+      ]
+    },
+    {
+      "case_count": 49,
+      "cluster_id": "OWCL-4B9E5AF44E57E495",
+      "example_case_ids": [
+        "OW-RAND-00000035-B5F4487B93",
+        "OW-RAND-00000178-69F2217AF2",
+        "OW-RAND-00000882-94F2CF65C1",
+        "OW-RAND-00000893-66E30CBD44",
+        "OW-RAND-00000926-2DD54319A4"
+      ],
+      "minimized_reproducer_ids": [],
+      "proposed_label": "interpretation_ambiguous|phase5-bounded-interpreter|lexical:LEXICAL_AMBIGUOUS_TOKEN,lexical:LEXICAL_UNRESOLVED_TOKEN,operators:OPERATOR_INCOMPLETE,semantic_composition:SEMANTIC_CLAUSE_UNRESOLVED,syntax:SYNTAX_INCOMPLETE",
+      "reviewed": false,
+      "target_ids": [
+        "phase5-bounded-interpreter"
+      ]
+    },
+    {
+      "case_count": 111,
+      "cluster_id": "OWCL-A6DF9D60DB38D1AD",
+      "example_case_ids": [
+        "OW-RAND-00000189-389FE59DE6",
+        "OW-RAND-00000200-8949731C62",
+        "OW-RAND-00000244-5CF494BD33",
+        "OW-RAND-00000255-EF0DB2159C",
+        "OW-RAND-00000299-AA44C4D288"
+      ],
+      "minimized_reproducer_ids": [],
+      "proposed_label": "interpretation_ambiguous|phase5-bounded-interpreter|lexical:LEXICAL_AMBIGUOUS_TOKEN,lexical:LEXICAL_UNRESOLVED_TOKEN,semantic_composition:SEMANTIC_CLAUSE_UNRESOLVED,syntax:SYNTAX_INCOMPLETE",
+      "reviewed": false,
+      "target_ids": [
+        "phase5-bounded-interpreter"
+      ]
+    },
+    {
+      "case_count": 87,
+      "cluster_id": "OWCL-2FC95A52DEE8B9F5",
+      "example_case_ids": [
+        "OW-RAND-00000002-4A081351BE",
+        "OW-RAND-00000365-8B63FD8A72",
+        "OW-RAND-00001410-CCEA3E5D8F",
+        "OW-RAND-00001707-EECF6A8835",
+        "OW-RAND-00001718-BD11A87FE5"
+      ],
+      "minimized_reproducer_ids": [],
+      "proposed_label": "interpretation_ambiguous|phase5-bounded-interpreter|lexical:LEXICAL_UNRESOLVED_TOKEN,operators:OPERATOR_INCOMPLETE,semantic_composition:SEMANTIC_CLAUSE_UNRESOLVED,syntax:SYNTAX_INCOMPLETE",
+      "reviewed": false,
+      "target_ids": [
+        "phase5-bounded-interpreter"
+      ]
+    },
+    {
+      "case_count": 63,
+      "cluster_id": "OWCL-9939FA433BF31E62",
+      "example_case_ids": [
+        "OW-RAND-00000211-F4B420016C",
+        "OW-RAND-00000409-297BD52AFB",
+        "OW-RAND-00000563-780413C9E1",
+        "OW-RAND-00000838-EEDC5E4E4A",
+        "OW-RAND-00000970-184C284E91"
+      ],
+      "minimized_reproducer_ids": [],
+      "proposed_label": "interpretation_ambiguous|phase5-bounded-interpreter|lexical:LEXICAL_UNRESOLVED_TOKEN,semantic_composition:SEMANTIC_CLAUSE_UNRESOLVED,syntax:SYNTAX_INCOMPLETE",
+      "reviewed": false,
+      "target_ids": [
+        "phase5-bounded-interpreter"
+      ]
+    },
+    {
+      "case_count": 612,
+      "cluster_id": "OWCL-5076B13CCA1B3CA4",
+      "example_case_ids": [
+        "OW-RAND-00000036-36B20DE1F6",
+        "OW-RAND-00000058-51C8458CD6",
+        "OW-RAND-00000091-FD41184272",
+        "OW-RAND-00000102-0D80D24ED3",
+        "OW-RAND-00000124-3B7FE2030C"
+      ],
+      "minimized_reproducer_ids": [],
+      "proposed_label": "interpretation_partial|js-semantic-workbench-v054|no_diagnostic",
+      "reviewed": false,
+      "target_ids": [
+        "js-semantic-workbench-v054"
+      ]
+    },
+    {
+      "case_count": 1000,
+      "cluster_id": "OWCL-834B8148F4FDD43F",
+      "example_case_ids": [
+        "OW-RAND-00000009-02FC996B21",
+        "OW-RAND-00000020-90D8AE9ABB",
+        "OW-RAND-00000031-B0FC8CA848",
+        "OW-RAND-00000042-9E7241384A",
+        "OW-RAND-00000053-64910118B3"
+      ],
+      "minimized_reproducer_ids": [],
+      "proposed_label": "interpretation_partial|kernel-lab-local-api-cli|no_diagnostic",
+      "reviewed": false,
+      "target_ids": [
+        "kernel-lab-local-api-cli"
+      ]
+    },
+    {
+      "case_count": 1000,
+      "cluster_id": "OWCL-1932CBE4B08C96AF",
+      "example_case_ids": [
+        "OW-RAND-00000006-F96FC72B4D",
+        "OW-RAND-00000017-A97804A5AB",
+        "OW-RAND-00000028-186EFF6900",
+        "OW-RAND-00000039-59D32EEE41",
+        "OW-RAND-00000050-71470578D3"
+      ],
+      "minimized_reproducer_ids": [],
+      "proposed_label": "interpretation_partial|phase2-structured-semantic-reasoning|no_diagnostic",
+      "reviewed": false,
+      "target_ids": [
+        "phase2-structured-semantic-reasoning"
+      ]
+    },
+    {
+      "case_count": 1000,
+      "cluster_id": "OWCL-8705084148225656",
+      "example_case_ids": [
+        "OW-RAND-00000007-4BE1F16029",
+        "OW-RAND-00000018-1A32EA86FE",
+        "OW-RAND-00000029-EC029C2CAE",
+        "OW-RAND-00000040-3DA4E90BD5",
+        "OW-RAND-00000051-C968C50199"
+      ],
+      "minimized_reproducer_ids": [],
+      "proposed_label": "interpretation_partial|phase3-canonical-sqlite-store|no_diagnostic",
+      "reviewed": false,
+      "target_ids": [
+        "phase3-canonical-sqlite-store"
+      ]
+    },
+    {
+      "case_count": 61,
+      "cluster_id": "OWCL-3C5D8709F73A92B7",
+      "example_case_ids": [
+        "OW-RAND-00000012-BC6F682635",
+        "OW-RAND-00000353-9A0DBC4961",
+        "OW-RAND-00000375-006CB916B1",
+        "OW-RAND-00000485-1796F4E6E8",
+        "OW-RAND-00000760-E1E8D471EE"
+      ],
+      "minimized_reproducer_ids": [],
+      "proposed_label": "interpretation_partial|phase4-bounded-interpreter|semantic_composition:unspecified,syntax:unspecified",
+      "reviewed": false,
+      "target_ids": [
+        "phase4-bounded-interpreter"
+      ]
+    },
+    {
+      "case_count": 124,
+      "cluster_id": "OWCL-DE429831B6628DF7",
+      "example_case_ids": [
+        "OW-RAND-00000156-301B9D82A0",
+        "OW-RAND-00000442-F6FAE15BD2",
+        "OW-RAND-00000508-816F7DBEF8",
+        "OW-RAND-00000574-85B66F88C9",
+        "OW-RAND-00000607-019C4BBC58"
+      ],
+      "minimized_reproducer_ids": [],
+      "proposed_label": "interpretation_partial|phase5-bounded-interpreter|discourse:DISCOURSE_ANTECEDENT_UNRESOLVED,lexical:LEXICAL_UNRESOLVED_TOKEN,operators:OPERATOR_INCOMPLETE,semantic_composition:SEMANTIC_CLAUSE_UNRESOLVED,syntax:SYNTAX_INCOMPLETE",
+      "reviewed": false,
+      "target_ids": [
+        "phase5-bounded-interpreter"
+      ]
+    },
+    {
+      "case_count": 129,
+      "cluster_id": "OWCL-72084C09038185A2",
+      "example_case_ids": [
+        "OW-RAND-00000101-26DFE1B705",
+        "OW-RAND-00000112-B6688BC1A9",
+        "OW-RAND-00000167-523A898D0A",
+        "OW-RAND-00000431-D5063E1B87",
+        "OW-RAND-00000552-8CD7F3850D"
+      ],
+      "minimized_reproducer_ids": [],
+      "proposed_label": "interpretation_partial|phase5-bounded-interpreter|discourse:DISCOURSE_ANTECEDENT_UNRESOLVED,lexical:LEXICAL_UNRESOLVED_TOKEN,semantic_composition:SEMANTIC_CLAUSE_UNRESOLVED,syntax:SYNTAX_INCOMPLETE",
+      "reviewed": false,
+      "target_ids": [
+        "phase5-bounded-interpreter"
+      ]
+    },
+    {
+      "case_count": 2,
+      "cluster_id": "OWCL-DDB43976CF66466F",
+      "example_case_ids": [
+        "OW-DIAG-P5-000049",
+        "OW-DIAG-P5-000053"
+      ],
+      "minimized_reproducer_ids": [],
+      "proposed_label": "interpretation_partial|phase5-bounded-interpreter|lexical:LEXICAL_UNRESOLVED_TOKEN",
+      "reviewed": false,
+      "target_ids": [
+        "phase5-bounded-interpreter"
+      ]
+    },
+    {
+      "case_count": 182,
+      "cluster_id": "OWCL-5650588D074E1112",
+      "example_case_ids": [
+        "OW-RAND-00000024-F99C554961",
+        "OW-RAND-00000057-003170640F",
+        "OW-RAND-00000233-794BD92CAD",
+        "OW-RAND-00000310-9A6CC2C208",
+        "OW-RAND-00000321-5E8DACC441"
+      ],
+      "minimized_reproducer_ids": [],
+      "proposed_label": "interpretation_partial|phase5-bounded-interpreter|lexical:LEXICAL_UNRESOLVED_TOKEN,operators:OPERATOR_INCOMPLETE,semantic_composition:SEMANTIC_CLAUSE_UNRESOLVED,syntax:SYNTAX_INCOMPLETE",
+      "reviewed": false,
+      "target_ids": [
+        "phase5-bounded-interpreter"
+      ]
+    },
+    {
+      "case_count": 216,
+      "cluster_id": "OWCL-80FCACA741E4537B",
+      "example_case_ids": [
+        "OW-RAND-00000013-DD00FEEB62",
+        "OW-RAND-00000046-1949E473A3",
+        "OW-RAND-00000068-003B1E9E1F",
+        "OW-RAND-00000079-46D88783E3",
+        "OW-RAND-00000090-9AD506CB4F"
+      ],
+      "minimized_reproducer_ids": [],
+      "proposed_label": "interpretation_partial|phase5-bounded-interpreter|lexical:LEXICAL_UNRESOLVED_TOKEN,semantic_composition:SEMANTIC_CLAUSE_UNRESOLVED,syntax:SYNTAX_INCOMPLETE",
+      "reviewed": false,
+      "target_ids": [
+        "phase5-bounded-interpreter"
+      ]
+    },
+    {
+      "case_count": 1,
+      "cluster_id": "OWCL-44865010FE50BEE5",
+      "example_case_ids": [
+        "OW-DIAG-P5-000046"
+      ],
+      "minimized_reproducer_ids": [],
+      "proposed_label": "interpretation_partial|phase5-bounded-interpreter|semantic_composition:SEMANTIC_CLAUSE_UNRESOLVED,syntax:SYNTAX_UNSUPPORTED",
+      "reviewed": false,
+      "target_ids": [
+        "phase5-bounded-interpreter"
+      ]
+    },
+    {
+      "case_count": 1000,
+      "cluster_id": "OWCL-5835C2BB0F0A9CAB",
+      "example_case_ids": [
+        "OW-RAND-00000008-86981340A7",
+        "OW-RAND-00000019-E611320619",
+        "OW-RAND-00000030-744057A511",
+        "OW-RAND-00000041-C1E9194FFB",
+        "OW-RAND-00000052-A56409EEA9"
+      ],
+      "minimized_reproducer_ids": [],
+      "proposed_label": "interpretation_partial|phase6-candidate-expansion|no_diagnostic",
+      "reviewed": false,
+      "target_ids": [
+        "phase6-candidate-expansion"
+      ]
+    },
+    {
+      "case_count": 1000,
+      "cluster_id": "OWCL-0904218A1C47FFA3",
+      "example_case_ids": [
+        "OW-RAND-00000004-B9A8C777E4",
+        "OW-RAND-00000015-0987B91FD4",
+        "OW-RAND-00000026-EB2E611FD0",
+        "OW-RAND-00000037-3CCE2E48F2",
+        "OW-RAND-00000048-5ACE5A9105"
+      ],
+      "minimized_reproducer_ids": [],
+      "proposed_label": "interpretation_partial|python-native-semantic-models-v06-v14|no_diagnostic",
+      "reviewed": false,
+      "target_ids": [
+        "python-native-semantic-models-v06-v14"
+      ]
+    },
+    {
+      "case_count": 1000,
+      "cluster_id": "OWCL-F4770FF2C9D67F1B",
+      "example_case_ids": [
+        "OW-RAND-00000011-F6A21790F4",
+        "OW-RAND-00000022-240E6632FA",
+        "OW-RAND-00000033-9E3F96B255",
+        "OW-RAND-00000044-0CF9DC9228",
+        "OW-RAND-00000055-6FB1E69052"
+      ],
+      "minimized_reproducer_ids": [],
+      "proposed_label": "interpretation_partial|python-reference-kernel-v04-v05|no_diagnostic",
+      "reviewed": false,
+      "target_ids": [
+        "python-reference-kernel-v04-v05"
+      ]
+    },
+    {
+      "case_count": 1000,
+      "cluster_id": "OWCL-65100D84201A8A89",
+      "example_case_ids": [
+        "OW-RAND-00000005-6F065C6F04",
+        "OW-RAND-00000016-41401F7E25",
+        "OW-RAND-00000027-B27CF162AB",
+        "OW-RAND-00000038-B2F32FB4EC",
+        "OW-RAND-00000049-9F190EFA40"
+      ],
+      "minimized_reproducer_ids": [],
+      "proposed_label": "interpretation_partial|python-usg-sem-document-adapters-v15|no_diagnostic",
+      "reviewed": false,
+      "target_ids": [
+        "python-usg-sem-document-adapters-v15"
+      ]
+    },
+    {
+      "case_count": 325,
+      "cluster_id": "OWCL-9ED248EE0107E15D",
+      "example_case_ids": [
+        "OW-RAND-00000003-F545BBDCB7",
+        "OW-RAND-00000014-A9A1EA7AC2",
+        "OW-RAND-00000025-40EC266C1F",
+        "OW-RAND-00000047-A26168C26D",
+        "OW-RAND-00000080-A0D83581AC"
+      ],
+      "minimized_reproducer_ids": [],
+      "proposed_label": "interpretation_unsupported|js-semantic-workbench-v054|no_diagnostic",
+      "reviewed": false,
+      "target_ids": [
+        "js-semantic-workbench-v054"
+      ]
+    },
+    {
+      "case_count": 942,
+      "cluster_id": "OWCL-C47AEE338D923D3F",
+      "example_case_ids": [
+        "OW-RAND-00000001-97F7D9D6E7",
+        "OW-RAND-00000023-16DE596028",
+        "OW-RAND-00000034-C061B7BC35",
+        "OW-RAND-00000045-E0894B6209",
+        "OW-RAND-00000056-0708FDF4CD"
+      ],
+      "minimized_reproducer_ids": [],
+      "proposed_label": "interpretation_unsupported|phase4-bounded-interpreter|no_diagnostic",
+      "reviewed": false,
+      "target_ids": [
+        "phase4-bounded-interpreter"
+      ]
+    },
+    {
+      "case_count": 1,
+      "cluster_id": "OWCL-4BDA983C69906A3A",
+      "example_case_ids": [
+        "OW-DIAG-P4-000005"
+      ],
+      "minimized_reproducer_ids": [],
+      "proposed_label": "interpretation_unsupported|phase4-bounded-interpreter|semantic_composition:unspecified,syntax:unspecified",
+      "reviewed": false,
+      "target_ids": [
+        "phase4-bounded-interpreter"
+      ]
+    },
+    {
+      "case_count": 1,
+      "cluster_id": "OWCL-DDC797F15B3CDCE5",
+      "example_case_ids": [
+        "OW-DIAG-P5-000058"
+      ],
+      "minimized_reproducer_ids": [],
+      "proposed_label": "interpretation_unsupported|phase5-bounded-interpreter|discourse:DISCOURSE_ANTECEDENT_UNRESOLVED,semantic_composition:SEMANTIC_CLAUSE_UNRESOLVED,syntax:SYNTAX_UNSUPPORTED,syntax:UNSUPPORTED_INTERROGATIVE_FORCE",
+      "reviewed": false,
+      "target_ids": [
+        "phase5-bounded-interpreter"
+      ]
+    },
+    {
+      "case_count": 1,
+      "cluster_id": "OWCL-F9D62B064666630E",
+      "example_case_ids": [
+        "OW-DIAG-P5-000059"
+      ],
+      "minimized_reproducer_ids": [],
+      "proposed_label": "interpretation_unsupported|phase5-bounded-interpreter|lexical:LEXICAL_UNRESOLVED_TOKEN,semantic_composition:SEMANTIC_CLAUSE_UNRESOLVED,syntax:SYNTAX_INCOMPLETE,syntax:UNSUPPORTED_INTERROGATIVE_FORCE",
+      "reviewed": false,
+      "target_ids": [
+        "phase5-bounded-interpreter"
+      ]
+    },
+    {
+      "case_count": 9,
+      "cluster_id": "OWCL-8DFD80FFF5EB7AB1",
+      "example_case_ids": [
+        "OW-DIAG-P5-000040",
+        "OW-DIAG-P5-000041",
+        "OW-DIAG-P5-000042",
+        "OW-DIAG-P5-000044",
+        "OW-DIAG-P5-000045"
+      ],
+      "minimized_reproducer_ids": [],
+      "proposed_label": "interpretation_unsupported|phase5-bounded-interpreter|semantic_composition:SEMANTIC_CLAUSE_UNRESOLVED,syntax:SYNTAX_UNSUPPORTED",
+      "reviewed": false,
+      "target_ids": [
+        "phase5-bounded-interpreter"
+      ]
+    },
+    {
+      "case_count": 2,
+      "cluster_id": "OWCL-82D0A7844BC9FB0B",
+      "example_case_ids": [
+        "OW-DIAG-P5-000078",
+        "OW-DIAG-P5-000079"
+      ],
+      "minimized_reproducer_ids": [],
+      "proposed_label": "interpretation_unsupported|phase5-bounded-interpreter|syntax:UNSUPPORTED_INTERROGATIVE_FORCE",
+      "reviewed": false,
+      "target_ids": [
+        "phase5-bounded-interpreter"
+      ]
+    }
+  ],
+  "outcome_counts": {
+    "abstained": 0,
+    "ambiguous": 387,
+    "completed": 111,
+    "crashed": 0,
+    "infrastructure_error": 0,
+    "invalid_output": 0,
+    "not_executed": 1000,
+    "partial": 8327,
+    "timeout": 0,
+    "unsupported": 1281
+  },
+  "population_results": [
+    {
+      "attempted": 11000,
+      "completed": 63,
+      "coverage": {
+        "attempted_case_count": 11000,
+        "execution_accounting": {
+          "accounting_version": "1.0.0",
+          "actual_attempt_count": 10000,
+          "legacy_attempted_field_definition": "execution_result_record_count_including_not_executed",
+          "not_executed_record_count": 1000,
+          "result_record_count": 11000,
+          "scenario_count": 11000,
+          "scenario_count_only_not_executed": 1000,
+          "scenario_count_with_actual_attempt": 10000,
+          "scenario_count_with_multiple_result_records": 0,
+          "scenario_count_with_result_record": 11000,
+          "scenario_count_without_result_record": 0,
+          "target_accounting": [
+            {
+              "actual_attempt_count": 1000,
+              "not_executed_record_count": 0,
+              "result_record_count": 1000,
+              "scenario_count_only_not_executed": 0,
+              "scenario_count_with_actual_attempt": 1000,
+              "scenario_count_with_result": 1000,
+              "target_id": "js-semantic-workbench-v054"
+            },
+            {
+              "actual_attempt_count": 1000,
+              "not_executed_record_count": 0,
+              "result_record_count": 1000,
+              "scenario_count_only_not_executed": 0,
+              "scenario_count_with_actual_attempt": 1000,
+              "scenario_count_with_result": 1000,
+              "target_id": "kernel-lab-local-api-cli"
+            },
+            {
+              "actual_attempt_count": 1000,
+              "not_executed_record_count": 0,
+              "result_record_count": 1000,
+              "scenario_count_only_not_executed": 0,
+              "scenario_count_with_actual_attempt": 1000,
+              "scenario_count_with_result": 1000,
+              "target_id": "phase2-structured-semantic-reasoning"
+            },
+            {
+              "actual_attempt_count": 1000,
+              "not_executed_record_count": 0,
+              "result_record_count": 1000,
+              "scenario_count_only_not_executed": 0,
+              "scenario_count_with_actual_attempt": 1000,
+              "scenario_count_with_result": 1000,
+              "target_id": "phase3-canonical-sqlite-store"
+            },
+            {
+              "actual_attempt_count": 1000,
+              "not_executed_record_count": 0,
+              "result_record_count": 1000,
+              "scenario_count_only_not_executed": 0,
+              "scenario_count_with_actual_attempt": 1000,
+              "scenario_count_with_result": 1000,
+              "target_id": "phase4-bounded-interpreter"
+            },
+            {
+              "actual_attempt_count": 1000,
+              "not_executed_record_count": 0,
+              "result_record_count": 1000,
+              "scenario_count_only_not_executed": 0,
+              "scenario_count_with_actual_attempt": 1000,
+              "scenario_count_with_result": 1000,
+              "target_id": "phase5-bounded-interpreter"
+            },
+            {
+              "actual_attempt_count": 1000,
+              "not_executed_record_count": 0,
+              "result_record_count": 1000,
+              "scenario_count_only_not_executed": 0,
+              "scenario_count_with_actual_attempt": 1000,
+              "scenario_count_with_result": 1000,
+              "target_id": "phase6-candidate-expansion"
+            },
+            {
+              "actual_attempt_count": 1000,
+              "not_executed_record_count": 0,
+              "result_record_count": 1000,
+              "scenario_count_only_not_executed": 0,
+              "scenario_count_with_actual_attempt": 1000,
+              "scenario_count_with_result": 1000,
+              "target_id": "python-native-semantic-models-v06-v14"
+            },
+            {
+              "actual_attempt_count": 1000,
+              "not_executed_record_count": 0,
+              "result_record_count": 1000,
+              "scenario_count_only_not_executed": 0,
+              "scenario_count_with_actual_attempt": 1000,
+              "scenario_count_with_result": 1000,
+              "target_id": "python-reference-kernel-v04-v05"
+            },
+            {
+              "actual_attempt_count": 1000,
+              "not_executed_record_count": 0,
+              "result_record_count": 1000,
+              "scenario_count_only_not_executed": 0,
+              "scenario_count_with_actual_attempt": 1000,
+              "scenario_count_with_result": 1000,
+              "target_id": "python-usg-sem-document-adapters-v15"
+            },
+            {
+              "actual_attempt_count": 0,
+              "not_executed_record_count": 1000,
+              "result_record_count": 1000,
+              "scenario_count_only_not_executed": 1000,
+              "scenario_count_with_actual_attempt": 0,
+              "scenario_count_with_result": 1000,
+              "target_id": "workbench-to-canonical-adapter"
+            }
+          ]
+        },
+        "scenario_count": 11000
+      },
+      "outcome_counts": {
+        "abstained": 0,
+        "ambiguous": 387,
+        "completed": 63,
+        "crashed": 0,
+        "infrastructure_error": 0,
+        "invalid_output": 0,
+        "not_executed": 1000,
+        "partial": 8285,
+        "timeout": 0,
+        "unsupported": 1265
+      },
+      "population": "unconstrained_random"
+    },
+    {
+      "attempted": 0,
+      "completed": 0,
+      "coverage": {
+        "attempted_case_count": 0,
+        "execution_accounting": {
+          "accounting_version": "1.0.0",
+          "actual_attempt_count": 0,
+          "legacy_attempted_field_definition": "execution_result_record_count_including_not_executed",
+          "not_executed_record_count": 0,
+          "result_record_count": 0,
+          "scenario_count": 0,
+          "scenario_count_only_not_executed": 0,
+          "scenario_count_with_actual_attempt": 0,
+          "scenario_count_with_multiple_result_records": 0,
+          "scenario_count_with_result_record": 0,
+          "scenario_count_without_result_record": 0,
+          "target_accounting": []
+        },
+        "scenario_count": 0
+      },
+      "outcome_counts": {
+        "abstained": 0,
+        "ambiguous": 0,
+        "completed": 0,
+        "crashed": 0,
+        "infrastructure_error": 0,
+        "invalid_output": 0,
+        "not_executed": 0,
+        "partial": 0,
+        "timeout": 0,
+        "unsupported": 0
+      },
+      "population": "naturalistic"
+    },
+    {
+      "attempted": 106,
+      "completed": 48,
+      "coverage": {
+        "attempted_case_count": 106,
+        "execution_accounting": {
+          "accounting_version": "1.0.0",
+          "actual_attempt_count": 106,
+          "legacy_attempted_field_definition": "execution_result_record_count_including_not_executed",
+          "not_executed_record_count": 0,
+          "result_record_count": 106,
+          "scenario_count": 106,
+          "scenario_count_only_not_executed": 0,
+          "scenario_count_with_actual_attempt": 106,
+          "scenario_count_with_multiple_result_records": 0,
+          "scenario_count_with_result_record": 106,
+          "scenario_count_without_result_record": 0,
+          "target_accounting": [
+            {
+              "actual_attempt_count": 6,
+              "not_executed_record_count": 0,
+              "result_record_count": 6,
+              "scenario_count_only_not_executed": 0,
+              "scenario_count_with_actual_attempt": 6,
+              "scenario_count_with_result": 6,
+              "target_id": "phase4-bounded-interpreter"
+            },
+            {
+              "actual_attempt_count": 100,
+              "not_executed_record_count": 0,
+              "result_record_count": 100,
+              "scenario_count_only_not_executed": 0,
+              "scenario_count_with_actual_attempt": 100,
+              "scenario_count_with_result": 100,
+              "target_id": "phase5-bounded-interpreter"
+            }
+          ]
+        },
+        "scenario_count": 106
+      },
+      "outcome_counts": {
+        "abstained": 0,
+        "ambiguous": 0,
+        "completed": 48,
+        "crashed": 0,
+        "infrastructure_error": 0,
+        "invalid_output": 0,
+        "not_executed": 0,
+        "partial": 42,
+        "timeout": 0,
+        "unsupported": 16
+      },
+      "population": "controlled_diagnostic"
+    }
+  ],
+  "protocol_version": "1.0.0",
+  "repository": "wizekin/USG-Workbench",
+  "schema_version": "1.0.0",
+  "started_at": "2026-11-12T05:54:44Z",
+  "status": "partial",
+  "tested_commit_sha": "790da191588608dbe144114af07432b4bab0b9ac"
+}
