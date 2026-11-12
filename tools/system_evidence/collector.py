@@ -411,6 +411,7 @@ def render_markdown(report: dict[str, Any]) -> str:
               "", "## External lexical acquisition", ""]
     if ext.get("manifest_available"):
         lines += [f"- Status: {ext.get('status')}; snapshot: {ext.get('source', {}).get('snapshot_id')}.",
+                  f"- Physical shards: {ext.get('shard_inventory', {}).get('file_count')} / {ext.get('shard_inventory', {}).get('manifest_batch_count')} ({ext.get('shard_inventory', {}).get('status')}); total compressed bytes: {ext.get('shard_inventory', {}).get('total_size_bytes')}.",
                   f"- Processed headwords: {progress.get('processed_headwords')} / {progress.get('expected_headwords')} ({progress.get('headword_completion_percent')}%).",
                   f"- Entries / senses: {progress.get('processed_entries')} / {progress.get('processed_senses')}.",
                   f"- Batches: {progress.get('batch_count')}; stored bytes: {progress.get('stored_bytes')} / {progress.get('storage_budget_bytes')}.",
