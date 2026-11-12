@@ -1,0 +1,110 @@
+{
+  "contract": "USG-PHASE-RESOURCE-MANIFEST/0.1.0",
+  "manifest_version": "0.1.0",
+  "phase_id": "P8",
+  "phase_step_id": "8.x",
+  "created_at": "2026-11-12T00:00:00Z",
+  "purpose": "Describe the exact existing system evidence, resources, contracts, and acceptance populations consumed by this phase step. Replace every example with a repository-backed source or remove optional rows.",
+  "resources": [
+    {
+      "source_family_id": "canonical_semantic_interchange",
+      "source_path": "specifications/USG-SEM-1.0.md",
+      "version": "1.0",
+      "sha256": null,
+      "use_mode": "normative",
+      "requirement": "required",
+      "runtime_integration_verified": true,
+      "rights_status": "internal_project_contract",
+      "evidence_refs": [
+        "interoperability/PHASE-1-EXIT-ACCEPTANCE.md"
+      ],
+      "known_limitations": [
+        "Versioned migration required for any incompatible change."
+      ]
+    },
+    {
+      "source_family_id": "open_world_evaluation_foundation",
+      "source_path": "tools/open_world_evaluation/",
+      "version": "1.0.0",
+      "sha256": null,
+      "use_mode": "evaluation_only",
+      "requirement": "required",
+      "runtime_integration_verified": false,
+      "rights_status": "repository-owned",
+      "evidence_refs": [
+        "documentation/USG-OPEN-WORLD-EVALUATION-PROTOCOL.md"
+      ],
+      "known_limitations": [
+        "Execution and structural validity are not semantic correctness."
+      ]
+    },
+    {
+      "source_family_id": "external_lexical_acquisition",
+      "source_path": "usg-external-lexical-data:state/manifest.json",
+      "version": "pinned external snapshot",
+      "sha256": null,
+      "use_mode": "candidate_only",
+      "requirement": "optional",
+      "runtime_integration_verified": false,
+      "rights_status": "source-specific; candidate-only",
+      "evidence_refs": [
+        "documentation/USG-EXTERNAL-LEXICAL-SCHEDULED-CRAWLER-v0.1.0.md"
+      ],
+      "known_limitations": [
+        "No automatic runtime promotion; source terms and redistribution rights vary."
+      ]
+    }
+  ],
+  "evidence_inputs": [
+    {
+      "evidence_id": "replace-with-stable-evidence-id",
+      "population": "randomized_open_world",
+      "source_path": "evaluations/open-world/campaigns/<campaign-id>/campaign-report.json",
+      "commit_or_version": null,
+      "purpose": "Identify recurring failures and stage-level blockers.",
+      "independence_status": "randomized execution outcomes; semantic oracle may be absent",
+      "semantic_gold": "none"
+    }
+  ],
+  "dependencies": [
+    {
+      "phase_id": "P1",
+      "step_id": null,
+      "dependency_type": "normative_contract",
+      "status": "required"
+    },
+    {
+      "phase_id": "P6",
+      "step_id": null,
+      "dependency_type": "non_blocking_continuation",
+      "status": "optional"
+    },
+    {
+      "phase_id": "P7",
+      "step_id": null,
+      "dependency_type": "resource",
+      "status": "available"
+    }
+  ],
+  "acceptance_gates": [
+    {
+      "gate_id": "replace-with-gate-id",
+      "description": "Describe the exact capability and evidence boundary accepted by this step.",
+      "evidence_required": [
+        "positive",
+        "negative",
+        "ambiguous",
+        "boundary",
+        "regression",
+        "replay"
+      ],
+      "promotion_effect": "no_runtime_change"
+    }
+  ],
+  "governance": {
+    "candidate_resources_remain_separate": true,
+    "accepted_contracts_changed": false,
+    "requires_versioned_migration_for_contract_change": true,
+    "phase_status_auto_mutation": false
+  }
+}
