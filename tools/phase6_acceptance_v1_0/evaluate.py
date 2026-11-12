@@ -8,9 +8,12 @@ from __future__ import annotations
 
 import argparse
 from collections import Counter
+from contextlib import redirect_stdout
+import io
 import json
 from hashlib import sha256
 from pathlib import Path
+import tempfile
 import sys
 from time import perf_counter
 from typing import Any
