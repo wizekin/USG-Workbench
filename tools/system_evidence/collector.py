@@ -200,17 +200,20 @@ def workflow_evidence(path: Path | None) -> dict[str, Any]:
     if payload is None:
         return {"status": "not_collected", "workflow_count": 0, "latest_run_count": 0,
                 "status_counts": {}, "workflows": [], "collection_errors": [],
+                "artifact_collection_errors": [],
                 "interpretation_boundary": "Live workflow status was not collected; workflow configuration is not evidence of execution or success."}
     if payload.get("contract") != "USG-GITHUB-ACTIONS-EVIDENCE/0.1.0":
         return {"status": "collection_error", "workflow_count": 0, "latest_run_count": 0,
                 "status_counts": {}, "workflows": [], "collection_errors": [
                     {"error": "unsupported or missing USG-GITHUB-ACTIONS-EVIDENCE contract"}],
+                "artifact_collection_errors": [],
                 "interpretation_boundary": "Malformed workflow evidence is not counted as a pass."}
     return {"status": "collected", "workflow_count": int(payload.get("workflow_count", 0) or 0),
             "latest_run_count": int(payload.get("latest_run_count", 0) or 0),
             "status_counts": payload.get("status_counts", {}),
             "workflows": payload.get("workflows", []),
             "collection_errors": payload.get("collection_errors", []),
+            "artifact_collection_errors": payload.get("artifact_collection_errors", []),
             "interpretation_boundary": payload.get("interpretation_boundary", "Workflow status is operational evidence, not semantic correctness.")}
 
 def route_for_phases(phase_impacts: list[str], phases: list[dict[str, Any]]) -> str:
@@ -310,6 +313,12 @@ def discover(phases: list[dict[str, Any]], external: dict[str, Any],
                 f"Live GitHub Actions status collection could not resolve {len(workflows['collection_errors'])} workflow(s); unavailable statuses are not passes.",
                 ["workflow_evidence.collection_errors"], ["P8"], phases, "medium", "evidence_collection",
                 {"collection_error_count": len(workflows["collection_errors"])}))
+        if workflows.get("artifact_collection_errors"):
+            findings.append(make_finding(
+                "github_actions_artifact_index_incomplete",
+                f"Artifact metadata could not be collected for {len(workflows['artifact_collection_errors'])} latest workflow run(s); workflow status is still recorded separately.",
+                ["workflow_evidence.artifact_collection_errors"], ["P8"], phases, "low", "evidence_collection",
+                {"artifact_collection_error_count": len(workflows["artifact_collection_errors"])}))
     else:
         findings.append(make_finding(
             "github_actions_status_not_collected",
@@ -510,6 +519,8 @@ def render_markdown(report: dict[str, Any]) -> str:
         lines.append(f"- {item.get('name')} ({item.get('path')}): {latest_run.get('conclusion')} — {latest_run.get('html_url')}.")
     if workflow_summary.get("collection_errors"):
         lines.append(f"- Workflow status collection errors: {len(workflow_summary['collection_errors'])}.")
+    if workflow_summary.get("artifact_collection_errors"):
+        lines.append(f"- Workflow artifact metadata collection errors: {len(workflow_summary['artifact_collection_errors'])}.")
     if workflow_summary["status"] == "not_collected":
         lines.append("- Live workflow statuses were not collected in this snapshot.")
     lines += ["", workflow_summary["interpretation_boundary"], "", "## Growth planner", ""]
