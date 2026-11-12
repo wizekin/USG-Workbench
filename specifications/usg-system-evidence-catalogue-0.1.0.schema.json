@@ -1,0 +1,323 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wizekin.github.io/USG-Workbench/schemas/usg-system-evidence-catalogue-0.1.0.schema.json",
+  "title": "USG System Evidence Catalogue 0.1.0",
+  "type": "object",
+  "required": [
+    "contract",
+    "generated_at",
+    "repository",
+    "phase_status",
+    "source_families",
+    "open_world",
+    "external_lexical",
+    "growth_plan",
+    "discoveries",
+    "governance"
+  ],
+  "properties": {
+    "contract": {
+      "const": "USG-SYSTEM-EVIDENCE-CATALOGUE/0.1.0"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "repository": {
+      "type": "object",
+      "required": [
+        "name",
+        "branch",
+        "commit_sha"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "branch": {
+          "type": "string"
+        },
+        "commit_sha": {
+          "type": "string"
+        },
+        "tree_sha": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": true
+    },
+    "phase_status": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "status",
+          "roadmap",
+          "open_work"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "roadmap": {
+            "type": "string"
+          },
+          "acceptance": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "open_work": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "source_families": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "category",
+          "use_mode",
+          "evidence_class",
+          "consumers",
+          "matched_file_count",
+          "status",
+          "files"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "use_mode": {
+            "type": "string"
+          },
+          "evidence_class": {
+            "type": "string"
+          },
+          "consumers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "matched_file_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "status": {
+            "enum": [
+              "available",
+              "missing"
+            ]
+          },
+          "files": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "path",
+                "sha256",
+                "size_bytes"
+              ],
+              "properties": {
+                "path": {
+                  "type": "string"
+                },
+                "sha256": {
+                  "type": "string"
+                },
+                "size_bytes": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "open_world": {
+      "type": "object",
+      "required": [
+        "campaign_count",
+        "latest_campaign",
+        "population_summary",
+        "interpretation_boundary"
+      ],
+      "properties": {
+        "campaign_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "latest_campaign": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "population_summary": {
+          "type": "object"
+        },
+        "interpretation_boundary": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": true
+    },
+    "external_lexical": {
+      "type": "object",
+      "required": [
+        "status",
+        "manifest_available",
+        "checkpoint_available",
+        "pud_evaluation"
+      ],
+      "properties": {
+        "status": {
+          "type": "string"
+        },
+        "manifest_available": {
+          "type": "boolean"
+        },
+        "checkpoint_available": {
+          "type": "boolean"
+        },
+        "pud_evaluation": {
+          "type": "object"
+        }
+      },
+      "additionalProperties": true
+    },
+    "growth_plan": {
+      "type": "object",
+      "required": [
+        "status",
+        "ranked_actions"
+      ],
+      "properties": {
+        "status": {
+          "type": "string"
+        },
+        "ranked_actions": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "discoveries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "kind",
+          "severity",
+          "summary",
+          "evidence_refs",
+          "phase_impacts",
+          "route",
+          "review_status",
+          "runtime_change_allowed"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string"
+          },
+          "severity": {
+            "enum": [
+              "informational",
+              "low",
+              "medium",
+              "high"
+            ]
+          },
+          "summary": {
+            "type": "string"
+          },
+          "evidence_refs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "phase_impacts": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "route": {
+            "type": "string"
+          },
+          "review_status": {
+            "const": "observed_requires_review"
+          },
+          "runtime_change_allowed": {
+            "const": false
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "governance": {
+      "type": "object",
+      "required": [
+        "runtime_mutations_performed",
+        "candidate_resources_promoted",
+        "phase_statuses_changed",
+        "canonical_contracts_changed",
+        "amendments_require_review"
+      ],
+      "properties": {
+        "runtime_mutations_performed": {
+          "const": false
+        },
+        "candidate_resources_promoted": {
+          "const": false
+        },
+        "phase_statuses_changed": {
+          "const": false
+        },
+        "canonical_contracts_changed": {
+          "const": false
+        },
+        "amendments_require_review": {
+          "const": true
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}
