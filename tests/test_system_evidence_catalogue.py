@@ -218,6 +218,7 @@ class SystemEvidenceCatalogueTests(unittest.TestCase):
         self.assertIn("Open-World", rendered)
         self.assertIn("phase routing", rendered)
         self.assertTrue(report["discoveries"])
+        self.assertTrue(report["evidence_quality_diagnostics"])
 
 
 if __name__ == "__main__":
