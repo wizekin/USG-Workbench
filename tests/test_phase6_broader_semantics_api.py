@@ -28,6 +28,6 @@ class Phase6CandidateAPITests(unittest.TestCase):
         self.assertEqual(status,200); self.assertEqual(result["count"],1)
         request=self.request(); request["graph"]["nodes"][0]["span"]={"start":0,"end":999}
         status,result=self.app.dispatch("POST","/v3/phase6/compose",request)
-        self.assertEqual(status,400); self.assertEqual(result["error"]["code"],"PHASE6_COMPOSE_INVALID")
+        self.assertEqual(status,400); self.assertEqual(result["error"],"PHASE6_COMPOSE_INVALID")
 
 if __name__=="__main__": unittest.main()
