@@ -28,12 +28,17 @@ def _apply_resource_limits(case: dict[str, Any]) -> None:
 
     browser_target = case.get("target", {}).get("interface") == "browser_ui"
     file_limit = 512 if browser_target else 64
-    for name, value in (
+    limits = [
         ("RLIMIT_CPU", (wall_seconds, wall_seconds + 1)),
         ("RLIMIT_FSIZE", (8 * 1024 * 1024, 8 * 1024 * 1024)),
         ("RLIMIT_NOFILE", (file_limit, file_limit)),
-        ("RLIMIT_AS", (memory_bytes, memory_bytes)),
-    ):
+    ]
+    # Chromium reserves large virtual address ranges; inheriting RLIMIT_AS
+    # causes SIGTRAP even when physical memory use is low. The ephemeral
+    # hosted runner VM is the browser process memory boundary instead.
+    if not browser_target:
+        limits.append(("RLIMIT_AS", (memory_bytes, memory_bytes)))
+    for name, value in limits:
         limit_id = getattr(resource, name, None)
         if limit_id is None:
             continue
