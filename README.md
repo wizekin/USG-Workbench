@@ -183,7 +183,7 @@ These are the major open workstreams. Detailed step definitions, dependencies, a
 
 ### 1. Phase 7 — semantic knowledge integration and contextual knowledge layer
 
-**Status: STEPS 7.1–7.5 MERGED; STEP 7.6 NEXT.** Phase 7 builds a reusable knowledge layer for lexical forms, senses, concepts, typed relations, provenance, context, and controlled retrieval on top of accepted Phase 1–5 foundations. It does not wait for the broader Phase 6 research queue. The additive `USG-KNOWLEDGE/0.1.0` contract and SQLite knowledge repository are in place; `USG-SEM/1.0` remains unchanged.
+**Status: STEPS 7.1–7.5 MERGED; STEP 7.6 IMPLEMENTED ON REVIEW BRANCH, CI PENDING.** Phase 7 builds a reusable knowledge layer for lexical forms, senses, concepts, typed relations, provenance, context, and controlled retrieval on top of accepted Phase 1–5 foundations. It does not wait for the broader Phase 6 research queue. The additive `USG-KNOWLEDGE/0.1.0` contract and SQLite knowledge repository are in place; `USG-SEM/1.0` remains unchanged.
 
 The initial roadmap defines ten ordered steps: knowledge contract/inventory; typed lexical-sense and concept model; persistent repository; source adapters and incremental acquisition; cross-language alignment; typed relations and reconciliation; contextual retrieval; read-only integration with reasoning/interpreters; API/CLI/Kernel Lab inspection; and profile-specific evaluation/exit acceptance.
 

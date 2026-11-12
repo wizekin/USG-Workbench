@@ -1,0 +1,84 @@
+{
+  "contract": "USG-KNOWLEDGE-RELATIONS/0.1.0",
+  "status": "versioned_candidate_registry",
+  "semantics": "Registry declarations constrain candidate relations; they do not authorize inference or acceptance.",
+  "relation_types": [
+    {
+      "predicate": "RELATED_TO",
+      "domain": [
+        "LEXICAL_SENSE",
+        "CONCEPT",
+        "SEMANTIC_CLASS",
+        "PREDICATE_FRAME"
+      ],
+      "range": [
+        "LEXICAL_SENSE",
+        "CONCEPT",
+        "SEMANTIC_CLASS",
+        "PREDICATE_FRAME"
+      ],
+      "symmetric": false,
+      "transitive": false,
+      "causal": false,
+      "inverse_of": null,
+      "inference_allowed": false
+    },
+    {
+      "predicate": "HAS_PROPERTY",
+      "domain": [
+        "CONCEPT"
+      ],
+      "range": [
+        "CONCEPT"
+      ],
+      "symmetric": false,
+      "transitive": false,
+      "causal": false,
+      "inverse_of": null,
+      "inference_allowed": false
+    },
+    {
+      "predicate": "HAS_PART",
+      "domain": [
+        "CONCEPT"
+      ],
+      "range": [
+        "CONCEPT"
+      ],
+      "symmetric": false,
+      "transitive": false,
+      "causal": false,
+      "inverse_of": null,
+      "inference_allowed": false
+    },
+    {
+      "predicate": "SUBCLASS_OF",
+      "domain": [
+        "SEMANTIC_CLASS"
+      ],
+      "range": [
+        "SEMANTIC_CLASS"
+      ],
+      "symmetric": false,
+      "transitive": false,
+      "causal": false,
+      "inverse_of": null,
+      "inference_allowed": false
+    },
+    {
+      "predicate": "HAS_ROLE",
+      "domain": [
+        "PREDICATE_FRAME"
+      ],
+      "range": [
+        "CONCEPT",
+        "SEMANTIC_CLASS"
+      ],
+      "symmetric": false,
+      "transitive": false,
+      "causal": false,
+      "inverse_of": null,
+      "inference_allowed": false
+    }
+  ]
+}
