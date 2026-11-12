@@ -83,6 +83,8 @@ def _case(case_id: str, lang: str, step: str, profile: str, gold_class: str,
         span = node.get("source_span")
         if span:
             spans.append({"node_id": node["id"], **span})
+        for item in node.get("source_spans", []):
+            spans.append({"node_id": node["id"], **item})
     return {
         "id": case_id,
         "language": lang,
@@ -493,6 +495,11 @@ def validate(corpus: dict[str, Any]) -> None:
         for span in case.get("expected", {}).get("required_markers", []):
             if text[span["start"]:span["end"]] != span["surface"]:
                 raise ValueError(f"marker span mismatch: {case['id']}")
+        for span in case.get("expected", {}).get("required_role_spans", []):
+            if (span["start"] < 0 or span["end"] <= span["start"]
+                    or span["end"] > len(text)
+                    or text[span["start"]:span["end"]] != span["surface"]):
+                raise ValueError(f"role span mismatch: {case['id']}")
     if actual != corpus["construction_inventory"]:
         raise ValueError("construction inventory and case counts differ")
     for key, counts in actual.items():
