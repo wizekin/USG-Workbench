@@ -107,6 +107,10 @@ def collect_workflow_runs(repository: str, token: str, opener: Callable = urlope
     errors = [{"workflow_id": item.get("workflow_id"), "path": item.get("path"),
                "error": item.get("collection_error")}
               for item in results if item.get("status") == "collection_error"]
+    artifact_errors = [{"workflow_id": item.get("workflow_id"), "path": item.get("path"),
+                        "error": item["latest_run"].get("artifact_collection_error")}
+                       for item in results if item.get("latest_run")
+                       and item["latest_run"].get("artifact_collection_error")]
     return {
         "contract": "USG-GITHUB-ACTIONS-EVIDENCE/0.1.0",
         "repository": repository,
@@ -115,6 +119,7 @@ def collect_workflow_runs(repository: str, token: str, opener: Callable = urlope
         "status_counts": dict(sorted(counts.items())),
         "workflows": results,
         "collection_errors": errors,
+        "artifact_collection_errors": artifact_errors,
         "interpretation_boundary": "This snapshot reports the latest non-PR run exposed for each workflow. Workflow presence is not run success; skipped, disabled, no-run, and collection-error statuses remain distinct. Results do not establish semantic correctness.",
     }
 
