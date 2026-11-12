@@ -1,13 +1,13 @@
 # USG Phase 7 — Semantic Knowledge Integration and Contextual Knowledge Layer
 
 **Phase:** 7 — Semantic knowledge integration and contextual knowledge retrieval  
-**Status:** DEFINITIONS ROADMAP — proposed scope; implementation and acceptance have not yet begun.  
+**Status:** STEPS 7.1–7.2 IMPLEMENTED IN PR; pending exact-head validation and merge. Steps 7.3–7.10 remain unstarted.  
 **Primary objective:** build a governed, persistent semantic knowledge layer that connects lexical forms, lexical senses, language-neutral concepts, semantic classes, typed relations, source evidence, contexts, and validated canonical documents.  
 **Prerequisites:** accepted Phase 1–5 foundations; Phase 6 bounded automatic exit accepted for its registered scope.  
 **Non-blocking parallel work:** Phase 6 construction expansion continues through the [Phase 6 Continuation Tracker](PHASE-6-CONTINUATION-TRACKER.md). No unfinished Phase 6 continuation item is a prerequisite for Phase 7 unless a specific Phase 7 step explicitly adopts it.  
 **Canonical interchange:** `USG-SEM/1.0` remains unchanged.  
 **Canonical persistence:** the existing Phase 3 SQLite authority remains the only canonical document store.  
-**Proposed knowledge contract:** `USG-KNOWLEDGE/0.1.0` (to be frozen in Step 7.1 before implementation).
+**Knowledge contract:** `USG-KNOWLEDGE/0.1.0` (frozen additively by Step 7.1; schema and validation are versioned).
 
 ---
 
@@ -188,6 +188,22 @@ The steps are ordered by contract and data dependencies. Steps explicitly marked
 | **7.9** | Knowledge inspection API, CLI, and Kernel Lab | Query concepts/senses/relations, inspect provenance/conflicts, compare alternatives, and replay an acquisition run | API, CLI, and UI share the same application/repository services; every result shows source, state, version, context, and unresolved alternatives. |
 | **7.10** | Evaluation, performance, and Phase 7 exit acceptance | Frozen multilingual retrieval/mapping/reconciliation suite, adversarial negatives, rights/provenance checks, replay, and integrated regressions | Each enabled language/source/relation profile passes its own gates; false merges and unsupported promotion are zero in the acceptance set; limitations and unsupported profiles are published. |
 
+## 7.1 Step 7.1 — Knowledge integration contract and inventory
+
+**Deliverables:** [USG-KNOWLEDGE/0.1.0](../specifications/USG-KNOWLEDGE-0.1.0.md), [JSON Schema](../specifications/usg-knowledge-0.1.0.schema.json), example bundle, deterministic validator, cross-reference tests, and an isolated GitHub Actions validation workflow.
+
+The frozen envelope separates records, sources, evidence, contexts, mappings, and relations. It defines six knowledge record kinds and six lifecycle states. Rights metadata is mandatory for source records. Structural validity, reference integrity, rights eligibility, evidence assessment, and semantic acceptance are distinct gates.
+
+**Acceptance boundary:** the contract is additive. USG-SEM/1.0, its schema, canonical document persistence, and Phase 1–6 contracts remain unchanged. The validator does not import external data, infer truth, promote candidates, or write to SQLite.
+
+## 7.2 Step 7.2 — Typed lexical-sense and concept model
+
+**Deliverables:** the record-kind registry [USG Knowledge Record-Kinds 0.1.0](../specifications/USG-KNOWLEDGE-RECORD-KINDS-0.1.0.md), typed record definitions in the knowledge schema, and a bilingual-safe synthetic fixture.
+
+The model separates lexical forms, lemmas, lexical senses, concepts, semantic classes, and predicate frames. Mapping objects are explicit and evidence-bearing, support many-to-many relationships, and distinguish equivalence, overlap, narrower-than, broader-than, related-to, and unresolved mappings. Relations are directed and evidence-bearing; no inverse or transitive closure is implied.
+
+**Acceptance boundary:** the current contract validates the envelope and cross-references. Kind-specific payload constraints are recorded in the registry and will be tightened in a compatible schema revision before the repository begins accepting imported records. No real-world identity or English–Arabic equivalence is inferred from spelling or translation.
+
 ## 8. Dependencies and parallelism
 
 ### Required before Phase 7 implementation
@@ -256,4 +272,4 @@ No Phase 7 task may rewrite a previously accepted phase's meaning or make that p
 6. Integrate read-only adapters and inspection interfaces.
 7. Close Phase 7 with profile-specific tests, reproducible reports, and protected baseline regressions.
 
-**Phase 7 is ready to begin at Step 7.1.** This is a roadmap definition, not a claim that the Phase 7 implementation has already been completed.
+**Next mainline implementation: Step 7.3 — persistent knowledge repository.** Steps 7.1–7.2 define the initial contract and typed model; their PR-specific acceptance depends on passing exact-head workflows. This does not imply completion of the full Phase 7 roadmap.
