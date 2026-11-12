@@ -32,7 +32,7 @@ Step 6.6's separate 500-case / 10-profile graph-first nominal benchmark also pas
 - Corpus SHA-256: `bb58f7857ab3f9bc5475ed91ce437d96cb0adc9d2eda3ac9a8db2a84416d5fcf`
 - License: `CC0-1.0`
 - End-to-end evaluator: the actual `POST /v3/phase6/interpret` operation
-- Recorded factory execution: 39,565.547 ms on the GitHub-hosted runner; this is a CI observation, not a production latency guarantee.
+- Recorded factory execution: 44,399.505 ms on the GitHub-hosted runner; this is a CI observation, not a production latency guarantee.
 
 All ten profiles passed every required factory gate:
 
@@ -47,7 +47,7 @@ All ten profiles passed every required factory gate:
 
 The report also verified the exact source snapshot and digest, emitted span alignment, and the versioned report schema. The final status was `ACCEPTED`.
 
-Validation workflow: [GitHub Actions run 43200081732](https://github.com/wizekin/USG-Workbench/actions/runs/43200081732), which tested implementation head `75fbd8ebf576ec3e5f9e6efec1d35e76e666254a`. The report and generated corpus are attached as the `phase6-automatic-acceptance-v1.0` workflow artifact.
+Validation workflow on the final PR head: [GitHub Actions run 43200506859](https://github.com/wizekin/USG-Workbench/actions/runs/43200506859), which tested implementation head `0d2cc5676445cf294aa4f52c1145d4a27938ba01`. All 26 repository PR checks passed on this exact head. The report and generated corpus are attached as the `phase6-automatic-acceptance-v1.0` workflow artifact.
 
 ## Step 6.12 projection boundary
 
