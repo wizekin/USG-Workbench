@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 from typing import Any
 from jsonschema import Draft202012Validator, FormatChecker
+from .discovery import (classify_impacts, deduplicate_discoveries, integrated_priorities, related_backlog_items)
 
 ROOT = Path(__file__).resolve().parents[2]
 REGISTRY_PATH = ROOT / "config/usg-system-evidence-source-registry-0.1.0.json"
@@ -395,7 +396,12 @@ def collect_catalogue(root: Path = ROOT, *, registry_path: Path = REGISTRY_PATH,
                                 external_shard_inventory_path, external_branch_commit)
     growth = read_json(growth_plan_path)
     workflows = workflow_evidence(workflow_runs_path)
-    findings = discover(phases, external, campaigns, growth, sources, workflows)
+    findings = deduplicate_discoveries(discover(phases, external, campaigns, growth, sources, workflows), root)
+    backlog_links = related_backlog_items(findings, root)
+    for finding in findings:
+        finding["related_backlog_items"] = backlog_links.get(str(finding.get("id")), [])
+        finding["impact_classification"] = classify_impacts(finding, phases)
+    priorities = integrated_priorities(findings)
     latest = campaigns[0] if campaigns else None
     selected_naturalistic = sum(item.get("naturalistic_case_count", 0) for item in campaigns)
     report = {
@@ -441,6 +447,11 @@ def collect_catalogue(root: Path = ROOT, *, registry_path: Path = REGISTRY_PATH,
                 "runtime_mutations_performed": False, "candidate_lexical_data_promoted": False,
                 "semantic_contracts_changed": False}},
         "discoveries": findings,
+        "integrated_priorities": priorities,
+        "discovery_management": {"deduplication": "stable_kind_evidence_scope_fingerprint",
+                                "historical_snapshot_limit": 100,
+                                "backlog_linking": "existing_ids_only",
+                                "phase_impact_classification": "descriptive_only"},
         "governance": {
             "runtime_mutations_performed": False, "candidate_resources_promoted": False,
             "phase_statuses_changed": False, "canonical_contracts_changed": False,
@@ -535,7 +546,14 @@ def render_markdown(report: dict[str, Any]) -> str:
               "| Observation | Severity | Phase impacts | Route |", "|---|---|---|---|"]
     for item in report["discoveries"]:
         lines.append(f"| {item['summary']} | {item['severity']} | {', '.join(item['phase_impacts'])} | {item['route']} |")
-    lines += ["", "All observations require review. Existing continuations are preferred; accepted phase changes are amendment proposals; contract changes require explicit versioned migrations. The collector makes no runtime or phase-status changes.", "",
+    lines += ["", "## Integrated discovery priorities", "",
+              "| Rank | Discovery | Priority band | Reasons | Existing backlog links |",
+              "|---:|---|---|---|---|"]
+    for item in report.get("integrated_priorities", []):
+        finding = next((x for x in report["discoveries"] if x.get("id") == item.get("discovery_id")), {})
+        lines.append(f"| {item['rank']} | {item.get('kind')} | {item.get('priority_band')} | {', '.join(item.get('priority_reasons', []))} | {', '.join(finding.get('related_backlog_items', []))} |")
+    lines += ["", "Prioritization preserves source-specific growth metrics; it does not calculate a combined intelligence or semantic-quality score.",
+              "", "All observations require review. Existing continuations are preferred; accepted phase changes are amendment proposals; contract changes require explicit versioned migrations. The collector makes no runtime or phase-status changes.", "",
               "## Safety", "",
               "- No candidate resource promotion or canonical-contract mutation.",
               "- Missing results are not zero; skipped targets are not passes.",
