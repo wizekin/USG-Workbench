@@ -36,6 +36,8 @@ class PhaseResourceManifestPolicyTests(unittest.TestCase):
         self.assertIn("phase7_knowledge_layer", required)
         self.assertTrue(data["governance"]["candidate_resources_remain_separate"])
         self.assertFalse(data["governance"]["phase_status_auto_mutation"])
+        gate_ids = {item["gate_id"] for item in data["acceptance_gates"]}
+        self.assertTrue({"P8-FRESHNESS", "P8-PROPOSALS", "P8-INTEGRATED-ACCEPTANCE"} <= gate_ids)
 
 
 if __name__ == "__main__":
