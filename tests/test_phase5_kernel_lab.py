@@ -82,6 +82,10 @@ class Phase5KernelLabTests(unittest.TestCase):
         self.assertIn("phase5InterpretBtn", html)
         self.assertIn("phase5ResourcesBtn", html)
         self.assertIn("phase5ReplayBtn", html)
+        self.assertIn("phase5Explanation", html)
+        self.assertIn("PHASE5_STAGE_GUIDE", html)
+        self.assertIn("Inspect token candidates and morphology evidence", html)
+        self.assertIn("Earliest stage with an explicit diagnostic", html)
 
 
 if __name__ == "__main__":
