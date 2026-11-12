@@ -19,6 +19,9 @@ on:
     paths:
       - "config/usg-system-evidence-source-registry-0.1.0.json"
       - "config/usg-phase-resource-consumption-map-0.1.0.json"
+      - "config/phase-resource-manifests/**"
+      - "templates/phase-resource-manifest-0.1.0.template.json"
+      - "documentation/PHASE-*-*ROADMAP.md"
       - "specifications/usg-system-evidence-*.schema.json"
       - "specifications/usg-phase-resource-manifest-0.1.0.schema.json"
       - "templates/phase-resource-manifest-0.1.0.template.json"
@@ -26,6 +29,7 @@ on:
       - "config/usg-phase-resource-consumption-map-0.1.0.json"
       - "tools/system_evidence/**"
       - "tests/test_system_evidence_catalogue.py"
+      - "tests/test_phase_resource_manifest_policy.py"
       - "documentation/PHASE-8-DEFINITIONS-ROADMAP.md"
       - ".github/workflows/system-evidence-collection.yml"
       - "documentation/USG-SYSTEM-IMPROVEMENT-BACKLOG.md"
@@ -60,6 +64,8 @@ jobs:
         run: python -m compileall -q tools/system_evidence
       - name: Test system evidence registry, collector, freshness, and routing
         run: python -m unittest discover -s tests -p "test_system_evidence_catalogue.py" -v
+      - name: Enforce Phase 8+ resource manifest policy
+        run: python -m unittest discover -s tests -p "test_phase_resource_manifest_policy.py" -v
       - name: Validate machine-readable registry and phase map
         run: |
           python - <<'PY'
