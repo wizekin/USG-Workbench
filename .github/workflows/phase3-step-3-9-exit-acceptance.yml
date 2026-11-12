@@ -86,7 +86,7 @@ jobs:
         run: python -m pip install -r requirements-phase3.lock -r requirements-build.lock
       - name: Verify immutable historical implementation baselines
         run: |
-          git fetch origin main --depth=1
+          git fetch origin main
           git diff --exit-code FETCH_HEAD...HEAD -- archives implementations/python-kernel/v0.4.0 implementations/python-kernel/v0.5.0
       - name: Run integrated Phase 1, Phase 2, and Phase 3 acceptance
         env:
