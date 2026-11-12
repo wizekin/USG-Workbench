@@ -100,6 +100,8 @@ _BACKLOG_RULES = (
       "github_actions_artifact_index_incomplete"), ("SYS-16",)),
     (("external_lexical",), ("SYS-05", "SYS-06", "SYS-17")),
     (("semantic", "construction", "syntax", "operator", "discourse"), ("SYS-08", "SYS-09", "SYS-17")),
+    (("cross_implementation",), ("SYS-12",)),
+    (("knowledge_layer", "unresolved_mapping"), ("SYS-17",)),
 )
 
 
