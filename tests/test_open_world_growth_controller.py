@@ -84,6 +84,25 @@ class GrowthControllerTests(unittest.TestCase):
             self.assertTrue(all(not item["runtime_change_allowed"] for item in plan["ranked_actions"]))
             self.assertIn("does not edit runtime code", render_markdown(plan))
 
+    def test_pipeline_mismatch_warning_preserves_observed_contract_and_version(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            campaign(root, "OWC-GROWTH-IDENTITY-0001", "2026-11-12T00:00:00Z",
+                     "lexical", "LEXICAL_UNRESOLVED_TOKEN")
+            folder = root / "evaluations/open-world/campaigns/OWC-GROWTH-IDENTITY-0001"
+            rows = json.loads((folder / "execution-results.jsonl").read_text(encoding="utf-8"))
+            rows["capture"]["inline_output"]["target_result"]["pipeline_contract"] = "USG-INTERPRET/0.1.0"
+            write_jsonl(folder / "execution-results.jsonl", [rows])
+            plan = build_growth_plan(root, max_campaigns=1, generated_at="2026-11-12T00:00:00Z")
+        warning = plan["diagnostic_accounting_warnings"][0]
+        self.assertEqual(warning["kind"], "pipeline_version_mismatch")
+        self.assertEqual(warning["counts"], {
+            "phase5-bounded-interpreter:phase5-interpretation-integration/0.3.0": 1
+        })
+        self.assertEqual(warning["identity_counts"], {
+            "phase5-bounded-interpreter:USG-INTERPRET/0.1.0@phase5-interpretation-integration/0.3.0": 1
+        })
+
     def test_max_campaigns_uses_latest_campaigns_only(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
