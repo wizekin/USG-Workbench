@@ -24,7 +24,8 @@ Start here — jump directly to any major section:
 | 6 | [Incomplete major tasks](#incomplete-major-tasks) | Remaining work and current blockers |
 | 7 | [Architecture and reliability rules](#architecture-and-reliability-rules) | Contracts, data, uncertainty, and evidence boundaries |
 | 8 | [How to explore and test USG](#how-to-explore-and-test-usg) | Start the interface and find tests |
-| 9 | [Repository structure](#repository-structure) | Where code, specifications, evidence, and data are stored |\n| 10 | [Phase 7 definitions roadmap](documentation/PHASE-7-DEFINITIONS-ROADMAP.md) | The next mainline development phase |
+| 9 | [Repository structure](#repository-structure) | Where code, specifications, evidence, and data are stored |
+| 10 | [Phase 7 definitions roadmap](documentation/PHASE-7-DEFINITIONS-ROADMAP.md) | The next mainline development phase |
 
 ---
 
@@ -151,7 +152,8 @@ The following work is accepted or implemented for its explicitly documented scop
 | **Phase 2** | Evidence-grounded, rule-governed semantic reasoning foundation; steps 2.1–2.10 accepted | [Phase 2 roadmap](documentation/PHASE-2-ROADMAP.md) · [Step 2.10 exit acceptance](documentation/PHASE-2-STEP-2.10-EXIT-ACCEPTANCE.md) |
 | **Phase 3** | Persistent semantic graph, SQLite-backed workspace, queries, API/CLI, and Kernel Lab integration; steps 3.1–3.9 accepted | [Phase 3 roadmap](documentation/PHASE-3-ROADMAP.md) · [Completion record](documentation/PHASE-3-COMPLETION-RECORD.md) |
 | **Phase 4** | Bounded offline raw-text interpretation demonstrator; steps 4.1–4.13 accepted | [Phase 4 roadmap](documentation/PHASE-4-DEFINITIONS-ROADMAP.md) · [Completion record](documentation/PHASE-4-COMPLETION-RECORD.md) |
-| **Phase 5** | Bounded bilingual interpretation pipeline, resource catalogue, immutable run persistence/replay, API/CLI, and Kernel Lab integration; steps 5.1–5.11 accepted | [Phase 5 roadmap](documentation/PHASE-5-DEFINITIONS-ROADMAP.md) · [Completion record](documentation/PHASE-5-COMPLETION-RECORD.md) · [Step 5.11 benchmark acceptance](documentation/PHASE-5-STEP-5.11-BENCHMARK-EXIT-ACCEPTANCE.md) |\n| **Phase 6** | Bounded automatic exit accepted for registered bilingual profiles and service-integration scope; broader research remains candidate-only or open | [Phase 6 roadmap](documentation/PHASE-6-DEFINITIONS-ROADMAP.md) · [Bounded acceptance record](documentation/PHASE-6-BOUNDED-AUTOMATIC-ACCEPTANCE-RECORD.md) · [Continuation tracker](documentation/PHASE-6-CONTINUATION-TRACKER.md) |
+| **Phase 5** | Bounded bilingual interpretation pipeline, resource catalogue, immutable run persistence/replay, API/CLI, and Kernel Lab integration; steps 5.1–5.11 accepted | [Phase 5 roadmap](documentation/PHASE-5-DEFINITIONS-ROADMAP.md) · [Completion record](documentation/PHASE-5-COMPLETION-RECORD.md) · [Step 5.11 benchmark acceptance](documentation/PHASE-5-STEP-5.11-BENCHMARK-EXIT-ACCEPTANCE.md) |
+| **Phase 6** | Bounded automatic exit accepted for registered bilingual profiles and service-integration scope; broader research remains candidate-only or open | [Phase 6 roadmap](documentation/PHASE-6-DEFINITIONS-ROADMAP.md) · [Bounded acceptance record](documentation/PHASE-6-BOUNDED-AUTOMATIC-ACCEPTANCE-RECORD.md) · [Continuation tracker](documentation/PHASE-6-CONTINUATION-TRACKER.md) |
 
 Phase 5's accepted benchmark demonstrated its stated simple-transitive English and MSA Arabic constructions. Its results must not be generalized to arbitrary English or Arabic input.
 
@@ -192,7 +194,7 @@ The [Phase 6 Continuation Tracker](documentation/PHASE-6-CONTINUATION-TRACKER.md
 
 
 
-**Status: BOUNDED AUTOMATIC EXIT ACCEPTED — Steps 6.7–6.14 passed the graph-first synthetic acceptance suite on the exact PR head; runtime outputs remain candidate-only.** The Phase 6 Automatic Acceptance Factory evaluated 500 generated English/MSA Arabic cases across ten language/construction profiles, each with 20 positive, 20 negative, and 10 ambiguous cases. Every profile passed its precision, recall, exact-span, negative-abstention, and ambiguity-preservation gates. API, CLI, Kernel Lab regression, SQLite persistence, deterministic replay, and OPAQUE preservation checks also passed. This is acceptance of the registered synthetic profiles, not unrestricted language understanding or naturalistic semantic accuracy. Step 6.12 is accepted for OPAQUE preservation only; canonical semantic-assertion projection remains blocked.
+**Acceptance evidence:** Steps 6.7–6.14 passed the graph-first synthetic acceptance suite on the exact PR head; runtime outputs remain candidate-only. The Phase 6 Automatic Acceptance Factory evaluated 500 generated English/MSA Arabic cases across ten language/construction profiles, each with 20 positive, 20 negative, and 10 ambiguous cases. Every profile passed its precision, recall, exact-span, negative-abstention, and ambiguity-preservation gates. API, CLI, Kernel Lab regression, SQLite persistence, deterministic replay, and OPAQUE preservation checks also passed. This is acceptance of the registered synthetic profiles, not unrestricted language understanding or naturalistic semantic accuracy. Step 6.12 is accepted for OPAQUE preservation only; canonical semantic-assertion projection remains blocked.
 
 | Step | Capability | Current status |
 |---|---|---|
