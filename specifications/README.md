@@ -4,6 +4,9 @@ This directory contains normative, versioned USG contracts, schemas, and semanti
 
 ## Current specifications
 
+- [USG-KNOWLEDGE/0.1.0](USG-KNOWLEDGE-0.1.0.md) and [schema](usg-knowledge-0.1.0.schema.json) define the additive provenance-bearing knowledge bundle contract.
+- [USG Knowledge Record-Kinds Registry 0.1.0](USG-KNOWLEDGE-RECORD-KINDS-0.1.0.md) defines the distinct lexical and semantic record types.
+
 - [Predicate-to-frame registry schema 1.0](predicate-frame-registry-1.0.schema.json) validates the versioned cross-implementation predicate/frame registry.
 - [Phase 6 interpretation envelope schema 0.3.0](usg-interpret-0.3.0.schema.json) defines the versioned processing result envelope.
 - [Phase 6 interpretation graph schema 0.3.0](usg-interpret-expression-graph-0.3.0.schema.json) defines source-grounded graph nodes, edges, and span records.
