@@ -55,6 +55,17 @@ class BrowserAdapterProjectionTests(unittest.TestCase):
         self.assertFalse(browser_request_is_allowed("http://192.168.1.1/"))
         self.assertFalse(browser_request_is_allowed("file:///etc/passwd"))
 
+    def test_browser_target_receives_explicit_resource_budget(self):
+        generator = ScenarioGenerator(
+            seed="sys04-resource-budget",
+            target_ids=["js-semantic-workbench-v054"],
+            created_at="2026-11-12T00:00:00Z",
+        )
+        case = generator.generate(1)[0]
+        self.assertEqual(case["resource_limits"]["memory_megabytes"], 2048)
+        self.assertEqual(case["resource_limits"]["wall_time_seconds"], 45)
+        self.assertFalse(case["resource_limits"]["network_access"])
+
     def test_non_english_input_is_explicitly_unsupported(self):
         case = {"input": {"text": "الطالب يقرأ الكتاب.", "language_hint": "ar"}}
         result = __import__(
