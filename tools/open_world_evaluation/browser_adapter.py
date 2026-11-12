@@ -13,6 +13,7 @@ import socket
 import subprocess
 import time
 from typing import Any
+from urllib.parse import urlsplit
 
 ROOT = Path(__file__).resolve().parents[2]
 WORKBENCH = ROOT / "implementations" / "semantic-workbench-js" / "v0.5.4"
@@ -115,6 +116,20 @@ def stable_workbench_projection(record: dict[str, Any], source_text: str) -> dic
     }
 
 
+def browser_request_is_allowed(url: str) -> bool:
+    """Allow only local Workbench traffic; deny all external browser requests."""
+    if url.startswith(("data:", "blob:")):
+        return True
+    try:
+        parsed = urlsplit(url)
+    except ValueError:
+        return False
+    return (
+        parsed.scheme in {"http", "https"}
+        and parsed.hostname in {"127.0.0.1", "localhost", "::1"}
+    )
+
+
 def _free_loopback_port() -> int:
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as probe:
         probe.bind(("127.0.0.1", 0))
@@ -161,8 +176,26 @@ def interpret_in_browser(case: dict[str, Any]) -> dict[str, Any]:
     page_errors: list[str] = []
     try:
         with sync_playwright() as playwright:
-            browser = playwright.chromium.launch(headless=True, args=["--no-sandbox"])
-            page = browser.new_page()
+            browser = playwright.chromium.launch(
+                headless=True,
+                args=[
+                    "--no-sandbox",
+                    "--disable-background-networking",
+                    "--disable-sync",
+                    "--disable-default-apps",
+                    "--no-first-run",
+                ],
+            )
+            context = browser.new_context(service_workers="block")
+            page = context.new_page()
+
+            def guard_browser_request(route):
+                if browser_request_is_allowed(route.request.url):
+                    route.continue_()
+                else:
+                    route.abort("blockedbyclient")
+
+            page.route("**/*", guard_browser_request)
             page.on("console", lambda message: console_messages.append(
                 message.text[:500] if message.type == "error" else ""
             ) if message.type == "error" else None)
@@ -206,6 +239,7 @@ def interpret_in_browser(case: dict[str, Any]) -> dict[str, Any]:
                     "page_errors": page_errors,
                     "console_error_count": len([item for item in console_messages if item]),
                     "ollama_used": False,
+                    "browser_network_policy": "loopback_only",
                     "interpretation_source": "local_rule_fallback",
                 },
             }
