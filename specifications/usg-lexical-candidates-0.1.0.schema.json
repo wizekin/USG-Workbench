@@ -1,0 +1,183 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wizekin.github.io/USG-Workbench/specifications/usg-lexical-candidates-0.1.0.schema.json",
+  "title": "USG External Lexical Candidate Package",
+  "description": "Non-mutating, provenance-preserving candidate export. Structural validity is not semantic acceptance.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "queried_form",
+    "candidate_count",
+    "candidates",
+    "entry_relations",
+    "definition_pattern_observations",
+    "semantic_candidate_graph",
+    "source_provenance",
+    "validation",
+    "content_digest",
+    "promotion_allowed",
+    "integration_note"
+  ],
+  "properties": {
+    "contract": {
+      "const": "USG-LEXICAL-CANDIDATES/0.1.0"
+    },
+    "queried_form": {
+      "type": "string",
+      "minLength": 1
+    },
+    "candidate_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "candidates": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/candidate"
+      }
+    },
+    "entry_relations": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "definition_pattern_observations": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "semantic_candidate_graph": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "source_provenance": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "provider"
+        ],
+        "properties": {
+          "provider": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "validation": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "content_digest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "promotion_allowed": {
+      "const": false
+    },
+    "integration_note": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "$defs": {
+    "candidate": {
+      "type": "object",
+      "required": [
+        "candidate_id",
+        "lemma",
+        "language",
+        "part_of_speech",
+        "definition",
+        "examples",
+        "features",
+        "observed_forms",
+        "source_provider",
+        "source_id",
+        "source_entry_id",
+        "source_sense_id",
+        "relations",
+        "promotion_status"
+      ],
+      "properties": {
+        "candidate_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "lemma": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "language": {
+          "type": "string",
+          "minLength": 2
+        },
+        "part_of_speech": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "definition": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "examples": {
+          "type": "array"
+        },
+        "features": {
+          "type": "array"
+        },
+        "observed_forms": {
+          "type": "array"
+        },
+        "source_provider": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source_entry_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source_sense_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "relations": {
+          "type": "array"
+        },
+        "promotion_status": {
+          "const": "candidate_only"
+        }
+      },
+      "additionalProperties": true
+    }
+  }
+}
