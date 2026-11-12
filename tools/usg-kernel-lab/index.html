@@ -120,6 +120,7 @@ details{border:1px solid var(--line);border-radius:10px;background:#0d1626}summa
 <div class="interpret-controls">
 <select id="phase6Language" aria-label="Phase 6 language"><option value="en">English</option><option value="ar">Modern Standard Arabic</option></select>
 <label style="display:flex;gap:7px;align-items:center;color:var(--muted);font-size:12px"><input id="phase6Persist" type="checkbox" checked> Save immutable run</label>
+<button class="subtle" id="phase6ExtractBtn">Extract candidate graph from text</button>
 <button class="primary" id="phase6ComposeBtn">Compose candidate graph</button>
 </div>
 </div>
@@ -602,6 +603,21 @@ $("phase5InterpretBtn").onclick=async()=>{
   $("phase5Output").textContent=JSON.stringify({error:e.message},null,2);
   setStatus(e.message,"err");
  }finally{$("phase5InterpretBtn").disabled=false}
+};
+$("phase6ExtractBtn").onclick=async()=>{
+ try{
+  $("phase6ExtractBtn").disabled=true;
+  setStatus("Searching strict bilingual Phase 6 candidate templates...");
+  const result=await apiRequest("POST","/v3/phase6/extract",{
+   source:$("phase6SourceInput").value,language:$("phase6Language").value,persist:$("phase6Persist").checked
+  });
+  $("phase6GraphInput").value=JSON.stringify(result.extraction.graph,null,2);
+  $("phase6Output").textContent=JSON.stringify(result,null,2);
+  if(result.persistence){$("phase6RunId").value=result.persistence.run_id;setStatus("Template matched · candidate graph composed and saved · "+result.persistence.run_id,"ok")}
+  else if(result.extraction.status==="CANDIDATE_PATTERN_MATCH")setStatus("Template matched · candidate-only · "+result.extraction.template_id,"ok");
+  else setStatus("No strict template matched · USG abstained without inventing a graph","ok");
+ }catch(e){$("phase6Output").textContent=JSON.stringify({error:e.message},null,2);setStatus(e.message,"err")}
+ finally{$("phase6ExtractBtn").disabled=false}
 };
 $("phase6ComposeBtn").onclick=async()=>{
  try{
