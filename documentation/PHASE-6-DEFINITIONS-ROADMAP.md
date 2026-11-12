@@ -1,12 +1,12 @@
 # USG Phase 6 — Definitions and Roadmap
 
-**Status:** IN PROGRESS — Steps 6.1–6.6 accepted for their bounded, benchmarked scope. Step 6.6 uses the graph-first automatic synthetic reference benchmark (500 cases / 10 profiles); its naturalistic semantic accuracy remains unclaimed. All ten Step 6.6 runtime profiles remain candidate-only.  
+**Status:** BOUNDED AUTOMATIC EXIT ACCEPTED — Steps 6.1–6.14 passed the registered acceptance gates on the accepted PR head. Step 6.6 has its separate 500-case / 10-profile nominal benchmark; Steps 6.7–6.11 have a separate 500-case / 10-profile bilingual integration benchmark. Each registered profile passed its individual 20-positive / 20-negative / 10-ambiguous gate. Runtime outputs remain candidate-only. Step 6.12 is accepted for OPAQUE preservation only; canonical semantic-assertion projection remains separately unaccepted. Naturalistic accuracy and unregistered construction families remain outside this bounded acceptance.  
 **Proposed interpretation contract:** `USG-INTERPRET/0.3.0`, additive to the accepted Phase 5 contract.  
 **Accepted starting point:** Phase 5 `USG-INTERPRET/0.2.0`.  
 **Canonical semantic interchange:** `USG-SEM/1.0` remains unchanged.  
 **Canonical persistence:** the existing Phase 3 SQLite store remains authoritative.  
 **Initial language profiles:** English and Modern Standard Arabic (MSA).  
-**Next gate:** Step 6.6 is accepted for the bounded graph-first synthetic-reference domain. The 500-case bilingual benchmark covers all ten profiles and is generated without human annotations, model labels, external corpus access, development fixtures, or the candidate lexicon. The current recognizer passes the synthetic profile gates. Step 6.7 is unblocked for candidate development; production promotion and naturalistic semantic accuracy remain unaccepted. See the [automatic synthetic-reference protocol](PHASE-6-STEP-6.6-AUTOMATIC-SYNTHETIC-REFERENCE-PROTOCOL.md) and [historical dataset feasibility audit](PHASE-6-STEP-6.6-INDEPENDENT-GOLD-DATASET-AUDIT.md).
+**Bounded exit result:** The Phase 6 Automatic Acceptance Factory passed the registered 500-case bilingual set for Steps 6.7–6.11 and the OPAQUE-preservation/service-integration gates for Steps 6.12–6.13; Step 6.14 accepted because every preceding bounded gate passed. The generator creates reference graphs before sentence realization and uses no human annotations or model labels for new cases. The separate Step 6.6 nominal benchmark remains separate. This result does not claim naturalistic accuracy, productive unrestricted grammar, identity resolution, or semantic assertion projection. See the [automatic synthetic-reference protocol](PHASE-6-STEP-6.6-AUTOMATIC-SYNTHETIC-REFERENCE-PROTOCOL.md), [automatic acceptance factory](PHASE-6-AUTOMATIC-ACCEPTANCE-FACTORY.md), and [historical dataset feasibility audit](PHASE-6-STEP-6.6-INDEPENDENT-GOLD-DATASET-AUDIT.md).
 
 ## 1. Purpose and transition from Phase 5
 
@@ -144,14 +144,14 @@ Each step is a separate contract/implementation/acceptance gate. The sequence is
 | **6.4** | Expanded lexical and morphology resources | Provenance-bearing English/MSA Arabic resources needed by the frozen construction fixtures, including only explicitly supported inflectional and clitic patterns | Exact spans and source mappings are preserved; unknown/ambiguous forms remain candidates; resource digests and replay are deterministic. |
 | **6.5** | Expanded predicate and argument structures | Intransitive, ditransitive, copular, and selected prepositional predicate frames with explicit semantic roles | Each enabled frame family passes independent positive, negative, ambiguous, and boundary tests in each language; word order alone cannot determine semantic role. |
 | **6.6** | Nominal, property, possession, and modifier semantics | Typed adjective/property, genitive, compound, prepositional nominal, and temporal/adverbial structures | All ten English/MSA profiles pass the graph-first 500-case automatic synthetic-reference gate; roles, spans, relation candidates, negative abstention, and ambiguity are measured. No naturalistic accuracy claim is implied. |
-| **6.7** | Intra-clause coordination and shared arguments | Integrated Phase 5 clause-coordination candidates plus strict bilingual phrase-level fallback; one Phase 6 graph path | Candidate graph composition and source evidence are regression-tested; productive shared-argument coverage remains candidate-only and not benchmark-enabled. |
-| **6.8** | Embedded and subordinate clause composition | Parent/child clause graph plus COMPL/CAUSE/CONDITION/TEMPORAL candidate relations from explicit Phase 5 segmentation | Clause links and evidence are integrated; attachment accuracy, relative clauses, argument gaps, and naturalistic coverage remain unaccepted. |
-| **6.9** | Voice and speech-act structures | Candidate graph fields plus strict bilingual passive-question fallback | Exact registered templates are covered; general passive, interrogative, imperative, and request interpretation remain disabled/candidate-only. |
+| **6.7** | Intra-clause coordination and shared arguments | Integrated Phase 5 coordination plus bilingual shared-agent/predicate/patient profile | Registered shared-argument profile passes its per-language 20/20/10 synthetic gate; other coordination forms remain outside this profile. |
+| **6.8** | Embedded and subordinate clause composition | Parent/child links, registered causal relation, and ambiguous CAUSAL/TEMPORAL alternatives | Registered causal and ambiguous attachment profiles pass per-language 20/20/10 gates; general complements, relatives, conditionals, argument gaps, and naturalistic coverage remain outside the profile. |
+| **6.9** | Voice and speech-act structures | Bilingual registered passive-question template profile | Registered passive-question profile passes per-language 20/20/10 gates; broader passive, imperative, command, and request interpretation remains outside the profile. |
 | **6.10** | Cross-construction operator and quantifier scope | Phase 5 operator candidates carried into the Phase 6 graph with target and marker evidence | Existing operator candidate output is integrated; broader cross-construction scope and nested minimal-pair accuracy remain unaccepted. |
-| **6.11** | Bounded discourse-reference resolution | Phase 5 mention and antecedent alternatives carried into Phase 6 without identity merging | Candidate preservation is integrated; automatic unique resolution remains disabled and unresolved links remain explicit. |
+| **6.11** | Bounded discourse-reference resolution | Single- and multiple-antecedent candidate preservation with unresolved status | Registered discourse candidate profiles pass per-language 20/20/10 gates; unique identity resolution remains disabled and unresolved links remain explicit. |
 | **6.12** | Loss-aware projection to canonical semantic documents | Validated OPAQUE preservation projection of the full candidate payload; semantic assertion projection remains separately guarded | Exact source and candidate payload are schema/store validated with zero assertions; semantic-meaning projection is not yet accepted. |
-| **6.13** | API, CLI, resource lifecycle, and Kernel Lab integration | Shared `/v3/phase6/interpret` service, CLI command, Kernel Lab action, append-only SQLite runs, and replay | Integrated interfaces and replay tests pass on the merged commit; package-install integration is also required at exit. |
-| **6.14** | Full Phase 6 benchmark and integrated exit acceptance | Frozen Phase 5-to-Phase 6 bridge regression, existing graph contract tests, and full protected regressions | Bridge regression verifies non-regression only; full Phase 6 exit remains open until independent per-construction bilingual gates pass. |
+| **6.13** | API, CLI, resource lifecycle, and Kernel Lab integration | Shared API, directly exercised bilingual CLI, Kernel Lab action, editable package install, append-only SQLite runs, and replay | Bilingual API/CLI/persistence/replay checks, Kernel Lab regression, and clean editable package install pass. |
+| **6.14** | Full Phase 6 benchmark and integrated exit acceptance | Graph-first 500-case bilingual automatic acceptance corpus, end-to-end API scoring, OPAQUE preservation validation, SQLite replay, protected regressions, and per-step report | The factory must execute and publish evidence; each prior capability gate must pass separately. Synthetic evidence does not claim naturalistic accuracy. |
 
 ### 6.1 Dependency and sequencing notes
 
@@ -171,6 +171,8 @@ Each step is a separate contract/implementation/acceptance gate. The sequence is
 **Implementation update:** Steps 6.7–6.14 now share one integrated Phase 6 candidate path rather than proceeding as isolated sequential prototypes. See [Phase 6 integrated interpreter and bridge validation](PHASE-6-INTEGRATED-INTERPRETER-AND-BRIDGE-VALIDATION.md) and the [implementation/exit record](PHASE-6-STEPS-6.7-6.14-COMPLETION-IMPLEMENTATION.md). This is implementation progress across all remaining steps, not final semantic acceptance or runtime promotion.
 
 ## 7. Benchmark and acceptance policy
+
+The automatic exit evaluator is documented in [Phase 6 Automatic Acceptance Factory](PHASE-6-AUTOMATIC-ACCEPTANCE-FACTORY.md). It is run with `python -m tools.phase6_acceptance_v1_0.evaluate`. Its report is schema-validated and distinguishes factory execution from semantic acceptance. Steps 6.7–6.11 are scored per language/profile; Step 6.12 reports preservation separately from semantic assertion projection; Step 6.13 checks API, SQLite persistence, and deterministic replay; Step 6.14 is accepted only when all preceding gates are accepted.
 
 The Phase 4 and Phase 5 corpora remain frozen. Phase 6 introduces a new additive, versioned corpus; it never edits earlier gold fixtures or retroactively changes accepted metrics.
 
@@ -249,7 +251,9 @@ Every Phase 6 implementation PR must verify:
 
 ## 10. Phase 6 exit criteria
 
-Phase 6 is complete only when:
+The registered bounded Phase 6 acceptance set (Steps 6.7–6.14) has passed the automatic exit evaluator. The acceptance boundary and exclusions are recorded in the [bounded acceptance record](PHASE-6-BOUNDED-AUTOMATIC-ACCEPTANCE-RECORD.md). This does not close the broader research objective of naturalistic language coverage; the criteria below define the full project objective beyond the registered synthetic profiles.
+
+Full-scope Phase 6 is complete only when:
 
 1. Steps 6.1–6.14 are merged and the exact-head acceptance workflows pass.
 2. The `USG-INTERPRET/0.3.0` contract and frozen benchmark are published.

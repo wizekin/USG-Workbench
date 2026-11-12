@@ -178,3 +178,17 @@ python -m unittest discover -s tests -p "test_phase3_graph_store.py" -v
 ```
 
 The package is tools/semantic_graph_store_v1_0_0. It stores complete canonical USG-SEM/1.0 snapshots as authoritative bytes and maintains rebuildable SQLite indexes for expressions, assertions, evidence, and sources. Tests cover canonical byte round-trip, Unicode preservation, immutable revisions, compare-and-swap updates, idempotency, atomic rollback, hash/integrity checks, index rebuild, and large graph preservation. See [Step 3.2 documentation](../documentation/PHASE-3-STEP-3.2-SQLITE-CANONICAL-STORE.md).
+
+
+## Phase 6 automatic acceptance factory
+
+The deterministic generator and integrated API evaluator are documented in [the Phase 6 Automatic Acceptance Factory](../documentation/PHASE-6-AUTOMATIC-ACCEPTANCE-FACTORY.md).
+
+```bash
+python -m unittest discover -s tests -p 'test_phase6_acceptance_v1_0.py' -v
+python -m unittest discover -s tests -p 'test_phase6_auto_reference_v1_0.py' -v
+python -m tools.phase6_acceptance_v1_0.generate
+python -m tools.phase6_acceptance_v1_0.evaluate
+```
+
+The evaluator writes the bilingual corpus and schema-validated report to the documented benchmark/artifact paths. A successful execution means the evaluation completed; the report's per-step status remains authoritative for Phase 6 acceptance.

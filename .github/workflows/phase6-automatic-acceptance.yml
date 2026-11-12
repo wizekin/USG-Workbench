@@ -1,0 +1,98 @@
+name: Phase 6 Automatic Acceptance Factory
+
+on:
+  pull_request:
+    paths:
+      - "tools/phase6_acceptance_v1_0/**"
+      - "tools/phase6_broader_semantics_v0_1/**"
+      - "tools/usg_local_api_v1_0_0/cli.py"
+      - "tests/test_phase6_acceptance_v1_0.py"
+      - "tests/test_phase6_cli_acceptance.py"
+      - "tests/test_phase6_integrated_interpreter.py"
+      - "tests/test_phase6_candidate_provider_integration.py"
+      - "specifications/phase6-automatic-acceptance-report-1.0.schema.json"
+      - "documentation/PHASE-6-AUTOMATIC-ACCEPTANCE-FACTORY.md"
+      - "documentation/PHASE-6-DEFINITIONS-ROADMAP.md"
+      - "documentation/README.md"
+      - "README.md"
+      - ".github/workflows/phase6-automatic-acceptance.yml"
+  push:
+    branches: [main]
+    paths:
+      - "tools/phase6_acceptance_v1_0/**"
+      - "tools/phase6_broader_semantics_v0_1/**"
+      - "tools/usg_local_api_v1_0_0/cli.py"
+      - "tests/test_phase6_acceptance_v1_0.py"
+      - "tests/test_phase6_cli_acceptance.py"
+      - "tests/test_phase6_integrated_interpreter.py"
+      - "tests/test_phase6_candidate_provider_integration.py"
+      - "specifications/phase6-automatic-acceptance-report-1.0.schema.json"
+      - ".github/workflows/phase6-automatic-acceptance.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  automatic-acceptance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install the pinned runtime validator
+        run: python -m pip install "jsonschema==4.23.0"
+
+      - name: Compile acceptance factory and integrated runtime
+        run: |
+          python -m compileall -q tools/phase6_acceptance_v1_0
+          python -m compileall -q tools/phase6_auto_reference_v1_0
+          python -m compileall -q tools/phase6_broader_semantics_v0_1
+          python -m compileall -q tools/usg_local_api_v1_0_0
+          python -m json.tool specifications/phase6-automatic-acceptance-report-1.0.schema.json > /dev/null
+
+      - name: Verify clean CLI package installation
+        run: |
+          python -m pip install -e . --no-deps
+          usg-workbench --help > /dev/null
+          usg-workbench phase6-interpret --help > /dev/null
+
+      - name: Test deterministic graph-first corpus generation and CLI
+        run: |
+          python -m unittest discover -s tests -p 'test_phase6_acceptance_v1_0.py' -v
+          python -m unittest discover -s tests -p 'test_phase6_cli_acceptance.py' -v
+          python -m unittest discover -s tests -p 'test_phase6_auto_reference_v1_0.py' -v
+
+      - name: Run Phase 6 integrated and protected capability regressions
+        run: |
+          python -m unittest discover -s tests -p 'test_phase6_broader_semantics*.py' -v
+          python -m unittest discover -s tests -p 'test_phase6_integrated_interpreter.py' -v
+          python -m unittest discover -s tests -p 'test_phase6_candidate_provider_integration.py' -v
+          python -m unittest discover -s tests -p 'test_phase6_step_6_5_predicate_argument.py' -v
+          python -m unittest discover -s tests -p 'test_phase6_nominal_candidate_v0_4_1.py' -v
+          python -m unittest discover -s tests -p 'test_usg_kernel_lab.py' -v
+
+      - name: Execute all 500 cases against the integrated API
+        run: python -m tools.phase6_acceptance_v1_0.evaluate
+
+      - name: Protect accepted contracts and historical implementations
+        run: |
+          git diff --exit-code origin/main...HEAD --             documentation/PHASE-[1-5]*             specifications/USG-SEM-1.0.md             specifications/usg-sem-1.0.schema.json             tools/usg_interpretation_v0_1_0             tools/usg_interpretation_v0_2_0             archives/             implementations/semantic-workbench-js/
+
+      - name: Upload corpus and machine-readable acceptance report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase6-automatic-acceptance-v1.0
+          if-no-files-found: warn
+          path: |
+            benchmarks/phase6-automatic-acceptance-v1.0/corpus.json
+            artifacts/phase6-automatic-acceptance-report.json

@@ -48,39 +48,129 @@ def _token_span(source: str, token: dict) -> dict:
 
 
 def _merge_template_graph(base: dict, template: dict) -> None:
-    """Append a closed-template graph without colliding with Phase 5 IDs."""
-    id_map = {node["id"]: _stable("template", node["id"]) for node in template["nodes"]}
-    for node in template["nodes"]:
-        item = deepcopy(node)
-        item["id"] = id_map[node["id"]]
+    """Merge a closed-template graph, reusing exact role/span matches."""
+    id_map = {}
+    for candidate in template.get("nodes", []):
+        span = candidate.get("span", {})
+        role = candidate.get("role")
+        match = next((
+            item for item in base["nodes"]
+            if role is not None and item.get("role") == role
+            and item.get("span", {}).get("start") == span.get("start")
+            and item.get("span", {}).get("end") == span.get("end")
+            and item.get("span", {}).get("surface") == span.get("surface")
+        ), None)
+        if match is not None:
+            id_map[candidate["id"]] = match["id"]
+            continue
+        item = deepcopy(candidate)
+        item["id"] = _stable("template", candidate["id"])
         item["origin"] = "PHASE6_CLOSED_TEMPLATE"
+        id_map[candidate["id"]] = item["id"]
         base["nodes"].append(item)
+    existing_edges = {
+        (item.get("type"), item.get("source"), item.get("target"))
+        for item in base["relations"]
+    }
     for edge in template.get("relations", []):
         item = deepcopy(edge)
         item["source"] = id_map[item["source"]]
         item["target"] = id_map[item["target"]]
-        base["relations"].append(item)
+        key = (item.get("type"), item.get("source"), item.get("target"))
+        if key not in existing_edges:
+            base["relations"].append(item)
+            existing_edges.add(key)
     for clause in template.get("clauses", []):
         item = deepcopy(clause)
         item["id"] = id_map.get(item["id"], _stable("template_clause", item["id"]))
         if item.get("parent_id"):
             item["parent_id"] = id_map.get(item["parent_id"], _stable("template_clause", item["parent_id"]))
         base["clauses"].append(item)
+    existing_operators = {
+        (item.get("type"), item.get("target_id"), item.get("span", {}).get("start"),
+         item.get("span", {}).get("end"))
+        for item in base["operators"]
+    }
     for operator in template.get("operators", []):
         item = deepcopy(operator)
         item["target_id"] = id_map[item["target_id"]]
-        base["operators"].append(item)
+        key = (item.get("type"), item.get("target_id"), item.get("span", {}).get("start"),
+               item.get("span", {}).get("end"))
+        if key not in existing_operators:
+            base["operators"].append(item)
+            existing_operators.add(key)
     for reference in template.get("references", []):
         item = deepcopy(reference)
         item["mention_id"] = id_map[item["mention_id"]]
-        item["antecedent_candidates"] = [id_map[value] for value in item.get("antecedent_candidates", [])]
-        base["references"].append(item)
-    base["features"].extend(template.get("features", []))
+        item["antecedent_candidates"] = [
+            id_map[value] for value in item.get("antecedent_candidates", [])
+        ]
+        existing = next(
+            (row for row in base["references"]
+             if row.get("mention_id") == item["mention_id"]),
+            None,
+        )
+        if existing is None:
+            base["references"].append(item)
+        else:
+            merged_candidates = list(dict.fromkeys(
+                list(existing.get("antecedent_candidates", []))
+                + item["antecedent_candidates"]
+            ))
+            existing["antecedent_candidates"] = merged_candidates
+            existing["uniqueness_evidence"] = False
+            existing["status"] = "UNRESOLVED"
+            existing["resolved_antecedent"] = None
+    base["features"] = sorted(set(base["features"]) | set(template.get("features", [])))
     base["provenance"].extend(template.get("provenance", []))
     if template.get("voice") not in (None, "UNKNOWN"):
         base["voice"] = template["voice"]
     if template.get("speech_act") not in (None, "UNKNOWN"):
         base["speech_act"] = template["speech_act"]
+    if template.get("scope_alternatives"):
+        base["scope_alternatives"] = deepcopy(template["scope_alternatives"])
+    if template.get("ambiguity"):
+        base["ambiguity"] = template["ambiguity"]
+
+
+def _merge_coordination_template_graph(base: dict, template: dict) -> None:
+    """Merge coordinated shared-argument candidates onto compatible Phase 5 nodes.
+
+    Exact role/span matches reuse Phase 5 nodes. Only missing participants are
+    appended, preventing duplicate predicate and patient nodes.
+    """
+    id_map = {}
+    for candidate in template.get("nodes", []):
+        span = candidate.get("span", {})
+        match = next((
+            item for item in base["nodes"]
+            if item.get("role") == candidate.get("role")
+            and item.get("span", {}).get("start") == span.get("start")
+            and item.get("span", {}).get("end") == span.get("end")
+            and item.get("span", {}).get("surface") == span.get("surface")
+        ), None)
+        if match is not None:
+            id_map[candidate["id"]] = match["id"]
+            continue
+        item = deepcopy(candidate)
+        item["id"] = _stable("template", candidate["id"])
+        item["origin"] = "PHASE6_CLOSED_TEMPLATE"
+        id_map[candidate["id"]] = item["id"]
+        base["nodes"].append(item)
+    existing_edges = {
+        (item.get("type"), item.get("source"), item.get("target"))
+        for item in base["relations"]
+    }
+    for edge in template.get("relations", []):
+        item = deepcopy(edge)
+        item["source"] = id_map[item["source"]]
+        item["target"] = id_map[item["target"]]
+        key = (item.get("type"), item.get("source"), item.get("target"))
+        if key not in existing_edges:
+            base["relations"].append(item)
+            existing_edges.add(key)
+    base["features"] = sorted(set(base["features"]) | set(template.get("features", [])))
+    base["provenance"].extend(template.get("provenance", []))
 
 
 def _candidate_node(graph: dict, source: str, span: dict, role: str,
@@ -532,9 +622,31 @@ class Phase6IntegratedInterpreter:
                 diagnostics.append("PHASE6_NOMINAL_AMBIGUOUS:" + ",".join(str(x) for x in alternatives))
 
         template = extract_candidate_graph(source, language)
-        # Strict-template fallback remains last so it cannot override a richer
-        # lexically licensed Phase 6 provider candidate.
-        if not has_predicate and not provider_candidate_added and template["status"] == "CANDIDATE_PATTERN_MATCH":
+        # Shared-argument coordination supplements a one-clause Phase 5
+        # candidate by reusing exact role/span matches and adding only missing
+        # participants and licensed coordination edges.
+        if (template["status"] == "CANDIDATE_PATTERN_MATCH"
+                and template.get("template_id") in {
+                    "en.coordinated.subjects.v1", "ar.coordinated.subjects.v1"
+                }
+                and not any(item.get("type") in {"AND", "OR", "CONTRAST"}
+                            for item in graph["relations"])):
+            _merge_coordination_template_graph(graph, template["graph"])
+            diagnostics.append("PHASE6_SHARED_ARGUMENT_COORDINATION:" + str(template["template_id"]))
+        elif (template["status"] == "CANDIDATE_PATTERN_MATCH"
+              and template.get("template_id") in {
+                  "en.discourse.pronoun.candidates.v1",
+                  "en.discourse.ambiguous.pronoun.candidates.v1",
+                  "ar.discourse.pronoun.candidates.v1",
+                  "ar.discourse.ambiguous.pronoun.candidates.v1",
+                  "en.embedded.ambiguous.as.v1",
+                  "ar.embedded.ambiguous.ith.v1",
+                  "en.modal.negation.scope.ambiguous.v1",
+                  "ar.modal.negation.scope.ambiguous.v1",
+              }):
+            _merge_template_graph(graph, template["graph"])
+            diagnostics.append("PHASE6_UNRESOLVED_TEMPLATE_CANDIDATES:" + str(template["template_id"]))
+        elif not has_predicate and not provider_candidate_added and template["status"] == "CANDIDATE_PATTERN_MATCH":
             _merge_template_graph(graph, template["graph"])
             diagnostics.append("PHASE6_CLOSED_TEMPLATE_FALLBACK:" + str(template["template_id"]))
         graph["features"] = sorted(set(graph["features"]))

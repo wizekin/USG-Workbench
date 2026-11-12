@@ -1,5 +1,7 @@
 # USG System-Wide Capability Assessment — 2026-11-12
 
+> **Historical snapshot note:** this system-wide assessment was prepared before the bounded Phase 6 automatic acceptance factory was completed later on 12 November 2026. For the subsequent registered-profile results and updated Phase 6 status, see the [bounded automatic acceptance record](PHASE-6-BOUNDED-AUTOMATIC-ACCEPTANCE-RECORD.md). The original measurements and diagnosis below remain a snapshot of the earlier evidence baseline.
+
 **Repository:** `wizekin/USG-Workbench`  
 **Assessment type:** evidence-based architecture and capability review  
 **Evidence baseline:** main-branch documentation, frozen benchmark records, and Open-World campaign `OWC-OW6-43015126807-1`  
