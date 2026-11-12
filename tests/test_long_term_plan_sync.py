@@ -98,7 +98,12 @@ class LongTermPlanSyncTests(unittest.TestCase):
         artifact = {
             "status": "accepted",
             "phase_accepted": True,
+            "checks_passed": 2,
+            "checks_total": 2,
+            "checks": [{"check_id": "A", "passed": True}, {"check_id": "B", "passed": True}],
             "acceptance_decision": {
+                "decision": "accepted",
+                "phase_id": "P8",
                 "source_commit_sha": "abc123",
                 "validated_commit_sha": "abc123",
                 "workflow_run_id": "123",
