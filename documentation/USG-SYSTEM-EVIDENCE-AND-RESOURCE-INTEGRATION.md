@@ -29,7 +29,7 @@ The scheduled workflow `.github/workflows/system-evidence-collection.yml` runs d
 3. recalculates English PUD exact-form/lemma candidate coverage and mapped morphology-candidate metrics against the currently published lexical shards;
 4. runs the existing evidence-driven growth planner against recent immutable Open-World campaigns;
 5. collects population-specific campaign counts and execution accounting;
-6. creates a schema-validated system evidence catalogue, discovery list, and phase-impact routes;
+6. collects the latest non-PR run status for each GitHub Actions workflow and distinguishes success, failure, in-progress, no-run, disabled, and collection-error states;\n7. creates a schema-validated system evidence catalogue, discovery list, and phase-impact routes;
 7. stores the full snapshot in an append-only run-specific directory and uploads it as an Actions artifact;
 8. attempts to publish the snapshot through a pull request.
 
@@ -99,7 +99,7 @@ Route in this order:
 3. **Versioned migration:** if the change alters USG-SEM/1.0, a normative schema, accepted API/output semantics, or canonical persistence invariants, use a separate migration contract and compatibility plan.
 4. **New cross-cutting phase:** only use a future phase when the evidence-backed capability is genuinely cross-cutting and no current continuation or amendment owns it.
 
-The collector creates observations and suggested routes only. It never changes phase statuses, code, runtime resources, canonical contracts, or promotion decisions. A later implementation may be automated in a governed branch/PR workflow, but semantic changes still need their independently declared acceptance evidence.
+The collector creates observations and suggested routes only. The latest Actions run status is operational execution evidence: a passing workflow does not prove the semantic correctness of the evaluated output. It never changes phase statuses, code, runtime resources, canonical contracts, or promotion decisions. A later implementation may be automated in a governed branch/PR workflow, but semantic changes still need their independently declared acceptance evidence.
 
 ## Evidence interpretation rules
 
