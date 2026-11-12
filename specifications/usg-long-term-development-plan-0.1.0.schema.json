@@ -1,0 +1,338 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wizekin.github.io/USG-Workbench/schemas/usg-long-term-development-plan-0.1.0.schema.json",
+  "title": "USG Long-Term Development Plan 0.1.0",
+  "type": "object",
+  "required": [
+    "contract",
+    "version",
+    "repository",
+    "reviewed_at",
+    "status",
+    "north_star",
+    "target_architecture",
+    "invariants",
+    "future_phase_policy",
+    "phases",
+    "cross_cutting_workstreams",
+    "maturity_gates",
+    "prioritization_policy",
+    "execution_packet_contract",
+    "update_policy",
+    "sources_of_truth"
+  ],
+  "properties": {
+    "contract": {
+      "const": "USG-LONG-TERM-DEVELOPMENT-PLAN/0.1.0"
+    },
+    "version": {
+      "const": "0.1.0"
+    },
+    "repository": {
+      "type": "string",
+      "minLength": 1
+    },
+    "reviewed_at": {
+      "type": "string",
+      "format": "date"
+    },
+    "status": {
+      "enum": [
+        "planning_baseline",
+        "under_review",
+        "superseded"
+      ]
+    },
+    "north_star": {
+      "type": "string",
+      "minLength": 50
+    },
+    "target_architecture": {
+      "type": "array",
+      "minItems": 5,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "purpose"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "purpose": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "invariants": {
+      "type": "array",
+      "minItems": 5,
+      "items": {
+        "type": "string",
+        "minLength": 10
+      }
+    },
+    "future_phase_policy": {
+      "type": "string",
+      "minLength": 30
+    },
+    "phases": {
+      "type": "array",
+      "minItems": 5,
+      "items": {
+        "type": "object",
+        "required": [
+          "phase_id",
+          "title",
+          "status",
+          "priority",
+          "objective",
+          "depends_on",
+          "work_items",
+          "exit_gate"
+        ],
+        "properties": {
+          "phase_id": {
+            "type": "string",
+            "pattern": "^P[0-9]+$"
+          },
+          "title": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "planned_not_started",
+              "exploratory_only_not_scheduled",
+              "in_progress",
+              "blocked",
+              "accepted_bounded_scope",
+              "superseded"
+            ]
+          },
+          "priority": {
+            "type": "string"
+          },
+          "objective": {
+            "type": "string"
+          },
+          "depends_on": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "linked_backlog_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "work_items": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": [
+                "id",
+                "title",
+                "objective",
+                "implementation_sequence",
+                "acceptance"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "objective": {
+                  "type": "string"
+                },
+                "implementation_sequence": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "acceptance": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "exit_gate": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            }
+          },
+          "guardrails": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "cross_cutting_workstreams": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "rule"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "rule": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "maturity_gates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "condition"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "condition": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "prioritization_policy": {
+      "type": "object",
+      "required": [
+        "factors",
+        "rules"
+      ],
+      "properties": {
+        "factors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "rules": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "execution_packet_contract": {
+      "type": "array",
+      "minItems": 5,
+      "items": {
+        "type": "string"
+      }
+    },
+    "update_policy": {
+      "type": "object",
+      "required": [
+        "contract",
+        "trigger_events",
+        "outputs",
+        "automatic_updates",
+        "proposal_only_updates",
+        "safety_rules"
+      ],
+      "properties": {
+        "contract": {
+          "const": "USG-LONG-TERM-PLAN-SYNC/0.1.0"
+        },
+        "trigger_events": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "outputs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "automatic_updates": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "proposal_only_updates": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "safety_rules": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "sources_of_truth": {
+      "type": "array",
+      "minItems": 5,
+      "items": {
+        "type": "object",
+        "required": [
+          "path",
+          "purpose"
+        ],
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "purpose": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": true
+}
