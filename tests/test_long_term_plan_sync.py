@@ -121,7 +121,7 @@ class LongTermPlanSyncTests(unittest.TestCase):
                 "validated_commit_sha": "abc123",
                 "workflow_run_id": "123",
                 "workflow_run_attempt": "1",
-                "decision_id": "decision",
+                "decision_id": "a" * 64,
             },
         }
         (directory / "phase8-integrated-acceptance.json").write_text(
@@ -137,6 +137,7 @@ class LongTermPlanSyncTests(unittest.TestCase):
         )
         result = collect_phase8_acceptance(self.root)
         self.assertFalse(result["phase_accepted"])
+        self.assertEqual(result["status"], "invalid_acceptance_record")
 
     def test_report_shows_linked_evidence_without_accepting_future_phases(self):
         backlog = {"SYS-12": "Initial inventory complete; conformance not tested"}
