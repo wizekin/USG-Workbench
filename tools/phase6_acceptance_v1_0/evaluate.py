@@ -15,6 +15,8 @@ import sys
 from time import perf_counter
 from typing import Any
 
+from jsonschema import Draft202012Validator
+
 from tools.phase5_interpretation_benchmark_v0_2_0.run import load_and_validate
 from tools.phase6_auto_reference_v1_0.evaluate import run as run_step_6_6
 from tools.usg_local_api_v1_0_0.application import USGApplication
@@ -24,6 +26,7 @@ from .generate import PROFILE_SPECS, build, corpus_sha256, validate
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_CORPUS = ROOT / "benchmarks/phase6-automatic-acceptance-v1.0/corpus.json"
 DEFAULT_REPORT = ROOT / "artifacts/phase6-automatic-acceptance-report.json"
+REPORT_SCHEMA = ROOT / "specifications/phase6-automatic-acceptance-report-1.0.schema.json"
 
 
 def _graph_observation(response: dict[str, Any], expected_source: str) -> dict[str, Any]:
@@ -463,7 +466,7 @@ def run_acceptance(corpus: dict[str, Any] | None = None) -> dict[str, Any]:
         "all_prior_acceptance_gates_passed": all_prior,
         "reason": None if all_prior else "One or more construction or integration gates remain open.",
     }
-    return {
+    report = {
         "benchmark_id": corpus["benchmark_id"],
         "benchmark_version": corpus["version"],
         "evaluation_scope": corpus["scope"],
@@ -497,6 +500,15 @@ def run_acceptance(corpus: dict[str, Any] | None = None) -> dict[str, Any]:
             for row in rows
         ],
     }
+    schema = json.loads(REPORT_SCHEMA.read_text(encoding="utf-8"))
+    errors = sorted(Draft202012Validator(schema).iter_errors(report),
+                    key=lambda error: list(error.path))
+    if errors:
+        details = "; ".join(
+            f"{list(error.path)}: {error.message}" for error in errors
+        )
+        raise ValueError("Phase 6 acceptance report schema validation failed: " + details)
+    return report
 
 
 def main() -> int:
