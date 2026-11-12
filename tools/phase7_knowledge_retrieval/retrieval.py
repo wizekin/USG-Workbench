@@ -83,12 +83,14 @@ def retrieve_candidates(
                                 direct_matches.setdefault(sense["id"], (90, "sense linked to exact matched lemma"))
 
         linked: dict[str, tuple[int, str]] = dict(direct_matches)
+        retrieval_contexts = {rid: set(record.get("context_ids", [])) for rid, record in records.items()}
         matched_senses = {rid for rid in direct_matches if records[rid]["kind"] == "LEXICAL_SENSE"}
         for mapping in mappings:
             if mapping.get("source_record_id") in matched_senses:
                 target = mapping.get("target_record_id")
                 if target in records and records[target]["state"] in allowed:
                     linked.setdefault(target, (80, "explicit sense-to-concept mapping candidate"))
+                    retrieval_contexts.setdefault(target, set()).update(mapping.get("context_ids", []))
         matched_concepts = {rid for rid in linked if records[rid]["kind"] == "CONCEPT"}
         for relation in relations:
             if relation.get("subject_record_id") in matched_concepts:
@@ -104,7 +106,8 @@ def retrieve_candidates(
             record = records[rid]
             if language and record.get("payload", {}).get("language") not in (None, language):
                 continue
-            record_contexts = [contexts[cid] for cid in record.get("context_ids", []) if cid in contexts]
+            effective_context_ids = sorted(retrieval_contexts.get(rid, set()))
+            record_contexts = [contexts[cid] for cid in effective_context_ids if cid in contexts]
             if any(not any(_norm(c.get("context_type")).upper() == key and _norm(c.get("value")) == value
                            for c in record_contexts) for key, value in filters.items()):
                 continue
@@ -114,7 +117,7 @@ def retrieve_candidates(
                 score += 10
                 explanations.append("language profile matched")
             for key, value in filters.items():
-                if any(_norm(c.get("context_type")) == key and _norm(c.get("value")) == value
+                if any(_norm(c.get("context_type")).upper() == key and _norm(c.get("value")) == value
                        for c in record_contexts):
                     score += 10
                     explanations.append(f"context matched: {key}={value}")
@@ -124,7 +127,7 @@ def retrieve_candidates(
                 "bundle_id": bundle.get("bundle_id"), "bundle_namespace": bundle.get("namespace"),
                 "score": score, "priority_band": "PRIMARY" if record["state"] in {"ACCEPTED", "VALIDATED_FOR_PROFILE"} else "SECONDARY",
                 "explanation": explanations, "evidence_ids": sorted(evidence_by_record[rid]),
-                "context_ids": sorted(record.get("context_ids", [])),
+                "context_ids": effective_context_ids,
                 "payload": record["payload"],
             }
             if current is None or (candidate["score"], candidate["record_id"]) > (current["score"], current["record_id"]):
