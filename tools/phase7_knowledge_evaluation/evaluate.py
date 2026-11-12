@@ -8,7 +8,8 @@ import time
 from typing import Any
 
 from tools.phase7_knowledge_contract.validate import validate_bundle
-from tools.phase7_knowledge_repository import SQLiteKnowledgeRepository, canonical_bundle_bytes
+from tools.phase7_knowledge_repository import SQLiteKnowledgeRepository
+from tools.phase7_knowledge_repository.repository import canonical_bundle_bytes
 from tools.phase7_knowledge_alignment.proposals import build_bilingual_alignment_bundle
 from tools.phase7_knowledge_relations import RELATION_REGISTRY_VERSION, reconcile_relations
 from tools.phase7_knowledge_retrieval import retrieve_candidates
