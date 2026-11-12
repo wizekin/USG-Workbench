@@ -1,7 +1,7 @@
 # USG Phase 7 — Semantic Knowledge Integration and Contextual Knowledge Layer
 
 **Phase:** 7 — Semantic knowledge integration and contextual knowledge retrieval  
-**Status:** STEPS 7.1–7.9 MERGED. Step 7.10 implementation is submitted for exact-head CI; acceptance is pending.  
+**Status:** STEPS 7.1–7.10 MERGED. Phase 7 is COMPLETE / ACCEPTED FOR THE FROZEN PROFILED SCOPE. See the [Phase 7 completion record](PHASE-7-COMPLETION-RECORD.md).  
 **Primary objective:** build a governed, persistent semantic knowledge layer that connects lexical forms, lexical senses, language-neutral concepts, semantic classes, typed relations, source evidence, contexts, and validated canonical documents.  
 **Prerequisites:** accepted Phase 1–5 foundations; Phase 6 bounded automatic exit accepted for its registered scope.  
 **Non-blocking parallel work:** Phase 6 construction expansion continues through the [Phase 6 Continuation Tracker](PHASE-6-CONTINUATION-TRACKER.md). No unfinished Phase 6 continuation item is a prerequisite for Phase 7 unless a specific Phase 7 step explicitly adopts it.  
@@ -298,4 +298,4 @@ No Phase 7 task may rewrite a previously accepted phase's meaning or make that p
 6. Integrate read-only adapters and inspection interfaces.
 7. Close Phase 7 with profile-specific tests, reproducible reports, and protected baseline regressions.
 
-**Current implementation: Step 7.10 — evaluation, performance, and Phase 7 exit acceptance.** Steps 7.1–7.9 are merged; Step 7.10 is implemented on a review branch and awaits exact-head CI before acceptance. See [Step 7.10 implementation](PHASE-7-STEP-7.10-IMPLEMENTATION.md). This does not imply completion of the full Phase 7 roadmap.
+**Phase 7 exit accepted:** all ten steps are merged. The frozen English/MSA Arabic profile passed its 102 retrieval cases, two polysemy checks, unresolved mapping, provenance/rights, conflict, deterministic replay, and SQLite digest gates. See the [completion record](PHASE-7-COMPLETION-RECORD.md) and [Step 7.10 evaluation details](PHASE-7-STEP-7.10-IMPLEMENTATION.md). The acceptance is bounded; it does not establish unrestricted semantic understanding or AGI.
