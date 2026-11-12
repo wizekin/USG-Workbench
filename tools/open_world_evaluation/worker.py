@@ -27,7 +27,7 @@ def _apply_resource_limits(case: dict[str, Any]) -> None:
     memory_bytes = int(limits["memory_megabytes"]) * 1024 * 1024
 
     browser_target = case.get("target", {}).get("interface") == "browser_ui"
-    file_limit = 256 if browser_target else 64
+    file_limit = 512 if browser_target else 64
     for name, value in (
         ("RLIMIT_CPU", (wall_seconds, wall_seconds + 1)),
         ("RLIMIT_FSIZE", (8 * 1024 * 1024, 8 * 1024 * 1024)),
