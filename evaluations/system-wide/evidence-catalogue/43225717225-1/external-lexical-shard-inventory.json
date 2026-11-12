@@ -1,0 +1,52 @@
+{
+  "file_count": 7,
+  "files": [
+    {
+      "git_blob_sha1": "af191bfeb261429eb0c87fd2fee851b169675660",
+      "path": "enwiktionary-2026-10-01-raw-244dcdc56868/batch-000001-43092728803-1.jsonl.gz",
+      "sha256": "f7c92d9430b02f65e33ad3e46b3526369f3ce79fb8866957510d0029a3f3b56c",
+      "size_bytes": 17292
+    },
+    {
+      "git_blob_sha1": "b1f333a82d7df9c8c20ab9bf338f465431ec52ea",
+      "path": "enwiktionary-2026-10-01-raw-244dcdc56868/batch-000002-43093479847-1.jsonl.gz",
+      "sha256": "fb9bb24221a70e1f94a78b5565c2c2df9a2c559eb78bcba84c2a478e128051f0",
+      "size_bytes": 55973
+    },
+    {
+      "git_blob_sha1": "b1f333a82d7df9c8c20ab9bf338f465431ec52ea",
+      "path": "enwiktionary-2026-10-01-raw-244dcdc56868/batch-000002-43094020466-1.jsonl.gz",
+      "sha256": "fb9bb24221a70e1f94a78b5565c2c2df9a2c559eb78bcba84c2a478e128051f0",
+      "size_bytes": 55973
+    },
+    {
+      "git_blob_sha1": "42aa2da03d31a6e6087171d06cca7ce019ee899e",
+      "path": "enwiktionary-2026-10-01-raw-244dcdc56868/batch-000003-43102113033-1.jsonl.gz",
+      "sha256": "54244354cd788066797aff4b58ce6e55fc4235c8ef80fdf281c391a34f9edfe7",
+      "size_bytes": 55996
+    },
+    {
+      "git_blob_sha1": "916810701e05f9d7551a86362391a34b2c3101ce",
+      "path": "enwiktionary-2026-10-01-raw-244dcdc56868/batch-000004-43104585537-1.jsonl.gz",
+      "sha256": "d266a6381654c2dd887fe0a928f87ec870851821537ba8076eee983021df3ba2",
+      "size_bytes": 64651
+    },
+    {
+      "git_blob_sha1": "1aeaa69d72c14f8a4bd16d66c1a1d46edbd7a2fd",
+      "path": "enwiktionary-2026-10-01-raw-244dcdc56868/batch-000005-43136279741-1.jsonl.gz",
+      "sha256": "07c14bc2fb385225513471682c689adc0fa258a08c93675c489b5eefd03e27e3",
+      "size_bytes": 7660763
+    },
+    {
+      "git_blob_sha1": "65b2160627c01f448949f399ea26960e6969e5cb",
+      "path": "enwiktionary-2026-10-01-raw-244dcdc56868/batch-000006-43177652622-1.jsonl.gz",
+      "sha256": "8231386ffff296f9402d3e308672e7668b337e14d1944ea215187fd7c1a0294c",
+      "size_bytes": 7445502
+    }
+  ],
+  "manifest_batch_count": 6,
+  "matches_manifest": false,
+  "snapshot_id": "enwiktionary-2026-10-01-raw-244dcdc56868",
+  "status": "available",
+  "total_size_bytes": 15356150
+}
