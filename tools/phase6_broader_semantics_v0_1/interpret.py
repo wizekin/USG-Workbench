@@ -624,6 +624,8 @@ class Phase6IntegratedInterpreter:
                   "en.discourse.ambiguous.pronoun.candidates.v1",
                   "ar.discourse.pronoun.candidates.v1",
                   "ar.discourse.ambiguous.pronoun.candidates.v1",
+                  "en.embedded.ambiguous.as.v1",
+                  "ar.embedded.ambiguous.ith.v1",
                   "en.modal.negation.scope.ambiguous.v1",
                   "ar.modal.negation.scope.ambiguous.v1",
               }):
