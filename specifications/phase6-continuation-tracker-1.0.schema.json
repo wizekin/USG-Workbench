@@ -1,0 +1,134 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wizekin.github.io/USG-Workbench/specifications/phase6-continuation-tracker-1.0.schema.json",
+  "title": "USG Phase 6 Continuation Tracker 1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "tracker_id",
+    "last_reviewed_utc",
+    "phase_status",
+    "guardrails",
+    "work_items"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "tracker_id": {
+      "const": "USG-PHASE-6-CONTINUATION-TRACKER"
+    },
+    "last_reviewed_utc": {
+      "type": "string",
+      "format": "date"
+    },
+    "phase_status": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "bounded_exit",
+        "runtime_capability_claim",
+        "naturalistic_accuracy",
+        "phase7_blocking"
+      ],
+      "properties": {
+        "bounded_exit": {
+          "type": "string",
+          "const": "accepted_for_registered_scopes"
+        },
+        "runtime_capability_claim": {
+          "type": "string",
+          "const": "candidate_only_unless_separately_accepted"
+        },
+        "naturalistic_accuracy": {
+          "type": "string",
+          "const": "not_established"
+        },
+        "phase7_blocking": {
+          "type": "boolean",
+          "const": false
+        }
+      }
+    },
+    "guardrails": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "work_items": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "phase_step",
+          "title",
+          "objective",
+          "priority",
+          "status",
+          "phase7_blocking",
+          "pr_search_marker",
+          "acceptance_gate",
+          "notes"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^P6-CONT-[0-9]{2}$"
+          },
+          "phase_step": {
+            "type": "string",
+            "minLength": 1
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "objective": {
+            "type": "string",
+            "minLength": 1
+          },
+          "priority": {
+            "enum": [
+              "high",
+              "medium",
+              "low"
+            ]
+          },
+          "status": {
+            "enum": [
+              "backlog",
+              "candidate_only",
+              "in_progress",
+              "merged_pending_acceptance",
+              "accepted",
+              "blocked",
+              "deferred"
+            ]
+          },
+          "phase7_blocking": {
+            "type": "boolean",
+            "const": false
+          },
+          "pr_search_marker": {
+            "type": "string",
+            "pattern": "^P6-CONT-[0-9]{2}$"
+          },
+          "acceptance_gate": {
+            "type": "string",
+            "minLength": 1
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
