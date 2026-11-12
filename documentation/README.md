@@ -187,6 +187,11 @@
 
 ### Phase 7 — semantic knowledge integration and contextual knowledge layer
 
+- [USG-KNOWLEDGE/0.1.0 contract](../specifications/USG-KNOWLEDGE-0.1.0.md) — Normative knowledge bundle contract.
+- [Knowledge record-kinds registry](../specifications/USG-KNOWLEDGE-RECORD-KINDS-0.1.0.md) — Typed forms, lemmas, senses, concepts, classes, and frames.
+- [Phase 7 contract validator](../tools/phase7_knowledge_contract/validate.py) — Structural and cross-reference validation.
+
+
 - [PHASE 7 DEFINITIONS ROADMAP](PHASE-7-DEFINITIONS-ROADMAP.md) — The next mainline development phase: typed concepts and lexical senses, provenance-bearing knowledge, cross-language mappings, contextual retrieval, source reconciliation, and read-only integration with existing reasoning/interpreters.
 
 ### Open-World randomized evaluation
