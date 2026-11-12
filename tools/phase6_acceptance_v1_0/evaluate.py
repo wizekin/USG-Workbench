@@ -348,7 +348,8 @@ def _check_preservation(rows: list[dict[str, Any]]) -> dict[str, Any]:
     failure_examples = []
     for row in candidate_rows:
         check = row["preservation"]
-        if check["valid"] and check["payload_matches"] and check["no_assertions"]:
+        if (check["valid"] and check["payload_matches"] and check["no_assertions"]
+                and check.get("source_matches")):
             valid += 1
         elif len(failure_examples) < 10:
             failure_examples.append({"case_id": row["case_id"], "preservation": check})
@@ -361,9 +362,11 @@ def _check_preservation(rows: list[dict[str, Any]]) -> dict[str, Any]:
         ),
         "preservation_integrity_passed": bool(candidate_rows) and valid == len(candidate_rows),
         "semantic_assertion_projection_accepted": False,
-        "status": "PRESERVATION_ONLY" if candidate_rows and valid == len(candidate_rows) else "OPEN",
+        "status": "ACCEPTED" if candidate_rows and valid == len(candidate_rows) else "OPEN",
+        "accepted_scope": "OPAQUE_PRESERVATION_ONLY",
+        "semantic_assertion_projection_accepted": False,
         "failure_examples": failure_examples,
-        "limitation": "OPAQUE preservation is verified; mapping candidate graphs to canonical semantic assertions is not accepted.",
+        "limitation": "The bounded OPAQUE preservation gate is accepted; mapping candidate graphs to canonical semantic assertions remains separately unaccepted.",
     }
 
 
@@ -425,10 +428,19 @@ def run_acceptance(corpus: dict[str, Any] | None = None) -> dict[str, Any]:
             if projection:
                 document = projection.get("document") or {}
                 payload = document.get("extensions", {}).get("org.wizekin.usg.phase6", {})
+                preserved_sources = document.get("sources", [])
+                source_digest = sha256(case["text"].encode("utf-8")).hexdigest()
+                source_matches = (
+                    len(preserved_sources) == 1
+                    and preserved_sources[0].get("text") == case["text"]
+                    and preserved_sources[0].get("textHash") == source_digest
+                    and document.get("primarySourceRef") == preserved_sources[0].get("id")
+                )
                 preservation = {
                     "valid": projection.get("status") == "LOSSLESS_PRESERVATION_ONLY"
                             and projection.get("validation", {}).get("completion_status") == "VALID",
                     "payload_matches": payload.get("graph") == interpretation.get("composition", {}).get("graph"),
+                    "source_matches": source_matches,
                     "no_assertions": document.get("assertions") == []
                                     and projection.get("semantic_assertions_emitted") is False
                                     and document.get("expressions", [{}])[0].get("op") == "OPAQUE",
