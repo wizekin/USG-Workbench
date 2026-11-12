@@ -133,6 +133,8 @@ def collect_phase8_acceptance(root: Path) -> dict[str, Any]:
     checks_passed = isinstance(checks, list) and bool(checks) and all(
         isinstance(item, dict) and item.get("passed") is True for item in checks
     )
+    decision_id = str(decision.get("decision_id", ""))
+    expected_snapshot_id = f"{run_id}-{run_attempt}"
     accepted = (
         artifact.get("status") == "accepted"
         and artifact.get("phase_accepted") is True
@@ -143,12 +145,19 @@ def collect_phase8_acceptance(root: Path) -> dict[str, Any]:
         and run_id.isdigit()
         and run_attempt.isdigit()
         and int(run_attempt) >= 1
+        and artifact_path.parent.name == expected_snapshot_id
+        and len(decision_id) == 64
+        and all(character in "0123456789abcdef" for character in decision_id.lower())
         and checks_passed
         and artifact.get("checks_passed") == artifact.get("checks_total")
         and artifact.get("checks_total") == len(checks)
     )
+    recorded_status = artifact.get("status", "invalid")
+    display_status = "accepted" if accepted else (
+        "invalid_acceptance_record" if recorded_status == "accepted" else recorded_status
+    )
     return {
-        "status": "accepted" if accepted else artifact.get("status", "invalid"),
+        "status": display_status,
         "phase_accepted": accepted,
         "artifact": artifact_path.relative_to(root).as_posix(),
         "source_commit_sha": source_sha,
