@@ -148,7 +148,7 @@ jobs:
                   "path": path.relative_to(root).as_posix(),
                   "size_bytes": len(payload),
                   "sha256": hashlib.sha256(payload).hexdigest(),
-                  "git_blob_sha1": hashlib.sha1(f"blob {len(payload)}\\0".encode("ascii") + payload).hexdigest(),
+                  "git_blob_sha1": hashlib.sha1(b"blob " + str(len(payload)).encode("ascii") + bytes([0]) + payload).hexdigest(),
               })
           report = {
               "status": "available",
@@ -160,7 +160,7 @@ jobs:
               "files": files,
           }
           output = Path(os.environ["EVIDENCE_DIR"]) / "external-lexical-shard-inventory.json"
-          output.write_text(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True) + "\\n", encoding="utf-8")
+          output.write_text(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True) + chr(10), encoding="utf-8")
           print(json.dumps({k: report[k] for k in ("file_count", "total_size_bytes", "manifest_batch_count", "matches_manifest")}, indent=2))
           PY
       - name: Recalculate English PUD lexical and morphology candidate coverage
