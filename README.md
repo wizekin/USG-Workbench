@@ -26,6 +26,7 @@ Start here — jump directly to any major section:
 | 8 | [How to explore and test USG](#how-to-explore-and-test-usg) | Start the interface and find tests |
 | 9 | [Repository structure](#repository-structure) | Where code, specifications, evidence, and data are stored |
 | 10 | [Phase 7 definitions roadmap](documentation/PHASE-7-DEFINITIONS-ROADMAP.md) | Semantic knowledge integration; all ten steps accepted for the frozen bilingual profile |
+| 11 | [Phase 8 evidence integration roadmap](documentation/PHASE-8-DEFINITIONS-ROADMAP.md) | System-wide collection and reuse of resources, evaluation results, and development evidence |
 
 ---
 
@@ -113,6 +114,7 @@ When a workflow, campaign, or scheduled task changes, update the corresponding d
 | Prioritized improvement backlog | [System improvement backlog](documentation/USG-SYSTEM-IMPROVEMENT-BACKLOG.md) |
 | Cross-implementation status | [Cross-implementation conformance matrix](documentation/USG-CROSS-IMPLEMENTATION-CONFORMANCE-MATRIX.md) |
 | Phase 7 roadmap | [Phase 7 definitions roadmap](documentation/PHASE-7-DEFINITIONS-ROADMAP.md) |
+| Phase 8 evidence integration | [Phase 8 definitions roadmap](documentation/PHASE-8-DEFINITIONS-ROADMAP.md) · [System evidence integration](documentation/USG-SYSTEM-EVIDENCE-AND-RESOURCE-INTEGRATION.md) |
 | Phase 6 continuation | [Phase 6 Continuation Tracker](documentation/PHASE-6-CONTINUATION-TRACKER.md) |
 
 The phase roadmaps and implementation-specific documents are the detailed sources of truth for their respective components. The README is the high-level navigation and status dashboard; it must not replace those documents.
@@ -181,6 +183,18 @@ Related evidence: [system improvement backlog](documentation/USG-SYSTEM-IMPROVEM
 ## Incomplete major tasks
 
 These are the major open workstreams. Detailed step definitions, dependencies, and acceptance criteria remain in the linked roadmaps and backlog.
+
+### 1. Phase 8 — system-wide evidence, resource, and development intelligence
+
+**Status: FOUNDATION IMPLEMENTATION UNDER REVIEW; EXIT ACCEPTANCE NOT YET COMPLETE.** Phase 8 creates a continuously refreshed evidence/resource catalogue spanning the canonical semantic interchange, Phases 1–7, native Python model generations, JavaScript Workbench, lexical candidate adapters, OOV/ambiguity regressions, Open-World campaigns, naturalistic input populations, external lexical shards, cross-implementation diagnostics, and the evidence-driven growth planner.
+
+The first implementation adds a source registry, phase/resource-consumption map, per-step resource manifest schema/template, read-only catalogue collector, and scheduled collection workflow. The collector records source file digests, current crawl manifest/checkpoint and shard inventory, PUD evaluation freshness, stored campaign population/accounting, growth-planner recommendations, and reviewable phase-impact routes.
+
+New phases must declare the resources and evidence they consume. New discoveries should first update an existing continuation, then propose an amendment to an accepted phase when appropriate, then use a versioned migration for contract changes; only genuinely cross-cutting uncovered work should become a new phase. No accepted phase, canonical contract, or runtime resource is silently modified or promoted.
+
+References: [Phase 8 definitions roadmap](documentation/PHASE-8-DEFINITIONS-ROADMAP.md) · [System-wide evidence and resource integration](documentation/USG-SYSTEM-EVIDENCE-AND-RESOURCE-INTEGRATION.md) · [Resource registry](config/usg-system-evidence-source-registry-0.1.0.json) · [Phase resource manifest template](templates/phase-resource-manifest-0.1.0.template.json).
+
+### 2. Phase 6 — bounded exit accepted; continuation tracked separately
 
 ### 2. Phase 6 — bounded exit accepted; continuation tracked separately
 
