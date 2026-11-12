@@ -4,6 +4,9 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+import importlib.util
+import threading
+from urllib.request import Request, urlopen
 
 from tools.semantic_graph_store_v1_0_0 import CanonicalDocumentStore
 from tools.semantic_graph_store_v1_0_0.store import RESOURCE_CATALOGUE_ROLE
@@ -55,6 +58,36 @@ class Phase7KnowledgeInspectionTests(unittest.TestCase):
         result = self.service.query("bank", consumer="PHASE2", language="en")
         self.assertEqual(result["consumer"], "PHASE2")
         self.assertFalse(result["runtime_mutation_performed"])
+
+    def test_kernel_lab_api_exposes_knowledge_inspection_endpoints(self):
+        server_path = ROOT / "tools/usg-kernel-lab/server.py"
+        spec = importlib.util.spec_from_file_location("usg_kernel_lab_server", server_path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        with tempfile.TemporaryDirectory() as directory:
+            server = module.create_lab_server(Path(directory) / "lab.sqlite3", port=0)
+            thread = threading.Thread(target=server.serve_forever, daemon=True)
+            thread.start()
+            base = f"http://127.0.0.1:{server.server_address[1]}"
+            try:
+                with urlopen(base + "/api/knowledge/bundles") as response:
+                    bundles = json.loads(response.read().decode("utf-8"))
+                self.assertEqual(response.status, 200)
+                self.assertEqual(bundles["count"], 0)
+                request = Request(base + "/api/knowledge/query",
+                    data=json.dumps({"query": "bank", "consumer": "PHASE2"}).encode("utf-8"),
+                    headers={"Content-Type": "application/json"}, method="POST")
+                with urlopen(request) as response:
+                    query = json.loads(response.read().decode("utf-8"))
+                self.assertEqual(response.status, 200)
+                self.assertFalse(query["runtime_mutation_performed"])
+                with urlopen(base + "/health") as response:
+                    health = json.loads(response.read().decode("utf-8"))
+                self.assertEqual(health["phase7KnowledgeInspection"], "USG-KNOWLEDGE-INSPECTION/0.1.0")
+            finally:
+                server.shutdown()
+                server.server_close()
+                thread.join(timeout=5)
 
     def test_cli_parser_exposes_bundles_query_inspect_and_conflicts(self):
         parser = build_parser()
