@@ -288,7 +288,7 @@
       "known_limitations": [
         "Catalogue and proposals are planning artifacts, not semantic truth or runtime knowledge.",
         "Proposal records are draft-only and cannot change accepted phase status, canonical contracts, or runtime resources.",
-        "The integrated acceptance gate establishes structural and governance readiness for human review, not semantic accuracy or phase acceptance.",
+        "The integrated acceptance gate automatically records bounded Phase 8 formal acceptance only after exact-head GitHub Actions validation and all checks pass; this is not semantic accuracy evidence.",
         "Snapshots remain append-only; source rights and population boundaries must be preserved.",
         "Cross-runtime inventory and unresolved knowledge mappings are planning evidence; agreement and unresolved candidates are not semantic gold or promotion permission."
       ]
@@ -465,7 +465,7 @@
     },
     {
       "gate_id": "P8-INTEGRATED-ACCEPTANCE",
-      "description": "An automated integrated gate validates Phase 8 source coverage, manifest, evidence sections, priorities, proposals, workflow observability, and governance without accepting the phase.",
+      "description": "An automated integrated gate validates Phase 8 source coverage, manifest, evidence sections, priorities, proposals, workflow observability, and governance; on exact-head CI success it formally accepts the bounded Phase 8 control-plane scope.",
       "evidence_required": [
         "integrated acceptance tests",
         "exact-head GitHub Actions validation",
