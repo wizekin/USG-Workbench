@@ -1,0 +1,98 @@
+name: USG Long-Term Roadmap Synchronization
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "README.md"
+      - "documentation/**"
+      - "config/**"
+      - "specifications/**"
+      - "implementations/**"
+      - "interoperability/**"
+      - "resources/**"
+      - "tools/**"
+      - "tests/**"
+      - "benchmarks/**"
+      - "evaluations/open-world/**"
+      - "evaluations/phase6-continuation/tracker.json"
+      - "evaluations/system-wide/cross-implementation-matrix-*.json"
+      - ".github/workflows/**"
+  schedule:
+    - cron: "20 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: usg-long-term-roadmap-sync
+  cancel-in-progress: false
+
+jobs:
+  synchronize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Check out current main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install pinned schema validator
+        run: python -m pip install "jsonschema==4.23.0"
+
+      - name: Run roadmap synchronization tests
+        run: python -m unittest discover -s tests -p "test_long_term_plan_sync.py" -v
+
+      - name: Collect changed paths
+        shell: bash
+        env:
+          EVENT_BEFORE: {{ github.event.before }}
+          EVENT_NAME: {{ github.event_name }}
+          EVENT_SHA: {{ github.sha }}
+        run: |
+          set -euo pipefail
+          if [ "$EVENT_NAME" = "push" ] && [ -n "$EVENT_BEFORE" ] && [ "$EVENT_BEFORE" != "0000000000000000000000000000000000000000" ]; then
+            git diff --name-only "$EVENT_BEFORE" "$EVENT_SHA" > "$RUNNER_TEMP/usg-changed-paths.txt"
+          else
+            : > "$RUNNER_TEMP/usg-changed-paths.txt"
+          fi
+
+      - name: Generate synchronized plan status and impact report
+        run: |
+          python -m tools.system_evidence.long_term_plan_sync \
+            --commit-sha "$GITHUB_SHA" \
+            --event-name "$GITHUB_EVENT_NAME" \
+            --changed-paths-file "$RUNNER_TEMP/usg-changed-paths.txt" \
+            --output-json evaluations/roadmap/plan-sync/latest.json \
+            --output-markdown evaluations/roadmap/plan-sync/latest.md
+
+      - name: Publish refreshed status report
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: {{ secrets.GITHUB_TOKEN }}
+          branch: automation/long-term-roadmap-status
+          base: main
+          add-paths: |
+            evaluations/roadmap/plan-sync/latest.json
+            evaluations/roadmap/plan-sync/latest.md
+          commit-message: "docs: refresh long-term USG roadmap status"
+          title: "Automated update: USG long-term roadmap status"
+          body: |
+            Generated from the current main-branch source registry, backlog,
+            Phase 6 continuation tracker, and Phase 8 acceptance artifact.
+
+            This PR refreshes evidence/status and changed-path impact only.
+            It does not edit the strategic plan, accept semantic behavior,
+            promote candidates, alter normative contracts, or start a future phase.
+          delete-branch: true
