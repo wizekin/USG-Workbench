@@ -187,6 +187,7 @@
 
 ### Phase 7 — semantic knowledge integration and contextual knowledge layer
 
+- [Phase 7 evaluation and exit acceptance](PHASE-7-STEP-7.10-IMPLEMENTATION.md) — Frozen bilingual positive/negative retrieval cases, polysemy, unresolved mapping, rights, provenance, conflict, and replay gates.
 - [Phase 7 knowledge inspection API, CLI, and Kernel Lab](PHASE-7-STEP-7.9-IMPLEMENTATION.md) — Shared read-only inspection service, provenance/conflict views, CLI, and local browser panel.
 - [Phase 7 read-only reasoning and interpretation integration](PHASE-7-STEP-7.8-IMPLEMENTATION.md) — Consumer-specific visibility and candidate-only Phase 6 boundary.
 - [Phase 7 contextual retrieval and ranking](PHASE-7-STEP-7.7-IMPLEMENTATION.md) — Deterministic exact lexical lookup with language/domain filters, explainable ranking, and ambiguity preservation.
