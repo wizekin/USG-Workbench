@@ -298,7 +298,7 @@ def _generate_operators(lang: str, seeds: list[dict[str, Any]]) -> list[dict[str
             text = f"{roles['AGENT']} may not {predicate}"
         else:
             predicate = AR_PRESENT[roles["ACTION"]]
-            text = f"ربما لا {predicate} {roles['AGENT']}"
+            text = f"قد لا {predicate} {roles['AGENT']}"
         graph = {
             "nodes": [{"id": "event", "kind": "EVENT"}],
             "operators": [
@@ -333,7 +333,7 @@ def _generate_operators(lang: str, seeds: list[dict[str, Any]]) -> list[dict[str
             text = f"{roles['AGENT']} must not {predicate}"
         else:
             predicate = AR_PRESENT[roles["ACTION"]]
-            text = f"قد لا {predicate} {roles['AGENT']}"
+            text = f"ربما لا {predicate} {roles['AGENT']}"
         graph = {
             "nodes": [{"id": "event", "kind": "EVENT"}],
             "operators": [
