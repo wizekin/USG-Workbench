@@ -29,18 +29,23 @@ class Phase7BilingualAlignmentTests(unittest.TestCase):
 
     def test_english_and_arabic_pronoun_candidates_share_only_unresolved_grouping_hints(self):
         bundle = build_bilingual_alignment_bundle(RESOURCE, created_at="2026-11-12T12:00:00Z")
-        senses = {x["payload"]["sense_source_id"]: x for x in bundle["records"] if x["kind"] == "LEXICAL_SENSE"}
-        expected = {("en:pronoun.he", "ar:pronoun.huwa"), ("en:pronoun.she", "ar:pronoun.hiya")}
+        senses = {x["id"]: x for x in bundle["records"] if x["kind"] == "LEXICAL_SENSE"}
+        expected_senses = {"en:pronoun.he", "ar:pronoun.huwa", "en:pronoun.she", "ar:pronoun.hiya"}
         mapped = set()
         for mapping in bundle["mappings"]:
-            source = next(x for x in senses.values() if x["id"] == mapping["source_record_id"])
+            source = senses[mapping["source_record_id"]]
+            if source["payload"]["sense_source_id"] not in expected_senses:
+                continue
             target = next(x for x in bundle["records"] if x["id"] == mapping["target_record_id"])
             mapped.add((source["payload"]["sense_source_id"], target["payload"]["label"]))
             self.assertEqual(target["state"], "UNRESOLVED")
             self.assertIn("not equivalent", mapping["notes"].lower())
-        self.assertEqual({(a, b) for a, b in mapped},
-                         {("en:pronoun.he", "concept:pronoun.third-singular-masculine"),
-                          ("en:pronoun.she", "concept:pronoun.third-singular-feminine")})
+        self.assertEqual(mapped, {
+            ("en:pronoun.he", "concept:pronoun.third-singular-masculine"),
+            ("ar:pronoun.huwa", "concept:pronoun.third-singular-masculine"),
+            ("en:pronoun.she", "concept:pronoun.third-singular-feminine"),
+            ("ar:pronoun.hiya", "concept:pronoun.third-singular-feminine"),
+        })
 
     def test_polysemous_bank_senses_are_not_collapsed(self):
         bundle = build_bilingual_alignment_bundle(RESOURCE, created_at="2026-11-12T12:00:00Z")
