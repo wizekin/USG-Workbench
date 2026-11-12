@@ -132,6 +132,7 @@ This section distinguishes a workflow that was observed running from workflows t
 | [Evidence-driven growth planner](https://github.com/wizekin/USG-Workbench/actions/workflows/usg-evidence-driven-growth-controller.yml) | Daily at 04:45 UTC; also manual | **Scheduled.** Reviews recent Open-World evidence and publishes a ranked growth plan. It plans improvements; it does not modify or promote runtime semantic rules. |
 | [Bilingual naturalistic PUD pilot](https://github.com/wizekin/USG-Workbench/actions/workflows/open-world-naturalistic-pud-pilot.yml) | Weekly Monday at 04:00 UTC; also manual | **Scheduled; full campaign result not yet verified.** The source/sample validation passed. The default campaign samples 50 English and 50 Arabic sentences and evaluates the registered bounded targets. Arabic PUD is translated text, not a representative native-Arabic or conversational corpus. |
 | [Phase 6 Continuation Tracker](https://github.com/wizekin/USG-Workbench/actions/workflows/phase6-continuation-tracker.yml) | Daily at 05:30 UTC; also manual | **Configured; read-only and non-blocking.** Discovers linked Phase 6 PRs, records PR/check-run observations, and uploads a separate status snapshot. It does not gate Phase 7 or modify semantic resources. |
+| [System-wide evidence and resource collection](.github/workflows/system-evidence-collection.yml) | Daily at 05:30 UTC; on relevant main-branch resource/evidence updates; also manual | **Configured after Phase 8 integration merges.** Collects source-file digests, external lexical manifest/checkpoint/shard hashes, current PUD evaluation, recent Open-World campaign accounting, growth planner results, and the latest non-PR status for each GitHub Actions workflow. Publishes append-only snapshots through PRs. |
 | [External lexical PUD evaluation](https://github.com/wizekin/USG-Workbench/actions/workflows/external-lexical-pud-evaluation.yml) | After successful crawler runs, relevant pushes, or manual dispatch | **Event-driven.** Measures external lexical candidate coverage against pinned English PUD data. It is an inventory diagnostic, not an accuracy score for contextual interpretation. |
 
 Useful live views:
@@ -332,6 +333,8 @@ Run the version-specific test commands documented with each implementation. Do n
 | `resources/` | Bundled, versioned lexical, morphology, and operator resources. |
 | `tools/usg_interpretation_*/` | Versioned Python interpretation pipelines. |
 | `tools/usg-kernel-lab/` | Local Kernel Lab application and interface. |
+| `tools/system_evidence/` | System-wide source inventory, workflow execution status collection, phase routing, and evidence catalogue. |
+| `config/phase-resource-manifests/` and `templates/` | Per-phase resource/evidence dependency manifests and reusable templates. |
 | `tools/usg_external_lexical_*/` | External lexical retrieval, analysis, crawling, and candidate adapters. |
 | `tools/open_world_evaluation/` | Randomized evaluation, target adapters, execution, scoring, replay, reporting, and growth planning. |
 | `interoperability/` | Versioned adapters and cross-implementation conformance work. |
