@@ -20,6 +20,7 @@ from jsonschema import Draft202012Validator
 from tools.phase5_interpretation_benchmark_v0_2_0.run import load_and_validate
 from tools.phase6_auto_reference_v1_0.evaluate import run as run_step_6_6
 from tools.usg_local_api_v1_0_0.application import USGApplication
+from tools.usg_local_api_v1_0_0.cli import main as cli_main
 
 from .generate import PROFILE_SPECS, build, corpus_sha256, validate
 
@@ -413,11 +414,31 @@ def _check_integration(seed_rows: dict[str, list[dict[str, Any]]]) -> dict[str, 
                 )
             else:
                 checks[f"{lang}_deterministic_replay"] = False
+
+            with tempfile.TemporaryDirectory() as directory:
+                source_path = Path(directory) / "phase6-source.txt"
+                source_path.write_text(seed["text"], encoding="utf-8")
+                stdout = io.StringIO()
+                with redirect_stdout(stdout):
+                    cli_status = cli_main([
+                        "phase6-interpret", str(source_path),
+                        "--language", lang, "--no-persist", "--db", ":memory:",
+                    ])
+                try:
+                    cli_result = json.loads(stdout.getvalue())
+                except json.JSONDecodeError:
+                    cli_result = {}
+                cli_interpretation = cli_result.get("interpretation", {})
+                checks[f"{lang}_cli"] = (
+                    cli_status == 0
+                    and cli_interpretation.get("pipeline_contract") == "USG-INTERPRET/0.3.0"
+                    and cli_interpretation.get("source", {}).get("text") == seed["text"]
+                )
         return {
             "checks": checks,
             "passed": all(checks.values()),
             "status": "ACCEPTED" if all(checks.values()) else "OPEN",
-            "note": "This verifies the shared API path, existing SQLite run persistence, and replay. The repository's CLI and Kernel Lab regressions are additionally run by the acceptance workflow.",
+            "note": "This verifies the shared API path, executable phase6-interpret CLI, existing SQLite run persistence, and deterministic replay. The acceptance workflow additionally runs the Kernel Lab regression and clean editable package-install check.",
         }
     finally:
         app.close()
