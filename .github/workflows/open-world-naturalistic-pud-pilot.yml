@@ -1,0 +1,155 @@
+name: USG Naturalistic Bilingual PUD Pilot
+
+on:
+  schedule:
+    - cron: "0 4 * * 1"
+  workflow_dispatch:
+    inputs:
+      sample_per_language:
+        description: "Number of deterministic naturalistic sentences per language"
+        required: false
+        default: "50"
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: usg-naturalistic-pud-pilot
+  cancel-in-progress: false
+
+jobs:
+  naturalistic-pilot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    env:
+      CAMPAIGN_ID: OWC-NAT-PUD-${{ github.run_id }}-${{ github.run_attempt }}
+      SAMPLE_PER_LANGUAGE: ${{ github.event.inputs.sample_per_language || '50' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install browser and schema dependencies
+        run: |
+          echo "PLAYWRIGHT_BROWSERS_PATH=$HOME/.cache/ms-playwright" >> "$GITHUB_ENV"
+          export PLAYWRIGHT_BROWSERS_PATH="$HOME/.cache/ms-playwright"
+          python -m pip install "jsonschema>=4.18,<5" "playwright>=1.48,<2"
+          python -m playwright install --with-deps chromium
+      - name: Validate requested sample size
+        run: |
+          python - <<'PY'
+          import os
+          value = int(os.environ["SAMPLE_PER_LANGUAGE"])
+          if not 1 <= value <= 200:
+              raise SystemExit("SAMPLE_PER_LANGUAGE must be between 1 and 200")
+          PY
+      - name: Generate pinned, licensed bilingual naturalistic cases
+        run: |
+          python -m tools.open_world_evaluation.pud_naturalistic_pilot \
+            --sample-per-language "$SAMPLE_PER_LANGUAGE" \
+            --target js-semantic-workbench-v054 \
+            --target phase4-bounded-interpreter \
+            --target phase5-bounded-interpreter \
+            --output-dir "$RUNNER_TEMP/pud-naturalistic"
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          root = Path(os.environ["RUNNER_TEMP"]) / "pud-naturalistic"
+          source = json.loads((root / "source-manifest.json").read_text(encoding="utf-8"))
+          generation = json.loads((root / "generation-manifest.json").read_text(encoding="utf-8"))
+          expected = int(os.environ["SAMPLE_PER_LANGUAGE"]) * 2 * 3
+          assert generation["case_count"] == expected
+          assert source["license"] == "CC BY-SA 3.0"
+          assert source["semantic_gold"]["available"] is False
+          assert source["privacy_review"]["status"] == "approved_for_bounded_internal_evaluation"
+          assert source["selection"]["en"]["selected_count"] == int(os.environ["SAMPLE_PER_LANGUAGE"])
+          assert source["selection"]["ar"]["selected_count"] == int(os.environ["SAMPLE_PER_LANGUAGE"])
+          print(f"Validated {generation['case_count']} naturalistic target records.")
+          PY
+      - name: Execute JS Workbench and bounded Phase 4/5 targets
+        run: |
+          python -m tools.open_world_evaluation.execute_cases \
+            --input "$RUNNER_TEMP/pud-naturalistic/scenario-cases.jsonl" \
+            --output "$RUNNER_TEMP/ow-nat-pud-results.jsonl" \
+            --commit-sha "$GITHUB_SHA" \
+            --max-wall-seconds 45
+      - name: Score outcomes without inventing semantic gold
+        run: |
+          python -m tools.open_world_evaluation.score_cases \
+            --cases "$RUNNER_TEMP/pud-naturalistic/scenario-cases.jsonl" \
+            --results "$RUNNER_TEMP/ow-nat-pud-results.jsonl" \
+            --scores "$RUNNER_TEMP/ow-nat-pud-scores.jsonl" \
+            --summary "$RUNNER_TEMP/ow-nat-pud-score-summary.json"
+      - name: Build coverage ledger
+        run: |
+          python -m tools.open_world_evaluation.coverage_ledger \
+            --cases "$RUNNER_TEMP/pud-naturalistic/scenario-cases.jsonl" \
+            --results "$RUNNER_TEMP/ow-nat-pud-results.jsonl" \
+            --history-root evaluations/open-world/campaigns \
+            --campaign-id "$CAMPAIGN_ID" \
+            --output "$RUNNER_TEMP/ow-nat-pud-coverage.json"
+      - name: Build append-only naturalistic campaign bundle
+        run: |
+          python -m tools.open_world_evaluation.campaign_pipeline \
+            --campaign-id "$CAMPAIGN_ID" \
+            --cases "$RUNNER_TEMP/pud-naturalistic/scenario-cases.jsonl" \
+            --results "$RUNNER_TEMP/ow-nat-pud-results.jsonl" \
+            --scores "$RUNNER_TEMP/ow-nat-pud-scores.jsonl" \
+            --generation-manifest "$RUNNER_TEMP/pud-naturalistic/generation-manifest.json" \
+            --coverage-ledger "$RUNNER_TEMP/ow-nat-pud-coverage.json" \
+            --commit-sha "$GITHUB_SHA" \
+            --output-root "$RUNNER_TEMP/ow-nat-pud-campaigns"
+          mkdir -p "evaluations/open-world/campaigns"
+          cp -a "$RUNNER_TEMP/ow-nat-pud-campaigns/$CAMPAIGN_ID" "evaluations/open-world/campaigns/$CAMPAIGN_ID"
+          cp "$RUNNER_TEMP/pud-naturalistic/source-manifest.json" "evaluations/open-world/campaigns/$CAMPAIGN_ID/"
+          cp "$RUNNER_TEMP/pud-naturalistic/LICENSE.txt" "evaluations/open-world/campaigns/$CAMPAIGN_ID/"
+          cp "$RUNNER_TEMP/pud-naturalistic/ATTRIBUTION.md" "evaluations/open-world/campaigns/$CAMPAIGN_ID/"
+      - name: Upload complete naturalistic campaign artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.CAMPAIGN_ID }}
+          path: evaluations/open-world/campaigns/${{ env.CAMPAIGN_ID }}/
+          if-no-files-found: error
+          retention-days: 90
+      - name: Publish licensed naturalistic campaign through append-only PR
+        id: create-report-pr
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: reports/naturalistic-pud-${{ github.run_id }}-${{ github.run_attempt }}
+          base: main
+          add-paths: evaluations/open-world/campaigns/${{ env.CAMPAIGN_ID }}/**
+          commit-message: "OW-NAT-PUD: publish naturalistic bilingual evaluation ${{ env.CAMPAIGN_ID }}"
+          title: "Naturalistic PUD evaluation: ${{ env.CAMPAIGN_ID }}"
+          body: |
+            Append-only naturalistic evaluation bundle for USG.
+
+            - Sources: pinned UD_English-PUD and UD_Arabic-PUD commits
+            - License: CC BY-SA 3.0; source license and attribution are included
+            - Sample: ${{ env.SAMPLE_PER_LANGUAGE }} sentences per language, target matrix across JS Workbench and bounded Phase 4/5
+            - Population: naturalistic news/Wikipedia text, separate from random and controlled diagnostics
+            - No semantic gold is claimed; UD annotations are not used as USG semantic labels
+            - Arabic PUD is translated and is not representative of native MSA distribution
+            - Privacy screen and known limitations are recorded in source-manifest.json
+
+            This report measures observed coverage, abstention, and stage diagnostics only.
+      - name: Enable auto-merge for the validated append-only report
+        if: steps.create-report-pr.outputs.pull-request-number != ''
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ steps.create-report-pr.outputs.pull-request-number }}
+        run: gh pr merge "$PR_NUMBER" --auto --squash --delete-branch
+      - name: Summarize naturalistic campaign
+        run: |
+          echo "Campaign: $CAMPAIGN_ID" >> "$GITHUB_STEP_SUMMARY"
+          echo "Population: naturalistic (news/Wikipedia)" >> "$GITHUB_STEP_SUMMARY"
+          echo "Sample per language: $SAMPLE_PER_LANGUAGE" >> "$GITHUB_STEP_SUMMARY"
+          echo "No semantic gold was claimed." >> "$GITHUB_STEP_SUMMARY"
