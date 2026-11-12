@@ -105,6 +105,9 @@ class SystemEvidenceCatalogueTests(unittest.TestCase):
     def test_phase_resource_map_covers_all_eight_phases(self):
         path = ROOT / "config/usg-phase-resource-consumption-map-0.1.0.json"
         value = json.loads(path.read_text(encoding="utf-8"))
+        schema_path = ROOT / "specifications/usg-phase-resource-consumption-map-0.1.0.schema.json"
+        schema = json.loads(schema_path.read_text(encoding="utf-8"))
+        Draft202012Validator(schema, format_checker=FormatChecker()).validate(value)
         self.assertEqual(value["contract"], "USG-PHASE-RESOURCE-CONSUMPTION-MAP/0.1.0")
         self.assertEqual({item["phase_id"] for item in value["phases"]},
                          {f"P{i}" for i in range(1, 9)})
