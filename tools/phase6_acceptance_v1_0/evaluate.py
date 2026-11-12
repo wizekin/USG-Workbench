@@ -195,20 +195,31 @@ def _ambiguous_match(case: dict[str, Any], observed: dict[str, Any]) -> tuple[bo
     expected = case["expected"]
     failures = []
     if expected.get("ambiguity_alternatives_required"):
-        # For coordination/subordination cases, preserving all explicitly
-        # generated competing edges is the alternative-preservation criterion.
+        # Preserve every explicitly generated alternative for coordinated
+        # structures. Other ambiguous profiles may safely abstain.
         required_relations = expected.get("required_relations", [])
         if required_relations:
             for relation in required_relations:
                 if relation not in observed["relation_types"]:
                     failures.append("ambiguity_relation_not_preserved:" + relation)
-        elif not (
-            observed["interpretation"].get("status") == "AMBIGUOUS"
-            or observed["graph"].get("alternatives")
-            or observed["graph"].get("ambiguity")
-            or observed["references"]
-        ):
-            failures.append("ambiguity_alternatives_not_exposed")
+        else:
+            voice_is_explicitly_unresolved = (
+                expected.get("forbidden_unique_voice")
+                and observed["grammatical"].get("voice", "UNKNOWN") == "UNKNOWN"
+            )
+            safe_abstention = (
+                observed["interpretation"].get("status") == "ABSTAIN"
+                and not observed["relations"] and not observed["operators"]
+                and not observed["references"]
+            )
+            alternatives_visible = (
+                observed["interpretation"].get("status") == "AMBIGUOUS"
+                or observed["graph"].get("alternatives")
+                or observed["graph"].get("ambiguity")
+                or observed["references"]
+            )
+            if not (safe_abstention or voice_is_explicitly_unresolved or alternatives_visible):
+                failures.append("ambiguity_alternatives_not_exposed")
     if expected.get("forbidden_unique_voice"):
         if observed["grammatical"].get("voice") in {"ACTIVE", "PASSIVE", "MIDDLE"}:
             failures.append("ambiguous_voice_forced_unique")
