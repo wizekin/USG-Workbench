@@ -187,7 +187,7 @@ These are the major open workstreams. Detailed step definitions, dependencies, a
 
 ### 1. Phase 8 — system-wide evidence, resource, and development intelligence
 
-**Status: FOUNDATION IMPLEMENTATION UNDER REVIEW; EXIT ACCEPTANCE NOT YET COMPLETE.** Phase 8 creates a continuously refreshed evidence/resource catalogue spanning the canonical semantic interchange, Phases 1–7, native Python model generations, JavaScript Workbench, lexical candidate adapters, OOV/ambiguity regressions, Open-World campaigns, naturalistic input populations, external lexical shards, cross-implementation diagnostics, and the evidence-driven growth planner.
+**Status: AUTOMATIC FORMAL ACCEPTANCE ENABLED; exact-head CI records an `accepted` or `blocked` decision.** Phase 8 creates a continuously refreshed evidence/resource catalogue spanning the canonical semantic interchange, Phases 1–7, native Python model generations, JavaScript Workbench, lexical candidate adapters, OOV/ambiguity regressions, Open-World campaigns, naturalistic input populations, external lexical shards, cross-implementation diagnostics, and the evidence-driven growth planner.
 
 The first implementation adds a source registry, phase/resource-consumption map, per-step resource manifest schema/template, read-only catalogue collector, and scheduled collection workflow. The collector records source file digests, current crawl manifest/checkpoint and shard inventory, PUD evaluation freshness, stored campaign population/accounting, growth-planner recommendations, and reviewable phase-impact routes.
 
