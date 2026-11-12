@@ -219,6 +219,8 @@ class SystemEvidenceCatalogueTests(unittest.TestCase):
         self.assertIn("phase routing", rendered)
         self.assertTrue(report["discoveries"])
         self.assertTrue(report["evidence_quality_diagnostics"])
+        self.assertEqual(report["system_intelligence"]["cross_implementation"]["status"], "not_collected")
+        self.assertEqual(report["system_intelligence"]["knowledge_layer"]["status"], "not_collected")
 
 
 if __name__ == "__main__":
