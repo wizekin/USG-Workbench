@@ -1,6 +1,6 @@
 # Phase 6 Steps 6.7–6.14 — Integrated Candidate Interpreter and Exit Record
 
-**Status:** integrated implementation path added; construction families remain candidate-only and the final Phase 6 acceptance gate remains open.  
+**Status:** bounded synthetic exit acceptance PASSED for the registered English/MSA profiles in Steps 6.7–6.14. The runtime remains candidate-only; the acceptance record and unaccepted broader scope are listed at the end of this document.  
 **Interpretation contract:** \`USG-INTERPRET/0.3.0\`.  
 **Canonical semantic interchange:** \`USG-SEM/1.0\` is unchanged.  
 **Persistence:** Phase 6 candidate runs use the existing SQLite store-owned connection and append-only run table.
@@ -23,11 +23,11 @@ The new route is \`POST /v3/phase6/interpret\`. It returns the Phase 5 stage env
 
 ## Steps 6.7–6.11: integrated construction candidates
 
-- **6.7 Coordination:** clause-level AND/OR/CONTRAST candidates are carried from explicit Phase 5 segmentation boundaries. The strict bilingual coordinated-subject template also represents two agents sharing one predicate and patient, reusing exact Phase 5 role/span nodes where available and adding only missing participant/coordination edges. This is a bounded candidate pattern, not productive general coordination.
-- **6.8 Embedded/subordinate clauses:** clause boundaries are preserved with parent/child clause links. COMPLEMENT, CAUSAL, CONDITIONAL, and TEMPORAL markers are attached as typed candidate relations when both clauses have predicate candidates. Unsupported or unlicensed attachments remain diagnostics.
-- **6.9 Voice/speech acts:** the bounded passive-question templates remain available as candidate fallback. The general Phase 5 stage does not yet provide a full passive/imperative recognizer; those constructions are not benchmark-enabled.
-- **6.10 Operators:** existing Phase 5 negation, modality, tense, aspect, and quantifier candidates are projected into the Phase 6 graph with exact marker spans and explicit local targets. Scope ambiguity and unsupported targets remain visible; no sentence-wide scope is guessed.
-- **6.11 Discourse:** Phase 5 mention and antecedent alternatives are copied into the Phase 6 graph. Candidate links never become resolved referent identity. Missing or competing antecedents remain unresolved.
+- **6.7 Coordination:** the registered shared-argument profile is accepted in English and MSA Arabic: two coordinated agents share one predicate and patient, with exact source spans and no false unique outputs on negative/ambiguous cases. Other coordination patterns remain outside this accepted profile.
+- **6.8 Embedded/subordinate clauses:** the registered causal and ambiguous causal/temporal attachment profiles are accepted in English and MSA Arabic. The ambiguous marker templates preserve both relation alternatives against the exact marker span. General complement, relative-clause, conditional, and argument-gap coverage remains outside this profile.
+- **6.9 Voice/speech acts:** the registered passive-question profile is accepted in both languages. General active/passive alternations, imperatives, commands, and requests remain outside this bounded profile.
+- **6.10 Operators:** the registered modality-plus-negation and nested-scope ambiguity profiles are accepted in both languages. The ambiguous template preserves both scope alternatives with an unresolved scope rather than selecting one. Broader quantifier and cross-construction operator families remain outside this profile.
+- **6.11 Discourse:** the registered single-antecedent and multiple-antecedent profiles are accepted in both languages. Phase 6 merges candidate antecedents into existing Phase 5 mention records and retains `UNRESOLVED`; it does not merge real-world identities.
 
 Every generated node and relation uses exact Unicode code-point spans into the original source. The Phase 6 composition engine checks references, relation types, operator targets, clause-parent cycles, and source evidence.
 
@@ -59,9 +59,9 @@ The new \`tools/phase6_broader_semantics_v0_1/integrated_benchmark.py\` runs the
 
 This is a bridge-regression benchmark. It demonstrates that the new graph and interfaces carry accepted Phase 5 results without loss; it is not new naturalistic accuracy evidence for Phase 6 Steps 6.7–6.11. The workflow also runs the Phase 6 graph contract tests, the integrated API/projection/replay tests, Step 6.5 regression, and prior protected-path checks.
 
-## Current acceptance boundary
+## Bounded acceptance boundary
 
-The following are accepted for the registered automatic synthetic profiles and regression-tested as candidate behavior:
+The following registered behaviors passed the automatic synthetic acceptance gates and remain candidate-only at runtime:
 - integrated bilingual pipeline composition and Phase 5 stage reuse;
 - explicit clause boundaries and typed clause relation candidates;
 - operator target/scope transfer;
