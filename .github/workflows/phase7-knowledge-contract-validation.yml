@@ -1,0 +1,38 @@
+name: Phase 7 Knowledge Contract Validation
+
+on:
+  pull_request:
+    paths:
+      - 'specifications/USG-KNOWLEDGE-0.1.0.md'
+      - 'specifications/USG-KNOWLEDGE-RECORD-KINDS-0.1.0.md'
+      - 'specifications/usg-knowledge-0.1.0.schema.json'
+      - 'examples/phase7-knowledge-bundle-0.1.0.json'
+      - 'tools/phase7_knowledge_contract/**'
+      - 'tests/test_phase7_knowledge_contract.py'
+      - '.github/workflows/phase7-knowledge-contract-validation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install pinned validator
+        run: python -m pip install 'jsonschema==4.23.0'
+      - name: Validate JSON documents
+        run: |
+          python -m json.tool specifications/usg-knowledge-0.1.0.schema.json > /dev/null
+          python -m json.tool examples/phase7-knowledge-bundle-0.1.0.json > /dev/null
+      - name: Validate example bundle
+        run: python -m tools.phase7_knowledge_contract.validate
+      - name: Run contract tests
+        run: python -m unittest discover -s tests -p 'test_phase7_knowledge_contract.py' -v
+      - name: Protect frozen semantic interchange schema
+        run: git diff --exit-code origin/main...HEAD -- specifications/usg-sem-1.0.schema.json specifications/USG-SEM-1.0.md
