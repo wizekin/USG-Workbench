@@ -163,14 +163,98 @@ def _two_clause_case(lang: str, step: str, profile: str, kind: str,
     )
 
 
+def _shared_argument_case(lang: str, index: int,
+                           first: dict[str, Any], second: dict[str, Any]) -> dict[str, Any]:
+    first_roles = first["expected_roles"]
+    second_agent = second["expected_roles"]["AGENT"]
+    if lang == "en":
+        action = EN_BASE[first_roles["ACTION"]]
+        first_agent = first_roles["AGENT"]
+        patient = first_roles["PATIENT"]
+        text = f"{first_agent} and {second_agent} {action} {patient}."
+        spans = [
+            {"role": "AGENT", **_span(text, first_agent)},
+            {"role": "AGENT", **_span(text, second_agent, len(first_agent) + 5)},
+            {"role": "ACTION", **_span(text, action)},
+            {"role": "PATIENT", **_span(text, patient)},
+        ]
+        marker = {"surface": "and", "start": len(first_agent) + 1,
+                  "end": len(first_agent) + 4}
+    else:
+        action = AR_PRESENT[first_roles["ACTION"]]
+        first_agent = first_roles["AGENT"]
+        patient = first_roles["PATIENT"]
+        # The conjunction is written as a clitic on the second conjunct in
+        # normal MSA orthography; the runtime adapter must split its evidence
+        # span without losing the original source offsets.
+        text = f"{action} {first_agent} و{second_agent} {patient}"
+        second_start = len(action) + 1 + len(first_agent) + 1
+        spans = [
+            {"role": "ACTION", **_span(text, action)},
+            {"role": "AGENT", **_span(text, first_agent)},
+            {"role": "AGENT", "start": second_start + 1,
+             "end": second_start + 1 + len(second_agent), "surface": second_agent},
+            {"role": "PATIENT", **_span(text, patient, second_start + 1 + len(second_agent) + 1)},
+        ]
+        marker = {"surface": "و", "start": second_start, "end": second_start + 1}
+
+    # The intended graph is defined from the seed roles before the sentence is
+    # realized. Source spans are attached only after the realization is fixed.
+    graph = {
+        "nodes": [
+            {"id": "agent-1", "kind": "ENTITY", "role": "AGENT",
+             "semantic_value": first_agent},
+            {"id": "agent-2", "kind": "ENTITY", "role": "AGENT",
+             "semantic_value": second_agent},
+            {"id": "predicate", "kind": "EVENT", "role": "ACTION",
+             "semantic_value": action},
+            {"id": "patient", "kind": "ENTITY", "role": "PATIENT",
+             "semantic_value": patient},
+        ],
+        "relations": [
+            {"type": "AND", "source": "agent-1", "target": "agent-2"},
+            {"type": "AGENT", "source": "predicate", "target": "agent-1"},
+            {"type": "AGENT", "source": "predicate", "target": "agent-2"},
+            {"type": "PATIENT", "source": "predicate", "target": "patient"},
+        ],
+        "ambiguity": None,
+    }
+    node_by_role = {
+        "agent-1": "AGENT", "agent-2": "AGENT",
+        "predicate": "ACTION", "patient": "PATIENT",
+    }
+    for node in graph["nodes"]:
+        role = node_by_role[node["id"]]
+        candidates = [item for item in spans if item["role"] == role]
+        if node["id"] == "agent-1":
+            item = candidates[0] if lang == "en" else candidates[1]
+        elif node["id"] == "agent-2":
+            item = candidates[1] if lang == "en" else candidates[2]
+        else:
+            item = next(value for value in candidates if value["surface"] ==
+                        node["semantic_value"])
+        node["source_span"] = {
+            "start": item["start"], "end": item["end"], "surface": item["surface"]
+        }
+    expected = {
+        "required_relations": ["AND", "AGENT", "PATIENT"],
+        "required_features": ["COORDINATION", "PREDICATE_ARGUMENT"],
+        "required_markers": [marker],
+        "required_role_spans": spans,
+    }
+    return _case(
+        f"{lang}.coordination.POSITIVE.{index+1:02d}", lang, "6.7",
+        "coordination", "POSITIVE", text, graph, expected,
+        source_seed_ids=[first["id"], second["id"]],
+    )
+
+
 def _generate_coordination(lang: str, seeds: list[dict[str, Any]]) -> list[dict[str, Any]]:
     out = []
     conjunction = "and" if lang == "en" else "و"
     for i in range(20):
         a, b = seeds[i], seeds[(i + 7) % 20]
-        out.append(_two_clause_case(
-            lang, "6.7", "coordination", "POSITIVE", [a, b], conjunction
-        ))
+        out.append(_shared_argument_case(lang, i, a, b))
     for i in range(20):
         seed = seeds[i]
         text = _trim_clause(seed["text"])
