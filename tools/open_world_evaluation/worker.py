@@ -26,12 +26,19 @@ def _apply_resource_limits(case: dict[str, Any]) -> None:
     wall_seconds = max(1, int(math.ceil(float(limits["wall_time_seconds"]))))
     memory_bytes = int(limits["memory_megabytes"]) * 1024 * 1024
 
-    for name, value in (
+    browser_target = case.get("target", {}).get("interface") == "browser_ui"
+    file_limit = 512 if browser_target else 64
+    limits = [
         ("RLIMIT_CPU", (wall_seconds, wall_seconds + 1)),
         ("RLIMIT_FSIZE", (8 * 1024 * 1024, 8 * 1024 * 1024)),
-        ("RLIMIT_NOFILE", (64, 64)),
-        ("RLIMIT_AS", (memory_bytes, memory_bytes)),
-    ):
+        ("RLIMIT_NOFILE", (file_limit, file_limit)),
+    ]
+    # Chromium reserves large virtual address ranges; inheriting RLIMIT_AS
+    # causes SIGTRAP even when physical memory use is low. The ephemeral
+    # hosted runner VM is the browser process memory boundary instead.
+    if not browser_target:
+        limits.append(("RLIMIT_AS", (memory_bytes, memory_bytes)))
+    for name, value in limits:
         limit_id = getattr(resource, name, None)
         if limit_id is None:
             continue
@@ -191,14 +198,8 @@ def execute(case: dict[str, Any]) -> dict[str, Any]:
         }
 
     if target_id == "js-semantic-workbench-v054":
-        return {
-            "outcome": "not_executed",
-            "reason": (
-                "OW-3 does not yet include a browser automation adapter. "
-                "The JS Workbench target is registered but no browser execution was attempted."
-            ),
-            "execution_metadata": {"adapter": "not-implemented"},
-        }
+        from tools.open_world_evaluation.browser_adapter import interpret_in_browser
+        return interpret_in_browser(case)
 
     return {
         "outcome": "not_executed",

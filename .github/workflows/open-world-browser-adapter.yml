@@ -1,0 +1,54 @@
+name: Open-World Browser Adapter
+
+on:
+  pull_request:
+    paths:
+      - "tools/open_world_evaluation/browser_adapter.py"
+      - "tools/open_world_evaluation/worker.py"
+      - "tools/open_world_evaluation/execute_cases.py"
+      - "tools/open_world_evaluation/generate_scenarios.py"
+      - "tests/test_open_world_browser_adapter.py"
+      - ".github/workflows/open-world-browser-adapter.yml"
+      - "implementations/semantic-workbench-js/v0.5.4/**"
+  push:
+    branches: [main]
+    paths:
+      - "tools/open_world_evaluation/browser_adapter.py"
+      - "tools/open_world_evaluation/worker.py"
+      - "tools/open_world_evaluation/execute_cases.py"
+      - "tools/open_world_evaluation/generate_scenarios.py"
+      - "tests/test_open_world_browser_adapter.py"
+      - ".github/workflows/open-world-browser-adapter.yml"
+      - "implementations/semantic-workbench-js/v0.5.4/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  browser-adapter:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      USG_RUN_BROWSER_TESTS: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install protocol and browser dependencies
+        run: |
+          echo "PLAYWRIGHT_BROWSERS_PATH=$HOME/.cache/ms-playwright" >> "$GITHUB_ENV"
+          export PLAYWRIGHT_BROWSERS_PATH="$HOME/.cache/ms-playwright"
+          python -m pip install "jsonschema>=4.18,<5" "playwright>=1.48,<2"
+          python -m playwright install --with-deps chromium
+      - name: Run browser adapter projection and end-to-end isolated worker tests
+        run: python -m unittest discover -s tests -p "test_open_world_browser_adapter.py" -v
+      - name: Compile browser adapter and worker
+        run: |
+          python -m py_compile tools/open_world_evaluation/browser_adapter.py
+          python -m py_compile tools/open_world_evaluation/worker.py
+          python -m py_compile tools/open_world_evaluation/execute_cases.py

@@ -20,6 +20,10 @@ on:
       - "tools/open_world_evaluation/coverage_ledger.py"
       - "tools/open_world_evaluation/target_profiles.json"
       - "tools/open_world_evaluation/worker.py"
+      - "tools/open_world_evaluation/browser_adapter.py"
+      - "tools/open_world_evaluation/execute_cases.py"
+      - "tools/open_world_evaluation/generate_scenarios.py"
+      - "tests/test_open_world_browser_adapter.py"
       - "tools/open_world_evaluation/operation_oracles.py"
       - "tools/open_world_evaluation/schemas/coverage-ledger.schema.json"
       - "tests/test_open_world_continuous.py"
@@ -108,6 +112,8 @@ jobs:
           node-version: "22"
       - name: Install pinned Playwright runtime
         run: |
+          echo "PLAYWRIGHT_BROWSERS_PATH=$HOME/.cache/ms-playwright" >> "$GITHUB_ENV"
+          export PLAYWRIGHT_BROWSERS_PATH="$HOME/.cache/ms-playwright"
           python -m pip install "playwright>=1.48,<2"
           python -m playwright install --with-deps chromium
       - name: Serve the static Workbench
@@ -147,8 +153,15 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Install schema validator
-        run: python -m pip install "jsonschema>=4.18,<5"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install schema and browser dependencies
+        run: |
+          echo "PLAYWRIGHT_BROWSERS_PATH=$HOME/.cache/ms-playwright" >> "$GITHUB_ENV"
+          export PLAYWRIGHT_BROWSERS_PATH="$HOME/.cache/ms-playwright"
+          python -m pip install "jsonschema>=4.18,<5" "playwright>=1.48,<2"
+          python -m playwright install --with-deps chromium
       - name: Run operation-level tests with independent fixture oracles
         run: python -m tools.open_world_evaluation.operation_oracles --output "$RUNNER_TEMP/ow11-operation-oracle-report.json"
       - name: Upload operation-oracle report

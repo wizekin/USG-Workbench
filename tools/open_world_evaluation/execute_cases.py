@@ -65,7 +65,7 @@ def _safe_environment(workspace: Path) -> dict[str, str]:
         "TEMP": str(workspace),
         "TMP": str(workspace),
     }
-    for key in ("PATH", "SYSTEMROOT", "WINDIR", "LANG", "LC_ALL"):
+    for key in ("PATH", "SYSTEMROOT", "WINDIR", "LANG", "LC_ALL", "PLAYWRIGHT_BROWSERS_PATH"):
         if key in os.environ:
             env[key] = os.environ[key]
     return env
@@ -185,12 +185,6 @@ def execute_case(
         )
 
     target_id = case["target"]["component_id"]
-    if target_id == "js-semantic-workbench-v054":
-        return _not_executed(
-            case, commit_sha,
-            "browser_ui target is registered but no Playwright/browser adapter is implemented in OW-3",
-        )
-
     started_at = _utc_now()
     started_clock = time.monotonic()
     requested_wall = float(case["resource_limits"]["wall_time_seconds"])
