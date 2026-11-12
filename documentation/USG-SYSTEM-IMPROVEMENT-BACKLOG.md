@@ -40,7 +40,7 @@ This backlog converts the system-wide assessment into bounded, dependency-ordere
 | SYS-05 | **Complete** | PR #190 publishes the versioned `USG-LEXICAL-CANDIDATES/0.1.0` JSON Schema and deterministic `USG-LEXICAL-ADAPTER/0.1.0` read-only adapter with provenance/identity checks and candidate-only enforcement. |
 | SYS-06 | **Complete** | PR #190 adds English OOV and polysemy regressions plus Arabic OOV regression; unknown forms remain unresolved and bank remains ambiguous. |
 | SYS-04 | **Complete for English browser execution** | PR #194 adds a real Chromium/Playwright adapter for JS Semantic Workbench v0.5.4, with loopback-only browser requests, stable result projection, explicit unsupported-language outcomes, and a full isolated-worker smoke test. It does not add Arabic support or semantic correctness guarantees. |
-| SYS-15 | **Initial unattended planner implemented** | This PR adds the scheduled growth controller, which aggregates recent campaign execution results, computes target-specific first-blocker diagnostics, ranks next investigations, and uploads a traceable artifact. It does not edit runtime code or promote resources. |
+| SYS-15 | **Complete for evidence aggregation and prioritization** | PR #195 adds the daily scheduled growth controller, first-blocker/resource-aware ranking, growth policy, validation tests, and 90-day report artifacts. It does not synthesize or merge semantic rules. |
 
 These are implementation states, not claims that USG's semantic accuracy has improved. The work so far improves evaluation trustworthiness and repeatability; it does not add new accepted language-understanding capabilities.
 
