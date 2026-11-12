@@ -42,7 +42,6 @@ jobs:
     env:
       PROMPT_COUNT: ${{ github.event.inputs.prompt_count || '1000' }}
       CAMPAIGN_ID: OWC-OW6-${{ github.run_id }}-${{ github.run_attempt }}
-      PLAYWRIGHT_BROWSERS_PATH: ${{ runner.temp }}/ms-playwright
     steps:
       - uses: actions/checkout@v4
         with:
@@ -55,6 +54,8 @@ jobs:
           node-version: "22"
       - name: Install schema and browser dependencies
         run: |
+          echo "PLAYWRIGHT_BROWSERS_PATH=$HOME/.cache/ms-playwright" >> "$GITHUB_ENV"
+          export PLAYWRIGHT_BROWSERS_PATH="$HOME/.cache/ms-playwright"
           python -m pip install "jsonschema>=4.18,<5" "playwright>=1.48,<2"
           python -m playwright install --with-deps chromium
       - name: Validate campaign size and run diagnostic importer tests
