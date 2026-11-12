@@ -276,6 +276,56 @@ def _generate_coordination(lang: str, seeds: list[dict[str, Any]]) -> list[dict[
     return out
 
 
+def _ambiguous_attachment_case(lang: str, index: int,
+                                  first: dict[str, Any], second: dict[str, Any]) -> dict[str, Any]:
+    # "as" (English) and "إذ" (MSA Arabic) can express either causal or
+    # temporal relations in the intended context. The reference therefore
+    # stores both readings against the same marker and predicate pair.
+    a = _trim_clause(first["text"])
+    b = _trim_clause(second["text"])
+    marker = "as" if lang == "en" else "إذ"
+    text = f"{a} {marker} {b}"
+    if lang == "en":
+        first_action = first["expected_roles"]["ACTION"]
+        second_action = second["expected_roles"]["ACTION"]
+        first_action_span = _span(text, first_action)
+        second_action_span = _span(text, second_action, len(a) + len(marker) + 2)
+    else:
+        first_action = first["expected_roles"]["ACTION"]
+        second_action = second["expected_roles"]["ACTION"]
+        first_action_span = _span(text, first_action)
+        second_action_span = _span(text, second_action, len(a) + len(marker) + 2)
+    marker_span = _span(text, marker, len(a) + 1)
+    graph = {
+        "nodes": [
+            {"id": "main-event", "kind": "EVENT", "role": "ACTION",
+             "semantic_value": first_action,
+             "source_span": first_action_span},
+            {"id": "subordinate-event", "kind": "EVENT", "role": "ACTION",
+             "semantic_value": second_action,
+             "source_span": second_action_span},
+        ],
+        "relations": [
+            {"type": "CAUSAL", "source": "main-event", "target": "subordinate-event",
+             "evidence": marker_span, "alternative_group": "attachment-1"},
+            {"type": "TEMPORAL", "source": "main-event", "target": "subordinate-event",
+             "evidence": marker_span, "alternative_group": "attachment-1"},
+        ],
+        "ambiguity": "AMBIGUOUS_CAUSAL_OR_TEMPORAL_ATTACHMENT",
+        "alternatives": ["CAUSAL", "TEMPORAL"],
+    }
+    expected = {
+        "ambiguity_alternatives_required": True,
+        "required_ambiguous_relations": ["CAUSAL", "TEMPORAL"],
+        "required_markers": [marker_span],
+    }
+    return _case(
+        f"{lang}.embedded_clauses.AMBIGUOUS.{index+1:02d}", lang, "6.8",
+        "embedded_clauses", "AMBIGUOUS", text, graph, expected,
+        source_seed_ids=[first["id"], second["id"]],
+    )
+
+
 def _generate_subordination(lang: str, seeds: list[dict[str, Any]]) -> list[dict[str, Any]]:
     out = []
     causal = "because" if lang == "en" else "لأن"
@@ -297,23 +347,8 @@ def _generate_subordination(lang: str, seeds: list[dict[str, Any]]) -> list[dict
             source_seed_ids=[a["id"], b["id"]],
         ))
     for i in range(10):
-        a, b, c = seeds[i], seeds[(i + 5) % 20], seeds[(i + 12) % 20]
-        case = _two_clause_case(
-            lang, "6.8", "embedded_clauses", "AMBIGUOUS", [a, b, c],
-            causal, temporal,
-        )
-        # When the pipeline cannot license both clause predicates, a retained
-        # explicit first-blocker diagnostic with no unique CAUSAL/TEMPORAL edge
-        # is a valid conservative outcome for this deliberately multi-attachment
-        # challenge. It is not counted as successful attachment accuracy.
-        case["expected"] = {
-            "allow_explicit_attachment_abstention": True,
-            "required_ambiguous_diagnostics": [
-                "CLAUSE_BOUNDARY_WITHOUT_TWO_PREDICATE_CANDIDATES"
-            ],
-            "forbidden_unique_relations": ["CAUSAL", "TEMPORAL"],
-        }
-        out.append(case)
+        a, b = seeds[i], seeds[(i + 5) % 20]
+        out.append(_ambiguous_attachment_case(lang, i, a, b))
     return out
 
 
