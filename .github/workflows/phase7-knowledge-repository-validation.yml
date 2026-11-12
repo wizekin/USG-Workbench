@@ -1,0 +1,40 @@
+name: Phase 7 SQLite Knowledge Repository Validation
+
+on:
+  pull_request:
+    paths:
+      - 'tools/phase7_knowledge_repository/**'
+      - 'tools/phase7_knowledge_contract/**'
+      - 'tools/usg_local_api_v1_0_0/application.py'
+      - 'tests/test_phase7_knowledge_repository.py'
+      - 'specifications/usg-knowledge-0.1.0.schema.json'
+      - '.github/workflows/phase7-knowledge-repository-validation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  repository:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install pinned validator
+        run: python -m pip install 'jsonschema==4.23.0'
+      - name: Compile repository and validate fixture
+        run: |
+          python -m compileall -q tools/phase7_knowledge_repository tools/phase7_knowledge_contract
+          python -m tools.phase7_knowledge_contract.validate
+      - name: Test Phase 7 repository
+        run: python -m unittest discover -s tests -p 'test_phase7_knowledge_repository.py' -v
+      - name: Protect canonical SQLite and Phase 1–6 baselines
+        run: |
+          git diff --exit-code origin/main...HEAD -- specifications/USG-SEM-1.0.md specifications/usg-sem-1.0.schema.json
+          git diff --exit-code origin/main...HEAD -- documentation/PHASE-[1-6]*
+          git diff --exit-code origin/main...HEAD -- tools/semantic_graph_store_v1_0_0 tools/usg_interpretation_v0_1_0 tools/usg_interpretation_v0_2_0 archives/ implementations/semantic-workbench-js/

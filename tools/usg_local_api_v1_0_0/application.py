@@ -26,6 +26,7 @@ from tools.phase6_broader_semantics_v0_1.engine import compose as compose_phase6
 from tools.phase6_broader_semantics_v0_1.extract import extract_candidate_graph
 from tools.phase6_broader_semantics_v0_1.runs import SQLitePhase6CandidateRunStore
 from tools.phase6_broader_semantics_v0_1.interpret import Phase6IntegratedInterpreter, project_preservation_document
+from tools.phase7_knowledge_repository import SQLiteKnowledgeRepository
 from tools.usg_interpretation_v0_2_0 import (
     Phase5InterpretationService, SQLiteResourceCatalogue,
     SQLiteInterpretationRunStore, bundled_resource_descriptors,
@@ -69,6 +70,7 @@ class USGApplication:
                         + descriptor.resource_id
                     )
             self.phase6_candidate_run_store = SQLitePhase6CandidateRunStore(connection)
+            self.knowledge_repository = SQLiteKnowledgeRepository(connection)
         self.phase6_integrated_interpreter = Phase6IntegratedInterpreter()
 
     def _catalogue_read(self, operation):
@@ -136,6 +138,7 @@ class USGApplication:
                     "phase6_candidate_capabilities": "CANDIDATE_ONLY",
                     "phase6_integrated_interpreter": "usg-phase6-integrated-interpreter/0.2.0",
                     "resource_catalogue": "sqlite-semantic-resource-catalogue/0.1.0",
+                    "knowledge_repository": "sqlite-usg-knowledge-repository/0.1.0",
                 }
 
             if method == "GET" and path == "/v2/resources":
