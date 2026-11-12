@@ -4,7 +4,7 @@
 
 [![Repository](https://img.shields.io/badge/GitHub-wizekin%2FUSG--Workbench-181717?logo=github)](https://github.com/wizekin/USG-Workbench)
 [![Default branch](https://img.shields.io/badge/branch-main-blue)](https://github.com/wizekin/USG-Workbench/tree/main)
-[![Phase 7](https://img.shields.io/badge/Phase%207-Steps%207.1--7.4%20in%20progress-orange)](documentation/PHASE-7-DEFINITIONS-ROADMAP.md)
+[![Phase 7](https://img.shields.io/badge/Phase%207-Steps%207.1--7.5%20in%20progress-orange)](documentation/PHASE-7-DEFINITIONS-ROADMAP.md)
 
 > **Status snapshot:** 12 November 2026 · Main branch baseline reviewed at [`2bd0151`](https://github.com/wizekin/USG-Workbench/commit/2bd0151aed762bc8cff4a01015b3504d507fe4c9). Live workflow and campaign links below take precedence over this dated snapshot.
 
@@ -25,7 +25,7 @@ Start here — jump directly to any major section:
 | 7 | [Architecture and reliability rules](#architecture-and-reliability-rules) | Contracts, data, uncertainty, and evidence boundaries |
 | 8 | [How to explore and test USG](#how-to-explore-and-test-usg) | Start the interface and find tests |
 | 9 | [Repository structure](#repository-structure) | Where code, specifications, evidence, and data are stored |
-| 10 | [Phase 7 definitions roadmap](documentation/PHASE-7-DEFINITIONS-ROADMAP.md) | Semantic knowledge integration; Steps 7.1–7.3 merged, Step 7.4 in progress |
+| 10 | [Phase 7 definitions roadmap](documentation/PHASE-7-DEFINITIONS-ROADMAP.md) | Semantic knowledge integration; Steps 7.1–7.4 merged, Step 7.5 in progress |
 
 ---
 
@@ -183,7 +183,7 @@ These are the major open workstreams. Detailed step definitions, dependencies, a
 
 ### 1. Phase 7 — semantic knowledge integration and contextual knowledge layer
 
-**Status: STEPS 7.1–7.3 MERGED; STEP 7.4 IN IMPLEMENTATION.** Phase 7 builds a reusable knowledge layer for lexical forms, senses, concepts, typed relations, provenance, context, and controlled retrieval on top of accepted Phase 1–5 foundations. It does not wait for the broader Phase 6 research queue. The additive `USG-KNOWLEDGE/0.1.0` contract and SQLite knowledge repository are in place; `USG-SEM/1.0` remains unchanged.
+**Status: STEPS 7.1–7.4 MERGED; STEP 7.5 IN IMPLEMENTATION.** Phase 7 builds a reusable knowledge layer for lexical forms, senses, concepts, typed relations, provenance, context, and controlled retrieval on top of accepted Phase 1–5 foundations. It does not wait for the broader Phase 6 research queue. The additive `USG-KNOWLEDGE/0.1.0` contract and SQLite knowledge repository are in place; `USG-SEM/1.0` remains unchanged.
 
 The initial roadmap defines ten ordered steps: knowledge contract/inventory; typed lexical-sense and concept model; persistent repository; source adapters and incremental acquisition; cross-language alignment; typed relations and reconciliation; contextual retrieval; read-only integration with reasoning/interpreters; API/CLI/Kernel Lab inspection; and profile-specific evaluation/exit acceptance.
 

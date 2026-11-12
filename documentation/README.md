@@ -187,6 +187,8 @@
 
 ### Phase 7 — semantic knowledge integration and contextual knowledge layer
 
+- [Phase 7 bilingual alignment proposals](../tools/phase7_knowledge_alignment/proposals.py) — Candidate-only English/MSA Arabic sense-to-concept grouping with explicit unresolved status.
+
 - [Phase 7 rights-aware source adapters](../tools/phase7_knowledge_sources/adapters.py) — External lexical candidate and validated USG-SEM/1.0 document adapters with explicit rights gating.
 
 

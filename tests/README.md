@@ -207,3 +207,8 @@ Run `python -m unittest discover -s tests -p 'test_phase7_knowledge_repository.p
 ## Phase 7 rights-aware source adapters
 
 Run `python -m unittest discover -s tests -p 'test_phase7_knowledge_sources.py' -v` after installing `jsonschema==4.23.0`.
+
+
+## Phase 7 bilingual alignment proposals
+
+Run `python -m unittest discover -s tests -p 'test_phase7_knowledge_alignment.py' -v` after installing `jsonschema==4.23.0`.

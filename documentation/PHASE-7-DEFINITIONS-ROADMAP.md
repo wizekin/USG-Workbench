@@ -1,7 +1,7 @@
 # USG Phase 7 — Semantic Knowledge Integration and Contextual Knowledge Layer
 
 **Phase:** 7 — Semantic knowledge integration and contextual knowledge retrieval  
-**Status:** STEPS 7.1–7.3 MERGED; Step 7.4 implemented in PR and pending exact-head validation. Steps 7.5–7.10 remain unstarted.  
+**Status:** STEPS 7.1–7.4 MERGED; Step 7.5 implemented in PR and pending exact-head validation. Steps 7.6–7.10 remain unstarted.  
 **Primary objective:** build a governed, persistent semantic knowledge layer that connects lexical forms, lexical senses, language-neutral concepts, semantic classes, typed relations, source evidence, contexts, and validated canonical documents.  
 **Prerequisites:** accepted Phase 1–5 foundations; Phase 6 bounded automatic exit accepted for its registered scope.  
 **Non-blocking parallel work:** Phase 6 construction expansion continues through the [Phase 6 Continuation Tracker](PHASE-6-CONTINUATION-TRACKER.md). No unfinished Phase 6 continuation item is a prerequisite for Phase 7 unless a specific Phase 7 step explicitly adopts it.  
@@ -222,6 +222,14 @@ The canonical-document adapter validates the full document with the existing USG
 
 **Acceptance boundary:** adapters are deterministic for fixed input and retrieval timestamp; all imported records remain CANDIDATE or VALIDATED_FOR_PROFILE; every record has source/evidence/context references; source disagreements remain separate; no mappings or relations are inferred; and the caller explicitly owns persistence transactions. The adapter does not promote knowledge or alter runtime lexical resources.
 
+## 7.5 Step 7.5 — Cross-language sense and concept alignment
+
+**Deliverables:** deterministic bilingual alignment-candidate generation from the project-authored English/MSA Arabic discourse lexicon; candidate lexical forms, lemmas, senses, unresolved concept records, evidence-bearing sense-to-concept mappings, and SQLite ingestion through Step 7.3.
+
+The initial pilot uses the versioned 48-entry resource. It currently produces two English–Arabic pronoun grouping proposals. Each mapping remains UNRESOLVED; the resource's concept_ref is treated as an opaque grouping hint, not proof of equivalence or identity. Polysemous English bank senses remain separate under their distinct resource concept references. No translation model, spelling match, embedding similarity, or human annotation is required to produce this bounded candidate set.
+
+**Acceptance boundary:** this is a deterministic candidate-generation pilot, not a general English–Arabic aligner. It creates no EQUIVALENT mapping, no accepted concept, and no semantic relation. Every proposal retains source/evidence/context references; no candidate is promoted. Broader coverage, independent evidence, overlap/narrower/broader adjudication, and profile-level false-merge evaluation remain open for Step 7.10 and future resource expansion.
+
 ## 8. Dependencies and parallelism
 
 ### Required before Phase 7 implementation
@@ -290,4 +298,4 @@ No Phase 7 task may rewrite a previously accepted phase's meaning or make that p
 6. Integrate read-only adapters and inspection interfaces.
 7. Close Phase 7 with profile-specific tests, reproducible reports, and protected baseline regressions.
 
-**Next mainline implementation: Step 7.5 — cross-language sense-to-concept alignment.** Steps 7.1–7.3 are merged; Step 7.4 awaits its exact-head CI gate. This does not imply completion of the full Phase 7 roadmap.
+**Next mainline implementation: Step 7.6 — typed semantic relations and source reconciliation.** Steps 7.1–7.4 are merged; Step 7.5 is a bounded unresolved-proposal pilot and awaits exact-head CI. This does not imply completion of the full Phase 7 roadmap.
