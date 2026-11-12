@@ -296,6 +296,21 @@ jobs:
             set -- "$@" --workflow-runs "$EVIDENCE_DIR/github-actions-workflows.json"
           fi
           python -m tools.system_evidence.collector "$@"
+      - name: Evaluate integrated Phase 8 acceptance
+        id: phase8-acceptance
+        run: |
+          set +e
+          python -m tools.system_evidence.acceptance \
+            --catalogue "$EVIDENCE_DIR/system-evidence-catalogue.json" \
+            --output "$EVIDENCE_DIR/phase8-integrated-acceptance.json"
+          acceptance_exit=$?
+          set -e
+          acceptance_status="$(python -c 'import json,os; p=json.load(open(os.environ["EVIDENCE_DIR"] + "/phase8-integrated-acceptance.json")); print(p["status"])')"
+          echo "status=$acceptance_status" >> "$GITHUB_OUTPUT"
+          echo "Phase 8 integrated acceptance review status: $acceptance_status" >> "$GITHUB_STEP_SUMMARY"
+          if [ "$acceptance_exit" -ne 0 ]; then
+            echo "The integrated gate is blocked; the evidence snapshot will still be preserved for diagnosis." >> "$GITHUB_STEP_SUMMARY"
+          fi
       - name: Assemble append-only evidence snapshot
         id: snapshot
         run: |
@@ -314,7 +329,8 @@ jobs:
             usg-growth-plan.json \
             usg-growth-plan.md \
             usg-growth-plan-error.json \
-            github-actions-workflows.json; do
+            github-actions-workflows.json \\
+            phase8-integrated-acceptance.json; do
             if [ -s "$EVIDENCE_DIR/$item" ]; then cp "$EVIDENCE_DIR/$item" "$snapshot_dir/$item"; fi
           done
           cat > "$snapshot_dir/collection-metadata.json" <<EOF
