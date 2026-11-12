@@ -56,6 +56,35 @@ Execute them against the pinned repository commit:
 
 The output is one OW-1 execution-result JSON object per attempted case. A run summary is printed to stdout. The output is append-only by convention: the CLI refuses an existing output path; interrupted runs leave their already-written records intact and require a new output path for a continuation.
 
+## JavaScript Semantic Workbench browser target (SYS-04)
+
+The registered `js-semantic-workbench-v054` target now uses
+`tools/open_world_evaluation/browser_adapter.py`. The adapter starts the
+Workbench's own Node bridge on a dynamically selected loopback port, launches
+headless Chromium through Playwright, opens the actual browser UI, enters the
+scenario text, invokes **Analyze sentence**, and captures the resulting
+candidate interpretation JSON.
+
+The adapter currently supports the Workbench's English interpreter only.
+Non-English scenarios are recorded as `unsupported`, not silently translated
+or sent to another implementation. It uses the deterministic local rule
+fallback; no Ollama model is required or used.
+
+Browser requests are restricted to loopback hosts by Playwright routing.
+Service workers are disabled and Chromium background networking is disabled.
+The Node bridge itself binds only to `127.0.0.1`; its model URL validator also
+rejects non-loopback Ollama destinations. The worker grants browser scenarios
+a 45-second wall limit and 2 GiB address-space budget. The stable target result
+projection removes generated claim IDs and timestamps but preserves semantic
+fields, evidence spans, unresolved items, warnings, and source text.
+
+The adapter is tested in a real Chromium process by
+`.github/workflows/open-world-browser-adapter.yml`. The full OW-6 target
+matrix installs the same browser runtime before executing cases. A browser
+execution pass establishes that the UI path ran and returned a structured
+candidate; it does not establish semantic correctness or broad language
+coverage.
+
 ## Deterministic replay of recorded cases (SYS-14)
 
 Use the replay utility to re-run recorded cases at the exact commit that produced their original execution records:
