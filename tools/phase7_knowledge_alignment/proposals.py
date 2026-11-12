@@ -88,6 +88,8 @@ def build_bilingual_alignment_bundle(resource: dict[str, Any], *, created_at: st
             # Multiple forms/features may belong to one lexical sense. Preserve each
             # form and its evidence, but do not duplicate the sense or mapping.
             duplicate_evidence_id = _id("evidence", resource_id, version, sense_key, entry["form"], _id("entry", _canonical(entry).hex()))
+            if any(item["id"] == duplicate_evidence_id for item in evidence):
+                continue
             evidence.append({
                 "id": duplicate_evidence_id, "source_id": source_id, "evidence_type": "OTHER",
                 "support_status": "UNASSESSED",
