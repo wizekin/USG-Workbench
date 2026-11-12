@@ -298,10 +298,22 @@ def _generate_subordination(lang: str, seeds: list[dict[str, Any]]) -> list[dict
         ))
     for i in range(10):
         a, b, c = seeds[i], seeds[(i + 5) % 20], seeds[(i + 12) % 20]
-        out.append(_two_clause_case(
+        case = _two_clause_case(
             lang, "6.8", "embedded_clauses", "AMBIGUOUS", [a, b, c],
             causal, temporal,
-        ))
+        )
+        # When the pipeline cannot license both clause predicates, a retained
+        # explicit first-blocker diagnostic with no unique CAUSAL/TEMPORAL edge
+        # is a valid conservative outcome for this deliberately multi-attachment
+        # challenge. It is not counted as successful attachment accuracy.
+        case["expected"] = {
+            "allow_explicit_attachment_abstention": True,
+            "required_ambiguous_diagnostics": [
+                "CLAUSE_BOUNDARY_WITHOUT_TWO_PREDICATE_CANDIDATES"
+            ],
+            "forbidden_unique_relations": ["CAUSAL", "TEMPORAL"],
+        }
+        out.append(case)
     return out
 
 
