@@ -55,6 +55,16 @@ class BrowserAdapterProjectionTests(unittest.TestCase):
         self.assertFalse(browser_request_is_allowed("http://192.168.1.1/"))
         self.assertFalse(browser_request_is_allowed("file:///etc/passwd"))
 
+    def test_registered_target_declares_browser_adapter_contract(self):
+        from pathlib import Path
+        import json
+        root = Path(__file__).resolve().parents[1]
+        registry = json.loads((root / "tools/open_world_evaluation/target_profiles.json").read_text(encoding="utf-8"))
+        target = next(item for item in registry["targets"] if item["component_id"] == "js-semantic-workbench-v054")
+        self.assertEqual(target["execution_adapter"], "tools.open_world_evaluation.browser_adapter.interpret_in_browser")
+        self.assertEqual(target["supported_language_hints"], ["en"])
+        self.assertEqual(target["browser_network_policy"], "loopback_only")
+
     def test_browser_target_receives_explicit_resource_budget(self):
         generator = ScenarioGenerator(
             seed="sys04-resource-budget",
