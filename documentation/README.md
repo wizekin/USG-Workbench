@@ -25,7 +25,8 @@
 | [Phase 4](#phase-4--bounded-raw-text-interpretation) | Interpretation contract and pipeline stages |
 | [Phase 5](#phase-5--bilingual-interpretation-pipeline) | Bilingual interpretation, morphology, syntax, composition, operators, discourse, resources |
 | [Phase 5 lexical foundation](#phase-5--lexical-foundation-history) | Lexical resource baselines and evolution |
-| [Phase 6](#phase-6--expanded-semantic-interpretation) | Expanded semantic structures, nominal/modifier semantics, benchmarks, blockers |
+| [Phase 6](#phase-6--expanded-semantic-interpretation) | Bounded acceptance, continuation workstreams, and independent tracker |
+| [Phase 7](#phase-7--semantic-knowledge-integration-and-contextual-knowledge-layer) | Semantic knowledge integration, concept alignment, contextual retrieval, and provenance |
 | [Open-World evaluation](#open-world-randomized-evaluation) | Random scenario generation, execution, scoring, coverage, adaptive discovery, naturalistic pilot |
 | [Specifications and schemas](#normative-specifications-and-schemas) | Canonical interchange and versioned contracts |
 | [Implementations](#implementations-and-versioned-baselines) | JavaScript Workbench, Python kernels, interpreter implementations |
@@ -152,9 +153,11 @@
 
 - [PHASE 6 BENCHMARK ANNOTATION CORRECTION 0.3.1](PHASE-6-BENCHMARK-ANNOTATION-CORRECTION-0.3.1.md) — Evaluation design, results, fixtures, or limitations.
 - [PHASE 6 BENCHMARK ANNOTATION CORRECTION 0.3.2](PHASE-6-BENCHMARK-ANNOTATION-CORRECTION-0.3.2.md) — Evaluation design, results, fixtures, or limitations.
-- [PHASE 6 DEFINITIONS ROADMAP](PHASE-6-DEFINITIONS-ROADMAP.md) — Scope, sequence, dependencies, and acceptance criteria.
+- [PHASE 6 DEFINITIONS ROADMAP](PHASE-6-DEFINITIONS-ROADMAP.md) — Bounded exit scope, accepted steps, dependencies, and remaining limitations.
+- [PHASE 6 CONTINUATION TRACKER](PHASE-6-CONTINUATION-TRACKER.md) — Independent non-blocking workstream ledger and scheduled PR/check monitoring.
 - [PHASE 6 AUTOMATIC ACCEPTANCE FACTORY](PHASE-6-AUTOMATIC-ACCEPTANCE-FACTORY.md) — Graph-first bilingual corpus generation, end-to-end scoring, preservation and integration checks, and report interpretation.
-- [PHASE 6 BOUNDED AUTOMATIC ACCEPTANCE RECORD](PHASE-6-BOUNDED-AUTOMATIC-ACCEPTANCE-RECORD.md) — Accepted registered-profile results, exact corpus digest, per-profile metrics, and explicit limitations for Steps 6.7–6.14.\n- [PHASE 6 STEPS 6.7–6.14 CANDIDATE INTEGRATION](PHASE-6-STEPS-6.7-6.14-COMPLETION-IMPLEMENTATION.md) — Candidate composition, strict-template extraction, API/CLI/Kernel Lab integration, SQLite replay, and capability limitations.
+- [PHASE 6 BOUNDED AUTOMATIC ACCEPTANCE RECORD](PHASE-6-BOUNDED-AUTOMATIC-ACCEPTANCE-RECORD.md) — Accepted registered-profile results, exact corpus digest, per-profile metrics, and explicit limitations for Steps 6.7–6.14.
+- [PHASE 6 STEPS 6.7–6.14 CANDIDATE INTEGRATION](PHASE-6-STEPS-6.7-6.14-COMPLETION-IMPLEMENTATION.md) — Candidate composition, strict-template extraction, API/CLI/Kernel Lab integration, SQLite replay, and capability limitations.
 - [PHASE 6 INTEGRATED INTERPRETER AND BRIDGE VALIDATION](PHASE-6-INTEGRATED-INTERPRETER-AND-BRIDGE-VALIDATION.md) — Shared bilingual execution path, candidate graph conversion, canonical OPAQUE preservation, and bridge-regression scope.
 - [PHASE 6 STEP 6.1 INTERPRETATION AND PROJECTION CONTRACT](PHASE-6-STEP-6.1-INTERPRETATION-AND-PROJECTION-CONTRACT.md) — Detailed technical documentation, implementation notes, or supporting evidence.
 - [PHASE 6 STEP 6.2 EXPANDED BENCHMARK AND EVALUATOR](PHASE-6-STEP-6.2-EXPANDED-BENCHMARK-AND-EVALUATOR.md) — Evaluation design, results, fixtures, or limitations.
@@ -181,6 +184,10 @@
 - [PHASE 6 STEP 6.6 SPACY NOMINAL E2E](PHASE-6-STEP-6.6-SPACY-NOMINAL-E2E.md) — Detailed technical documentation, implementation notes, or supporting evidence.
 - [PHASE 6 STEP 6.6 STANZA ARABIC E2E](PHASE-6-STEP-6.6-STANZA-ARABIC-E2E.md) — Detailed technical documentation, implementation notes, or supporting evidence.
 - [PHASE 6 STEP 6.6 UD NOMINAL ADAPTER](PHASE-6-STEP-6.6-UD-NOMINAL-ADAPTER.md) — Mapping, interoperability, and conformance behavior.
+
+### Phase 7 — semantic knowledge integration and contextual knowledge layer
+
+- [PHASE 7 DEFINITIONS ROADMAP](PHASE-7-DEFINITIONS-ROADMAP.md) — The next mainline development phase: typed concepts and lexical senses, provenance-bearing knowledge, cross-language mappings, contextual retrieval, source reconciliation, and read-only integration with existing reasoning/interpreters.
 
 ### Open-World randomized evaluation
 
