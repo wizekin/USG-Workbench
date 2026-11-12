@@ -102,10 +102,25 @@ def _merge_template_graph(base: dict, template: dict) -> None:
     for reference in template.get("references", []):
         item = deepcopy(reference)
         item["mention_id"] = id_map[item["mention_id"]]
-        item["antecedent_candidates"] = [id_map[value] for value in item.get("antecedent_candidates", [])]
-        if not any(existing.get("mention_id") == item["mention_id"]
-                   for existing in base["references"]):
+        item["antecedent_candidates"] = [
+            id_map[value] for value in item.get("antecedent_candidates", [])
+        ]
+        existing = next(
+            (row for row in base["references"]
+             if row.get("mention_id") == item["mention_id"]),
+            None,
+        )
+        if existing is None:
             base["references"].append(item)
+        else:
+            merged_candidates = list(dict.fromkeys(
+                list(existing.get("antecedent_candidates", []))
+                + item["antecedent_candidates"]
+            ))
+            existing["antecedent_candidates"] = merged_candidates
+            existing["uniqueness_evidence"] = False
+            existing["status"] = "UNRESOLVED"
+            existing["resolved_antecedent"] = None
     base["features"] = sorted(set(base["features"]) | set(template.get("features", [])))
     base["provenance"].extend(template.get("provenance", []))
     if template.get("voice") not in (None, "UNKNOWN"):
