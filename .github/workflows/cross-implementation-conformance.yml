@@ -1,0 +1,31 @@
+name: USG Cross-Implementation Matrix
+
+on:
+  pull_request:
+    paths:
+      - "evaluations/system-wide/cross-implementation-matrix-2026-11-12.json"
+      - "documentation/USG-CROSS-IMPLEMENTATION-CONFORMANCE-MATRIX.md"
+      - "tests/test_cross_implementation_conformance_matrix.py"
+      - ".github/workflows/cross-implementation-conformance.yml"
+  push:
+    branches: [main]
+    paths:
+      - "evaluations/system-wide/cross-implementation-matrix-2026-11-12.json"
+      - "documentation/USG-CROSS-IMPLEMENTATION-CONFORMANCE-MATRIX.md"
+      - "tests/test_cross_implementation_conformance_matrix.py"
+      - ".github/workflows/cross-implementation-conformance.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  matrix-integrity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Validate evidence-backed implementation matrix
+        run: python -m unittest discover -s tests -p "test_cross_implementation_conformance_matrix.py" -v

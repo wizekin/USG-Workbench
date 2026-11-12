@@ -1,0 +1,157 @@
+{
+  "contract": "USG-CROSS-IMPLEMENTATION-MATRIX/0.1.0",
+  "assessment_date": "2026-11-12",
+  "purpose": "Separate component-level evidence from actual cross-implementation conformance. No row marked component_tested implies that another implementation produces equivalent output.",
+  "canonical_semantic_contract": "USG-SEM/1.0",
+  "implementations": [
+    {
+      "id": "javascript-semantic-workbench",
+      "version": "0.5.4",
+      "language": "javascript",
+      "primary_path": "implementations/semantic-workbench-js/v0.5.4",
+      "capabilities": [
+        {
+          "id": "browser_semantic_workbench",
+          "status": "component_tested",
+          "evidence": [
+            "implementations/semantic-workbench-js/v0.5.4/tests/smoke_test.js",
+            "implementations/semantic-workbench-js/v0.5.4/tests/semantic_foundation_test.js"
+          ],
+          "notes": "Browser-oriented semantic workbench and its own v0.5 semantic model contract."
+        },
+        {
+          "id": "canonical_usg_sem_1_0_interchange",
+          "status": "not_established",
+          "evidence": [
+            "implementations/semantic-workbench-js/v0.5.4/schemas/usg-semantic-record-v0.5.schema.json"
+          ],
+          "notes": "A related v0.5 semantic record schema is not proof of full USG-SEM/1.0 interchange conformance."
+        },
+        {
+          "id": "open_world_browser_execution",
+          "status": "blocked_missing_browser_adapter",
+          "evidence": [
+            "documentation/USG-SYSTEM-WIDE-CAPABILITY-ASSESSMENT-2026-11-12.md"
+          ],
+          "notes": "The prior Open-World campaign did not execute this browser-only target."
+        }
+      ]
+    },
+    {
+      "id": "python-kernel",
+      "version": "0.7.0",
+      "language": "python",
+      "primary_path": "implementations/python-kernel/v0.7.0",
+      "capabilities": [
+        {
+          "id": "usg_sem_1_0_document_adapter",
+          "status": "component_tested",
+          "evidence": [
+            "interoperability/python_adapter/document_v07.py",
+            "tests/test_usg_kernel_lab.py",
+            "implementations/python-kernel/v0.7.0/tests/test_native_mention.py"
+          ],
+          "notes": "Canonical document import/export and native Mention validation are tested within the Python implementation."
+        },
+        {
+          "id": "cross_runtime_semantic_equivalence",
+          "status": "not_tested",
+          "evidence": [],
+          "notes": "No frozen common corpus currently proves equivalent semantic outputs against JavaScript."
+        }
+      ]
+    },
+    {
+      "id": "python-phase5-interpreter",
+      "version": "USG-INTERPRET/0.2.0",
+      "language": "python",
+      "primary_path": "tools/usg_interpretation_v0_2_0",
+      "capabilities": [
+        {
+          "id": "bilingual_bounded_interpretation",
+          "status": "component_tested",
+          "evidence": [
+            "tests/test_phase5_lexical_foundation_v0_5_0.py",
+            "tests/test_phase5_step_5_11_benchmark.py",
+            "tests/test_phase5_kernel_lab.py"
+          ],
+          "notes": "Bounded English/MSA Arabic stage pipeline; benchmark coverage is construction-limited."
+        },
+        {
+          "id": "stage_diagnostics_and_resource_versions",
+          "status": "component_tested",
+          "evidence": [
+            "tools/usg_interpretation_v0_2_0/integration.py",
+            "tests/test_phase5_kernel_lab.py"
+          ],
+          "notes": "Versioned stage artifacts and diagnostics are available."
+        },
+        {
+          "id": "cross_runtime_semantic_equivalence",
+          "status": "not_tested",
+          "evidence": [],
+          "notes": "No common JS/Python semantic gold comparison is established."
+        }
+      ]
+    },
+    {
+      "id": "external-lexical-candidate-adapter",
+      "version": "USG-LEXICAL-ADAPTER/0.1.0",
+      "language": "python",
+      "primary_path": "tools/usg_external_lexical_v0_1_0",
+      "capabilities": [
+        {
+          "id": "source_preserving_candidate_export",
+          "status": "component_tested",
+          "evidence": [
+            "tests/test_external_lexical_retrieval.py",
+            "tests/test_lexical_candidate_adapter.py",
+            "specifications/usg-lexical-candidates-0.1.0.schema.json"
+          ],
+          "notes": "External lexical candidates are versioned, provenance-bearing, and non-mutating."
+        },
+        {
+          "id": "runtime_lexicon_promotion",
+          "status": "disabled_by_contract",
+          "evidence": [
+            "tools/usg_external_lexical_v0_1_0/adapter.py"
+          ],
+          "notes": "No automatic promotion or active runtime resource mutation is permitted."
+        }
+      ]
+    }
+  ],
+  "cross_implementation_gates": [
+    {
+      "id": "CIC-01",
+      "status": "not_started",
+      "requirement": "Define a shared, frozen set of source texts and canonical expected structures with independent gold."
+    },
+    {
+      "id": "CIC-02",
+      "status": "not_started",
+      "requirement": "Run each implementation independently on the same supported cases and preserve exact version/resource manifests."
+    },
+    {
+      "id": "CIC-03",
+      "status": "not_started",
+      "requirement": "Compare normalized source spans, lexical candidates, construction/role outputs, ambiguity, abstention, and diagnostics; do not compare unrelated internal IDs."
+    },
+    {
+      "id": "CIC-04",
+      "status": "not_started",
+      "requirement": "Publish per-language and per-construction agreement, disagreement examples, and unsupported-feature boundaries."
+    },
+    {
+      "id": "CIC-05",
+      "status": "not_started",
+      "requirement": "Require independent semantic gold before using agreement as semantic-correctness evidence."
+    }
+  ],
+  "policy": {
+    "component_tests_are_not_cross_conformance": true,
+    "benchmark_pass_is_not_general_language_understanding": true,
+    "no_runtime_contract_changes": true,
+    "candidate_lexical_evidence_is_not_promoted": true
+  }
+}
