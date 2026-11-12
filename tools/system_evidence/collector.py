@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any
 from jsonschema import Draft202012Validator, FormatChecker
 from .discovery import (classify_impacts, deduplicate_discoveries, integrated_priorities, related_backlog_items)
+from .freshness import evidence_quality_diagnostics
 
 ROOT = Path(__file__).resolve().parents[2]
 REGISTRY_PATH = ROOT / "config/usg-system-evidence-source-registry-0.1.0.json"
@@ -171,6 +172,7 @@ def external_lexical(manifest_path: Path | None, checkpoint_path: Path | None,
             "inventory_sha256": digest(shard_inventory_path) if shard_inventory_path and shard_inventory_path.is_file() else None,
         },
         "pud_evaluation": {
+            "generated_at": (pud.get("generated_at") or pud.get("evaluated_at") or pud.get("created_at")) if pud else None,
             "status": "fresh_for_current_shard_count" if pud_fresh else (
                 "stale_shard_count_mismatch" if pud else "not_available"),
             "evaluated_shard_count": shards if pud else None, "current_manifest_batch_count": batches,
@@ -396,7 +398,17 @@ def collect_catalogue(root: Path = ROOT, *, registry_path: Path = REGISTRY_PATH,
                                 external_shard_inventory_path, external_branch_commit)
     growth = read_json(growth_plan_path)
     workflows = workflow_evidence(workflow_runs_path)
-    findings = deduplicate_discoveries(discover(phases, external, campaigns, growth, sources, workflows), root)
+    diagnostic_items = evidence_quality_diagnostics(
+        external, campaigns, growth, generated_at or utc_now())
+    diagnostic_findings = []
+    for item in diagnostic_items:
+        detail = {key: value for key, value in item.items()
+                  if key not in {"kind", "severity", "summary", "evidence_refs"}}
+        diagnostic_findings.append(make_finding(
+            item["kind"], item["summary"], item["evidence_refs"], ["P8"], phases,
+            item["severity"], "evidence_quality_review", detail))
+    findings = deduplicate_discoveries(
+        discover(phases, external, campaigns, growth, sources, workflows) + diagnostic_findings, root)
     backlog_links = related_backlog_items(findings, root)
     for finding in findings:
         finding["related_backlog_items"] = backlog_links.get(str(finding.get("id")), [])
@@ -447,6 +459,7 @@ def collect_catalogue(root: Path = ROOT, *, registry_path: Path = REGISTRY_PATH,
                 "runtime_mutations_performed": False, "candidate_lexical_data_promoted": False,
                 "semantic_contracts_changed": False}},
         "discoveries": findings,
+        "evidence_quality_diagnostics": diagnostic_items,
         "integrated_priorities": priorities,
         "discovery_management": {"deduplication": "stable_kind_evidence_scope_fingerprint",
                                 "historical_snapshot_limit": 100,
