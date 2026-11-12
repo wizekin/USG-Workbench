@@ -39,9 +39,14 @@ class SystemEvidenceCatalogueTests(unittest.TestCase):
         self.pud = self.root / "pud.json"
         self.shard_inventory = self.root / "shard-inventory.json"
         self.shard_inventory.write_text(json.dumps({
-            "status": "available", "snapshot_id": "snapshot-x", "file_count": 2,
-            "total_size_bytes": 150,
+            "status": "matches_manifest_with_duplicates", "snapshot_id": "snapshot-x",
+            "file_count": 2, "unique_content_count": 2, "physical_file_count": 3,
+            "duplicate_file_count": 1,
+            "duplicate_groups": [{"sha256": "a" * 64, "canonical_path": "shard-1.jsonl.gz",
+                                  "duplicate_paths": ["shard-1-retry.jsonl.gz"]}],
+            "total_size_bytes": 220, "unique_content_size_bytes": 150,
             "files": [{"path": "shard-1.jsonl.gz", "size_bytes": 70, "sha256": "a" * 64},
+                      {"path": "shard-1-retry.jsonl.gz", "size_bytes": 70, "sha256": "a" * 64},
                       {"path": "shard-2.jsonl.gz", "size_bytes": 80, "sha256": "b" * 64}],
         }), encoding="utf-8")
         self.growth = self.root / "growth.json"
@@ -141,7 +146,9 @@ class SystemEvidenceCatalogueTests(unittest.TestCase):
         self.assertEqual(report["external_lexical"]["pud_evaluation"]["status"],
                          "fresh_for_current_shard_count")
         self.assertEqual(report["external_lexical"]["pud_evaluation"]["evaluated_shard_count"], 2)
-        self.assertEqual(report["external_lexical"]["shard_inventory"]["status"], "matches_manifest")
+        self.assertEqual(report["external_lexical"]["shard_inventory"]["status"], "matches_manifest_with_duplicates")
+        self.assertEqual(report["external_lexical"]["shard_inventory"]["physical_file_count"], 3)
+        self.assertEqual(report["external_lexical"]["shard_inventory"]["duplicate_file_count"], 1)
 
     def test_pud_metrics_remain_stale_when_physical_shard_count_disagrees(self):
         value = json.loads(self.pud.read_text(encoding="utf-8"))
@@ -199,6 +206,16 @@ class SystemEvidenceCatalogueTests(unittest.TestCase):
                        if item["kind"] == "latest_github_workflow_run_failed")
         self.assertEqual(finding["phase_impacts"], ["P5"])
         self.assertEqual(finding["details"]["run_id"], 123)
+        self.assertFalse(finding["runtime_change_allowed"])
+
+    def test_exact_duplicate_external_shard_is_reported_but_not_treated_as_stale(self):
+        report = self.collect()
+        self.assertEqual(report["external_lexical"]["pud_evaluation"]["status"],
+                         "fresh_for_current_shard_count")
+        finding = next(item for item in report["discoveries"]
+                       if item["kind"] == "external_lexical_duplicate_shard_content")
+        self.assertEqual(finding["details"]["duplicate_file_count"], 1)
+        self.assertEqual(finding["severity"], "informational")
         self.assertFalse(finding["runtime_change_allowed"])
 
     def test_catalogue_never_mutates_runtime_phase_status_or_contracts(self):
