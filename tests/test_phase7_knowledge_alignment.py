@@ -37,7 +37,7 @@ class Phase7BilingualAlignmentTests(unittest.TestCase):
             target = next(x for x in bundle["records"] if x["id"] == mapping["target_record_id"])
             mapped.add((source["payload"]["sense_source_id"], target["payload"]["label"]))
             self.assertEqual(target["state"], "UNRESOLVED")
-            self.assertIn("not equivalent", mapping["notes"])
+            self.assertIn("not equivalent", mapping["notes"].lower())
         self.assertEqual({(a, b) for a, b in mapped},
                          {("en:pronoun.he", "concept:pronoun.third-singular-masculine"),
                           ("en:pronoun.she", "concept:pronoun.third-singular-feminine")})
