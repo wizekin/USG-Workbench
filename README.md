@@ -17,13 +17,13 @@ Start here — jump directly to any major section:
 | | Section | |
 |---|---|---|
 | 1 | [USG Workbench definition](#usg-workbench-definition) | What this project is and what it is not |
-| 2 | [Documentation and maintenance policy](#documentation-and-maintenance-policy) | Where the full technical documentation lives and how it must be updated |
-| 3 | [Current running tasks](#current-running-tasks) | Active and scheduled GitHub Actions work |
-| 4 | [Complete major tasks](#complete-major-tasks) | Accepted phases and implemented foundations |
-| 5 | [Incomplete major tasks](#incomplete-major-tasks) | Remaining work and current blockers |
-| 6 | [Architecture and reliability rules](#architecture-and-reliability-rules) | Contracts, data, uncertainty, and evidence boundaries |
-| 7 | [How to explore and test USG](#how-to-explore-and-test-usg) | Start the interface and find tests |
-| 8 | [Repository structure](#repository-structure) | Where code, specifications, evidence, and data are stored |
+| 2 | [Central documentation hub](documentation/README.md) | One index for all USG documentation across the repository |\n| 3 | [Documentation and maintenance policy](#documentation-and-maintenance-policy) | How technical documentation is organized and kept current |
+| 4 | [Current running tasks](#current-running-tasks) | Active and scheduled GitHub Actions work |
+| 5 | [Complete major tasks](#complete-major-tasks) | Accepted phases and implemented foundations |
+| 6 | [Incomplete major tasks](#incomplete-major-tasks) | Remaining work and current blockers |
+| 7 | [Architecture and reliability rules](#architecture-and-reliability-rules) | Contracts, data, uncertainty, and evidence boundaries |
+| 8 | [How to explore and test USG](#how-to-explore-and-test-usg) | Start the interface and find tests |
+| 9 | [Repository structure](#repository-structure) | Where code, specifications, evidence, and data are stored |
 
 ---
 
@@ -55,6 +55,14 @@ The architecture is modular: these stages are implemented at different maturity 
 The long-term objective is a reusable semantic representation and reasoning architecture that can grow through explicit, traceable, independently evaluated capabilities.
 
 ---
+
+## Central documentation hub
+
+**[Open the USG Documentation Hub →](documentation/README.md)**
+
+This is the single navigation page for the repository's documentation. It indexes the documentation across all USG system areas, including architecture, semantic models, specifications and schemas, every development phase and step, implementations and versions, lexical and morphology resources, interpretation pipelines, reasoning, persistence, APIs, Kernel Lab, interoperability, tests, benchmarks, Open-World evaluation, automation, governance, and archived baselines.
+
+Use the hub to reach the detailed document you need without searching through repository folders. New documentation must be added to the hub in the same pull request that introduces or changes the feature.
 
 ## Documentation and maintenance policy
 
