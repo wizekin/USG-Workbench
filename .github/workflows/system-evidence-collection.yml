@@ -43,6 +43,7 @@ on:
       - "documentation/USG-SYSTEM-EVIDENCE-AND-RESOURCE-INTEGRATION.md"
       - "config/usg-phase-resource-consumption-map-0.1.0.json"
       - "tools/system_evidence/**"
+      - "tests/test_system_evidence_external_shards.py"
       - "tests/test_system_evidence_github_actions.py"
       - "tests/test_system_evidence_snapshots.py"
       - "evaluations/system-wide/evidence-catalogue/**"
@@ -86,6 +87,8 @@ jobs:
         run: python -m unittest discover -s tests -p "test_phase_resource_manifest_policy.py" -v
       - name: Test GitHub Actions workflow evidence collector
         run: python -m unittest discover -s tests -p "test_system_evidence_github_actions.py" -v
+      - name: Test external lexical shard inventory and deduplication
+        run: python -m unittest discover -s tests -p "test_system_evidence_external_shards.py" -v
       - name: Validate previously published evidence snapshots
         run: python -m unittest discover -s tests -p "test_system_evidence_snapshots.py" -v
       - name: Validate machine-readable registry and phase map
@@ -159,46 +162,21 @@ jobs:
             printf '{"error":"EXTERNAL_LEXICAL_DATA_BRANCH_UNAVAILABLE","branch":"usg-external-lexical-data"}\n' > "$EVIDENCE_DIR/external-lexical-collection-error.json"
             echo "External lexical data branch unavailable; collection will record missing evidence, not zero coverage." >> "$GITHUB_STEP_SUMMARY"
           fi
-      - name: Inventory immutable external lexical shards
+      - name: Inventory immutable external lexical shards and deduplicate evaluation input
         if: steps.lexical-data.outputs.available == 'true'
         run: |
-          python - <<'PY'
-          import hashlib
-          import json
-          import os
-          from pathlib import Path
-          root = Path(os.environ["EVIDENCE_DIR"]) / "external-lexical-data" / "shards"
-          manifest_path = Path(os.environ["EVIDENCE_DIR"]) / "external-lexical-manifest.json"
-          manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-          files = []
-          for path in sorted(root.rglob("*.jsonl.gz")):
-              payload = path.read_bytes()
-              files.append({
-                  "path": path.relative_to(root).as_posix(),
-                  "size_bytes": len(payload),
-                  "sha256": hashlib.sha256(payload).hexdigest(),
-                  "git_blob_sha1": hashlib.sha1(b"blob " + str(len(payload)).encode("ascii") + bytes([0]) + payload).hexdigest(),
-              })
-          report = {
-              "status": "available",
-              "snapshot_id": manifest.get("source_snapshot_id"),
-              "file_count": len(files),
-              "total_size_bytes": sum(item["size_bytes"] for item in files),
-              "manifest_batch_count": manifest.get("batch_count"),
-              "matches_manifest": len(files) == int(manifest.get("batch_count", -1)),
-              "files": files,
-          }
-          output = Path(os.environ["EVIDENCE_DIR"]) / "external-lexical-shard-inventory.json"
-          output.write_text(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True) + chr(10), encoding="utf-8")
-          print(json.dumps({k: report[k] for k in ("file_count", "total_size_bytes", "manifest_batch_count", "matches_manifest")}, indent=2))
-          PY
+          python -m tools.system_evidence.external_shards \
+            --shards-dir "$EVIDENCE_DIR/external-lexical-data/shards" \
+            --unique-dir "$EVIDENCE_DIR/external-lexical-unique-shards" \
+            --manifest "$EVIDENCE_DIR/external-lexical-manifest.json" \
+            --output "$EVIDENCE_DIR/external-lexical-shard-inventory.json"
       - name: Recalculate English PUD lexical and morphology candidate coverage
         id: pud
         if: steps.lexical-data.outputs.available == 'true' && env.REFRESH_EXTERNAL_PUD != 'false'
         continue-on-error: true
         run: |
           python -m tools.usg_external_lexical_v0_1_0.pud_evaluation \
-            --data-dir "$EVIDENCE_DIR/external-lexical-data/shards" \
+            --data-dir "$EVIDENCE_DIR/external-lexical-unique-shards" \
             --output "$EVIDENCE_DIR/external-lexical-pud-evaluation.json" \
             > "$EVIDENCE_DIR/external-lexical-pud-evaluation.stdout.json"
       - name: Record PUD evaluation collection failure or deliberate skip
