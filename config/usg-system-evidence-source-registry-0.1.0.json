@@ -715,6 +715,37 @@
         "A test only validates its declared assertion and corpus.",
         "Skipped, not-executed, or infrastructure-failed tests are not passes."
       ]
+    },
+    {
+      "id": "system_evidence_catalogue_and_phase_manifest",
+      "title": "System evidence catalogue, source registry, and phase resource manifests",
+      "category": "system_governance",
+      "description": "Versioned source-family registry, phase consumer map, evidence collector, GitHub Actions status collector, snapshots, and mandatory phase resource manifests.",
+      "patterns": [
+        "config/usg-system-evidence-source-registry-0.1.0.json",
+        "config/usg-phase-resource-consumption-map-0.1.0.json",
+        "config/phase-resource-manifests/**/*",
+        "specifications/usg-system-evidence-*.schema.json",
+        "specifications/usg-phase-resource-*.schema.json",
+        "tools/system_evidence/**/*",
+        "templates/phase-resource-manifest-*.json",
+        "documentation/PHASE-8-*.md",
+        "documentation/USG-SYSTEM-EVIDENCE-AND-RESOURCE-INTEGRATION.md",
+        ".github/workflows/system-evidence-collection.yml",
+        "evaluations/system-wide/evidence-catalogue/**/*"
+      ],
+      "consumers": [
+        "P8"
+      ],
+      "use_mode": "planning_only",
+      "evidence_class": "planning_evidence",
+      "refresh": "daily_and_on_repository_change",
+      "guardrails": [
+        "Catalogue output is not semantic truth or runtime knowledge.",
+        "Resource consumer maps are declared intentions; verify actual imports and tests.",
+        "Phase manifests are required for Phase 8+ roadmaps.",
+        "Snapshots are append-only; no automatic phase or contract mutation."
+      ]
     }
   ]
 }
