@@ -231,6 +231,7 @@ def interpret_in_browser(case: dict[str, Any]) -> dict[str, Any]:
                     "console_error_count": len([item for item in console_messages if item]),
                     "ollama_used": False,
                     "browser_network_policy": "loopback_only",
+                    "memory_limit_enforcement": "ephemeral_hosted_runner_vm",
                     "interpretation_source": "local_rule_fallback",
                 },
             }
