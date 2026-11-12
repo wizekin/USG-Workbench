@@ -187,6 +187,9 @@
 
 ### Phase 7 — semantic knowledge integration and contextual knowledge layer
 
+- [Phase 7 rights-aware source adapters](../tools/phase7_knowledge_sources/adapters.py) — External lexical candidate and validated USG-SEM/1.0 document adapters with explicit rights gating.
+
+
 - [SQLite knowledge repository](../tools/phase7_knowledge_repository/repository.py) — Append-only snapshots and typed indexes on the existing canonical SQLite connection.
 
 - [USG-KNOWLEDGE/0.1.0 contract](../specifications/USG-KNOWLEDGE-0.1.0.md) — Normative knowledge bundle contract.
