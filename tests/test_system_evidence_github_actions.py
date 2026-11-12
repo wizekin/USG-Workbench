@@ -109,6 +109,36 @@ class GitHubActionsEvidenceTests(unittest.TestCase):
         self.assertEqual(len(report["artifact_collection_errors"]), 1)
         self.assertEqual(report["workflows"][0]["latest_run"]["artifact_count"], 0)
 
+    def test_workflow_listing_paginates_past_first_100_definitions(self):
+        base = "https://api.github.com/repos/wizekin/USG-Workbench"
+        page_one = [{"id": i, "name": f"Disabled {i}", "path": f".github/workflows/{i}.yml",
+                     "state": "disabled_manually"} for i in range(1, 101)]
+        payloads = {
+            base + "/actions/workflows?per_page=100": {"total_count": 101, "workflows": page_one},
+            base + "/actions/workflows?per_page=100&page=2": {
+                "total_count": 101,
+                "workflows": [{"id": 101, "name": "Disabled 101",
+                               "path": ".github/workflows/101.yml", "state": "disabled_manually"}]
+            }
+        }
+        report = collect_workflow_runs("wizekin/USG-Workbench", "token",
+                                       opener=self.make_opener(payloads), workers=2)
+        self.assertEqual(report["workflow_count"], 101)
+        self.assertEqual(report["api_total_workflow_count"], 101)
+        self.assertTrue(report["workflow_list_complete"])
+        self.assertEqual(report["status_counts"]["disabled"], 101)
+
+    def test_incomplete_api_pagination_is_explicit(self):
+        base = "https://api.github.com/repos/wizekin/USG-Workbench"
+        payloads = {
+            base + "/actions/workflows?per_page=100": {"total_count": 101, "workflows": []}
+        }
+        report = collect_workflow_runs("wizekin/USG-Workbench", "token",
+                                       opener=self.make_opener(payloads), workers=1)
+        self.assertEqual(report["workflow_count"], 0)
+        self.assertEqual(report["api_total_workflow_count"], 101)
+        self.assertFalse(report["workflow_list_complete"])
+
     def test_requires_repository_and_token(self):
         with self.assertRaises(ValueError):
             collect_workflow_runs("not-a-repository", "token")
