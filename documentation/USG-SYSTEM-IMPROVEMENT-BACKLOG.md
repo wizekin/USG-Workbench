@@ -19,7 +19,7 @@ This backlog converts the system-wide assessment into bounded, dependency-ordere
 | SYS-08 | P1 | Select one construction for bilingual expansion pilot | SYS-02, SYS-03 | Construction chosen using evidence/frequency and available gold; per-language positive/negative/ambiguous/boundary fixtures frozen | Candidate feature |
 | SYS-09 | P1 | Independent construction-level gold and acceptance | SYS-08 | Independent source, rights, annotation protocol, held-out split, and per-language thresholds documented and passed | Acceptance only |
 | SYS-10 | P2 | Resolve Phase 6 Step 6.6 data/rights gap | SYS-03 | Exact SemEval/other source files, annotation units, licenses, and missing construction coverage documented | None |
-| SYS-11 | P2 | Provisional MSA gold annotation pathway | SYS-10 if public gold insufficient | Guidelines, annotator independence, adjudication, disagreement handling, and provisional label documented | Evaluation only |
+| SYS-11 | P2 | Provisional bilingual gold annotation pathway | SYS-10 if public gold insufficient | Annotation guide, independent annotator requirements, adjudication, disagreement preservation, and fail-closed manifest validation documented; actual human annotations remain separate | Evaluation only |
 | SYS-12 | P2 | Cross-implementation conformance matrix | None | JS Workbench, Python kernel, Python interpreter, and adapters tested separately with explicit version/feature matrix | Adapter/test only |
 | SYS-13 | P2 | Kernel Lab stage explanation improvements | SYS-02, SYS-07 | User can inspect source, candidate evidence, rule/resource versions, alternatives, and exact blocker | UI/diagnostic only |
 | SYS-14 | P2 | Deterministic replay of accepted failure cases | SYS-02 | Every accepted repair adds a minimized case and reruns prior frozen gates | Tests only |
@@ -65,3 +65,10 @@ These are implementation states, not claims that USG's semantic accuracy has imp
 5. **SYS-12 — cross-runtime gates:** build the shared frozen corpus and compare JS/Python outputs without treating agreement as semantic truth.
 
 The completed SYS-04 browser adapter now makes the JS Workbench observable in Open-World campaigns. Its current profile is English-only and uses the deterministic local rule fallback. The SYS-15 planner is the first unattended whole-system growth coordinator; it currently produces a ranked plan, not code changes.
+
+
+## Phase 6 Step 6.6 follow-up status — 2026-11-12
+
+- **SYS-10 — research audit complete:** the independent dataset audit records source scope, annotation-unit mismatch, access restrictions, licensing uncertainty, and the missing five-by-two construction coverage. No restricted corpus was downloaded or redistributed.
+- **SYS-11 — protocol and validation infrastructure complete; annotation execution pending:** the bilingual annotation protocol, versioned manifest schema, fail-closed validator, and CI contract tests are available. They do not create human annotations or satisfy the semantic-gold acceptance gate.
+- **Step 6.6 acceptance remains blocked:** no qualifying independent bilingual human-annotated dataset has been frozen. All ten construction profiles remain candidate-only and disabled. See [the independent-gold acceptance protocol](PHASE-6-STEP-6.6-INDEPENDENT-GOLD-ACCEPTANCE-PROTOCOL.md).

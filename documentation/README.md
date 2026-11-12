@@ -170,6 +170,7 @@
 - [PHASE 6 STEP 6.6 EXTERNAL PUD AUDIT](PHASE-6-STEP-6.6-EXTERNAL-PUD-AUDIT.md) — Evidence audit, feasibility review, or data-quality assessment.
 - [PHASE 6 STEP 6.6 HELDOUT V0.4.3](PHASE-6-STEP-6.6-HELDOUT-V0.4.3.md) — Detailed technical documentation, implementation notes, or supporting evidence.
 - [PHASE 6 STEP 6.6 INDEPENDENT GOLD DATASET AUDIT](PHASE-6-STEP-6.6-INDEPENDENT-GOLD-DATASET-AUDIT.md) — Evidence audit, feasibility review, or data-quality assessment.
+- [PHASE 6 STEP 6.6 INDEPENDENT GOLD ACCEPTANCE PROTOCOL](PHASE-6-STEP-6.6-INDEPENDENT-GOLD-ACCEPTANCE-PROTOCOL.md) — Independent annotation, rights, leakage, and acceptance requirements.
 - [PHASE 6 STEP 6.6 NOMINAL MODIFIER SEMANTICS](PHASE-6-STEP-6.6-NOMINAL-MODIFIER-SEMANTICS.md) — Detailed technical documentation, implementation notes, or supporting evidence.
 - [PHASE 6 STEP 6.6 PUD CONTEXTUAL POS](PHASE-6-STEP-6.6-PUD-CONTEXTUAL-POS.md) — Detailed technical documentation, implementation notes, or supporting evidence.
 - [PHASE 6 STEP 6.6 PUD POS CROSSVALIDATION](PHASE-6-STEP-6.6-PUD-POS-CROSSVALIDATION.md) — Detailed technical documentation, implementation notes, or supporting evidence.
@@ -182,6 +183,8 @@
 - [Campaign Report](../evaluations/open-world/campaigns/OWC-OW6-43015126807-1/campaign-report.md) — Detailed technical documentation, implementation notes, or supporting evidence.
 
 ### Normative specifications and schemas
+
+- [Phase 6 independent semantic-gold manifest schema 1.0](../specifications/phase6-independent-gold-manifest-1.0.schema.json) — Machine-readable rights, provenance, annotation independence, ten-profile coverage, and leakage requirements.
 
 - [README](../specifications/README.md) — Area entry point and local navigation.
 - [USG SEM 1.0](../specifications/USG-SEM-1.0.md) — Detailed technical documentation, implementation notes, or supporting evidence.

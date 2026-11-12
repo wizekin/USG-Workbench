@@ -1,0 +1,31 @@
+name: Phase 6 Step 6.6 Independent Gold Gate
+on:
+  pull_request:
+    paths:
+      - "tools/phase6_independent_gold_v1_0/**"
+      - "specifications/phase6-independent-gold-manifest-1.0.schema.json"
+      - "tests/test_phase6_independent_gold_gate.py"
+      - "documentation/PHASE-6-STEP-6.6-INDEPENDENT-GOLD-ACCEPTANCE-PROTOCOL.md"
+      - ".github/workflows/phase6-step-6-6-independent-gold-gate.yml"
+  push:
+    branches: [main]
+    paths:
+      - "tools/phase6_independent_gold_v1_0/**"
+      - "specifications/phase6-independent-gold-manifest-1.0.schema.json"
+      - "tests/test_phase6_independent_gold_gate.py"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  manifest-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python -m pip install "jsonschema==4.23.0"
+      - run: python -m compileall -q tools/phase6_independent_gold_v1_0
+      - run: python -m unittest discover -s tests -p 'test_phase6_independent_gold_gate.py' -v
