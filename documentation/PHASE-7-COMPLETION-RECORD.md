@@ -27,7 +27,7 @@ All ten steps are merged into `main`. Phase 7 remains independent of the Phase 6
 
 The frozen evaluator uses the project-authored `usg-en-ar-discourse-lexicon@0.3.0` resource, pinned by Git blob SHA `a8fa4c60d4d14c0b488e5078c2d1a956e41f4577`.
 
-<badge color="success">PASS — exact PR head</badge>
+**PASS — exact PR head.**
 
 - 46/46 exact-form positive retrieval cases passed across English and MSA Arabic.
 - 46/46 wrong-language negative cases passed.
