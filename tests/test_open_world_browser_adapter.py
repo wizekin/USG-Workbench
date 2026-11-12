@@ -8,7 +8,7 @@ from tools.open_world_evaluation.browser_adapter import (
     ADAPTER_ID,
     stable_workbench_projection,
 )
-from tools.open_world_evaluation.worker import execute
+from tools.open_world_evaluation.execute_cases import execute_case
 from tools.open_world_evaluation.generate_scenarios import ScenarioGenerator
 
 
@@ -73,13 +73,15 @@ class BrowserAdapterEndToEndTests(unittest.TestCase):
         case["input"]["utf8_sha256"] = sha256(
             case["input"]["text"].encode("utf-8")
         ).hexdigest()
-        result = execute(case)
-        self.assertIn(result["outcome"], {"completed", "partial"})
+        record = execute_case(case, commit_sha="a" * 40, max_wall_seconds=60)
+        self.assertEqual(record["outcome"], "completed", record.get("validation", {}).get("diagnostics"))
+        result = record["capture"]["inline_output"]
         target = result["target_result"]
         self.assertEqual(target["pipeline_contract"], "USG-WB-SEM/1.0")
         self.assertGreaterEqual(target["claim_count"], 1)
         self.assertEqual(target["source"]["text"], case["input"]["text"])
         self.assertEqual(result["execution_metadata"]["ollama_used"], False)
+        self.assertEqual(result["execution_metadata"]["adapter"], "playwright-js-semantic-workbench")
 
 
 if __name__ == "__main__":
