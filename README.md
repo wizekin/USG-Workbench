@@ -178,12 +178,12 @@ These are the major open workstreams. Detailed step definitions, dependencies, a
 
 ### 1. Phase 6 — broader semantic interpretation
 
-**Status: IN PROGRESS.** Steps 6.1–6.5 are accepted for their bounded scope. Step 6.6 is the immediate blocker; Step 6.7 depends on it.
+**Status: IN PROGRESS.** Steps 6.1–6.6 are accepted for their bounded scopes. Step 6.7 is ready for candidate development; naturalistic validation and production promotion remain separately gated.
 
 | Step | Capability | Current status |
 |---|---|---|
-| **6.6** | Nominal, property, possession, and modifier semantics | **In progress / blocked on independent bilingual semantic gold and data-rights verification** |
-| **6.7** | Intra-clause coordination and shared arguments | Blocked pending 6.6 |
+| **6.6** | Nominal, property, possession, and modifier semantics | **Accepted for bounded graph-first synthetic reference (500 cases / 10 profiles); runtime remains candidate-only** |
+| **6.7** | Intra-clause coordination and shared arguments | Ready for bounded candidate development |
 | **6.8** | Embedded and subordinate clauses | Pending |
 | **6.9** | Voice and speech-act structures | Pending |
 | **6.10** | Cross-construction operator and quantifier scope | Pending |
@@ -192,9 +192,9 @@ These are the major open workstreams. Detailed step definitions, dependencies, a
 | **6.13** | API, CLI, resource lifecycle, and Kernel Lab integration | Pending |
 | **6.14** | Full Phase 6 benchmark and integrated exit acceptance | Pending |
 
-The candidate recognizer, generated development/held-out diagnostics, and independent-gold intake validator are implemented. The main blocker remains the lack of a rights-cleared, independently human-annotated bilingual gold set covering the internal nominal and modifier constructions required by Step 6.6. PUD syntax annotations and external parser outputs are useful diagnostics, but are not semantic-role gold.
+Step 6.6 now uses a deterministic graph-first bilingual synthetic reference benchmark: 500 cases across ten English/MSA construction profiles, with 20 positive, 20 negative, and 10 ambiguous cases per profile. It uses no human annotations, model-generated labels, external corpus, development fixtures, or candidate lexicon to create its reference cases. All ten synthetic profile gates pass. This is controlled conformance evidence only—not a naturalistic semantic-accuracy claim—and all runtime constructions remain candidate-only.
 
-References: [Phase 6 roadmap](documentation/PHASE-6-DEFINITIONS-ROADMAP.md) · [Independent gold dataset audit](documentation/PHASE-6-STEP-6.6-INDEPENDENT-GOLD-DATASET-AUDIT.md) · [Independent gold acceptance protocol](documentation/PHASE-6-STEP-6.6-INDEPENDENT-GOLD-ACCEPTANCE-PROTOCOL.md) · [Step 6.6 external PUD audit](documentation/PHASE-6-STEP-6.6-EXTERNAL-PUD-AUDIT.md).
+References: [Phase 6 roadmap](documentation/PHASE-6-DEFINITIONS-ROADMAP.md) · [Automatic synthetic-reference protocol](documentation/PHASE-6-STEP-6.6-AUTOMATIC-SYNTHETIC-REFERENCE-PROTOCOL.md) · [Historical external dataset feasibility audit](documentation/PHASE-6-STEP-6.6-INDEPENDENT-GOLD-DATASET-AUDIT.md) · [Historical independent-gold protocol](documentation/PHASE-6-STEP-6.6-INDEPENDENT-GOLD-ACCEPTANCE-PROTOCOL.md).
 
 ### 2. External lexical knowledge — crawl, evaluate, and safely integrate
 
