@@ -202,3 +202,8 @@ Run `python -m pip install jsonschema==4.23.0` then `python -m unittest discover
 ## Phase 7 SQLite knowledge repository
 
 Run `python -m unittest discover -s tests -p 'test_phase7_knowledge_repository.py' -v` after installing the pinned `jsonschema==4.23.0` validator.
+
+
+## Phase 7 rights-aware source adapters
+
+Run `python -m unittest discover -s tests -p 'test_phase7_knowledge_sources.py' -v` after installing `jsonschema==4.23.0`.
