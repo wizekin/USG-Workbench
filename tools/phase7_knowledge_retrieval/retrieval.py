@@ -31,7 +31,7 @@ def retrieve_candidates(
     if limit < 1 or limit > 500:
         raise RetrievalError("limit must be between 1 and 500")
     filters = {_norm(k).upper(): _norm(v) for k, v in (context_filters or {}).items()}
-    allowed = set(include_states or _STATE_WEIGHT)
+    allowed = set(_STATE_WEIGHT if include_states is None else include_states)
     results: dict[str, dict[str, Any]] = {}
 
     for bundle in bundles:
@@ -48,6 +48,8 @@ def retrieve_candidates(
             if record.get("state") not in allowed:
                 continue
             payload = record.get("payload", {})
+            if language and payload.get("language") not in (None, language):
+                continue
             kind = record.get("kind")
             match_score = 0
             match_reason = ""
@@ -103,7 +105,7 @@ def retrieve_candidates(
             if language and record.get("payload", {}).get("language") not in (None, language):
                 continue
             record_contexts = [contexts[cid] for cid in record.get("context_ids", []) if cid in contexts]
-            if any(not any(_norm(c.get("context_type")) == key and _norm(c.get("value")) == value
+            if any(not any(_norm(c.get("context_type")).upper() == key and _norm(c.get("value")) == value
                            for c in record_contexts) for key, value in filters.items()):
                 continue
             score = base + _STATE_WEIGHT.get(record.get("state"), 0)
