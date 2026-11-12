@@ -1,7 +1,7 @@
 # USG Phase 7 — Semantic Knowledge Integration and Contextual Knowledge Layer
 
 **Phase:** 7 — Semantic knowledge integration and contextual knowledge retrieval  
-**Status:** STEPS 7.1–7.2 MERGED; Step 7.3 implemented in PR and pending exact-head validation. Steps 7.4–7.10 remain unstarted.  
+**Status:** STEPS 7.1–7.3 MERGED; Step 7.4 implemented in PR and pending exact-head validation. Steps 7.5–7.10 remain unstarted.  
 **Primary objective:** build a governed, persistent semantic knowledge layer that connects lexical forms, lexical senses, language-neutral concepts, semantic classes, typed relations, source evidence, contexts, and validated canonical documents.  
 **Prerequisites:** accepted Phase 1–5 foundations; Phase 6 bounded automatic exit accepted for its registered scope.  
 **Non-blocking parallel work:** Phase 6 construction expansion continues through the [Phase 6 Continuation Tracker](PHASE-6-CONTINUATION-TRACKER.md). No unfinished Phase 6 continuation item is a prerequisite for Phase 7 unless a specific Phase 7 step explicitly adopts it.  
@@ -212,6 +212,16 @@ The model separates lexical forms, lemmas, lexical senses, concepts, semantic cl
 
 **Acceptance boundary:** the current contract validates the envelope and cross-references. Kind-specific payload constraints are recorded in the registry and will be tightened in a compatible schema revision before the repository begins accepting imported records. No real-world identity or English–Arabic equivalence is inferred from spelling or translation.
 
+## 7.4 Step 7.4 — Rights-aware source adapters and incremental acquisition
+
+**Deliverables:** read-only adapters for the versioned external lexical candidate package and validated canonical USG-SEM/1.0 documents; deterministic bundle construction; explicit source-rights overrides; and incremental ingestion into the Step 7.3 SQLite repository.
+
+The lexical adapter preserves source/provider/sense distinctions and source locators. Rights default to UNKNOWN. Definition text and provider-observed forms are withheld unless the caller explicitly supplies a KNOWN_PERMITTED or INTERNAL rights state, ALLOWED redistribution, and an explicit license identifier for KNOWN_PERMITTED content. PROHIBITED and RESTRICTED material is never copied into the knowledge bundle. A caller cannot turn UNKNOWN rights into ALLOWED by setting only the redistribution flag.
+
+The canonical-document adapter validates the full document with the existing USG-SEM/1.0 canonical store validator, then projects only declared concept, frame, and semantic-kind definitions. It does not copy original source text, interpret assertions as facts, or create inferred mappings. Role and relation definitions are preserved as source metadata until a dedicated typed registry/mapping step exists.
+
+**Acceptance boundary:** adapters are deterministic for fixed input and retrieval timestamp; all imported records remain CANDIDATE or VALIDATED_FOR_PROFILE; every record has source/evidence/context references; source disagreements remain separate; no mappings or relations are inferred; and the caller explicitly owns persistence transactions. The adapter does not promote knowledge or alter runtime lexical resources.
+
 ## 8. Dependencies and parallelism
 
 ### Required before Phase 7 implementation
@@ -280,4 +290,4 @@ No Phase 7 task may rewrite a previously accepted phase's meaning or make that p
 6. Integrate read-only adapters and inspection interfaces.
 7. Close Phase 7 with profile-specific tests, reproducible reports, and protected baseline regressions.
 
-**Next mainline implementation: Step 7.4 — rights-aware source adapters and incremental acquisition.** Steps 7.1–7.2 are merged; Step 7.3 is implemented and awaits its exact-head CI gate. This does not imply completion of the full Phase 7 roadmap.
+**Next mainline implementation: Step 7.5 — cross-language sense-to-concept alignment.** Steps 7.1–7.3 are merged; Step 7.4 awaits its exact-head CI gate. This does not imply completion of the full Phase 7 roadmap.
