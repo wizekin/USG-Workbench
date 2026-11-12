@@ -1,0 +1,53 @@
+name: USG Naturalistic PUD Pilot Validation
+
+on:
+  pull_request:
+    paths:
+      - "tools/open_world_evaluation/pud_naturalistic_pilot.py"
+      - "tests/test_pud_naturalistic_pilot.py"
+      - "documentation/USG-NATURALISTIC-PUD-PILOT.md"
+      - ".github/workflows/usg-naturalistic-pud-validation.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pud-source-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install schema validator
+        run: python -m pip install "jsonschema>=4.18,<5"
+      - name: Run PUD pilot unit tests
+        run: python -m unittest discover -s tests -p "test_pud_naturalistic_pilot.py" -v
+      - name: Download pinned public corpus and generate a 5-per-language validation sample
+        run: |
+          python -m tools.open_world_evaluation.pud_naturalistic_pilot \
+            --sample-per-language 5 \
+            --target phase5-bounded-interpreter \
+            --output-dir "$RUNNER_TEMP/pud-validation"
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          root = Path(os.environ["RUNNER_TEMP"]) / "pud-validation"
+          source = json.loads((root / "source-manifest.json").read_text(encoding="utf-8"))
+          generation = json.loads((root / "generation-manifest.json").read_text(encoding="utf-8"))
+          assert generation["case_count"] == 10
+          assert source["license"] == "CC BY-SA 3.0"
+          assert source["privacy_review"]["status"] == "approved_for_bounded_internal_evaluation"
+          assert source["semantic_gold"]["available"] is False
+          assert source["selection"]["en"]["selected_count"] == 5
+          assert source["selection"]["ar"]["selected_count"] == 5
+          print("Pinned English/Arabic PUD source and naturalistic scenario contract validated.")
+          PY
+      - name: Upload source and attribution validation artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: usg-pud-source-validation-${{ github.run_id }}
+          path: ${{ runner.temp }}/pud-validation/
+          if-no-files-found: error
+          retention-days: 30
