@@ -15,6 +15,20 @@ on:
         required: false
         default: true
         type: boolean
+  push:
+    branches: [main]
+    paths:
+      - "config/**"
+      - "documentation/**"
+      - "implementations/**"
+      - "interoperability/**"
+      - "resources/**"
+      - "specifications/**"
+      - "tools/**"
+      - "tests/**"
+      - "benchmarks/**"
+      - "evaluations/open-world/campaigns/**"
+      - ".github/workflows/**"
   pull_request:
     paths:
       - "config/usg-system-evidence-source-registry-0.1.0.json"
@@ -93,7 +107,7 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ github.token }}
       MAX_CAMPAIGNS: ${{ inputs.max_campaigns || '20' }}
-      REFRESH_EXTERNAL_PUD: ${{ inputs.refresh_external_pud || 'true' }}
+      REFRESH_EXTERNAL_PUD: ${{ inputs.refresh_external_pud }}
     steps:
       - uses: actions/checkout@v4
         with:
