@@ -173,6 +173,19 @@ Choose a separate cache path:
 
 No API key, paid service, additional Python package, or full-corpus download is required.
 
+## Versioned candidate adapter contract
+
+The external lexical service exposes candidate packages under `USG-LEXICAL-CANDIDATES/0.1.0`, defined by:
+
+- `specifications/usg-lexical-candidates-0.1.0.schema.json`
+- `tools/usg_external_lexical_v0_1_0/adapter.py`
+
+Use `validate_candidate_package(package)` to check contract identity, candidate counts, stable candidate IDs, source provenance, required source identity fields, and the candidate-only boundary. Use `adapt_candidate_package(package)` to obtain a deterministic read-only view under `USG-LEXICAL-ADAPTER/0.1.0`.
+
+The adapter preserves separate senses and source provenance. It does not resolve ambiguity, choose an authoritative provider, infer a unique POS or lemma, write to a runtime `LexicalResource`, or promote candidates. A null native source-sense identifier is permitted when the provider does not supply one, but the field must remain present so absence is explicit.
+
+The adapter digest identifies the normalized read-only view. It is not a semantic-quality score and does not establish correctness. Contract validation is structural only.
+
 ## Runtime and persistence boundaries
 
 - Existing Phase 4 and Phase 5 interpreter behavior is unchanged.
