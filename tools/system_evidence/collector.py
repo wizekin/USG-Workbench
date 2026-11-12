@@ -7,7 +7,7 @@ import json
 from pathlib import Path
 from typing import Any
 from jsonschema import Draft202012Validator, FormatChecker
-from .discovery import (classify_impacts, deduplicate_discoveries, integrated_priorities, related_backlog_items)
+from .discovery import (build_review_proposals, classify_impacts, deduplicate_discoveries, integrated_priorities, related_backlog_items)
 from .freshness import evidence_quality_diagnostics
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -414,6 +414,7 @@ def collect_catalogue(root: Path = ROOT, *, registry_path: Path = REGISTRY_PATH,
         finding["related_backlog_items"] = backlog_links.get(str(finding.get("id")), [])
         finding["impact_classification"] = classify_impacts(finding, phases)
     priorities = integrated_priorities(findings)
+    review_proposals = build_review_proposals(findings, phases)
     latest = campaigns[0] if campaigns else None
     selected_naturalistic = sum(item.get("naturalistic_case_count", 0) for item in campaigns)
     report = {
@@ -461,6 +462,7 @@ def collect_catalogue(root: Path = ROOT, *, registry_path: Path = REGISTRY_PATH,
         "discoveries": findings,
         "evidence_quality_diagnostics": diagnostic_items,
         "integrated_priorities": priorities,
+        "review_proposals": review_proposals,
         "discovery_management": {"deduplication": "stable_kind_evidence_scope_fingerprint",
                                 "historical_snapshot_limit": 100,
                                 "backlog_linking": "existing_ids_only",
@@ -566,6 +568,11 @@ def render_markdown(report: dict[str, Any]) -> str:
         finding = next((x for x in report["discoveries"] if x.get("id") == item.get("discovery_id")), {})
         lines.append(f"| {item['rank']} | {item.get('kind')} | {item.get('priority_band')} | {', '.join(item.get('priority_reasons', []))} | {', '.join(finding.get('related_backlog_items', []))} |")
     lines += ["", "Prioritization preserves source-specific growth metrics; it does not calculate a combined intelligence or semantic-quality score.",
+              "", "## Review-only phase proposals", "",
+              "| Proposal | Type | Priority | Route | Review status |",
+              "|---|---|---|---|---|"]
+    for proposal in report.get("review_proposals", []):
+        lines.append(f"| {proposal['proposal_id']} — {proposal['title']} | {proposal['proposal_type']} | {proposal['priority_band']} | {proposal['route']} | {proposal['review_status']} |")
               "", "All observations require review. Existing continuations are preferred; accepted phase changes are amendment proposals; contract changes require explicit versioned migrations. The collector makes no runtime or phase-status changes.", "",
               "## Safety", "",
               "- No candidate resource promotion or canonical-contract mutation.",
