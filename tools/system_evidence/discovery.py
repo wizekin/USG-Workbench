@@ -109,7 +109,7 @@ def related_backlog_items(findings: list[dict[str, Any]], root: Path) -> dict[st
     if not backlog.is_file():
         return {str(item.get("id")): [] for item in findings}
     text = backlog.read_text(encoding="utf-8")
-    known = set(re.findall(r"\\bSYS-\\d{2}\\b", text))
+    known = set(re.findall(r"\bSYS-\d{2}\b", text))
     links = {}
     for item in findings:
         kind = str(item.get("kind", "")).lower()
