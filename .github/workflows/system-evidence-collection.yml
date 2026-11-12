@@ -1,0 +1,267 @@
+name: USG System Evidence and Resource Collection
+
+on:
+  schedule:
+    - cron: "30 5 * * *"
+  workflow_dispatch:
+    inputs:
+      max_campaigns:
+        description: "Maximum recent immutable Open-World campaigns to summarize"
+        required: false
+        default: "20"
+        type: string
+      refresh_external_pud:
+        description: "Recalculate lexical/morphology candidate coverage from current external shards"
+        required: false
+        default: true
+        type: boolean
+  pull_request:
+    paths:
+      - "config/usg-system-evidence-source-registry-0.1.0.json"
+      - "config/usg-phase-resource-consumption-map-0.1.0.json"
+      - "specifications/usg-system-evidence-*.schema.json"
+      - "tools/system_evidence/**"
+      - "tests/test_system_evidence_catalogue.py"
+      - "documentation/PHASE-8-DEFINITIONS-ROADMAP.md"
+      - ".github/workflows/system-evidence-collection.yml"
+      - "documentation/USG-SYSTEM-IMPROVEMENT-BACKLOG.md"
+      - "documentation/USG-GROWTH-POLICY-AND-AUTONOMY.md"
+      - "tools/open_world_evaluation/growth_controller.py"
+      - "tools/open_world_evaluation/growth_diagnostics.py"
+      - "tools/usg_external_lexical_v0_1_0/pud_evaluation.py"
+      - "documentation/USG-OPEN-WORLD-*.md"
+      - "documentation/EXTERNAL-LEXICAL-*.md"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: usg-system-evidence-collection-\${{ github.event_name }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install pinned JSON Schema validator
+        run: python -m pip install "jsonschema==4.23.0"
+      - name: Compile system evidence collector
+        run: python -m compileall -q tools/system_evidence
+      - name: Test system evidence registry, collector, freshness, and routing
+        run: python -m unittest discover -s tests -p "test_system_evidence_catalogue.py" -v
+      - name: Validate machine-readable registry and phase map
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from jsonschema import Draft202012Validator
+          root = Path(".")
+          registry = json.loads((root / "config/usg-system-evidence-source-registry-0.1.0.json").read_text(encoding="utf-8"))
+          schema = json.loads((root / "specifications/usg-system-evidence-source-registry-0.1.0.schema.json").read_text(encoding="utf-8"))
+          Draft202012Validator(schema).validate(registry)
+          phase_map = json.loads((root / "config/usg-phase-resource-consumption-map-0.1.0.json").read_text(encoding="utf-8"))
+          assert phase_map["contract"] == "USG-PHASE-RESOURCE-CONSUMPTION-MAP/0.1.0"
+          assert {item["phase_id"] for item in phase_map["phases"]} >= {f"P{i}" for i in range(1, 9)}
+          print(f"Validated {len(registry['source_families'])} source families across {len(registry['phases'])} phases.")
+          PY
+
+  collect:
+    if: github.event_name != 'pull_request'
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: write
+      pull-requests: write
+    env:
+      GITHUB_TOKEN: \${{ github.token }}
+      MAX_CAMPAIGNS: \${{ inputs.max_campaigns || '20' }}
+      REFRESH_EXTERNAL_PUD: \${{ inputs.refresh_external_pud || 'true' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install pinned JSON Schema validator
+        run: python -m pip install "jsonschema==4.23.0"
+      - name: Prepare collection workspace
+        run: |
+          mkdir -p "$RUNNER_TEMP/usg-system-evidence"
+          echo "EVIDENCE_DIR=$RUNNER_TEMP/usg-system-evidence" >> "$GITHUB_ENV"
+      - name: Fetch current append-only external lexical data branch
+        id: lexical-data
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git fetch --no-tags --depth=1 origin usg-external-lexical-data; then
+            git worktree add --detach "$EVIDENCE_DIR/external-lexical-data" FETCH_HEAD
+            branch_sha="$(git -C "$EVIDENCE_DIR/external-lexical-data" rev-parse HEAD)"
+            test -s "$EVIDENCE_DIR/external-lexical-data/state/manifest.json"
+            test -s "$EVIDENCE_DIR/external-lexical-data/state/checkpoint.json"
+            cp "$EVIDENCE_DIR/external-lexical-data/state/manifest.json" "$EVIDENCE_DIR/external-lexical-manifest.json"
+            cp "$EVIDENCE_DIR/external-lexical-data/state/checkpoint.json" "$EVIDENCE_DIR/external-lexical-checkpoint.json"
+            echo "available=true" >> "$GITHUB_OUTPUT"
+            echo "branch_sha=$branch_sha" >> "$GITHUB_OUTPUT"
+            echo "EXTERNAL_BRANCH_SHA=$branch_sha" >> "$GITHUB_ENV"
+            echo "External lexical data branch SHA: $branch_sha" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+            echo "EXTERNAL_BRANCH_SHA=unavailable" >> "$GITHUB_ENV"
+            printf '{"error":"EXTERNAL_LEXICAL_DATA_BRANCH_UNAVAILABLE","branch":"usg-external-lexical-data"}\n' > "$EVIDENCE_DIR/external-lexical-collection-error.json"
+            echo "External lexical data branch unavailable; collection will record missing evidence, not zero coverage." >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Recalculate English PUD lexical and morphology candidate coverage
+        id: pud
+        if: steps.lexical-data.outputs.available == 'true' && env.REFRESH_EXTERNAL_PUD != 'false'
+        continue-on-error: true
+        run: |
+          python -m tools.usg_external_lexical_v0_1_0.pud_evaluation \
+            --data-dir "$EVIDENCE_DIR/external-lexical-data/shards" \
+            --output "$EVIDENCE_DIR/external-lexical-pud-evaluation.json" \
+            > "$EVIDENCE_DIR/external-lexical-pud-evaluation.stdout.json"
+      - name: Record PUD evaluation collection failure or deliberate skip
+        if: always()
+        shell: bash
+        run: |
+          if [ ! -s "$EVIDENCE_DIR/external-lexical-pud-evaluation.json" ]; then
+            reason="PUD_EVALUATION_NOT_RUN"
+            if [ "\${{ steps.lexical-data.outputs.available }}" != "true" ]; then
+              reason="EXTERNAL_LEXICAL_DATA_BRANCH_UNAVAILABLE"
+            elif [ "$REFRESH_EXTERNAL_PUD" = "false" ]; then
+              reason="PUD_REFRESH_DISABLED_FOR_THIS_RUN"
+            else
+              reason="PUD_EVALUATION_FAILED"
+            fi
+            printf '{"error":"%s"}\n' "$reason" > "$EVIDENCE_DIR/external-lexical-pud-error.json"
+            echo "PUD evaluation status: $reason" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "Fresh PUD evaluation generated." >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Build current evidence-driven growth plan
+        id: growth
+        continue-on-error: true
+        run: |
+          python -m tools.open_world_evaluation.growth_controller \
+            --max-campaigns "$MAX_CAMPAIGNS" \
+            --output "$EVIDENCE_DIR/usg-growth-plan.json" \
+            --markdown "$EVIDENCE_DIR/usg-growth-plan.md"
+      - name: Record growth planner collection failure
+        if: steps.growth.outcome != 'success'
+        run: |
+          printf '{"error":"GROWTH_PLANNER_FAILED","outcome":"%s"}\n' "\${{ steps.growth.outcome }}" \
+            > "$EVIDENCE_DIR/usg-growth-plan-error.json"
+          echo "Growth planner did not return a fresh plan; this is recorded as missing planning evidence." >> "$GITHUB_STEP_SUMMARY"
+      - name: Generate schema-validated system evidence catalogue
+        run: |
+          set -- --root . \
+            --registry config/usg-system-evidence-source-registry-0.1.0.json \
+            --repository "\${GITHUB_REPOSITORY}" \
+            --branch main \
+            --commit-sha "\${GITHUB_SHA}" \
+            --external-branch-commit "\${EXTERNAL_BRANCH_SHA}" \
+            --max-campaigns "$MAX_CAMPAIGNS" \
+            --output "$EVIDENCE_DIR/system-evidence-catalogue.json" \
+            --markdown "$EVIDENCE_DIR/system-evidence-catalogue.md"
+          if [ -s "$EVIDENCE_DIR/external-lexical-manifest.json" ]; then
+            set -- "$@" --external-manifest "$EVIDENCE_DIR/external-lexical-manifest.json"
+          fi
+          if [ -s "$EVIDENCE_DIR/external-lexical-checkpoint.json" ]; then
+            set -- "$@" --external-checkpoint "$EVIDENCE_DIR/external-lexical-checkpoint.json"
+          fi
+          if [ -s "$EVIDENCE_DIR/external-lexical-pud-evaluation.json" ]; then
+            set -- "$@" --pud-evaluation "$EVIDENCE_DIR/external-lexical-pud-evaluation.json"
+          elif [ -s "$EVIDENCE_DIR/external-lexical-pud-error.json" ]; then
+            set -- "$@" --pud-error "$EVIDENCE_DIR/external-lexical-pud-error.json"
+          fi
+          if [ -s "$EVIDENCE_DIR/usg-growth-plan.json" ]; then
+            set -- "$@" --growth-plan "$EVIDENCE_DIR/usg-growth-plan.json"
+          fi
+          python -m tools.system_evidence.collector "$@"
+      - name: Assemble append-only evidence snapshot
+        id: snapshot
+        run: |
+          snapshot_id="\${GITHUB_RUN_ID}-\${GITHUB_RUN_ATTEMPT}"
+          snapshot_dir="evaluations/system-wide/evidence-catalogue/$snapshot_id"
+          mkdir -p "$snapshot_dir"
+          cp "$EVIDENCE_DIR/system-evidence-catalogue.json" "$snapshot_dir/catalogue.json"
+          cp "$EVIDENCE_DIR/system-evidence-catalogue.md" "$snapshot_dir/catalogue.md"
+          for item in \
+            external-lexical-manifest.json \
+            external-lexical-checkpoint.json \
+            external-lexical-pud-evaluation.json \
+            external-lexical-pud-error.json \
+            external-lexical-collection-error.json \
+            usg-growth-plan.json \
+            usg-growth-plan.md \
+            usg-growth-plan-error.json; do
+            if [ -s "$EVIDENCE_DIR/$item" ]; then cp "$EVIDENCE_DIR/$item" "$snapshot_dir/$item"; fi
+          done
+          cat > "$snapshot_dir/collection-metadata.json" <<EOF
+          {
+            "snapshot_id": "$snapshot_id",
+            "repository": "$GITHUB_REPOSITORY",
+            "main_commit_sha": "$GITHUB_SHA",
+            "external_data_branch": "usg-external-lexical-data",
+            "external_data_branch_sha": "$EXTERNAL_BRANCH_SHA",
+            "workflow_run_id": "$GITHUB_RUN_ID",
+            "workflow_run_attempt": "$GITHUB_RUN_ATTEMPT",
+            "collected_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "collector_contract": "USG-SYSTEM-EVIDENCE-CATALOGUE/0.1.0",
+            "snapshot_policy": "append_only"
+          }
+          EOF
+          echo "SNAPSHOT_DIR=$snapshot_dir" >> "$GITHUB_OUTPUT"
+          echo "Snapshot: $snapshot_dir" >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload evidence snapshot artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: usg-system-evidence-\${{ github.run_id }}-\${{ github.run_attempt }}
+          path: \${{ steps.snapshot.outputs.SNAPSHOT_DIR }}/
+          if-no-files-found: error
+          retention-days: 90
+      - name: Publish append-only system evidence snapshot PR
+        id: snapshot-pr
+        continue-on-error: true
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: \${{ secrets.GITHUB_TOKEN }}
+          branch: reports/system-evidence-\${{ github.run_id }}-\${{ github.run_attempt }}
+          base: main
+          add-paths: \${{ steps.snapshot.outputs.SNAPSHOT_DIR }}/**
+          commit-message: "Phase 8: publish system evidence snapshot \${{ github.run_id }}-\${{ github.run_attempt }}"
+          title: "Phase 8 evidence snapshot: \${{ github.run_id }}-\${{ github.run_attempt }}"
+          body: |
+            Append-only repository-wide USG evidence/resource snapshot.
+
+            - Main commit observed: \${{ github.sha }}
+            - External lexical data commit: \${{ env.EXTERNAL_BRANCH_SHA }}
+            - Source registry: USG-SYSTEM-EVIDENCE-SOURCE-REGISTRY/0.1.0
+            - Catalogue: USG-SYSTEM-EVIDENCE-CATALOGUE/0.1.0
+            - Candidate lexical/semantic resources remain unpromoted.
+            - No phase status, canonical contract, or runtime knowledge is changed by this collection.
+      - name: Record collection summary and publication result
+        if: always()
+        run: |
+          {
+            echo ""
+            echo "## System evidence collection"
+            echo "- Main commit: \${GITHUB_SHA}"
+            echo "- External lexical branch commit: \${EXTERNAL_BRANCH_SHA}"
+            echo "- Snapshot: \${{ steps.snapshot.outputs.SNAPSHOT_DIR }}"
+            if [ -n "\${{ steps.snapshot-pr.outputs.pull-request-number }}" ]; then
+              echo "- Snapshot PR: \${{ steps.snapshot-pr.outputs.pull-request-number }}"
+            else
+              echo "- Snapshot PR was not created. The artifact was uploaded; check repository Actions pull-request permissions."
+            fi
+            echo "- Collection does not modify semantic runtime resources or phase statuses."
+          } >> "\${GITHUB_STEP_SUMMARY}"
