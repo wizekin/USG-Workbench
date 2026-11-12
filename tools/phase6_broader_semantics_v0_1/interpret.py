@@ -208,8 +208,7 @@ def _nominal_candidate_graph(source: str, result: dict) -> tuple[dict, list[str]
         if feature == "NOMINAL_PROPERTY":
             graph["features"].append("NOMINAL_PROPERTY")
         if relation_type == "GENITIVE_UNSPECIFIED":
-            graph["features"].append("POSSESSION")
-            # Preserve the explicit non-entailment: this is a genitive form,
+                    # Preserve the explicit non-entailment: this is a genitive form,
             # not a claim that the dependent is owned by the head.
             graph["provenance"].append({
                 "rule_id": "phase6.genitive.unspecified.v1",
@@ -498,11 +497,13 @@ class Phase6IntegratedInterpreter:
         graph, diagnostics = _phase5_graph(source, phase5)
         provider_results: dict[str, Any] = {}
         has_predicate = any(node.get("role") == "ACTION" for node in graph["nodes"])
+        provider_candidate_added = False
 
         # Expand coverage using the existing dedicated Phase 6 candidate
-        # analyzers. They are candidate providers, not independent truth or
-        # benchmark promotions. Only unique provider matches are composed.
-        if not has_predicate and not graph["nodes"]:
+        # analyzers. These are candidate providers, not independent truth or
+        # benchmark promotions. Unique matches are appended even when the
+        # Phase 5 discourse stage has already retained nominal mentions.
+        if not has_predicate:
             from tools.phase6_predicate_argument_v0_3_0.analyzer import analyze as analyze_predicate_argument
             pa_result = analyze_predicate_argument(source, language)
             provider_results["predicate_argument"] = pa_result
@@ -511,11 +512,12 @@ class Phase6IntegratedInterpreter:
                 _append_provider_graph(graph, provider_graph)
                 diagnostics.extend(provider_diagnostics)
                 diagnostics.append("PHASE6_PREDICATE_ARGUMENT_PROVIDER:" + pa_result["construction_id"])
+                provider_candidate_added = True
             elif pa_result.get("status") == "AMBIGUOUS":
                 alternatives = [item.get("construction_id") for item in pa_result.get("alternatives", [])]
                 diagnostics.append("PHASE6_PREDICATE_ARGUMENT_AMBIGUOUS:" + ",".join(str(x) for x in alternatives))
 
-        if not graph["nodes"]:
+        if not has_predicate and not provider_candidate_added:
             from tools.phase6_nominal_candidate_v0_4_1.analyzer import analyze as analyze_nominal
             nominal_result = analyze_nominal(source, language)
             provider_results["nominal"] = nominal_result
@@ -524,6 +526,7 @@ class Phase6IntegratedInterpreter:
                 _append_provider_graph(graph, provider_graph)
                 diagnostics.extend(provider_diagnostics)
                 diagnostics.append("PHASE6_NOMINAL_PROVIDER:" + nominal_result["construction_id"])
+                provider_candidate_added = True
             elif nominal_result.get("status") == "AMBIGUOUS":
                 alternatives = [item.get("construction_id") for item in nominal_result.get("alternatives", [])]
                 diagnostics.append("PHASE6_NOMINAL_AMBIGUOUS:" + ",".join(str(x) for x in alternatives))
@@ -531,7 +534,7 @@ class Phase6IntegratedInterpreter:
         template = extract_candidate_graph(source, language)
         # Strict-template fallback remains last so it cannot override a richer
         # lexically licensed Phase 6 provider candidate.
-        if not graph["nodes"] and template["status"] == "CANDIDATE_PATTERN_MATCH":
+        if not has_predicate and not provider_candidate_added and template["status"] == "CANDIDATE_PATTERN_MATCH":
             _merge_template_graph(graph, template["graph"])
             diagnostics.append("PHASE6_CLOSED_TEMPLATE_FALLBACK:" + str(template["template_id"]))
         graph["features"] = sorted(set(graph["features"]))
