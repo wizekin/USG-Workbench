@@ -75,6 +75,13 @@ def build_parser():
     replay.add_argument("run_id")
     replay.add_argument("--db", default="usg-workbench.sqlite3")
 
+    phase6_interpret = sub.add_parser("phase6-interpret", help="run the integrated bilingual Phase 6 candidate interpreter")
+    phase6_interpret.add_argument("file", help="UTF-8 source text file")
+    phase6_interpret.add_argument("--language", choices=["en", "ar"], required=True)
+    phase6_interpret.add_argument("--db", default="usg-workbench.sqlite3")
+    phase6_interpret.add_argument("--no-persist", action="store_true")
+    phase6_interpret.add_argument("--output")
+
     phase6_compose = sub.add_parser("phase6-compose", help="compose and validate a Phase 6 candidate semantic graph")
     phase6_compose.add_argument("file", help="JSON request with source, language, and graph")
     phase6_compose.add_argument("--db", default="usg-workbench.sqlite3")
@@ -151,7 +158,13 @@ def main(argv=None):
 
     application = USGApplication(args.db)
     try:
-        if args.command == "phase6-extract":
+        if args.command == "phase6-interpret":
+            source_text = Path(args.file).read_text(encoding="utf-8")
+            status, result = application.dispatch("POST", "/v3/phase6/interpret", {
+                "source": source_text, "language": args.language,
+                "persist": not args.no_persist,
+            })
+        elif args.command == "phase6-extract":
             source_text = Path(args.file).read_text(encoding="utf-8")
             status, result = application.dispatch("POST", "/v3/phase6/extract", {
                 "source": source_text, "language": args.language,
@@ -207,7 +220,7 @@ def main(argv=None):
             if getattr(args, "revision", None) is not None:
                 target += f"?revision={args.revision}"
             status, result = application.dispatch("GET", target)
-        if args.command in {"export", "interpret-v2", "phase6-compose", "phase6-extract"} and status == 200 and getattr(args, "output", None):
+        if args.command in {"export", "interpret-v2", "phase6-compose", "phase6-extract", "phase6-interpret"} and status == 200 and getattr(args, "output", None):
             Path(args.output).write_text(
                 json.dumps(result, ensure_ascii=False, indent=2) + "\n",
                 encoding="utf-8",

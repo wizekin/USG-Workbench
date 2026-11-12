@@ -178,23 +178,23 @@ These are the major open workstreams. Detailed step definitions, dependencies, a
 
 ### 1. Phase 6 — broader semantic interpretation
 
-**Status: IN PROGRESS.** Steps 6.1–6.6 are accepted for their bounded scopes. Step 6.7 is ready for candidate development; naturalistic validation and production promotion remain separately gated.
+**Status: IN PROGRESS — integrated candidate implementation now spans Steps 6.7–6.14.** One bilingual interpretation path reuses the Phase 5 lexical, clause, syntax, operator, and discourse stages, composes their results into a Phase 6 graph, and exposes the same service through API, CLI, and Kernel Lab. Candidate-only status is retained; the final per-construction acceptance gate remains open.
 
 | Step | Capability | Current status |
 |---|---|---|
 | **6.6** | Nominal, property, possession, and modifier semantics | **Accepted for bounded graph-first synthetic reference (500 cases / 10 profiles); runtime remains candidate-only** |
-| **6.7** | Intra-clause coordination and shared arguments | Ready for bounded candidate development |
-| **6.8** | Embedded and subordinate clauses | Pending |
-| **6.9** | Voice and speech-act structures | Pending |
-| **6.10** | Cross-construction operator and quantifier scope | Pending |
-| **6.11** | Bounded discourse-reference resolution | Pending |
-| **6.12** | Loss-aware projection to canonical semantic documents | Pending |
-| **6.13** | API, CLI, resource lifecycle, and Kernel Lab integration | Pending |
-| **6.14** | Full Phase 6 benchmark and integrated exit acceptance | Pending |
+| **6.7** | Intra-clause coordination and shared arguments | Integrated clause-level coordination candidates; phrase-level fallback remains narrowly templated |
+| **6.8** | Embedded and subordinate clauses | Clause hierarchy and complement/causal/conditional/temporal candidate links integrated |
+| **6.9** | Voice and speech-act structures | Passive-question fallback templates integrated; general voice/speech-act coverage remains unaccepted |
+| **6.10** | Cross-construction operator and quantifier scope | Existing Phase 5 operator candidates carried into the Phase 6 graph |
+| **6.11** | Bounded discourse-reference resolution | Mention and antecedent alternatives carried forward; identity remains unresolved |
+| **6.12** | Loss-aware projection to canonical semantic documents | Lossless OPAQUE preservation preview implemented; semantic assertion projection remains blocked |
+| **6.13** | API, CLI, resource lifecycle, and Kernel Lab integration | Unified API, CLI, Kernel Lab action, SQLite run persistence, and replay integrated |
+| **6.14** | Full Phase 6 benchmark and integrated exit acceptance | Phase 5-to-Phase 6 bridge regression added; full Phase 6 semantic acceptance remains open |
 
 Step 6.6 now uses a deterministic graph-first bilingual synthetic reference benchmark: 500 cases across ten English/MSA construction profiles, with 20 positive, 20 negative, and 10 ambiguous cases per profile. It uses no human annotations, model-generated labels, external corpus, development fixtures, or candidate lexicon to create its reference cases. All ten synthetic profile gates pass. This is controlled conformance evidence only—not a naturalistic semantic-accuracy claim—and all runtime constructions remain candidate-only.
 
-References: [Phase 6 roadmap](documentation/PHASE-6-DEFINITIONS-ROADMAP.md) · [Automatic synthetic-reference protocol](documentation/PHASE-6-STEP-6.6-AUTOMATIC-SYNTHETIC-REFERENCE-PROTOCOL.md) · [Historical external dataset feasibility audit](documentation/PHASE-6-STEP-6.6-INDEPENDENT-GOLD-DATASET-AUDIT.md) · [Historical independent-gold protocol](documentation/PHASE-6-STEP-6.6-INDEPENDENT-GOLD-ACCEPTANCE-PROTOCOL.md).
+References: [Phase 6 roadmap](documentation/PHASE-6-DEFINITIONS-ROADMAP.md) · [Integrated interpreter and bridge validation](documentation/PHASE-6-INTEGRATED-INTERPRETER-AND-BRIDGE-VALIDATION.md) · [Steps 6.7–6.14 implementation record](documentation/PHASE-6-STEPS-6.7-6.14-COMPLETION-IMPLEMENTATION.md) · [Automatic synthetic-reference protocol](documentation/PHASE-6-STEP-6.6-AUTOMATIC-SYNTHETIC-REFERENCE-PROTOCOL.md) · [Historical external dataset feasibility audit](documentation/PHASE-6-STEP-6.6-INDEPENDENT-GOLD-DATASET-AUDIT.md) · [Historical independent-gold protocol](documentation/PHASE-6-STEP-6.6-INDEPENDENT-GOLD-ACCEPTANCE-PROTOCOL.md).
 
 ### 2. External lexical knowledge — crawl, evaluate, and safely integrate
 

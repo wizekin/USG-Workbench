@@ -7,7 +7,10 @@ on:
       - "tools/usg-kernel-lab/**"
       - "tests/test_phase6_broader_semantics*.py"
       - "tests/test_phase6_step_6_5_predicate_argument.py"
+      - "tests/test_phase6_integrated_interpreter.py"
       - "documentation/PHASE-6-STEPS-6.7-6.14-COMPLETION-IMPLEMENTATION.md"
+      - "documentation/PHASE-6-INTEGRATED-INTERPRETER-AND-BRIDGE-VALIDATION.md"
+      - "README.md"
       - ".github/workflows/phase6-completion-integration.yml"
   push:
     branches: [main]
@@ -17,6 +20,9 @@ on:
       - "tools/usg-kernel-lab/**"
       - "tests/test_phase6_broader_semantics*.py"
       - "tests/test_phase6_step_6_5_predicate_argument.py"
+      - "tests/test_phase6_integrated_interpreter.py"
+      - "documentation/PHASE-6-INTEGRATED-INTERPRETER-AND-BRIDGE-VALIDATION.md"
+      - "README.md"
   workflow_dispatch:
 permissions:
   contents: read
@@ -42,6 +48,8 @@ jobs:
         run: |
           python -m unittest discover -s tests -p 'test_phase6_broader_semantics*.py' -v
           python -m unittest discover -s tests -p 'test_phase6_step_6_5_predicate_argument.py' -v
+          python -m unittest discover -s tests -p 'test_phase6_integrated_interpreter.py' -v
+          python -m tools.phase6_broader_semantics_v0_1.integrated_benchmark
       - name: Protect accepted contracts and historical implementation lines
         run: |
           git diff --exit-code origin/main...HEAD -- documentation/PHASE-[1-5]* specifications/USG-SEM-1.0.md specifications/usg-sem-1.0.schema.json tools/usg_interpretation_v0_1_0 tools/usg_interpretation_v0_2_0 archives/ implementations/semantic-workbench-js/
