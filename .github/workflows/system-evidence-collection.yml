@@ -329,7 +329,7 @@ jobs:
             usg-growth-plan.json \
             usg-growth-plan.md \
             usg-growth-plan-error.json \
-            github-actions-workflows.json \\
+            github-actions-workflows.json \
             phase8-integrated-acceptance.json; do
             if [ -s "$EVIDENCE_DIR/$item" ]; then cp "$EVIDENCE_DIR/$item" "$snapshot_dir/$item"; fi
           done
