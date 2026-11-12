@@ -2,5 +2,6 @@
 from .engine import CompositionError, compose, project_loss_aware
 
 from .runs import Phase6RunIntegrityError, SQLitePhase6CandidateRunStore
+from .extract import extract_candidate_graph
 
-__all__ = ["CompositionError", "compose", "project_loss_aware", "Phase6RunIntegrityError", "SQLitePhase6CandidateRunStore"]
+__all__ = ["CompositionError", "compose", "project_loss_aware", "Phase6RunIntegrityError", "SQLitePhase6CandidateRunStore", "extract_candidate_graph"]
