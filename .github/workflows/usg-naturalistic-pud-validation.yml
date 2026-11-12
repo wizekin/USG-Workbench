@@ -6,6 +6,7 @@ on:
       - "tools/open_world_evaluation/pud_naturalistic_pilot.py"
       - "tests/test_pud_naturalistic_pilot.py"
       - "documentation/USG-NATURALISTIC-PUD-PILOT.md"
+      - ".github/workflows/open-world-naturalistic-pud-pilot.yml"
       - ".github/workflows/usg-naturalistic-pud-validation.yml"
   workflow_dispatch:
 
@@ -20,8 +21,19 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Install schema validator
-        run: python -m pip install "jsonschema>=4.18,<5"
+      - name: Install schema and workflow validators
+        run: python -m pip install "jsonschema>=4.18,<5" "PyYAML>=6,<7"
+      - name: Validate naturalistic campaign workflow YAML
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import yaml
+          path = Path(".github/workflows/open-world-naturalistic-pud-pilot.yml")
+          data = yaml.load(path.read_text(encoding="utf-8"), Loader=yaml.BaseLoader)
+          assert isinstance(data, dict)
+          assert "jobs" in data and "naturalistic-pilot" in data["jobs"]
+          assert "schedule" in data["on"] and "workflow_dispatch" in data["on"]
+          PY
       - name: Run PUD pilot unit tests
         run: python -m unittest discover -s tests -p "test_pud_naturalistic_pilot.py" -v
       - name: Download pinned public corpus and generate a 5-per-language validation sample
