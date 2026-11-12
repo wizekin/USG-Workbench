@@ -40,7 +40,7 @@ class TestPhase6AutomaticSyntheticReference(unittest.TestCase):
 
     def test_all_ten_synthetic_profile_gates_pass(self):
         self.assertTrue(self.evaluation["all_synthetic_profile_gates_passed"])
-        self.assertEqual(self.evaluation["failed_case_ids"], [])
+        self.assertEqual(self.evaluation["failed_case_ids"], [], self.evaluation["failure_diagnostics"])
         self.assertEqual(self.evaluation["profile_count"], 10)
         for metrics in self.evaluation["by_profile"].values():
             self.assertEqual(metrics["positive_detection"], 1.0)
