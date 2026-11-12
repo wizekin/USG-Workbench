@@ -98,6 +98,13 @@ def read_campaigns(root: Path, limit: int) -> list[dict[str, Any]]:
             "outcome_counts": report.get("outcome_counts", {}),
             "execution_accounting": accounting if isinstance(accounting, dict) else {
                 "status": "not_recorded_in_report_version"},
+            "campaign_report_sha256": digest(report_path),
+            "bundle_manifest": read_json(directory / "bundle-manifest.json"),
+            "artifact_hashes": (
+                {item["name"]: item["sha256"] for item in read_json(directory / "bundle-manifest.json").get("files", [])
+                 if isinstance(item, dict) and item.get("name") and item.get("sha256")}
+                if read_json(directory / "bundle-manifest.json") else {}
+            ),
             "first_blocking_stage_counts": attribution.get("first_blocking_stage_counts", {})
                 if isinstance(attribution, dict) else {},
             "naturalistic_case_count": int(populations.get("naturalistic", 0) or 0),
@@ -107,14 +114,17 @@ def read_campaigns(root: Path, limit: int) -> list[dict[str, Any]]:
 
 def external_lexical(manifest_path: Path | None, checkpoint_path: Path | None,
                      pud_path: Path | None, pud_error_path: Path | None,
-                     branch_commit: str | None) -> dict[str, Any]:
+                     shard_inventory_path: Path | None, branch_commit: str | None) -> dict[str, Any]:
     manifest, checkpoint = read_json(manifest_path), read_json(checkpoint_path)
     pud, pud_error = read_json(pud_path), read_json(pud_error_path)
+    shard_inventory = read_json(shard_inventory_path)
     if manifest is None:
         return {"status": "unavailable", "manifest_available": False,
                 "checkpoint_available": checkpoint is not None, "external_branch_commit": branch_commit,
                 "pud_evaluation": {"status": "not_run_without_manifest",
-                                   "error": pud_error.get("error") if pud_error else None}}
+                                   "error": pud_error.get("error") if pud_error else None},
+            "shard_inventory": shard_inventory if shard_inventory is not None else {
+                "status": "not_collected", "file_count": 0, "total_size_bytes": 0, "files": []}}
     processed, expected = int(manifest.get("processed_headwords", 0) or 0), int(manifest.get("expected_headwords", 0) or 0)
     batches = int(manifest.get("batch_count", 0) or 0)
     percent = 100 * processed / expected if expected else None
@@ -124,6 +134,8 @@ def external_lexical(manifest_path: Path | None, checkpoint_path: Path | None,
     last = manifest.get("last_batch", {})
     budget = int(manifest.get("storage_budget_bytes", 0) or 0)
     pud_fresh = bool(pud is not None and shards == batches)
+    shard_count = int(shard_inventory.get("file_count", 0) or 0) if shard_inventory else None
+    shard_inventory_match = bool(shard_inventory is not None and shard_count == batches)
     return {
         "status": manifest.get("status", "unknown"), "manifest_available": True,
         "checkpoint_available": checkpoint is not None, "external_branch_commit": branch_commit,
@@ -146,6 +158,15 @@ def external_lexical(manifest_path: Path | None, checkpoint_path: Path | None,
                                   "cycle_number": checkpoint.get("cycle_number") if checkpoint else None},
             "last_batch": {"headwords": last.get("headwords"), "entries": last.get("entries"),
                            "senses": last.get("senses"), "stop_reason": last.get("stop_reason")},
+        },
+        "shard_inventory": {
+            "status": ("matches_manifest" if shard_inventory_match else
+                       ("count_mismatch" if shard_inventory is not None else "not_collected")),
+            "file_count": shard_count,
+            "manifest_batch_count": batches,
+            "total_size_bytes": shard_inventory.get("total_size_bytes") if shard_inventory else None,
+            "files": shard_inventory.get("files", []) if shard_inventory else [],
+            "inventory_sha256": _digest(shard_inventory_path) if shard_inventory_path and shard_inventory_path.is_file() else None,
         },
         "pud_evaluation": {
             "status": "fresh_for_current_shard_count" if pud_fresh else (
@@ -221,6 +242,14 @@ def discover(phases: list[dict[str, Any]], external: dict[str, Any],
             "external_lexical_manifest_unavailable",
             "The external lexical branch manifest was not collected. Its absence is not an empty inventory or zero progress.",
             ["external_lexical.manifest"], ["P8"], phases, "high", "evidence_collection"))
+    if external.get("manifest_available") and external.get("shard_inventory", {}).get("status") == "count_mismatch":
+        findings.append(make_finding(
+            "external_lexical_shard_inventory_mismatch",
+            "The physical shard inventory does not reconcile with the cumulative external lexical manifest batch count; investigate missing or duplicated shard files before trusting crawl totals.",
+            ["external_lexical.manifest_sha256", "external_lexical.shard_inventory"],
+            ["P5", "P6", "P7", "P8"], phases, "high", "existing_external_lexical_workstream",
+            {"manifest_batch_count": external.get("progress", {}).get("batch_count"),
+             "physical_shard_count": external.get("shard_inventory", {}).get("file_count")}))
     if campaigns:
         latest = campaigns[0]
         if latest.get("naturalistic_case_count", 0) == 0:
@@ -265,6 +294,7 @@ def collect_catalogue(root: Path = ROOT, *, registry_path: Path = REGISTRY_PATH,
                       external_manifest_path: Path | None = None,
                       external_checkpoint_path: Path | None = None,
                       pud_evaluation_path: Path | None = None, pud_error_path: Path | None = None,
+                      external_shard_inventory_path: Path | None = None,
                       growth_plan_path: Path | None = None, external_branch_commit: str | None = None,
                       repository_name: str = "wizekin/USG-Workbench", branch: str = "main",
                       commit_sha: str = "unknown", tree_sha: str | None = None,
@@ -280,7 +310,8 @@ def collect_catalogue(root: Path = ROOT, *, registry_path: Path = REGISTRY_PATH,
     sources = inventory_sources(root, registry)
     campaigns = read_campaigns(root, max_campaigns)
     external = external_lexical(external_manifest_path, external_checkpoint_path,
-                                pud_evaluation_path, pud_error_path, external_branch_commit)
+                                pud_evaluation_path, pud_error_path,
+                                external_shard_inventory_path, external_branch_commit)
     growth = read_json(growth_plan_path)
     findings = discover(phases, external, campaigns, growth, sources)
     latest = campaigns[0] if campaigns else None
@@ -317,6 +348,9 @@ def collect_catalogue(root: Path = ROOT, *, registry_path: Path = REGISTRY_PATH,
             "generated_at": growth.get("generated_at") if growth else None,
             "campaigns_analyzed": growth.get("campaigns_analyzed", 0) if growth else 0,
             "ranked_actions": growth.get("ranked_actions", []) if growth else [],
+            "baseline": growth.get("baseline") if growth else None,
+            "campaigns": growth.get("campaigns", []) if growth else [],
+            "evidence_sources": growth.get("evidence_sources", []) if growth else [],
             "diagnostic_accounting_warnings": growth.get("diagnostic_accounting_warnings", []) if growth else [],
             "safety_policy": growth.get("safety_policy", {
                 "runtime_mutations_performed": False, "candidate_lexical_data_promoted": False,
@@ -419,6 +453,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--external-branch-commit")
     parser.add_argument("--pud-evaluation", type=Path)
     parser.add_argument("--pud-error", type=Path)
+    parser.add_argument("--external-shard-inventory", type=Path)
     parser.add_argument("--growth-plan", type=Path)
     parser.add_argument("--max-campaigns", type=int, default=20)
     parser.add_argument("--repository", default="wizekin/USG-Workbench")
@@ -432,6 +467,7 @@ def main(argv: list[str] | None = None) -> int:
         args.root, registry_path=args.registry, external_manifest_path=args.external_manifest,
         external_checkpoint_path=args.external_checkpoint, external_branch_commit=args.external_branch_commit,
         pud_evaluation_path=args.pud_evaluation, pud_error_path=args.pud_error,
+        external_shard_inventory_path=args.external_shard_inventory,
         growth_plan_path=args.growth_plan, repository_name=args.repository, branch=args.branch,
         commit_sha=args.commit_sha, tree_sha=args.tree_sha, max_campaigns=args.max_campaigns)
     args.output.parent.mkdir(parents=True, exist_ok=True)
