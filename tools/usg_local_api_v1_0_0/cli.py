@@ -75,6 +75,16 @@ def build_parser():
     replay.add_argument("run_id")
     replay.add_argument("--db", default="usg-workbench.sqlite3")
 
+    phase6_compose = sub.add_parser("phase6-compose", help="compose and validate a Phase 6 candidate semantic graph")
+    phase6_compose.add_argument("file", help="JSON request with source, language, and graph")
+    phase6_compose.add_argument("--db", default="usg-workbench.sqlite3")
+    phase6_compose.add_argument("--no-persist", action="store_true")
+    phase6_compose.add_argument("--output")
+
+    phase6_replay = sub.add_parser("phase6-replay", help="replay a stored Phase 6 candidate composition run")
+    phase6_replay.add_argument("run_id")
+    phase6_replay.add_argument("--db", default="usg-workbench.sqlite3")
+
     query = sub.add_parser("query", help="run a structured query against a stored revision")
     query.add_argument("document_id")
     query.add_argument("query_file")
@@ -134,7 +144,17 @@ def main(argv=None):
 
     application = USGApplication(args.db)
     try:
-        if args.command == "interpret-v2":
+        if args.command == "phase6-compose":
+            request = _read_json(args.file)
+            if not isinstance(request, dict):
+                raise ValueError("Phase 6 request file must contain a JSON object")
+            request["persist"] = not args.no_persist
+            status, result = application.dispatch("POST", "/v3/phase6/compose", request)
+        elif args.command == "phase6-replay":
+            status, result = application.dispatch(
+                "POST", "/v3/phase6/runs/" + quote(args.run_id, safe="") + "/replay", {}
+            )
+        elif args.command == "interpret-v2":
             source_text = Path(args.file).read_text(encoding="utf-8")
             status, result = application.dispatch("POST", "/v2/interpret", {
                 "text": source_text, "language": args.language,
@@ -174,7 +194,7 @@ def main(argv=None):
             if getattr(args, "revision", None) is not None:
                 target += f"?revision={args.revision}"
             status, result = application.dispatch("GET", target)
-        if args.command in {"export", "interpret-v2"} and status == 200 and args.output:
+        if args.command in {"export", "interpret-v2", "phase6-compose"} and status == 200 and getattr(args, "output", None):
             Path(args.output).write_text(
                 json.dumps(result, ensure_ascii=False, indent=2) + "\n",
                 encoding="utf-8",
