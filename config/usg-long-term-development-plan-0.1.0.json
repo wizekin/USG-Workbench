@@ -1,0 +1,1555 @@
+{
+  "contract": "USG-LONG-TERM-DEVELOPMENT-PLAN/0.1.0",
+  "version": "0.1.0",
+  "repository": "wizekin/USG-Workbench",
+  "plan_kind": "evidence_driven_long_horizon_roadmap",
+  "reviewed_at": "2026-11-12",
+  "status": "planning_baseline",
+  "current_baseline": {
+    "phase8": "automatic_acceptance_implementation_merged; production_acceptance_artifact_not_yet_verified",
+    "phase9": "planned_only; implementation_not_started_by_this_plan",
+    "phase6": "bounded_exit_accepted; continuation_items_remain_open_and_candidate_scoped",
+    "phase7": "accepted_for_frozen_profile; unresolved_cross_language_mappings_remain_open",
+    "semantic_runtime": "multiple_versioned_implementation_lines; broad_cross_runtime_conformance_not_established",
+    "naturalistic_semantic_accuracy": "not_established",
+    "autonomous_semantic_mutation": "not_authorized"
+  },
+  "north_star": "Build a modular, inspectable, multilingual semantic representation and reasoning system that converts language input into traceable semantic structures, preserves uncertainty, and supports bounded knowledge retrieval and evidence-grounded reasoning. Grow capability through small independently evaluated increments rather than through unverified breadth or a monolithic model.",
+  "target_architecture": [
+    {
+      "id": "A01",
+      "name": "Input and source preservation",
+      "purpose": "Preserve exact bytes/text, language profile, source spans, source identity, transformations, and rights/provenance before interpretation."
+    },
+    {
+      "id": "A02",
+      "name": "Segmentation and lexical analysis",
+      "purpose": "Produce token, lemma, morphology, POS, and sense candidates while preserving OOVs, ambiguity, and source evidence."
+    },
+    {
+      "id": "A03",
+      "name": "Syntax and construction analysis",
+      "purpose": "Build versioned construction, attachment, dependency, and argument-structure candidates with alternatives."
+    },
+    {
+      "id": "A04",
+      "name": "Semantic composition",
+      "purpose": "Compose typed predicates, roles, participants, properties, relations, events, states, and modifiers without losing source grounding."
+    },
+    {
+      "id": "A05",
+      "name": "Operators and discourse",
+      "purpose": "Represent negation, quantification, tense, aspect, modality, conditionals, scope, mentions, reference candidates, and discourse context."
+    },
+    {
+      "id": "A06",
+      "name": "Canonical projection and persistence",
+      "purpose": "Project only representable meaning into versioned USG-SEM contracts; preserve unprojectable material explicitly; use the existing SQLite authority."
+    },
+    {
+      "id": "A07",
+      "name": "Knowledge and retrieval",
+      "purpose": "Retrieve provenance-bearing candidate knowledge through versioned read-only adapters; distinguish forms, senses, concepts, classes, instances, and assertions."
+    },
+    {
+      "id": "A08",
+      "name": "Reasoning and explanation",
+      "purpose": "Apply explicit rules with typed inputs, preconditions, derivations, evidence, conflict handling, bounded execution, and explanations."
+    },
+    {
+      "id": "A09",
+      "name": "Evaluation and diagnostics",
+      "purpose": "Measure stage reliability and semantic quality separately across frozen, synthetic, controlled, and naturalistic populations."
+    },
+    {
+      "id": "A10",
+      "name": "Development intelligence and governed growth",
+      "purpose": "Connect failures to proposals, candidate sandboxes, independent evaluation, acceptance, replay, monitoring, and rollback."
+    }
+  ],
+  "invariants": [
+    "USG-SEM/1.0 remains normative and unchanged unless a separately versioned migration is explicitly approved.",
+    "The existing SQLite canonical document store remains the only canonical document authority; indexes and caches remain rebuildable.",
+    "JavaScript Workbench, Python kernel, Python interpreter, adapters, and native packages remain separate implementation lines until common conformance tests demonstrate specific equivalence.",
+    "Lexical, morphology, parser, and semantic discoveries remain candidates until their own acceptance and integration decisions pass.",
+    "A schema-valid graph, model-generated answer, cross-runtime agreement, or successful workflow does not prove semantic correctness.",
+    "Unknown, ambiguous, conflicting, unsupported, and unprojectable content must remain explicit; abstention is preferable to invented certainty.",
+    "Naturalistic, synthetic, randomized, controlled-diagnostic, historical, and external-candidate populations must not be pooled without a defensible common denominator.",
+    "Every accepted result must identify code commit, resource versions/digests, language profile, population, evaluation method, and limitations.",
+    "No single intelligence, AGI, or universal-understanding score is used as an acceptance criterion.",
+    "Autonomous automation may collect, diagnose, prioritize, test, and propose; semantic runtime promotion remains behind explicit gates."
+  ],
+  "future_phase_policy": "Future phase numbers and titles are planning labels, not accepted scope or permission to start implementation. Re-cut or split a proposed phase when evidence shows that its work is too broad, dependencies changed, or a smaller independently acceptable increment is safer. Do not create a new phase to avoid an existing continuation tracker or migration obligation.",
+  "phases": [
+    {
+      "phase_id": "P9",
+      "title": "Cross-runtime conformance and reproducible evaluation foundation",
+      "status": "planned_not_started",
+      "priority": "critical_after_phase8",
+      "objective": "Make every implementation's behavior comparable on the same frozen inputs, profiles, normalized outputs, and replayable cases. Establish what actually works in each implementation before expanding semantic breadth.",
+      "depends_on": [
+        "P8 formal acceptance artifact",
+        "existing SYS-12 inventory",
+        "existing browser adapter"
+      ],
+      "linked_backlog_ids": [
+        "SYS-12",
+        "SYS-14",
+        "SYS-04"
+      ],
+      "work_items": [
+        {
+          "id": "P9.1",
+          "title": "Define the shared conformance fixture contract",
+          "objective": "Specify common case IDs, source text, language profile, feature scope, expected evidence, normalized semantic output, ambiguity/abstention expectations, and provenance.",
+          "implementation_sequence": [
+            "Inspect USG-SEM/1.0, Phase 4/5 envelopes, JS Workbench v0.5.4, Python kernel v0.7.0, and existing browser runner.",
+            "Define a versioned fixture JSON schema; do not force unlike internal objects into a false common shape.",
+            "Include input, profile, capabilities under test, expected spans, expected normalized nodes/relations, allowed alternatives, and explicit non-claims.",
+            "Create fixtures for capabilities already shared by at least two implementations."
+          ],
+          "acceptance": [
+            "Schema validates all fixtures.",
+            "Fixture IDs and source/resource provenance are stable.",
+            "Unsupported features are explicitly marked and cannot be counted as failures of an implementation that does not claim support."
+          ]
+        },
+        {
+          "id": "P9.2",
+          "title": "Normalize execution reports without erasing implementation differences",
+          "objective": "Provide a per-implementation normalized result envelope that retains native payload references and version metadata.",
+          "implementation_sequence": [
+            "Define normalizers for spans, lexical candidates, constructions, roles, operators, discourse links, unresolved items, diagnostics, and abstention.",
+            "Preserve native implementation identifiers as opaque references; compare semantic content rather than local IDs.",
+            "Record implementation commit, resource digest, runner version, language profile, and execution outcome.",
+            "Add invalid/missing-field and lossy-normalization tests."
+          ],
+          "acceptance": [
+            "Round-trip references to native payloads are retained.",
+            "No normalizer silently drops ambiguity or unsupported content.",
+            "Normalizer conformance fixtures pass for each registered target."
+          ]
+        },
+        {
+          "id": "P9.3",
+          "title": "Build the common multi-runtime runner",
+          "objective": "Run the same fixture set separately against each declared runtime and collect deterministic reports.",
+          "implementation_sequence": [
+            "Create a target registry with entry point, supported profiles/features, command, timeout, environment, and artifact contract.",
+            "Run JS in the browser adapter and Python implementations in isolated processes.",
+            "Separate target-not-supported, not-configured, skipped, crashed, timed-out, invalid-output, and semantic mismatch outcomes.",
+            "Persist per-case raw and normalized outputs."
+          ],
+          "acceptance": [
+            "All runnable targets execute reproducibly on the same selected fixture IDs.",
+            "Unconfigured/unsupported targets are never reported as successful tests.",
+            "Case, target, attempt, and scenario counts reconcile."
+          ]
+        },
+        {
+          "id": "P9.4",
+          "title": "Publish a capability-by-runtime conformance matrix",
+          "objective": "Show which feature/profile combinations are implemented, tested, conformant, not tested, unsupported, or blocked.",
+          "implementation_sequence": [
+            "Populate rows by implementation, version, language profile, construction, and semantic feature.",
+            "Link each cell to exact fixtures, reports, commits, and resource digests.",
+            "Use statuses that distinguish component-tested from cross-runtime conformant.",
+            "Add a regression that prevents matrix cells from becoming conformant without exact shared-run evidence."
+          ],
+          "acceptance": [
+            "Every claim has evidence links and precise scope.",
+            "Agreement is not labelled semantic truth.",
+            "The matrix can be refreshed automatically from runner artifacts."
+          ]
+        },
+        {
+          "id": "P9.5",
+          "title": "Unify stage-level diagnostic and failure attribution",
+          "objective": "Connect the first supported blocker, parallel blockers, downstream incomplete stages, and resource dependencies across implementations.",
+          "implementation_sequence": [
+            "Reuse Phase 4/5 dependency graphs and diagnostic codes where their semantics match.",
+            "Add explicit mapping tables for implementation-specific diagnostics; leave unmapped codes unmapped.",
+            "Report first blocker separately from correlated downstream symptoms.",
+            "Link every ranked finding to a replayable case and exact source/resource versions."
+          ],
+          "acceptance": [
+            "Attribution is profile-specific and does not impose a false global pipeline order.",
+            "Unknown diagnostic mappings remain visible.",
+            "Every high-priority failure cluster has exact reproducer cases."
+          ]
+        },
+        {
+          "id": "P9.6",
+          "title": "Establish deterministic replay and regression gates",
+          "objective": "Make every accepted fix reproducible and protect prior bounded capabilities.",
+          "implementation_sequence": [
+            "Pin fixture set, expected outputs, resources, normalizer, and runner versions.",
+            "Define volatile-field allowlists rather than ignoring arbitrary output differences.",
+            "Run replay on pull requests touching covered stages/resources.",
+            "Publish before/after deltas and reject unapproved baseline edits."
+          ],
+          "acceptance": [
+            "Prior accepted cases replay on exact PR head.",
+            "Baseline updates require separate rationale and evidence.",
+            "Any regression in protected scope blocks merge."
+          ]
+        }
+      ],
+      "exit_gate": [
+        "Shared fixture schema and normalized outputs are versioned.",
+        "At least one explicitly scoped cross-runtime fixture set runs on every eligible implementation.",
+        "Capability matrix and failure reports are generated from exact run artifacts.",
+        "Counts, unsupported states, and semantic correctness claims remain separate.",
+        "No runtime behavior is broadened solely to satisfy conformance."
+      ],
+      "guardrails": [
+        "No forced equivalence between distinct implementations.",
+        "No cross-runtime agreement claim without common fixtures.",
+        "No accepted semantic scope expansion in this phase."
+      ]
+    },
+    {
+      "phase_id": "P10",
+      "title": "Independent evaluation and language evidence programme",
+      "status": "planned_not_started",
+      "priority": "critical",
+      "objective": "Create trustworthy, rights-aware, population-specific evaluation resources so future semantic expansion can be measured without self-validation or data leakage.",
+      "depends_on": [
+        "P9.1",
+        "P9.3",
+        "P9.5"
+      ],
+      "linked_backlog_ids": [
+        "SYS-03",
+        "SYS-09",
+        "SYS-10",
+        "SYS-11"
+      ],
+      "work_items": [
+        {
+          "id": "P10.1",
+          "title": "Create a versioned corpus and evidence registry",
+          "objective": "Record source, license, language/profile, retrieval date, transformations, privacy screening, population type, annotation status, and allowed use for every evaluation corpus.",
+          "implementation_sequence": [
+            "Inventory current PUD, synthetic, randomized, controlled, historical, and candidate datasets.",
+            "Preserve translated Arabic PUD as translated input; do not label it native conversational Arabic.",
+            "Add source manifests and immutable content digests.",
+            "Reject unknown rights for redistribution or automated use unless separately reviewed."
+          ],
+          "acceptance": [
+            "Every corpus has machine-readable provenance and use restrictions.",
+            "No dataset is silently copied or relabelled.",
+            "Population types remain separate in metrics and reports."
+          ]
+        },
+        {
+          "id": "P10.2",
+          "title": "Complete and characterize the naturalistic pilot",
+          "objective": "Measure real-text input coverage and failure patterns without claiming semantic gold where none exists.",
+          "implementation_sequence": [
+            "Run the registered English and Arabic PUD pilot at its declared sample size.",
+            "Report source composition, duplicates, language limitations, transformation/translation status, and sampling seed.",
+            "Add domain and sentence-length stratification where reliable.",
+            "Report end-to-end completion and unsupported/ambiguous outcomes, not semantic accuracy."
+          ],
+          "acceptance": [
+            "Full scheduled campaign artifact exists and is reproducible.",
+            "Naturalistic input-only metrics are separate from synthetic and controlled results.",
+            "Arabic translation limitation is displayed in every summary."
+          ]
+        },
+        {
+          "id": "P10.3",
+          "title": "Define independent annotation and adjudication protocol",
+          "objective": "When semantic gold is needed, define labels, evidence requirements, disagreement, adjudication, and annotator independence.",
+          "implementation_sequence": [
+            "Write a construction-specific annotation manual before annotation.",
+            "Specify whether labels cover spans, morphology, syntax, semantic roles, relations, operators, or discourse.",
+            "Record independent annotator decisions and adjudication provenance where human labeling is used.",
+            "If no rights-cleared independent gold is available, keep claims synthetic/structural and do not invent human-like gold."
+          ],
+          "acceptance": [
+            "Annotation guidelines are versioned and tested on pilot examples.",
+            "Independent and adjudicated labels are distinguishable.",
+            "Unresolvable disagreements remain unresolved, not overwritten."
+          ]
+        },
+        {
+          "id": "P10.4",
+          "title": "Create leak-resistant train/development/test partitions",
+          "objective": "Prevent candidate generators and grammar tuning from learning from final evaluation examples.",
+          "implementation_sequence": [
+            "Split by source/document and near-duplicate clusters, not random sentence only.",
+            "Freeze a held-out test manifest and digest.",
+            "Allow a development set for rule tuning and a separate acceptance set for final evaluation.",
+            "Add automated overlap/leakage checks across resources, candidate generation, and test fixtures."
+          ],
+          "acceptance": [
+            "Held-out cases are inaccessible to candidate-generation steps by policy.",
+            "Leakage tests pass.",
+            "Any split replacement creates a new version and documented migration."
+          ]
+        },
+        {
+          "id": "P10.5",
+          "title": "Define capability-specific metric cards",
+          "objective": "Report execution reliability, span integrity, lexical recall/precision, syntax attachment, role/relation correctness, operator scope, discourse linking, abstention calibration, and end-to-end semantic accuracy separately.",
+          "implementation_sequence": [
+            "Define numerator, denominator, exclusions, and population for every metric.",
+            "Separate candidate inclusion from correct disambiguation.",
+            "Report per-language, per-construction, and per-domain results.",
+            "Use confidence intervals where sampling supports them; do not fabricate estimates for small or non-random samples."
+          ],
+          "acceptance": [
+            "Every metric has an explicit denominator and interpretation boundary.",
+            "No universal aggregate intelligence score exists.",
+            "Synthetic exact-oracle and naturalistic input-only metrics are clearly distinguished."
+          ]
+        },
+        {
+          "id": "P10.6",
+          "title": "Create per-construction acceptance profiles",
+          "objective": "Make each new construction independently acceptable by language and scope.",
+          "implementation_sequence": [
+            "Define positive, negative, ambiguous, boundary, adversarial, and minimal-pair cases.",
+            "Declare required exact spans, roles/relations, allowed alternatives, and abstention behavior.",
+            "Define thresholds before running the held-out set.",
+            "Require prior accepted regression suites to remain green."
+          ],
+          "acceptance": [
+            "No aggregate score can hide failure in a supported language/profile.",
+            "Thresholds and fixtures are frozen before final run.",
+            "Acceptance report lists exact feature boundary and exclusions."
+          ]
+        }
+      ],
+      "exit_gate": [
+        "Corpus rights/provenance registry is complete for the resources used.",
+        "Naturalistic pilot has a reproducible population-specific result.",
+        "Independent annotation policy and held-out protocol exist.",
+        "Metric definitions and acceptance profiles are versioned.",
+        "No synthetic or input-only result is misrepresented as independent semantic gold."
+      ]
+    },
+    {
+      "phase_id": "P11",
+      "title": "Lexical, morphology, and contextual candidate quality",
+      "status": "planned_not_started",
+      "priority": "high",
+      "objective": "Turn external lexical acquisition into a high-quality, ambiguity-preserving candidate evidence service that can support downstream interpretation without becoming an unreviewed runtime dictionary.",
+      "depends_on": [
+        "P9.1",
+        "P10.1",
+        "P10.5"
+      ],
+      "linked_backlog_ids": [
+        "SYS-05",
+        "SYS-06",
+        "SYS-17"
+      ],
+      "work_items": [
+        {
+          "id": "P11.1",
+          "title": "Stabilize source-specific lexical ingestion",
+          "objective": "Normalize source records while preserving original form, lemma, sense, language, source locator, license, retrieval time, and digest.",
+          "implementation_sequence": [
+            "Audit crawler checkpoint, manifest, shard identity, retries, duplicate handling, and storage budget.",
+            "Keep source-native records and normalized candidate records linked but separate.",
+            "Add per-provider quality and rights states.",
+            "Make incremental ingestion deterministic and resumable."
+          ],
+          "acceptance": [
+            "Shard inventory matches manifest and no conflicting duplicate batches exist.",
+            "Every normalized record links to immutable source evidence.",
+            "Missing/unknown rights remain blocked from disallowed use."
+          ]
+        },
+        {
+          "id": "P11.2",
+          "title": "Improve morphology candidate generation",
+          "objective": "Build language-profile-specific morphological alternatives and mappings with explicit source-tag uncertainty.",
+          "implementation_sequence": [
+            "Audit the current zero-overlap/low-coverage PUD morphology results and source-tag mapping assumptions.",
+            "Define feature bundles and mapping confidence per language profile.",
+            "Add candidate generation for inflectional forms with exact surface/lemma links.",
+            "Evaluate against pinned UPOS and morphology populations."
+          ],
+          "acceptance": [
+            "Candidate precision/recall reported by language and tag.",
+            "Unmapped tags stay explicit.",
+            "No morphology candidate is called an accepted parse."
+          ]
+        },
+        {
+          "id": "P11.3",
+          "title": "Integrate lexical candidates through the versioned adapter",
+          "objective": "Expose lemma, POS, sense, morphology, provenance, and ambiguity to interpretation stages as candidates.",
+          "implementation_sequence": [
+            "Reuse USG-LEXICAL-CANDIDATES and the existing adapter rather than add a parallel vocabulary store.",
+            "Add adapter versions to interpreter run envelopes.",
+            "Allow consumers to request candidate sets with bounded retrieval limits.",
+            "Keep candidate lifecycle and runtime resource lifecycle separate."
+          ],
+          "acceptance": [
+            "OOV and polysemy regressions remain green.",
+            "Every candidate has provenance and stable identity.",
+            "No forced single POS or sense is returned when evidence is insufficient."
+          ]
+        },
+        {
+          "id": "P11.4",
+          "title": "Add contextual ranking as a non-authoritative candidate ranker",
+          "objective": "Use surrounding syntax, domain, morphology, and context to order candidates without silently converting rank into semantic truth.",
+          "implementation_sequence": [
+            "Establish unigram/frequency baseline and existing HMM diagnostic baseline.",
+            "Benchmark contextual alternatives on held-out ambiguity cases.",
+            "Expose ranked alternatives, feature contributions, and confidence calibration.",
+            "Require abstention when candidate margins/evidence are inadequate."
+          ],
+          "acceptance": [
+            "Held-out results outperform the baseline on declared metrics without unacceptable language regression.",
+            "Ranking never changes candidate identity or source evidence.",
+            "No runtime promotion occurs until separately accepted."
+          ]
+        },
+        {
+          "id": "P11.5",
+          "title": "Build lexical candidate lifecycle and promotion evaluation",
+          "objective": "Define how source candidates become validated-for-profile, accepted runtime resources, deprecated, or rejected.",
+          "implementation_sequence": [
+            "Define lifecycle transitions and required evidence.",
+            "Require held-out lexical/morphology evaluation plus downstream regression replay.",
+            "Compare retrieval precision, OOV reduction, false candidate inclusion, and ambiguity preservation.",
+            "Issue a separate versioned integration proposal per resource family."
+          ],
+          "acceptance": [
+            "Candidate-to-runtime transitions are auditable and reversible.",
+            "No source-count or crawl-completion metric alone can authorize promotion.",
+            "Resource rollback is tested."
+          ]
+        }
+      ],
+      "exit_gate": [
+        "Current external shard set is inventoried and rights-labelled.",
+        "Morphology and lexical candidates are evaluated separately from runtime semantics.",
+        "Adapter preserves ambiguity, identity, and provenance.",
+        "Any proposed runtime resource has held-out evidence and a rollback plan."
+      ]
+    },
+    {
+      "phase_id": "P12",
+      "title": "Construction grammar and syntactic coverage expansion",
+      "status": "planned_not_started",
+      "priority": "high",
+      "objective": "Expand the interpreter through small, frequent, independently testable constructions selected from real failure evidence and available evaluation support.",
+      "depends_on": [
+        "P9",
+        "P10.6",
+        "P11.3"
+      ],
+      "linked_backlog_ids": [
+        "SYS-08",
+        "SYS-09"
+      ],
+      "work_items": [
+        {
+          "id": "P12.1",
+          "title": "Choose construction increments by measured value",
+          "objective": "Rank candidate constructions by recurrence, supported-language demand, resource readiness, expected benefit, evaluation readiness, and implementation cost.",
+          "implementation_sequence": [
+            "Group Open-World and naturalistic failures by construction and first blocking stage.",
+            "Check existing Phase 6 continuation IDs before creating new work.",
+            "Choose one construction per implementation increment; publish exclusions and reasons.",
+            "Require a gold/evaluation path before enabling semantic output."
+          ],
+          "acceptance": [
+            "Selection rationale links to exact cases and evidence populations.",
+            "No new phase duplicates Phase 6 continuation.",
+            "Each construction has a bounded profile."
+          ]
+        },
+        {
+          "id": "P12.2",
+          "title": "Expand nominal, property, possession, and modifier semantics",
+          "objective": "Extend beyond accepted synthetic profiles only where exact construction evidence supports the additional relation.",
+          "implementation_sequence": [
+            "Review Phase 6 nominal/property/possession/modifier definitions and continuation records.",
+            "Add one relation/construction at a time with role, direction, scope, and span rules.",
+            "Preserve ambiguous attachment and omitted arguments.",
+            "Use a versioned candidate extension until the gate passes."
+          ],
+          "acceptance": [
+            "Positive/negative/ambiguous/boundary fixtures pass per language.",
+            "Property, possession, and modifier relations are not conflated.",
+            "Canonical projection remains lossless or explicitly opaque."
+          ]
+        },
+        {
+          "id": "P12.3",
+          "title": "Expand coordination, embedding, subordinate and relative clauses",
+          "objective": "Handle broader clause attachment and argument-gap constructions with explicit attachment alternatives.",
+          "implementation_sequence": [
+            "Start from P6-CONT-01/02 and accepted Phase 5/6 profiles.",
+            "Add complement, relative, conditional, temporal, and argument-gap patterns as separate steps.",
+            "Represent parallel attachment blockers and avoid false global parse certainty.",
+            "Add cycle, span, and argument-link validation."
+          ],
+          "acceptance": [
+            "Each relation has separate minimal pairs and ambiguity fixtures.",
+            "Unsupported structures remain unresolved.",
+            "No unrelated construction regression is introduced."
+          ]
+        },
+        {
+          "id": "P12.4",
+          "title": "Expand voice, valence and speech-act forms",
+          "objective": "Separate grammatical form, semantic roles, and communicative force.",
+          "implementation_sequence": [
+            "Use minimal active/passive pairs and language-specific morphology.",
+            "Add imperatives, requests, commands, and interrogatives in separately named profiles.",
+            "Keep speech-act inference distinct from predicate argument linking.",
+            "Record evidence when word order is language-specific."
+          ],
+          "acceptance": [
+            "Voice and role mappings pass contrastive tests.",
+            "Speech-act force is not inferred solely from punctuation or keywords.",
+            "Unsupported profiles abstain."
+          ]
+        },
+        {
+          "id": "P12.5",
+          "title": "Expand language profiles without false transfer",
+          "objective": "Reuse architecture while explicitly adapting construction, morphology, order, and lexical resources for each language.",
+          "implementation_sequence": [
+            "Define language-profile contract and feature inventory.",
+            "Add one language/construction profile at a time.",
+            "Require native/appropriate evidence where claims are made about native use.",
+            "Do not treat translated corpora as evidence of native syntax or discourse."
+          ],
+          "acceptance": [
+            "Per-language metrics and regression suites are independent.",
+            "No language support is inherited without evidence.",
+            "Translation limitations accompany every result."
+          ]
+        }
+      ],
+      "exit_gate": [
+        "Every added construction has a versioned specification and independently defined fixture set.",
+        "No accepted capability regresses.",
+        "Candidate grammar remains separate until acceptance.",
+        "Supported-language scope is explicit."
+      ],
+      "linked_continuation_ids": [
+        "P6-CONT-01",
+        "P6-CONT-02",
+        "P6-CONT-03"
+      ]
+    },
+    {
+      "phase_id": "P13",
+      "title": "Semantic composition and canonical meaning projection",
+      "status": "planned_not_started",
+      "priority": "high",
+      "objective": "Improve compositional integration so accepted lexical and construction evidence can form typed, traceable semantic representations and project to canonical USG-SEM only when no meaning is lost.",
+      "depends_on": [
+        "P9",
+        "P10.6",
+        "P12"
+      ],
+      "linked_backlog_ids": [],
+      "work_items": [
+        {
+          "id": "P13.1",
+          "title": "Formalize composition interfaces between stages",
+          "objective": "Define typed inputs/outputs, candidate alternatives, unresolved dependencies, and provenance propagation for each stage boundary.",
+          "implementation_sequence": [
+            "Inventory current Phase 4/5 envelope and Phase 6 candidate graphs.",
+            "Define stage boundary schemas and compatibility tests.",
+            "Record resource/rule references and derivation IDs on every composed structure.",
+            "Preserve partial results without marking them complete."
+          ],
+          "acceptance": [
+            "Stage outputs validate and preserve all source spans and provenance.",
+            "Unknown fields are handled by version policy, not silently discarded.",
+            "Replay produces deterministic structures."
+          ]
+        },
+        {
+          "id": "P13.2",
+          "title": "Expand predicate, argument, role and relation composition",
+          "objective": "Compose predicates with typed arguments, event/state participants, properties, and relations.",
+          "implementation_sequence": [
+            "Reuse existing frame and role inventories.",
+            "Define domain/range constraints, required/optional roles, and role conflicts.",
+            "Add role mapping only with positive and contrastive evidence.",
+            "Represent unresolved links as candidates."
+          ],
+          "acceptance": [
+            "Per-construction role/link exactness passes.",
+            "Conflicting roles remain explicit.",
+            "No role is inferred only from a lexical association score."
+          ]
+        },
+        {
+          "id": "P13.3",
+          "title": "Add safe semantic projection and loss detection",
+          "objective": "Project supported semantic structures into USG-SEM/1.0 without truncation or invented meaning.",
+          "implementation_sequence": [
+            "Create explicit relation-to-USG-SEM projection tables.",
+            "Round-trip each supported projection through current adapters and SQLite.",
+            "Detect unmapped roles/operators/metadata and refuse lossy projection.",
+            "Retain OPAQUE payloads and candidate graphs when canonical representation is insufficient."
+          ],
+          "acceptance": [
+            "Loss detector blocks all unsupported projections.",
+            "Round-trip and integrity tests pass.",
+            "Any normative contract gap routes to a separately versioned migration."
+          ]
+        },
+        {
+          "id": "P13.4",
+          "title": "Integrate canonical persistence and replay",
+          "objective": "Persist accepted semantic documents and full derivation metadata using the existing SQLite authority.",
+          "implementation_sequence": [
+            "Use existing Phase 3 repository APIs; do not create a parallel canonical store.",
+            "Persist immutable input/run/resource/derivation references.",
+            "Test idempotence, revision history, corruption checks, replay, and index rebuild.",
+            "Keep caches and search indexes rebuildable."
+          ],
+          "acceptance": [
+            "Existing Phase 3 persistence tests remain green.",
+            "Snapshot integrity and provenance survive reopen/replay.",
+            "No secondary canonical database is introduced."
+          ]
+        }
+      ],
+      "exit_gate": [
+        "Composition contracts are versioned.",
+        "Accepted cases preserve source-to-semantic derivations.",
+        "Projection is loss-detecting and round-trip tested.",
+        "Canonical persistence remains authoritative."
+      ],
+      "linked_continuation_ids": [
+        "P6-CONT-06"
+      ]
+    },
+    {
+      "phase_id": "P14",
+      "title": "Operator, scope, time and modality system",
+      "status": "planned_not_started",
+      "priority": "high",
+      "objective": "Represent how meaning is modified by negation, quantification, tense, aspect, modality, conditionals, comparison, and nested scope.",
+      "depends_on": [
+        "P10.6",
+        "P12",
+        "P13.1"
+      ],
+      "linked_backlog_ids": [],
+      "work_items": [
+        {
+          "id": "P14.1",
+          "title": "Create a typed operator registry",
+          "objective": "Define operator identity, type, target, operand, scope, precedence/interaction, language realization, and evidence requirements.",
+          "implementation_sequence": [
+            "Inventory current accepted and candidate operators.",
+            "Define typed schemas and legal target classes.",
+            "Record scope alternatives rather than collapsing ambiguous readings.",
+            "Add compatibility and serialization tests."
+          ],
+          "acceptance": [
+            "Every operator is typed and source-grounded.",
+            "Invalid target/operand combinations are rejected.",
+            "Ambiguous scope remains explicit."
+          ]
+        },
+        {
+          "id": "P14.2",
+          "title": "Expand negation and quantifier scope",
+          "objective": "Handle nested negation and quantifier interactions with contrastive minimal pairs.",
+          "implementation_sequence": [
+            "Add scope-contrast and polarity cases.",
+            "Test quantifier domain, restrictor, nuclear scope, and negation order.",
+            "Preserve unknown scope when parsing evidence is insufficient.",
+            "Link scope structure to semantic composition."
+          ],
+          "acceptance": [
+            "Per-language held-out scope cases pass.",
+            "No keyword-only scope shortcut is accepted.",
+            "Abstention and alternative readings are calibrated."
+          ]
+        },
+        {
+          "id": "P14.3",
+          "title": "Add tense, aspect, modality and temporal relations",
+          "objective": "Represent event time, reference time, duration, completion, possibility, obligation, ability, and evidential distinctions where profiles support them.",
+          "implementation_sequence": [
+            "Define temporal and modal primitives separately from lexical labels.",
+            "Map morphology and constructions to candidate operators.",
+            "Add contrastive tense/aspect/modality benchmarks.",
+            "Preserve underspecified time and modal force."
+          ],
+          "acceptance": [
+            "Operator distinctions pass profile-specific tests.",
+            "Temporal inference is provenance-grounded.",
+            "No unsupported temporal fact is invented."
+          ]
+        },
+        {
+          "id": "P14.4",
+          "title": "Add conditional and comparative composition",
+          "objective": "Compose conditionals and comparison without treating correlation or conditional wording as causality.",
+          "implementation_sequence": [
+            "Represent antecedent/consequent and comparison operands explicitly.",
+            "Test counterfactual, hypothetical, factual, and ambiguous variants.",
+            "Keep causal relations separate from conditionals unless evidence supports the relation.",
+            "Add scope and operator interaction tests."
+          ],
+          "acceptance": [
+            "Contrastive and ambiguity sets pass.",
+            "No automatic causal inference from conditional form.",
+            "Canonical projection preserves all operands and scope."
+          ]
+        }
+      ],
+      "exit_gate": [
+        "Operator registry and scope model are versioned.",
+        "Per-operator and interaction tests pass.",
+        "Ambiguity/underspecification is preserved.",
+        "Temporal and modal claims remain bounded to evaluated profiles."
+      ],
+      "linked_continuation_ids": [
+        "P6-CONT-04"
+      ]
+    },
+    {
+      "phase_id": "P15",
+      "title": "Discourse, reference and entity tracking",
+      "status": "planned_not_started",
+      "priority": "high",
+      "objective": "Connect mentions across clauses and documents while distinguishing mention identity, discourse referent, concept, and real-world entity identity.",
+      "depends_on": [
+        "P10.6",
+        "P12",
+        "P13.1"
+      ],
+      "linked_backlog_ids": [],
+      "work_items": [
+        {
+          "id": "P15.1",
+          "title": "Build discourse mention and context records",
+          "objective": "Represent mention spans, grammatical features, discourse role, salience cues, and local context.",
+          "implementation_sequence": [
+            "Inventory Phase 5 discourse and Phase 6 reference candidate outputs.",
+            "Define stable mention IDs and source spans.",
+            "Record features used for retrieval separately from identity decisions.",
+            "Add sentence- and document-scope tests."
+          ],
+          "acceptance": [
+            "Mention chain preserves all source references.",
+            "A mention is not treated as an entity identity.",
+            "Context window and resource versions are reproducible."
+          ]
+        },
+        {
+          "id": "P15.2",
+          "title": "Rank antecedent candidates conservatively",
+          "objective": "Use agreement, syntax, discourse, semantic compatibility, and context to rank plausible antecedents.",
+          "implementation_sequence": [
+            "Generate multiple candidates and explicit no-antecedent option.",
+            "Evaluate against held-out coreference datasets where rights/annotation permit.",
+            "Report precision/recall and abstention by language/profile.",
+            "Do not merge entities merely because names or embeddings are similar."
+          ],
+          "acceptance": [
+            "Multi-antecedent and no-antecedent tests pass.",
+            "False identity merges are measured separately.",
+            "Uncertain cases remain unresolved."
+          ]
+        },
+        {
+          "id": "P15.3",
+          "title": "Add discourse relations and multi-sentence composition",
+          "objective": "Represent temporal, causal, contrastive, elaboration, and reference relations only within explicit evidence boundaries.",
+          "implementation_sequence": [
+            "Start with relation types already supported by contracts.",
+            "Keep discourse relation candidates distinct from truth/causal inference.",
+            "Add document-level replay and contradiction fixtures.",
+            "Expose derivation and unresolved links in diagnostics."
+          ],
+          "acceptance": [
+            "Document-level tests preserve sentence boundaries and provenance.",
+            "Unsupported discourse relations abstain.",
+            "No silent cross-document identity merge."
+          ]
+        }
+      ],
+      "exit_gate": [
+        "Mention and entity layers are distinct.",
+        "Reference resolution reports alternatives and abstention.",
+        "Discourse relations have typed evidence and per-language tests."
+      ],
+      "linked_continuation_ids": [
+        "P6-CONT-05"
+      ]
+    },
+    {
+      "phase_id": "P16",
+      "title": "Knowledge-layer integration and contextual retrieval",
+      "status": "planned_not_started",
+      "priority": "high",
+      "objective": "Make the existing Phase 7 knowledge layer a reusable evidence source for interpretation and reasoning without creating a second knowledge database or turning retrieval into automatic truth.",
+      "depends_on": [
+        "P9",
+        "P11.3",
+        "P13.1"
+      ],
+      "linked_backlog_ids": [],
+      "work_items": [
+        {
+          "id": "P16.1",
+          "title": "Map exact runtime consumers of the Phase 7 knowledge adapter",
+          "objective": "Determine which interpretation and reasoning stages actually consume the read-only adapter and what version they use.",
+          "implementation_sequence": [
+            "Inspect current Phase 7 API/CLI/adapter and all intended consumers.",
+            "Add explicit integration tests; do not infer consumption from the resource map.",
+            "Record accepted-profile, candidate-opt-in, and unresolved behavior.",
+            "Publish a runtime consumption matrix."
+          ],
+          "acceptance": [
+            "Every declared integration is proven by code and test evidence.",
+            "Candidate state is preserved end-to-end.",
+            "No duplicate canonical store appears."
+          ]
+        },
+        {
+          "id": "P16.2",
+          "title": "Resolve concept mappings through explicit evidence workflows",
+          "objective": "Reduce unresolved cross-language mappings where source evidence supports it, while preserving many-to-many and unresolved relations.",
+          "implementation_sequence": [
+            "Inventory the existing 43 unresolved mappings and their evidence.",
+            "Group by concept, sense, language profile, source agreement, and rights.",
+            "Promote only mappings meeting the declared evidence gate.",
+            "Retain disagreement and ambiguous mapping alternatives."
+          ],
+          "acceptance": [
+            "Every mapping has source, relation type, evidence, status, and reviewer/algorithm provenance.",
+            "No spelling/translation/similarity-only identity merge.",
+            "Unresolved remainder is reported rather than hidden."
+          ]
+        },
+        {
+          "id": "P16.3",
+          "title": "Build contextual knowledge retrieval diagnostics",
+          "objective": "Explain why candidate concepts/relations were retrieved and how context changed ranking.",
+          "implementation_sequence": [
+            "Define context features and feature provenance.",
+            "Keep usage frequency/association score separate from truth/entailment.",
+            "Expose rejected candidates and ranking reasons.",
+            "Test domain, language, local discourse, and conflicting source scenarios."
+          ],
+          "acceptance": [
+            "Retrieval results are reproducible and explainable.",
+            "False merges and over-broad associations are evaluated.",
+            "Candidate/accepted lifecycle is visible to callers."
+          ]
+        },
+        {
+          "id": "P16.4",
+          "title": "Connect knowledge candidates to semantic interpretation",
+          "objective": "Allow interpreters to use knowledge as a constrained candidate source without silently injecting assertions.",
+          "implementation_sequence": [
+            "Add read-only candidate retrieval at explicit stage boundaries.",
+            "Use candidate values only when supported by grammar/source context.",
+            "Record knowledge version and evidence IDs in output envelope.",
+            "Require separate profile tests for accepted knowledge consumption."
+          ],
+          "acceptance": [
+            "Knowledge lookups do not mutate the canonical graph.",
+            "Unsupported or conflicting retrieval yields alternatives/abstention.",
+            "Integration gains are evaluated against lexical-only baseline."
+          ]
+        }
+      ],
+      "exit_gate": [
+        "Runtime consumption is proven, not inferred.",
+        "Unresolved mappings remain explicit.",
+        "Knowledge retrieval is read-only and provenance-rich.",
+        "No external/candidate fact becomes canonical truth by retrieval."
+      ]
+    },
+    {
+      "phase_id": "P17",
+      "title": "Evidence-grounded semantic reasoning and explanation",
+      "status": "planned_not_started",
+      "priority": "high",
+      "objective": "Extend the existing structured reasoning foundation to operate on accepted semantic documents and knowledge with derivation, evidence, conflict, scope, and bounded execution.",
+      "depends_on": [
+        "P13",
+        "P14",
+        "P15",
+        "P16"
+      ],
+      "linked_backlog_ids": [],
+      "work_items": [
+        {
+          "id": "P17.1",
+          "title": "Define reasoning capability and rule dependency contracts",
+          "objective": "Connect Phase 2 rule semantics with typed outputs from interpretation, persistence, and knowledge adapters.",
+          "implementation_sequence": [
+            "Inventory current rule registry, execution engine, grounding, evidence assessment, and query/explanation services.",
+            "Declare input/output schemas, preconditions, resource versions, and allowed side effects.",
+            "Separate retrieval, deduction, abduction, analogy, and hypothesis generation.",
+            "Reject undeclared rule dependencies."
+          ],
+          "acceptance": [
+            "Rule execution is deterministic within declared scope.",
+            "All dependencies and derivations are traceable.",
+            "Rules cannot escape their side-effect/step limits."
+          ]
+        },
+        {
+          "id": "P17.2",
+          "title": "Implement support, conflict and contradiction analysis across sources",
+          "objective": "Assess evidence for/against propositions without conflating source count, repetition, confidence, and truth.",
+          "implementation_sequence": [
+            "Reuse evidence assessment and source provenance contracts.",
+            "Model support, contradiction, unknown, and unresolved states separately.",
+            "Deduplicate correlated sources and identify shared upstream provenance.",
+            "Test conflict, missing evidence, temporal qualification, and source reliability."
+          ],
+          "acceptance": [
+            "Correlated copies do not count as independent corroboration.",
+            "Conflict is preserved and explained.",
+            "No probability/confidence is asserted without calibration evidence."
+          ]
+        },
+        {
+          "id": "P17.3",
+          "title": "Add bounded multi-step inference and query explanations",
+          "objective": "Answer supported semantic queries with complete proof traces and controlled execution budgets.",
+          "implementation_sequence": [
+            "Define rule depth, branching, time, memory, and recursion budgets.",
+            "Return proof/derivation graph, evidence references, and failed preconditions.",
+            "Preserve unknown/undetermined rather than force yes/no.",
+            "Replay all accepted reasoning benchmarks."
+          ],
+          "acceptance": [
+            "Every conclusion has a replayable derivation.",
+            "Budget exhaustion is explicit.",
+            "Negative and unknown cases are tested separately."
+          ]
+        },
+        {
+          "id": "P17.4",
+          "title": "Connect document, discourse, and temporal reasoning",
+          "objective": "Reason over multi-sentence semantic documents without losing scope, time, source, or referential uncertainty.",
+          "implementation_sequence": [
+            "Use typed semantic graph and explicit discourse links.",
+            "Propagate time/modal scope and unresolved reference state.",
+            "Test entailment, contradiction, temporal ordering, and non-entailment.",
+            "Add evidence that distinguishes same event, related event, and coincidental co-occurrence."
+          ],
+          "acceptance": [
+            "Document reasoning passes held-out independent cases.",
+            "Unsupported inference abstains.",
+            "No causal or identity inference arises from association alone."
+          ]
+        }
+      ],
+      "exit_gate": [
+        "Reasoning is bounded, typed, traceable, and replayable.",
+        "Evidence conflicts and unknown states are preserved.",
+        "Every accepted inference capability has independent evaluation."
+      ]
+    },
+    {
+      "phase_id": "P18",
+      "title": "Governed autonomous development and candidate learning",
+      "status": "planned_not_started",
+      "priority": "high_but_late",
+      "objective": "Evolve the existing scheduled growth planner into a closed-loop development assistant that can prepare candidate improvements and deterministic repairs while preventing self-validation and unsafe semantic promotion.",
+      "depends_on": [
+        "P9",
+        "P10",
+        "P11",
+        "P12",
+        "P13"
+      ],
+      "linked_backlog_ids": [
+        "SYS-15",
+        "SYS-16",
+        "SYS-17"
+      ],
+      "work_items": [
+        {
+          "id": "P18.1",
+          "title": "Implement bounded deterministic repair executor",
+          "objective": "Automate only low-risk test, fixture, packaging, report, documentation, and CI repairs with exact regression replay.",
+          "implementation_sequence": [
+            "Use the existing growth plan as input, but require each repair to map to a known deterministic defect class.",
+            "Run in isolated branch/worktree/container with resource/time/network limits.",
+            "Run focused tests, protected regression suites, static checks, and exact replay.",
+            "Open a PR with patch, evidence, rollback, and risk classification; do not merge without the relevant repository gate."
+          ],
+          "acceptance": [
+            "Only allowlisted change classes are auto-generated.",
+            "Sandbox and execution budgets are enforced.",
+            "A failing or nondeterministic repair is discarded and logged.",
+            "No semantic/runtime resource promotion occurs."
+          ]
+        },
+        {
+          "id": "P18.2",
+          "title": "Add candidate construction and resource generators",
+          "objective": "Generate candidate lexical, morphology, grammar, frame, and mapping proposals from measured error clusters.",
+          "implementation_sequence": [
+            "Generate candidates only into isolated candidate artifacts.",
+            "Require provenance and rule/source citations for every generated record.",
+            "Deduplicate by stable identity and preserve conflicting alternatives.",
+            "Attach explicit evidence gap and proposed acceptance profile."
+          ],
+          "acceptance": [
+            "Generated candidates cannot enter runtime paths.",
+            "Candidate reports are deterministic or fully seeded.",
+            "Missing evidence blocks promotion."
+          ]
+        },
+        {
+          "id": "P18.3",
+          "title": "Build active evaluation and experiment selection",
+          "objective": "Select the next most informative test or corpus slice using uncertainty, recurrence, coverage gaps, and cost.",
+          "implementation_sequence": [
+            "Use evidence-driven planner features and separate source metrics.",
+            "Choose high-information cases without changing held-out test membership.",
+            "Record selection rationale and seed.",
+            "Keep exploration and acceptance datasets separate."
+          ],
+          "acceptance": [
+            "Sampling is reproducible and does not leak held-out labels.",
+            "Selection objective is explainable.",
+            "No metric is optimized by dropping hard cases."
+          ]
+        },
+        {
+          "id": "P18.4",
+          "title": "Automate candidate evaluation, decision packets and rollback",
+          "objective": "Generate machine-readable accept/reject/needs-evidence packets for candidates and integrate only approved scopes.",
+          "implementation_sequence": [
+            "Run per-profile acceptance gates, adversarial tests, and regression replay.",
+            "Compare to frozen baselines and report regressions.",
+            "Require independent evidence for semantic promotion.",
+            "Create versioned promotion proposal and rollback artifact."
+          ],
+          "acceptance": [
+            "No self-generated oracle is accepted as independent evidence.",
+            "Promotion is a separate auditable transaction.",
+            "Rollback of resource and code versions is tested."
+          ]
+        },
+        {
+          "id": "P18.5",
+          "title": "Introduce risk-tiered automation policy",
+          "objective": "Allow unattended merging only for explicitly low-risk changes and retain stronger gates for semantic, contractual, and data-rights decisions.",
+          "implementation_sequence": [
+            "Classify changes as docs/test/harness, deterministic infrastructure, candidate data, runtime semantics, normative contracts, or rights/policy.",
+            "Define required workflows and review/approval per tier.",
+            "Record why a tier qualifies and its rollback path.",
+            "Add tests preventing a higher-risk category from using a lower-risk merge route."
+          ],
+          "acceptance": [
+            "Risk classification is machine-checkable.",
+            "Semantic/runtime/contract changes cannot be auto-promoted by generic planner output.",
+            "All automation actions have logs and rollback records."
+          ]
+        }
+      ],
+      "exit_gate": [
+        "Planner, candidate generator, and executor remain separate components.",
+        "Every candidate passes independent evaluation before promotion.",
+        "Auto-merge authority is limited by tested risk tier.",
+        "Self-validation loops, held-out leakage, and silent baseline changes are blocked."
+      ]
+    },
+    {
+      "phase_id": "P19",
+      "title": "Workbench integration, release engineering and operational hardening",
+      "status": "planned_not_started",
+      "priority": "medium_after_core",
+      "objective": "Make accepted USG capabilities usable, inspectable, portable, and maintainable as a coherent local development product.",
+      "depends_on": [
+        "P9",
+        "P13",
+        "P16",
+        "P17"
+      ],
+      "linked_backlog_ids": [
+        "SYS-13"
+      ],
+      "work_items": [
+        {
+          "id": "P19.1",
+          "title": "Unify developer-facing run and inspection contracts",
+          "objective": "Make APIs, CLI, Kernel Lab, and SDKs expose the same versioned run envelope and diagnostic vocabulary where appropriate.",
+          "implementation_sequence": [
+            "Inventory current endpoints and CLI commands.",
+            "Expose input, output, resources, derivations, ambiguity, and diagnostics through versioned APIs.",
+            "Add schema validation and compatibility tests.",
+            "Keep implementation-native detail accessible."
+          ],
+          "acceptance": [
+            "Every UI/API response links to exact run and resource versions.",
+            "No display-only simplification changes the underlying evidence.",
+            "Backward compatibility is tested."
+          ]
+        },
+        {
+          "id": "P19.2",
+          "title": "Improve reproducibility, portability and local operation",
+          "objective": "Provide one documented local install/run/test path without paid services or permanent network requirements for core tests.",
+          "implementation_sequence": [
+            "Pin runtime/tool dependencies and document supported Python/Node/browser versions.",
+            "Add deterministic setup and offline fixture mode.",
+            "Make caches rebuildable and configuration explicit.",
+            "Document data/storage budgets and recovery."
+          ],
+          "acceptance": [
+            "Fresh supported environment passes quickstart and test smoke suite.",
+            "Core offline tests do not call network services.",
+            "Recovery and backup paths are tested."
+          ]
+        },
+        {
+          "id": "P19.3",
+          "title": "Add performance and resource-budget instrumentation",
+          "objective": "Measure latency, memory, storage, cache behavior, and workflow consumption by module.",
+          "implementation_sequence": [
+            "Set baseline workloads and record hardware/runtime context.",
+            "Instrument stage-level cost without changing semantics.",
+            "Define budget warnings and safe cancellation.",
+            "Optimize only after profiling and with semantic regression replay."
+          ],
+          "acceptance": [
+            "Performance reports are reproducible.",
+            "Resource limits fail safely.",
+            "Optimization preserves exact acceptance behavior."
+          ]
+        },
+        {
+          "id": "P19.4",
+          "title": "Publish versioned releases and compatibility policy",
+          "objective": "Coordinate schemas, adapters, implementation releases, and migrations through a clear compatibility matrix.",
+          "implementation_sequence": [
+            "Define versioning policy for contracts, adapters, resource bundles, and Workbench releases.",
+            "Generate release notes from accepted change records.",
+            "Document deprecation windows and migration tools.",
+            "Keep archives immutable."
+          ],
+          "acceptance": [
+            "Every release maps code/resource/contract versions.",
+            "Migrations have compatibility and rollback tests.",
+            "No silent schema drift."
+          ]
+        }
+      ],
+      "exit_gate": [
+        "Developer experience works from clean setup.",
+        "APIs/CLI/UI expose provenance and diagnostics consistently.",
+        "Performance and compatibility are measured.",
+        "Release artifacts are reproducible and recoverable."
+      ]
+    },
+    {
+      "phase_id": "P20",
+      "title": "Optional multimodal and grounded-world research horizon",
+      "status": "exploratory_only_not_scheduled",
+      "priority": "deferred_until_text_maturity",
+      "objective": "Explore how the semantic architecture might extend to visual, audio, temporal, and action/event evidence after text profiles and provenance/evaluation controls are sufficiently reliable.",
+      "depends_on": [
+        "P10",
+        "P13",
+        "P16",
+        "P17"
+      ],
+      "linked_backlog_ids": [],
+      "work_items": [
+        {
+          "id": "P20.1",
+          "title": "Define modality-neutral evidence and alignment requirements",
+          "objective": "Research typed links between text spans, image regions, audio intervals, video frames, and external observations.",
+          "implementation_sequence": [
+            "Review canonical contract capabilities and extension limits.",
+            "Prototype out-of-band evidence references without changing USG-SEM/1.0.",
+            "Specify timestamp, coordinate, sampling, and source provenance rules.",
+            "Evaluate lossless preservation and ambiguity."
+          ],
+          "acceptance": [
+            "A separate research report demonstrates value and contract fit.",
+            "No normative schema change occurs implicitly.",
+            "Modality-specific evidence is not treated as verified truth."
+          ]
+        },
+        {
+          "id": "P20.2",
+          "title": "Run one bounded multimodal pilot only after evidence readiness",
+          "objective": "Test one narrow modality/semantic relation pair using a rights-cleared, independently evaluated dataset.",
+          "implementation_sequence": [
+            "Choose modality and task using explicit capability gap and cost analysis.",
+            "Build a separate adapter and candidate path.",
+            "Create independent evaluation and privacy/security controls.",
+            "Compare against text-only baseline."
+          ],
+          "acceptance": [
+            "Pilot has independent evidence, exact limits, and a rollback path.",
+            "No broad multimodal capability claim is made.",
+            "The pilot is not a prerequisite for core text system progress."
+          ]
+        }
+      ],
+      "exit_gate": [
+        "Exploratory evidence justifies the next work.",
+        "Text-first architecture remains stable.",
+        "Rights, privacy, and evaluation are independently accepted."
+      ]
+    }
+  ],
+  "cross_cutting_workstreams": [
+    {
+      "id": "X01",
+      "name": "Normative contracts and migrations",
+      "rule": "Any change to USG-SEM/1.0 or accepted output semantics requires a dedicated versioned migration, compatibility adapter, conformance suite, and rollback record."
+    },
+    {
+      "id": "X02",
+      "name": "Evidence and dataset governance",
+      "rule": "Every dataset/resource records source, license, rights status, population, language/profile, retrieval time, transformations, digest, and intended use."
+    },
+    {
+      "id": "X03",
+      "name": "Security and privacy",
+      "rule": "External text and generated artifacts are untrusted data; sanitize workflow output; never execute retrieved content; minimize personal data; isolate untrusted candidate files and generated code."
+    },
+    {
+      "id": "X04",
+      "name": "Observability and provenance",
+      "rule": "Every stage emits structured diagnostics and stable provenance links; missing evidence is not zero; errors are categorized by source."
+    },
+    {
+      "id": "X05",
+      "name": "Documentation and usability",
+      "rule": "Every implementation PR updates the relevant technical doc, central documentation hub, tests, resource manifest, and README when the major status changes."
+    },
+    {
+      "id": "X06",
+      "name": "Cost and operational limits",
+      "rule": "Prefer local deterministic paths, resumable workflows, bounded budgets, artifact retention, caching, and optional network access; no required paid dependency for core tests."
+    },
+    {
+      "id": "X07",
+      "name": "Rollback and frozen baselines",
+      "rule": "Protect accepted behavior with immutable baseline artifacts; baseline changes require explicit evidence-backed versioning."
+    }
+  ],
+  "maturity_gates": [
+    {
+      "id": "M1",
+      "name": "Reliable bounded components",
+      "condition": "Contracts, stage outputs, and source provenance are deterministic and testable."
+    },
+    {
+      "id": "M2",
+      "name": "Reproducible cross-runtime behavior",
+      "condition": "Specific shared profiles pass common fixtures across implementations; differences remain explicit."
+    },
+    {
+      "id": "M3",
+      "name": "Independently evaluated construction coverage",
+      "condition": "Each claimed construction has rights-cleared, held-out, per-language evidence and calibrated abstention."
+    },
+    {
+      "id": "M4",
+      "name": "Compositional document understanding",
+      "condition": "Multiple constructions, operators, and discourse references compose into loss-aware semantic documents."
+    },
+    {
+      "id": "M5",
+      "name": "Evidence-grounded knowledge and reasoning",
+      "condition": "Read-only knowledge retrieval and bounded inference provide traceable derivations and preserve conflict/unknown."
+    },
+    {
+      "id": "M6",
+      "name": "Governed continuous improvement",
+      "condition": "Candidate generation, sandboxing, evaluation, acceptance, replay, rollback, and risk-tiered automation operate without self-validation."
+    },
+    {
+      "id": "M7",
+      "name": "Optional broader modalities and deployments",
+      "condition": "Only pursued when core text evidence and operational maturity justify the added complexity."
+    }
+  ],
+  "prioritization_policy": {
+    "factors": [
+      "recurrence of the observed failure",
+      "number and importance of affected supported profiles",
+      "strength and independence of evidence",
+      "number of blocked downstream capabilities",
+      "availability of a valid acceptance oracle",
+      "implementation effort and operational cost",
+      "risk to accepted behavior, rights, privacy, and contracts"
+    ],
+    "rules": [
+      "Prefer fixing the earliest evidenced blocker over adding downstream heuristics.",
+      "Prefer a small construction with an independent acceptance path over a broad feature with no reliable oracle.",
+      "Do not promote work solely because a model proposes it or a workflow passes.",
+      "Keep separate metrics for candidate coverage, parse correctness, semantic correctness, abstention, and execution reliability.",
+      "Prefer work that reduces uncertainty and unblocks multiple later tasks, but do not collapse trade-offs into a hidden score."
+    ]
+  },
+  "execution_packet_contract": [
+    "Stable packet ID and one bounded objective.",
+    "Exact linked failure cases, plan items, source commits, resource versions, and language profiles.",
+    "Preconditions and dependencies checked against current main before coding.",
+    "Target files/modules and minimal implementation sequence.",
+    "Positive, negative, ambiguous, boundary, adversarial, and compatibility tests as applicable.",
+    "Acceptance thresholds fixed before the final held-out run.",
+    "Explicit not-in-scope items and runtime/candidate/contract mutation classification.",
+    "Reproducible artifacts and exact commit/run references.",
+    "Rollback plan and documentation/index updates.",
+    "Machine-readable completion state updated only from authoritative evidence."
+  ],
+  "update_policy": {
+    "contract": "USG-LONG-TERM-PLAN-SYNC/0.1.0",
+    "trigger_events": [
+      "push_to_main_touching_registered_source_paths",
+      "weekly_scheduled_refresh",
+      "manual_workflow_dispatch"
+    ],
+    "outputs": [
+      "evaluations/roadmap/plan-sync/latest.json",
+      "evaluations/roadmap/plan-sync/latest.md"
+    ],
+    "automatic_updates": [
+      "phase status snapshots from the current source registry",
+      "linked SYS backlog status snapshots from the backlog implementation table",
+      "Phase 6 continuation statuses from tracker.json",
+      "source file SHA-256 fingerprints",
+      "changed-path to workstream impact candidates"
+    ],
+    "proposal_only_updates": [
+      "new strategic workstreams",
+      "phase boundary changes",
+      "priority changes",
+      "runtime promotion",
+      "normative contract migrations",
+      "dataset rights decisions"
+    ],
+    "safety_rules": [
+      "A PR merge does not automatically mark a semantic capability accepted.",
+      "Only explicit machine-readable acceptance artifacts can mark a scope accepted.",
+      "Missing or unparsable source states are reported as unavailable; they are never guessed.",
+      "The synchronizer does not edit the strategic plan or source-of-truth trackers.",
+      "Generated status refreshes are proposed through a pull request; future phase work remains unstarted until explicitly scheduled."
+    ]
+  },
+  "sources_of_truth": [
+    {
+      "path": "config/usg-system-evidence-source-registry-0.1.0.json",
+      "purpose": "Current phase status and registered evidence-source families."
+    },
+    {
+      "path": "config/usg-phase-resource-consumption-map-0.1.0.json",
+      "purpose": "Declared phase/source dependencies and prohibited use modes."
+    },
+    {
+      "path": "documentation/USG-SYSTEM-IMPROVEMENT-BACKLOG.md",
+      "purpose": "SYS work-item dependencies, completion scope, and next execution sequence."
+    },
+    {
+      "path": "evaluations/phase6-continuation/tracker.json",
+      "purpose": "Open Phase 6 continuation items and their candidate/acceptance state."
+    },
+    {
+      "path": "documentation/PHASE-7-DEFINITIONS-ROADMAP.md",
+      "purpose": "Phase 7 bounded acceptance and knowledge-layer capability boundary."
+    },
+    {
+      "path": "documentation/PHASE-8-DEFINITIONS-ROADMAP.md",
+      "purpose": "Phase 8 scope, automatic acceptance protocol, and formal decision boundary."
+    },
+    {
+      "path": "documentation/USG-GROWTH-POLICY-AND-AUTONOMY.md",
+      "purpose": "Autonomy, promotion, and evidence governance."
+    },
+    {
+      "path": "documentation/USG-CROSS-IMPLEMENTATION-CONFORMANCE-MATRIX.md",
+      "purpose": "Cross-runtime coverage and conformance state."
+    },
+    {
+      "path": "documentation/USG-SYSTEM-WIDE-CAPABILITY-ASSESSMENT-2026-11-12.md",
+      "purpose": "Historical diagnostic baseline; use newer trackers for later progress."
+    },
+    {
+      "path": "evaluations/system-wide/evidence-catalogue/",
+      "purpose": "Latest append-only system evidence snapshots and Phase 8 acceptance artifacts."
+    }
+  ],
+  "operating_sequence": [
+    "Complete and verify Phase 8 automatic formal acceptance from a fresh post-merge evidence snapshot; diagnose and repair blocked checks without weakening the gate.",
+    "Only after Phase 8 is accepted, explicitly start Phase 9. First deliverable: shared conformance fixture contract; do not start broad runtime expansion.",
+    "Run the existing naturalistic PUD pilot to completion and publish its input-only limitations; use it for failure discovery, not semantic gold.",
+    "Build common cross-runtime fixture execution and deterministic replay, then use the resulting failure graph to select one high-value construction.",
+    "Prepare independent evaluation and held-out evidence before enabling that construction.",
+    "Continue the external lexical crawl and measure candidate quality; keep all lexical/morphology candidates out of runtime until the separate promotion gate.",
+    "Develop one bounded construction increment at a time, prioritizing existing Phase 6 continuation IDs and avoiding duplicate workstreams.",
+    "Integrate Phase 7 knowledge through proven read-only runtime adapters, then extend bounded reasoning.",
+    "Automate deterministic CI/test/report repairs before candidate semantic generation; keep semantic promotion separately governed."
+  ],
+  "path_trigger_rules": [
+    {
+      "phase_id": "P9",
+      "patterns": [
+        "implementations/**",
+        "interoperability/**",
+        "tests/**",
+        "benchmarks/**",
+        "tools/**",
+        "evaluations/open-world/**",
+        "documentation/USG-CROSS-IMPLEMENTATION-CONFORMANCE-MATRIX.md"
+      ],
+      "rationale": "Shared runtime fixtures, execution adapters, replay, and cross-runtime diagnostics may need re-evaluation."
+    },
+    {
+      "phase_id": "P10",
+      "patterns": [
+        "benchmarks/**",
+        "evaluations/**",
+        "resources/**",
+        "documentation/*PUD*",
+        "documentation/*CORPUS*",
+        "documentation/*EVALUATION*",
+        "tools/open_world_evaluation/**"
+      ],
+      "rationale": "Corpus evidence, gold sets, population accounting, and evaluation definitions may have changed."
+    },
+    {
+      "phase_id": "P11",
+      "patterns": [
+        "tools/usg_external_lexical_v0_1_0/**",
+        "resources/**",
+        "evaluations/external-lexical/**",
+        "tests/*lexical*",
+        "tests/*morph*",
+        "documentation/EXTERNAL-LEXICAL*"
+      ],
+      "rationale": "Lexical acquisition, candidate interfaces, morphology, and OOV evidence may have changed."
+    },
+    {
+      "phase_id": "P12",
+      "patterns": [
+        "implementations/**",
+        "resources/**",
+        "tools/usg_interpreter/**",
+        "tests/*interpret*",
+        "tests/*construction*",
+        "documentation/PHASE-6*"
+      ],
+      "rationale": "Construction grammar, morphology, attachment, and Phase 6 continuation work may affect the construction roadmap."
+    },
+    {
+      "phase_id": "P13",
+      "patterns": [
+        "specifications/**",
+        "implementations/**",
+        "interoperability/**",
+        "tools/**",
+        "tests/**",
+        "documentation/PHASE-2*",
+        "documentation/PHASE-3*"
+      ],
+      "rationale": "Composition, stage interfaces, canonical projection, or persistence behavior may have changed."
+    },
+    {
+      "phase_id": "P14",
+      "patterns": [
+        "implementations/**",
+        "resources/**",
+        "tools/**",
+        "tests/*operator*",
+        "tests/*scope*",
+        "documentation/PHASE-6*"
+      ],
+      "rationale": "Operator and scope changes may affect the planned operator workstream."
+    },
+    {
+      "phase_id": "P15",
+      "patterns": [
+        "implementations/**",
+        "resources/**",
+        "tools/**",
+        "tests/*discourse*",
+        "tests/*reference*",
+        "documentation/PHASE-5*",
+        "documentation/PHASE-6*"
+      ],
+      "rationale": "Discourse and reference behavior may affect the discourse roadmap."
+    },
+    {
+      "phase_id": "P16",
+      "patterns": [
+        "implementations/**",
+        "tools/**",
+        "resources/**",
+        "config/**",
+        "evaluations/phase7/**",
+        "tests/*knowledge*",
+        "documentation/PHASE-7*"
+      ],
+      "rationale": "Knowledge-layer contracts, mappings, retrieval, and runtime consumption may have changed."
+    },
+    {
+      "phase_id": "P17",
+      "patterns": [
+        "implementations/**",
+        "tools/**",
+        "specifications/**",
+        "tests/*reason*",
+        "tests/*evidence*",
+        "documentation/PHASE-2*"
+      ],
+      "rationale": "Reasoning, evidence assessment, and explanation dependencies may have changed."
+    },
+    {
+      "phase_id": "P18",
+      "patterns": [
+        ".github/workflows/**",
+        "tools/system_evidence/**",
+        "tools/open_world_evaluation/**",
+        "evaluations/**",
+        "documentation/USG-GROWTH*",
+        "documentation/USG-AUTONOMOUS*"
+      ],
+      "rationale": "Automation, growth planning, repair execution, and candidate governance may have changed."
+    },
+    {
+      "phase_id": "P19",
+      "patterns": [
+        "tools/usg-kernel-lab/**",
+        "api/**",
+        "implementations/**",
+        "pyproject.toml",
+        "package.json",
+        "README.md",
+        "documentation/**"
+      ],
+      "rationale": "Workbench interfaces, packaging, operation, and developer documentation may have changed."
+    },
+    {
+      "phase_id": "P20",
+      "patterns": [
+        "multimodal/**",
+        "resources/multimodal/**",
+        "evaluations/multimodal/**"
+      ],
+      "rationale": "Only explicit modality-related additions should reopen this deferred exploratory horizon."
+    }
+  ]
+}

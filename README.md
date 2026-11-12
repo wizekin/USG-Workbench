@@ -27,6 +27,7 @@ Start here — jump directly to any major section:
 | 9 | [Repository structure](#repository-structure) | Where code, specifications, evidence, and data are stored |
 | 10 | [Phase 7 definitions roadmap](documentation/PHASE-7-DEFINITIONS-ROADMAP.md) | Semantic knowledge integration; all ten steps accepted for the frozen bilingual profile |
 | 11 | [Phase 8 evidence integration roadmap](documentation/PHASE-8-DEFINITIONS-ROADMAP.md) | System-wide collection and reuse of resources, evaluation results, and development evidence |
+| 12 | [Long-term USG development plan](documentation/USG-LONG-TERM-DEVELOPMENT-PLAN.md) | Proposed long-horizon architecture, dependency-ordered future work, task packets, and automatic plan synchronization |
 
 ---
 
@@ -112,6 +113,7 @@ When a workflow, campaign, or scheduled task changes, update the corresponding d
 | Local testing interface | [USG Kernel Lab guide](tools/usg-kernel-lab/README.md) |
 | System-wide capability assessment | [Assessment — 12 November 2026](documentation/USG-SYSTEM-WIDE-CAPABILITY-ASSESSMENT-2026-11-12.md) |
 | Prioritized improvement backlog | [System improvement backlog](documentation/USG-SYSTEM-IMPROVEMENT-BACKLOG.md) |
+| Long-term development plan | [USG Long-Term Development Plan](documentation/USG-LONG-TERM-DEVELOPMENT-PLAN.md) · [Machine-readable plan](config/usg-long-term-development-plan-0.1.0.json) · [Plan synchronization workflow](.github/workflows/usg-long-term-roadmap-sync.yml) |
 | Cross-implementation status | [Cross-implementation conformance matrix](documentation/USG-CROSS-IMPLEMENTATION-CONFORMANCE-MATRIX.md) |
 | Phase 7 roadmap | [Phase 7 definitions roadmap](documentation/PHASE-7-DEFINITIONS-ROADMAP.md) |
 | Phase 8 evidence integration | [Phase 8 definitions roadmap](documentation/PHASE-8-DEFINITIONS-ROADMAP.md) · [System evidence integration](documentation/USG-SYSTEM-EVIDENCE-AND-RESOURCE-INTEGRATION.md) |
@@ -194,6 +196,12 @@ The first implementation adds a source registry, phase/resource-consumption map,
 New phases must declare the resources and evidence they consume. New discoveries should first update an existing continuation, then propose an amendment to an accepted phase when appropriate, then use a versioned migration for contract changes; only genuinely cross-cutting uncovered work should become a new phase. No accepted phase, canonical contract, or runtime resource is silently modified or promoted.
 
 References: [Phase 8 definitions roadmap](documentation/PHASE-8-DEFINITIONS-ROADMAP.md) · [System-wide evidence and resource integration](documentation/USG-SYSTEM-EVIDENCE-AND-RESOURCE-INTEGRATION.md) · [Resource registry](config/usg-system-evidence-source-registry-0.1.0.json) · [Phase resource manifest template](templates/phase-resource-manifest-0.1.0.template.json).
+
+**Formal acceptance status:** the automatic exact-head decision mechanism is merged, but Phase 8 must not be described as formally accepted until a published post-merge artifact records an accepted decision for the exact validated commit. The long-term plan treats this as the gate before any Phase 9 implementation.
+
+### Long-term development trajectory (planning only)
+
+The proposed P9–P20 trajectory is documented in the [Long-Term USG Development Plan](documentation/USG-LONG-TERM-DEVELOPMENT-PLAN.md). These are planning labels, not active implementation phases. The plan begins with Phase 8 acceptance verification, then prioritizes cross-runtime conformance, independent evaluation, candidate quality, measured construction expansion, semantic composition, operators/discourse, knowledge-layer runtime integration, bounded reasoning, governed automation, and operational hardening. Phase 9 has not been started.
 
 ### 2. Phase 6 — bounded exit accepted; continuation tracked separately
 
