@@ -1,0 +1,146 @@
+{
+  "baseline": {
+    "assessment_id": "USG-SYSTEM-WIDE-2026-11-12",
+    "cross_implementation_gates_not_complete": [
+      "CIC-01",
+      "CIC-02",
+      "CIC-03",
+      "CIC-04",
+      "CIC-05"
+    ],
+    "external_lexical_exact_surface_coverage": 0.0244,
+    "external_lexical_headwords_at_assessment": 602,
+    "external_lexical_oov_rate": 0.9756,
+    "open_world_naturalistic_cases_at_assessment": 0,
+    "phase6_step_6_6_status": "blocked_pending_independent_bilingual_semantic_gold"
+  },
+  "campaigns": [
+    {
+      "campaign_id": "OWC-OW6-43015126807-1",
+      "case_file_sha256": "9fcde83c4ba603943c8c3a56206f2aa393095c3c78908fdc2df4473a3789f2ef",
+      "created_at": "2026-11-11T11:52:59Z",
+      "execution_result_count": 3106,
+      "first_blocking_diagnostic_counts": {
+        "syntax": {
+          "INCOMPLETE": 67,
+          "STAGE_STATUS_INCOMPLETE": 67,
+          "STAGE_STATUS_UNSUPPORTED": 1,
+          "UNSUPPORTED": 1
+        }
+      },
+      "first_blocking_stage_counts": {
+        "syntax": 68
+      },
+      "outcome_counts": {
+        "abstained": 0,
+        "ambiguous": 103,
+        "completed": 44,
+        "crashed": 0,
+        "infrastructure_error": 0,
+        "invalid_output": 0,
+        "not_executed": 1000,
+        "partial": 1013,
+        "timeout": 0,
+        "unsupported": 946
+      },
+      "report_file_sha256": "f245427941669081fe4c766677bd56dc88301d3aa66b4f524adafd6042bd96b1",
+      "result_file_sha256": "840f722dab8f7a482c25d3524cc4626399dc13bdb452ab8d88397ff146df6e6f",
+      "scenario_count": 3106,
+      "status": "partial",
+      "tested_commit_sha": "a04806d1480e692913943693b5251535c6a520f0"
+    }
+  ],
+  "campaigns_analyzed": 1,
+  "contract": "USG-EVIDENCE-DRIVEN-GROWTH-PLAN/0.1.0",
+  "diagnostic_accounting_warnings": [
+    {
+      "campaign_id": "OWC-OW6-43015126807-1",
+      "counts": {
+        "phase5-bounded-interpreter:phase5-interpretation-integration/0.1.0": 1058
+      },
+      "kind": "pipeline_version_mismatch"
+    }
+  ],
+  "evidence_sources": [
+    {
+      "path": "evaluations/system-wide/2026-11-12/assessment.json",
+      "sha256": "d679bf6f58a4f9503be7c5d565ddd8c4d97087808e8808299ad7f7d2953e6710",
+      "status": "available"
+    },
+    {
+      "path": "evaluations/system-wide/cross-implementation-matrix-2026-11-12.json",
+      "sha256": "1c09e2ace39f71f9ea20ed9b74dfda3dfbc87750432dba9c042c1c7524e93018",
+      "status": "available"
+    },
+    {
+      "path": "documentation/USG-SYSTEM-IMPROVEMENT-BACKLOG.md",
+      "sha256": "34a14bade6d222479fe5c5be6f87eb8a52e4984b4d78f913f47c083aa3e29ef1",
+      "status": "available"
+    },
+    {
+      "path": "documentation/USG-GROWTH-POLICY-AND-AUTONOMY.md",
+      "sha256": "3468261cb07c6ee67fdc7991e710bd0c2526527535f88fd719131078540b3dac",
+      "status": "available"
+    }
+  ],
+  "generated_at": "2026-11-12T13:51:09Z",
+  "limitations": [
+    "First-blocker counts identify diagnostic starting points, not proven causes.",
+    "Repeated failures are weighted by campaign recurrence; this is prioritization, not a semantic-quality score.",
+    "Historical baseline figures are not silently replaced by newer measurements.",
+    "No naturalistic corpus or independent semantic gold is inferred when absent."
+  ],
+  "policy_id": "USG-GROWTH-POLICY/0.1.0",
+  "ranked_actions": [
+    {
+      "acceptance_gate": "independent_construction_gold",
+      "action_id": "GROWTH-SYNTAX",
+      "campaign_recurrence_count": 1,
+      "example_case_ids": [
+        "OW-RAND-00000070-FB82024D12",
+        "OW-RAND-00000088-BC746DB0F5",
+        "OW-RAND-00000139-9B55C64A2B",
+        "OW-RAND-00000235-F9083DE696",
+        "OW-RAND-00000265-D842DEBDE6",
+        "OW-RAND-00000355-2F19EA9F25",
+        "OW-RAND-00000532-36253757AE",
+        "OW-RAND-00000577-3BD8D298FE"
+      ],
+      "first_blocking_diagnostic_counts": {
+        "INCOMPLETE": 67,
+        "STAGE_STATUS_INCOMPLETE": 67,
+        "STAGE_STATUS_UNSUPPORTED": 1,
+        "UNSUPPORTED": 1
+      },
+      "languages": [
+        "ar",
+        "en",
+        "en-ar"
+      ],
+      "observed_first_blocker_records": 68,
+      "populations": [
+        "controlled_diagnostic",
+        "unconstrained_random"
+      ],
+      "priority_score": 78,
+      "proposed_action": "Cluster recurring construction failures and add minimal positive, negative, ambiguous, and boundary fixtures before proposing a rule.",
+      "requires_independent_evidence": true,
+      "resource_fingerprints": [
+        "stage-refs:c0dc48196f0e57ba3d4ef0d150250db96bf4815102d039dfbdd6bf93d9c52a2a"
+      ],
+      "runtime_change_allowed": false,
+      "stage": "syntax",
+      "targets": [
+        "phase4-bounded-interpreter"
+      ],
+      "workstream": "syntax_constructions"
+    }
+  ],
+  "safety_policy": {
+    "all_proposals_require_independent_evidence": true,
+    "automatic_runtime_promotion_allowed": false,
+    "candidate_lexical_data_promoted": false,
+    "runtime_mutations_performed": false,
+    "semantic_contracts_changed": false
+  }
+}
