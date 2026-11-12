@@ -29,7 +29,17 @@
       "contract_versions": [
         "USG-WB-SEM/1.0"
       ],
-      "inventory_path": "implementations/semantic-workbench-js/v0.5.4/index.html"
+      "inventory_path": "implementations/semantic-workbench-js/v0.5.4/index.html",
+      "execution_adapter": "tools.open_world_evaluation.browser_adapter.interpret_in_browser",
+      "execution_adapter_version": "0.1.0",
+      "supported_language_hints": [
+        "en"
+      ],
+      "browser_network_policy": "loopback_only",
+      "resource_limits": {
+        "wall_time_seconds": 45,
+        "memory_megabytes": 2048
+      }
     },
     {
       "component_id": "python-native-semantic-models-v06-v14",
