@@ -228,8 +228,8 @@ def _phase5_graph(source: str, phase5: dict) -> tuple[dict, list[str]]:
                 })
         graph["features"].append(
             "COORDINATION" if relation_type in {"AND", "OR", "CONTRAST"}
-            else "EMBEDDED_CLAUSE" if relation_type == "COMPLEMENT"
-            else "EMBEDDED_CLAUSE"
+            else "EMBEDDED_CLAUSE" if relation_type in {"COMPLEMENT", "RELATIVE"}
+            else "SUBORDINATE_CLAUSE"
         )
 
     for clause_result in operators.get("clauses", []):

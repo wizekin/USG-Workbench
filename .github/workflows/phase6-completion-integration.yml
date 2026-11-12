@@ -9,6 +9,8 @@ on:
       - "tests/test_phase6_step_6_5_predicate_argument.py"
       - "tests/test_phase6_integrated_interpreter.py"
       - "documentation/PHASE-6-STEPS-6.7-6.14-COMPLETION-IMPLEMENTATION.md"
+      - "documentation/PHASE-6-INTEGRATED-INTERPRETER-AND-BRIDGE-VALIDATION.md"
+      - "README.md"
       - ".github/workflows/phase6-completion-integration.yml"
   push:
     branches: [main]
@@ -18,6 +20,9 @@ on:
       - "tools/usg-kernel-lab/**"
       - "tests/test_phase6_broader_semantics*.py"
       - "tests/test_phase6_step_6_5_predicate_argument.py"
+      - "tests/test_phase6_integrated_interpreter.py"
+      - "documentation/PHASE-6-INTEGRATED-INTERPRETER-AND-BRIDGE-VALIDATION.md"
+      - "README.md"
   workflow_dispatch:
 permissions:
   contents: read
