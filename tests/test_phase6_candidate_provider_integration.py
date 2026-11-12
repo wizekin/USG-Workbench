@@ -46,7 +46,8 @@ class Phase6CandidateProviderIntegrationTests(unittest.TestCase):
         result = self.service.interpret("طالب المدرسة", "ar")
         nominal = result.get("candidate_provider_results", {}).get("nominal", {})
         if nominal.get("status") == "AMBIGUOUS":
-            self.assertNotEqual(result["status"], "CANDIDATE_ONLY")
+            self.assertFalse(any(item.startswith("PHASE6_NOMINAL_PROVIDER:")
+                                 for item in result["diagnostics"]))
             self.assertTrue(any(item.startswith("PHASE6_NOMINAL_AMBIGUOUS:")
                                 for item in result["diagnostics"]))
 
