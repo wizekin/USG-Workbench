@@ -281,13 +281,16 @@
         "tests/test_system_evidence_freshness.py",
         "tests/test_system_evidence_discovery.py",
         "tests/test_phase8_integrated_acceptance.py",
-        "evaluations/system-wide/evidence-catalogue/<snapshot-id>/phase8-integrated-acceptance.json"
+        "evaluations/system-wide/evidence-catalogue/<snapshot-id>/phase8-integrated-acceptance.json",
+        "tools/system_evidence/system_intelligence.py",
+        "tests/test_system_intelligence.py"
       ],
       "known_limitations": [
         "Catalogue and proposals are planning artifacts, not semantic truth or runtime knowledge.",
         "Proposal records are draft-only and cannot change accepted phase status, canonical contracts, or runtime resources.",
         "The integrated acceptance gate establishes structural and governance readiness for human review, not semantic accuracy or phase acceptance.",
-        "Snapshots remain append-only; source rights and population boundaries must be preserved."
+        "Snapshots remain append-only; source rights and population boundaries must be preserved.",
+        "Cross-runtime inventory and unresolved knowledge mappings are planning evidence; agreement and unresolved candidates are not semantic gold or promotion permission."
       ]
     }
   ],

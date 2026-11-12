@@ -63,12 +63,18 @@ def evaluate_phase8_acceptance(report: dict[str, Any], root: Path = ROOT) -> dic
     required_sections = (
         "source_registry", "resource_consumption_map", "asset_summary", "open_world",
         "external_lexical", "workflow_evidence", "growth_plan", "discoveries",
-        "evidence_quality_diagnostics", "integrated_priorities", "review_proposals", "governance",
+        "evidence_quality_diagnostics", "system_intelligence", "integrated_priorities", "review_proposals", "governance",
     )
     missing_sections = [key for key in required_sections if key not in report]
     check("P8-INTEGRATED-CATALOGUE", not missing_sections,
           "Catalogue contains every required evidence, diagnostics, routing, and planning section."
           if not missing_sections else f"Missing catalogue sections: {missing_sections}")
+
+    system_intelligence = report.get("system_intelligence", {})
+    check("P8-SYSTEM-INTELLIGENCE", isinstance(system_intelligence, dict)
+          and "cross_implementation" in system_intelligence
+          and "knowledge_layer" in system_intelligence,
+          "Cross-implementation and knowledge-layer evidence are represented, including explicit unavailable states.")
 
     discoveries = report.get("discoveries", [])
     priorities = report.get("integrated_priorities", [])

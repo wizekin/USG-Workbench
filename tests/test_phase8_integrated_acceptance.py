@@ -30,6 +30,7 @@ class Phase8AcceptanceTests(unittest.TestCase):
                 "rights_and_runtime_boundary": {"runtime_promotion_allowed": False}}},
             "workflow_evidence": {"status": "collected", "workflow_count": 12},
             "growth_plan": {}, "discoveries": [], "evidence_quality_diagnostics": [],
+            "system_intelligence": {"cross_implementation": {"status": "collected"}, "knowledge_layer": {"status": "collected"}},
             "integrated_priorities": [], "review_proposals": [],
             "governance": {"runtime_mutations_performed": False,
                            "candidate_resources_promoted": False,

@@ -100,6 +100,8 @@ _BACKLOG_RULES = (
       "github_actions_artifact_index_incomplete"), ("SYS-16",)),
     (("external_lexical",), ("SYS-05", "SYS-06", "SYS-17")),
     (("semantic", "construction", "syntax", "operator", "discourse"), ("SYS-08", "SYS-09", "SYS-17")),
+    (("cross_implementation",), ("SYS-12",)),
+    (("knowledge_layer", "unresolved_mapping"), ("SYS-17",)),
 )
 
 
@@ -149,7 +151,8 @@ def integrated_priorities(findings: list[dict[str, Any]]) -> list[dict[str, Any]
                 key: details[key] for key in (
                     "priority_score", "observed_first_blocker_records",
                     "campaign_recurrence_count", "acceptance_gate",
-                    "pud_evaluation_status", "inventory_status"
+                    "pud_evaluation_status", "inventory_status", "capability_gap_count",
+                    "pending_gate_count", "unresolved_mapping_count", "mapping_proposal_count"
                 ) if key in details
             },
             "review_required": True,
