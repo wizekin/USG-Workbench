@@ -448,8 +448,8 @@ def build() -> dict[str, Any]:
             "note": "The frozen Phase 5 accepted corpus supplies lexical/role seeds; each new multi-clause or transformed case receives a newly composed reference graph before realization. This is controlled synthetic evidence, not human gold or naturalistic accuracy.",
         },
         "construction_inventory": {
-            f"{lang}/{profile}": {"positive": 20, "negative": 20, "ambiguous": 10}
-            for lang, profile in PROFILE_SPECS
+            f"{lang}/{family}": {"positive": 20, "negative": 20, "ambiguous": 10}
+            for (lang, _profile), (_step, family) in PROFILE_SPECS.items()
         },
         "cases": cases,
         "integration_checks": [
