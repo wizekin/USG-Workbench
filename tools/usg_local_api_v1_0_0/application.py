@@ -25,6 +25,7 @@ from tools.usg_interpretation_v0_1_0.resources import SemanticAssociation
 from tools.phase6_broader_semantics_v0_1.engine import compose as compose_phase6_candidate, project_loss_aware as project_phase6_loss_aware, CompositionError
 from tools.phase6_broader_semantics_v0_1.extract import extract_candidate_graph
 from tools.phase6_broader_semantics_v0_1.runs import SQLitePhase6CandidateRunStore
+from tools.phase6_broader_semantics_v0_1.interpret import Phase6IntegratedInterpreter, project_preservation_document
 from tools.usg_interpretation_v0_2_0 import (
     Phase5InterpretationService, SQLiteResourceCatalogue,
     SQLiteInterpretationRunStore, bundled_resource_descriptors,
@@ -68,6 +69,7 @@ class USGApplication:
                         + descriptor.resource_id
                     )
             self.phase6_candidate_run_store = SQLitePhase6CandidateRunStore(connection)
+        self.phase6_integrated_interpreter = Phase6IntegratedInterpreter()
 
     def _catalogue_read(self, operation):
         with self.store.resource_catalogue_session(role=RESOURCE_CATALOGUE_ROLE):
@@ -132,6 +134,7 @@ class USGApplication:
                     "phase5_pipeline": "USG-INTERPRET/0.2.0",
                     "phase6_candidate_pipeline": "USG-INTERPRET/0.3.0",
                     "phase6_candidate_capabilities": "CANDIDATE_ONLY",
+                    "phase6_integrated_interpreter": "usg-phase6-integrated-interpreter/0.1.0",
                     "resource_catalogue": "sqlite-semantic-resource-catalogue/0.1.0",
                 }
 
@@ -206,6 +209,50 @@ class USGApplication:
                         manifest_digest = self._catalogue_read(lambda: self.resource_catalogue.digest())
                         metadata = self._catalogue_write(lambda: self.phase6_candidate_run_store.put(
                             body["source"], body["language"], extraction["graph"], stored_result, manifest_digest
+                        ))
+                        response["persistence"] = metadata
+                return 200, response
+
+            if method == "POST" and path == "/v3/phase6/interpret":
+                if not isinstance(body, dict) or not isinstance(body.get("source"), str) or not isinstance(body.get("language"), str):
+                    raise APIRequestError(400, "PHASE6_INTERPRET_REQUEST_INVALID", "body requires source and language strings")
+                persist = body.get("persist", True)
+                if not isinstance(persist, bool):
+                    raise APIRequestError(400, "PHASE6_INTERPRET_REQUEST_INVALID", "persist must be a boolean")
+                try:
+                    interpretation = self.phase6_integrated_interpreter.interpret(
+                        body["source"], body["language"]
+                    )
+                except (TypeError, ValueError, CompositionError) as exc:
+                    raise APIRequestError(400, "PHASE6_INTERPRET_INVALID", str(exc)) from exc
+                response = {
+                    "interpretation": interpretation,
+                    "capability_state": "CANDIDATE_ONLY",
+                    "phase6_status": interpretation["status"],
+                    "canonical_assertions_emitted": False,
+                }
+                if interpretation["status"] == "CANDIDATE_ONLY":
+                    preservation_document = project_preservation_document(interpretation["composition"])
+                    validation = self._validate(preservation_document)
+                    projection_valid = validation.get("completion_status") == "VALID"
+                    response["canonical_preservation_projection"] = {
+                        "status": "LOSSLESS_PRESERVATION_ONLY" if projection_valid else "NOT_PROJECTABLE",
+                        "document": preservation_document if projection_valid else None,
+                        "validation": validation,
+                        "semantic_assertions_emitted": False,
+                        "silent_loss": False,
+                        "note": "The Phase 6 graph is archived as OPAQUE candidate data; this is not semantic promotion.",
+                    }
+                    if persist:
+                        manifest_digest = self._catalogue_read(lambda: self.resource_catalogue.digest())
+                        stored_result = {
+                            "pipeline_contract": interpretation["composition"]["pipeline_contract"],
+                            "composition": interpretation["composition"],
+                            "projection": project_phase6_loss_aware(interpretation["composition"]),
+                        }
+                        metadata = self._catalogue_write(lambda: self.phase6_candidate_run_store.put(
+                            body["source"], body["language"], interpretation["graph"],
+                            stored_result, manifest_digest,
                         ))
                         response["persistence"] = metadata
                 return 200, response
