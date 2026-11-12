@@ -215,6 +215,17 @@ def _ambiguous_match(case: dict[str, Any], observed: dict[str, Any]) -> tuple[bo
                 failures.append("attachment_abstention_diagnostic_missing:" + required)
         forced = set(expected.get("forbidden_unique_relations", [])) & observed["relation_types"]
         failures.extend("ambiguous_attachment_forced_unique:" + item for item in sorted(forced))
+    for relation in expected.get("required_ambiguous_relations", []):
+        if relation not in observed["relation_types"]:
+            failures.append("ambiguous_relation_alternative_missing:" + relation)
+    for marker in expected.get("required_markers", []):
+        if not any(
+            item.get("evidence", {}).get("surface") == marker["surface"]
+            and item.get("evidence", {}).get("start") == marker["start"]
+            and item.get("evidence", {}).get("end") == marker["end"]
+            for item in observed["relations"]
+        ):
+            failures.append("ambiguous_marker_evidence_missing:" + marker["surface"])
     if expected.get("ambiguity_alternatives_required"):
         # Preserve every explicitly generated alternative for coordinated
         # structures. Other ambiguous profiles may safely abstain.
