@@ -178,23 +178,23 @@ These are the major open workstreams. Detailed step definitions, dependencies, a
 
 ### 1. Phase 6 — broader semantic interpretation
 
-**Status: IN PROGRESS — integrated candidate implementation now spans Steps 6.7–6.14.** One bilingual interpretation path reuses the Phase 5 lexical, clause, syntax, operator, and discourse stages, composes their results into a Phase 6 graph, and exposes the same service through API, CLI, and Kernel Lab. Candidate-only status is retained; the final per-construction acceptance gate remains open. The same service also invokes the existing eight-profile predicate/argument and ten-profile nominal candidate providers when no Phase 5 predicate candidate is available.
+**Status: BOUNDED AUTOMATIC EXIT ACCEPTED — Steps 6.7–6.14 passed the graph-first synthetic acceptance suite on the exact PR head; runtime outputs remain candidate-only.** The Phase 6 Automatic Acceptance Factory evaluated 500 generated English/MSA Arabic cases across ten language/construction profiles, each with 20 positive, 20 negative, and 10 ambiguous cases. Every profile passed its precision, recall, exact-span, negative-abstention, and ambiguity-preservation gates. API, CLI, Kernel Lab regression, SQLite persistence, deterministic replay, and OPAQUE preservation checks also passed. This is acceptance of the registered synthetic profiles, not unrestricted language understanding or naturalistic semantic accuracy. Step 6.12 is accepted for OPAQUE preservation only; canonical semantic-assertion projection remains blocked.
 
 | Step | Capability | Current status |
 |---|---|---|
 | **6.6** | Nominal, property, possession, and modifier semantics | **Accepted for bounded graph-first synthetic reference (500 cases / 10 profiles); runtime remains candidate-only** |
-| **6.7** | Intra-clause coordination and shared arguments | Integrated clause coordination plus a bounded shared-subject/predicate/patient candidate pattern |
-| **6.8** | Embedded and subordinate clauses | Clause hierarchy and complement/causal/conditional/temporal candidate links integrated |
-| **6.9** | Voice and speech-act structures | Passive-question fallback templates integrated; general voice/speech-act coverage remains unaccepted |
-| **6.10** | Cross-construction operator and quantifier scope | Existing Phase 5 operator candidates carried into the Phase 6 graph |
-| **6.11** | Bounded discourse-reference resolution | Mention and antecedent alternatives carried forward; identity remains unresolved |
-| **6.12** | Loss-aware projection to canonical semantic documents | Lossless OPAQUE preservation preview implemented; semantic assertion projection remains blocked |
-| **6.13** | API, CLI, resource lifecycle, and Kernel Lab integration | Unified API, CLI, Kernel Lab action, SQLite run persistence, and replay integrated |
-| **6.14** | Full Phase 6 benchmark and integrated exit acceptance | Phase 5-to-Phase 6 bridge regression added; full Phase 6 semantic acceptance remains open |
+| **6.7** | Intra-clause coordination and shared arguments | **Accepted for tested shared-subject/predicate/patient profile; runtime remains candidate-only** |
+| **6.8** | Embedded and subordinate clauses | **Accepted for tested causal and ambiguous causal/temporal attachment profiles; broader attachment remains open** |
+| **6.9** | Voice and speech-act structures | **Accepted for registered passive-question profile; general active/passive, imperative, and request coverage remains open** |
+| **6.10** | Cross-construction operator and quantifier scope | **Accepted for registered modality/negation and unresolved nested-scope profiles; broader quantifier scope remains open** |
+| **6.11** | Bounded discourse-reference resolution | **Accepted for single- and multiple-antecedent candidate preservation; identity remains unresolved** |
+| **6.12** | Loss-aware projection to canonical semantic documents | **Accepted for lossless OPAQUE preservation only; semantic assertion projection remains blocked** |
+| **6.13** | API, CLI, resource lifecycle, and Kernel Lab integration | **Accepted: API, executable CLI, Kernel Lab regression, SQLite persistence, and deterministic replay** |
+| **6.14** | Full Phase 6 benchmark and integrated exit acceptance | **Accepted for the registered 500-case bilingual synthetic profile suite; naturalistic expansion remains open** |
 
 Step 6.6 now uses a deterministic graph-first bilingual synthetic reference benchmark: 500 cases across ten English/MSA construction profiles, with 20 positive, 20 negative, and 10 ambiguous cases per profile. It uses no human annotations, model-generated labels, external corpus, development fixtures, or candidate lexicon to create its reference cases. All ten synthetic profile gates pass. This is controlled conformance evidence only—not a naturalistic semantic-accuracy claim—and all runtime constructions remain candidate-only.
 
-The [Phase 6 Automatic Acceptance Factory](documentation/PHASE-6-AUTOMATIC-ACCEPTANCE-FACTORY.md) now generates a separate 500-case bilingual corpus for Steps 6.7–6.11, evaluates the real integrated API, verifies OPAQUE preservation and SQLite replay, and publishes a schema-validated report. A successful factory run is not itself a semantic acceptance: any construction profile that misses its gates remains open.
+The [Phase 6 Automatic Acceptance Factory](documentation/PHASE-6-AUTOMATIC-ACCEPTANCE-FACTORY.md) generated 500 bilingual cases for Steps 6.7–6.11 and evaluated the actual integrated API. Its latest accepted report records 10/10 language profiles passing, 100% per-profile precision, recall, exact role-span accuracy, negative abstention, and ambiguity preservation, zero false unique outcomes, 500/500 OPAQUE preservation checks, and successful bilingual API/CLI, SQLite, and replay integration. These results apply only to the registered synthetic profiles; unregistered constructions and naturalistic accuracy remain outside the acceptance claim.
 
 References: [Phase 6 roadmap](documentation/PHASE-6-DEFINITIONS-ROADMAP.md) · [Integrated interpreter and bridge validation](documentation/PHASE-6-INTEGRATED-INTERPRETER-AND-BRIDGE-VALIDATION.md) · [Steps 6.7–6.14 implementation record](documentation/PHASE-6-STEPS-6.7-6.14-COMPLETION-IMPLEMENTATION.md) · [Automatic synthetic-reference protocol](documentation/PHASE-6-STEP-6.6-AUTOMATIC-SYNTHETIC-REFERENCE-PROTOCOL.md) · [Historical external dataset feasibility audit](documentation/PHASE-6-STEP-6.6-INDEPENDENT-GOLD-DATASET-AUDIT.md) · [Historical independent-gold protocol](documentation/PHASE-6-STEP-6.6-INDEPENDENT-GOLD-ACCEPTANCE-PROTOCOL.md).
 
