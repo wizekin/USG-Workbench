@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 from pathlib import Path
 from typing import Any
@@ -16,10 +17,19 @@ RESOURCE_MAP_PATH = Path("config/usg-phase-resource-consumption-map-0.1.0.json")
 RESOURCE_MAP_SCHEMA_PATH = Path("specifications/usg-phase-resource-consumption-map-0.1.0.schema.json")
 
 
-def evaluate_phase8_acceptance(report: dict[str, Any], root: Path = ROOT) -> dict[str, Any]:
-    """Evaluate whether Phase 8 is structurally ready for human acceptance review.
+def evaluate_phase8_acceptance(
+    report: dict[str, Any],
+    root: Path = ROOT,
+    *,
+    validated_commit_sha: str | None = None,
+    workflow_run_id: str | None = None,
+    workflow_run_attempt: str | None = None,
+) -> dict[str, Any]:
+    """Automatically accept the bounded Phase 8 control-plane scope on exact-head CI.
 
-    This gate can never mark Phase 8 accepted or mutate canonical/runtime state.
+    The workflow calls this only after its required validation job succeeds. This
+    decision cannot promote semantic resources, change canonical contracts, or
+    accept any other phase.
     """
     root = Path(root)
     checks: list[dict[str, Any]] = []
@@ -50,6 +60,22 @@ def evaluate_phase8_acceptance(report: dict[str, Any], root: Path = ROOT) -> dic
     phase_ids = {str(item.get("id")) for item in report.get("phase_status", [])}
     check("P8-PHASE-COVERAGE", {f"P{i}" for i in range(1, 9)} <= phase_ids,
           "Catalogue includes phase status records for Phases 1–8.")
+
+    repository = report.get("repository", {})
+    source_commit_sha = repository.get("commit_sha") if isinstance(repository, dict) else None
+    exact_head_validation = (
+        bool(validated_commit_sha)
+        and validated_commit_sha == source_commit_sha
+        and bool(workflow_run_id)
+        and str(workflow_run_id).isdigit()
+        and bool(workflow_run_attempt)
+        and str(workflow_run_attempt).isdigit()
+        and int(str(workflow_run_attempt)) >= 1
+    )
+    check("P8-EXACT-HEAD-CI", exact_head_validation,
+          "GitHub Actions validation attests the exact catalogue source commit and records its workflow run/attempt."
+          if exact_head_validation else
+          "Automatic acceptance requires a successful upstream validation job for the exact catalogue commit and a valid GitHub Actions run/attempt.")
 
     phase8 = next((item for item in resource_map.get("phases", [])
                    if item.get("phase_id") == "P8"), {})
@@ -125,23 +151,56 @@ def evaluate_phase8_acceptance(report: dict[str, Any], root: Path = ROOT) -> dic
           "PUD evidence state is explicit and candidate data cannot be promoted by the collector.")
 
     passed = all(item["passed"] for item in checks)
+    checks_passed = sum(item["passed"] for item in checks)
+    checks_total = len(checks)
+    decision_basis = {
+        "contract": "USG-PHASE8-INTEGRATED-ACCEPTANCE/0.1.0",
+        "decision": "accepted" if passed else "blocked",
+        "phase_id": "P8",
+        "source_commit_sha": source_commit_sha,
+        "validated_commit_sha": validated_commit_sha,
+        "workflow_run_id": str(workflow_run_id) if workflow_run_id is not None else None,
+        "workflow_run_attempt": str(workflow_run_attempt) if workflow_run_attempt is not None else None,
+        "checks": checks,
+        "decided_at": report.get("generated_at"),
+    }
+    decision_id = hashlib.sha256(
+        json.dumps(decision_basis, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
     return {
         "contract": "USG-PHASE8-INTEGRATED-ACCEPTANCE/0.1.0",
-        "status": "eligible_for_review" if passed else "blocked",
-        "phase_accepted": False,
-        "checks_passed": sum(item["passed"] for item in checks),
-        "checks_total": len(checks),
+        "status": "accepted" if passed else "blocked",
+        "phase_accepted": bool(passed),
+        "checks_passed": checks_passed,
+        "checks_total": checks_total,
         "checks": checks,
+        "acceptance_decision": {
+            "decision_id": decision_id,
+            "decision": "accepted" if passed else "blocked",
+            "phase_id": "P8",
+            "accepted_scope": "Phase 8 system-wide evidence catalogue, freshness diagnostics, phase-aware routing, resource manifests, and development-intelligence control plane",
+            "source_commit_sha": source_commit_sha,
+            "validated_commit_sha": validated_commit_sha,
+            "workflow_run_id": str(workflow_run_id) if workflow_run_id is not None else None,
+            "workflow_run_attempt": str(workflow_run_attempt) if workflow_run_attempt is not None else None,
+            "decided_at": report.get("generated_at"),
+            "decision_basis": "exact_head_github_actions_validation_and_all_integrated_checks",
+            "checks_passed": checks_passed,
+            "checks_total": checks_total,
+        },
         "governance": {
-            "phase_status_mutation_allowed": False,
+            "automatic_acceptance_enabled": True,
+            "phase_status_mutation_allowed": bool(passed),
             "canonical_contract_mutation_allowed": False,
             "runtime_mutation_allowed": False,
             "candidate_promotion_allowed": False,
-            "human_acceptance_required": True,
+            "human_acceptance_required": False,
+            "manual_override_allowed": False,
         },
         "limitations": [
+            "Acceptance applies only to the bounded Phase 8 development-intelligence/control-plane scope.",
             "A passing gate establishes structural completeness and governance compliance, not semantic accuracy or AGI.",
-            "This report never marks Phase 8 accepted; explicit human acceptance and evidence review remain required.",
+            "This decision does not accept other phases, promote candidate resources, modify runtime semantics, or change canonical contracts.",
             "Naturalistic and independent semantic evaluation must be judged within their documented populations."
         ],
     }
@@ -152,9 +211,20 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--catalogue", type=Path, required=True)
     parser.add_argument("--root", type=Path, default=ROOT)
     parser.add_argument("--output", type=Path)
+    parser.add_argument("--validated-commit-sha", required=True,
+                        help="Commit SHA that completed the workflow's required validation job.")
+    parser.add_argument("--workflow-run-id", required=True,
+                        help="GitHub Actions run ID for the validation/acceptance workflow.")
+    parser.add_argument("--workflow-run-attempt", required=True,
+                        help="GitHub Actions run attempt number.")
     args = parser.parse_args(argv)
     report = json.loads(args.catalogue.read_text(encoding="utf-8"))
-    result = evaluate_phase8_acceptance(report, args.root)
+    result = evaluate_phase8_acceptance(
+        report, args.root,
+        validated_commit_sha=args.validated_commit_sha,
+        workflow_run_id=args.workflow_run_id,
+        workflow_run_attempt=args.workflow_run_attempt,
+    )
     rendered = json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True)
     if args.output:
         args.output.parent.mkdir(parents=True, exist_ok=True)
