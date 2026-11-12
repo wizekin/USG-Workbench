@@ -514,3 +514,26 @@ def canonical_bytes(value: Any) -> bytes:
 
 def corpus_sha256(corpus: dict[str, Any]) -> str:
     return hashlib.sha256(canonical_bytes(corpus)).hexdigest()
+
+
+
+def main() -> int:
+    corpus = build()
+    output = ROOT / "benchmarks/phase6-automatic-acceptance-v1.0/corpus.json"
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(
+        json.dumps(corpus, ensure_ascii=False, sort_keys=True, indent=2) + "\\n",
+        encoding="utf-8",
+    )
+    print(json.dumps({
+        "benchmark_id": BENCHMARK_ID,
+        "case_count": len(corpus["cases"]),
+        "profile_count": len(corpus["construction_inventory"]),
+        "corpus_sha256": corpus_sha256(corpus),
+        "output": str(output),
+    }, ensure_ascii=False, indent=2))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
