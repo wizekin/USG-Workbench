@@ -42,6 +42,8 @@ def _rights(provider: str, metadata: dict, overrides: dict | None) -> dict:
         raise KnowledgeSourceAdapterError(f"invalid rights status for {provider}")
     if redistribution not in {"ALLOWED", "RESTRICTED", "UNKNOWN", "PROHIBITED", "NOT_APPLICABLE"}:
         raise KnowledgeSourceAdapterError(f"invalid redistribution status for {provider}")
+    if redistribution == "ALLOWED" and status == "KNOWN_PERMITTED" and not override.get("license_id"):
+        raise KnowledgeSourceAdapterError(f"{provider}: an explicit license_id is required for KNOWN_PERMITTED redistribution")
     if redistribution == "ALLOWED" and status not in {"KNOWN_PERMITTED", "INTERNAL"}:
         raise KnowledgeSourceAdapterError(f"{provider}: ALLOWED redistribution requires explicit known-permitted rights")
     attribution = override.get("attribution") or metadata.get("attribution") or provider
@@ -209,12 +211,12 @@ def adapt_canonical_document(document: dict) -> dict:
         raise KnowledgeSourceAdapterError("canonical document has no source records")
     primary = document.get("primarySourceRef")
     source_id = source_map.get(primary, sources[0]["id"])
-    language = next((s.get("language") for s in document["sources"] if s.get("id") == primary), "und")
+    language = next((s.get("language") for s in document["sources"] if s.get("id") == primary and isinstance(s.get("language"), str)), "und")
     context_id = _id("context", "language", language)
     contexts = [{"id": context_id, "context_type": "LANGUAGE", "value": language, "language_profile": language}]
     records, evidence = [], []
     def add_record(kind, key, version, payload, locator, snippet):
-        rid = _id(kind.lower(), doc_id, key, version)
+        rid = _id(kind.lower().replace("_", "-"), doc_id, key, version)
         eid = _id("evidence", doc_id, rid, digest)
         evidence.append({
             "id": eid, "source_id": source_id, "evidence_type": "CANONICAL_DOCUMENT",
