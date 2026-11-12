@@ -91,6 +91,24 @@ class GitHubActionsEvidenceTests(unittest.TestCase):
         self.assertEqual(len(report["collection_errors"]), 1)
         self.assertEqual(report["latest_run_count"], 0)
 
+    def test_artifact_metadata_failure_is_separate_from_workflow_run_success(self):
+        base = "https://api.github.com/repos/wizekin/USG-Workbench"
+        payloads = {
+            base + "/actions/workflows?per_page=100": {
+                "workflows": [{"id": 5, "name": "Artifact Test", "path": ".github/workflows/test.yml", "state": "active"}]
+            },
+            base + "/actions/workflows/5/runs?per_page=1&exclude_pull_requests=true": {
+                "workflow_runs": [{"id": 105, "status": "completed", "conclusion": "success",
+                                   "created_at": "2026-11-12T05:00:00Z", "head_sha": "abc"}]
+            }
+        }
+        report = collect_workflow_runs("wizekin/USG-Workbench", "token",
+                                       opener=self.make_opener(payloads), workers=1)
+        self.assertEqual(report["status_counts"]["success"], 1)
+        self.assertEqual(len(report["collection_errors"]), 0)
+        self.assertEqual(len(report["artifact_collection_errors"]), 1)
+        self.assertEqual(report["workflows"][0]["latest_run"]["artifact_count"], 0)
+
     def test_requires_repository_and_token(self):
         with self.assertRaises(ValueError):
             collect_workflow_runs("not-a-repository", "token")
