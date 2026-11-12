@@ -8,6 +8,7 @@ from tools.open_world_evaluation.browser_adapter import (
     ADAPTER_ID,
     stable_workbench_projection,
     browser_request_is_allowed,
+    interpret_in_browser,
 )
 from tools.open_world_evaluation.execute_cases import execute_case
 from tools.open_world_evaluation.generate_scenarios import ScenarioGenerator
@@ -90,6 +91,17 @@ class BrowserAdapterProjectionTests(unittest.TestCase):
 @unittest.skipUnless(os.environ.get("USG_RUN_BROWSER_TESTS") == "1",
                      "real Chromium smoke test runs in the dedicated GitHub Actions job")
 class BrowserAdapterEndToEndTests(unittest.TestCase):
+    def test_direct_browser_adapter_runs_real_workbench_ui(self):
+        result = interpret_in_browser({
+            "input": {
+                "text": "A thermometer measures temperature.",
+                "language_hint": "en",
+            }
+        })
+        self.assertEqual(result["outcome"], "completed", result)
+        self.assertGreaterEqual(result["target_result"]["claim_count"], 1)
+        self.assertEqual(result["execution_metadata"]["ollama_used"], False)
+
     def test_isolated_worker_runs_real_workbench_browser(self):
         generator = ScenarioGenerator(
             seed="sys04-playwright-browser-smoke",
