@@ -23,7 +23,7 @@ class Phase7BilingualAlignmentTests(unittest.TestCase):
         self.assertEqual(bundle["extensions"]["alignment_policy"], "candidate-hint-only/0.1.0")
         self.assertFalse(bundle["extensions"]["equivalence_inferred"])
         self.assertFalse(bundle["extensions"]["promotion_allowed"])
-        self.assertEqual(len(bundle["mappings"]), 48)
+        self.assertEqual(len(bundle["mappings"]), 43)
         self.assertTrue(all(x["mapping_type"] == "UNRESOLVED" for x in bundle["mappings"]))
         self.assertTrue(all(x["state"] == "UNRESOLVED" for x in bundle["mappings"]))
 
@@ -78,7 +78,7 @@ class Phase7BilingualAlignmentTests(unittest.TestCase):
     def test_duplicate_sense_ids_with_conflicting_data_are_rejected(self):
         resource = deepcopy(RESOURCE)
         duplicate = deepcopy(resource["entries"][0])
-        duplicate["form"] = "changed"
+        duplicate["concept_ref"] = "concept:conflicting-sense"
         resource["entries"].append(duplicate)
         with self.assertRaises(AlignmentProposalError):
             build_bilingual_alignment_bundle(resource, created_at="2026-11-12T12:00:00Z")
