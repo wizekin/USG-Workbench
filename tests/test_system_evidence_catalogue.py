@@ -101,6 +101,15 @@ class SystemEvidenceCatalogueTests(unittest.TestCase):
         self.assertEqual(external["pud_evaluation"]["status"], "stale_shard_count_mismatch")
         self.assertFalse(external["pud_evaluation"]["rights_and_runtime_boundary"]["runtime_promotion_allowed"])
 
+    def test_fresh_pud_report_is_accepted_only_when_shard_counts_match(self):
+        value = json.loads(self.pud.read_text(encoding="utf-8"))
+        value["lexical_shard_count"] = 2
+        self.pud.write_text(json.dumps(value), encoding="utf-8")
+        report = self.collect()
+        self.assertEqual(report["external_lexical"]["pud_evaluation"]["status"],
+                         "fresh_for_current_shard_count")
+        self.assertEqual(report["external_lexical"]["pud_evaluation"]["evaluated_shard_count"], 2)
+
     def test_latest_campaign_population_and_accounting_are_preserved(self):
         report = self.collect()
         latest = report["open_world"]["latest_campaign"]
