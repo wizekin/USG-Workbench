@@ -1,0 +1,40 @@
+name: Phase 7 Rights-Aware Source Adapters Validation
+
+on:
+  pull_request:
+    paths:
+      - 'tools/phase7_knowledge_sources/**'
+      - 'tools/phase7_knowledge_contract/**'
+      - 'tools/phase7_knowledge_repository/**'
+      - 'tools/usg_external_lexical_v0_1_0/adapter.py'
+      - 'specifications/usg-knowledge-0.1.0.schema.json'
+      - 'specifications/usg-lexical-candidates-0.1.0.schema.json'
+      - 'specifications/usg-sem-1.0.schema.json'
+      - 'tests/test_phase7_knowledge_sources.py'
+      - '.github/workflows/phase7-knowledge-sources-validation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  adapters:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install pinned validator
+        run: python -m pip install 'jsonschema==4.23.0'
+      - name: Compile source adapters
+        run: python -m compileall -q tools/phase7_knowledge_sources
+      - name: Run rights-aware source adapter tests
+        run: python -m unittest discover -s tests -p 'test_phase7_knowledge_sources.py' -v
+      - name: Protect prior semantic and interpretation contracts
+        run: |
+          git diff --exit-code origin/main...HEAD -- specifications/USG-SEM-1.0.md specifications/usg-sem-1.0.schema.json
+          git diff --exit-code origin/main...HEAD -- documentation/PHASE-[1-6]* tools/semantic_graph_store_v1_0_0 tools/usg_interpretation_v0_1_0 tools/usg_interpretation_v0_2_0 archives/ implementations/semantic-workbench-js/
