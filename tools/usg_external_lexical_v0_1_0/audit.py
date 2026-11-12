@@ -60,18 +60,29 @@ def audit_crawl_state(checkpoint: dict, manifest: dict, shard_inventory: list[di
             errors.append(f"shard batch {number:06d} is ahead of checkpoint batch {checkpoint_batch:06d}")
 
     duplicate_batches = []
+    duplicate_physical_copy_count = 0
     for number, items in sorted(batch_numbers.items()):
         if len(items) > 1:
             shas = {item.get("sha") or item.get("sha256") for item in items}
+            identical_blob = len(shas) == 1 and None not in shas
             duplicate_batches.append({
                 "batch_number": number,
                 "paths": [str(item.get("path", item.get("name", ""))) for item in items],
-                "identical_blob": len(shas) == 1 and None not in shas,
+                "identical_blob": identical_blob,
+                "physical_copy_count": len(items),
             })
-            if len(shas) > 1:
+            if not identical_blob:
                 errors.append(f"batch number {number:06d} maps to different shard contents")
             else:
+                duplicate_physical_copy_count += len(items) - 1
                 warnings.append(f"duplicate physical shard copies for batch {number:06d}")
+
+    logical_batch_count = len(batch_numbers)
+    if logical_batch_count != manifest_batch:
+        errors.append(
+            f"logical shard batch count ({logical_batch_count}) does not match manifest batch_count "
+            f"({manifest_batch})"
+        )
 
     last_batch = manifest.get("last_batch") or {}
     last_path = last_batch.get("path")
@@ -88,6 +99,8 @@ def audit_crawl_state(checkpoint: dict, manifest: dict, shard_inventory: list[di
         "status": "failed" if errors else ("passed_with_warnings" if warnings else "passed"),
         "checks": {
             "shard_file_count": len(inventory),
+            "logical_batch_count": logical_batch_count,
+            "duplicate_physical_copy_count": duplicate_physical_copy_count,
             "physical_stored_bytes": physical_bytes,
             "checkpoint_batch_number": checkpoint_batch,
             "manifest_batch_count": manifest_batch,
@@ -99,6 +112,6 @@ def audit_crawl_state(checkpoint: dict, manifest: dict, shard_inventory: list[di
         "mutated_data": False,
         "limitations": [
             "This audit reconciles metadata and Git blob inventory; it does not decompress or linguistically validate shard records.",
-            "Duplicate identical blobs are reported as warnings because historical runs may have published duplicate copies; their bytes remain included in physical storage accounting.",
+            "Identical duplicate blobs remain in append-only storage and physical byte accounting, but count as one logical batch for manifest reconciliation and must be deduplicated for lexical evaluation.",
         ],
     }
