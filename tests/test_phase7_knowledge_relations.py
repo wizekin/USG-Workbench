@@ -16,6 +16,10 @@ FIXTURE = json.loads((ROOT / "examples/phase7-knowledge-bundle-0.1.0.json").read
 def make_bundle():
     bundle = deepcopy(FIXTURE)
     concepts = [x for x in bundle["records"] if x["kind"] == "CONCEPT"]
+    second = deepcopy(concepts[0])
+    second["id"] = "concept:relation-target"
+    second["payload"]["label"] = "relation-target"
+    bundle["records"].append(second)
     source = bundle["sources"][0]
     evidence_ids = []
     for i, status in enumerate(("SUPPORTS", "CONTRADICTS", "SUPPORTS")):
