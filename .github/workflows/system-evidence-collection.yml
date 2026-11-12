@@ -50,6 +50,7 @@ on:
       - "tests/test_phase_resource_manifest_policy.py"
       - "documentation/PHASE-8-DEFINITIONS-ROADMAP.md"
       - ".github/workflows/system-evidence-collection.yml"
+      - ".github/workflows/usg-long-term-roadmap-sync.yml"
       - "documentation/USG-SYSTEM-IMPROVEMENT-BACKLOG.md"
       - "documentation/USG-LONG-TERM-DEVELOPMENT-PLAN.md"
       - "config/usg-long-term-development-plan-0.1.0.json"
