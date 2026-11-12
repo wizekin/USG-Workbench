@@ -231,7 +231,7 @@ def _generate_voice(lang: str, seeds: list[dict[str, Any]]) -> list[dict[str, An
             participle = EN_PARTICIPLE.get(action)
             if not participle:
                 raise ValueError(f"no passive realization for English predicate {action!r}")
-            text = f"Was {roles['PATIENT']} {participle} by {roles['AGENT']}?"
+            text = f"Was the {roles['PATIENT']} {participle}?"
         else:
             action = roles["ACTION"]
             passive = AR_PASSIVE.get(action)
@@ -295,10 +295,10 @@ def _generate_operators(lang: str, seeds: list[dict[str, Any]]) -> list[dict[str
         roles = seed["expected_roles"]
         if lang == "en":
             predicate = EN_BASE[roles["ACTION"]]
-            text = f"{roles['AGENT']} may not {predicate} {roles['PATIENT']}."
+            text = f"{roles['AGENT']} may not {predicate}"
         else:
             predicate = AR_PRESENT[roles["ACTION"]]
-            text = f"قد لا {predicate} {roles['AGENT']} {roles['PATIENT']}"
+            text = f"قد لا {predicate} {roles['AGENT']}"
         graph = {
             "nodes": [{"id": "event", "kind": "EVENT"}],
             "operators": [
@@ -330,10 +330,10 @@ def _generate_operators(lang: str, seeds: list[dict[str, Any]]) -> list[dict[str
         roles = seed["expected_roles"]
         if lang == "en":
             predicate = EN_BASE[roles["ACTION"]]
-            text = f"{roles['AGENT']} must not {predicate} {roles['PATIENT']}."
+            text = f"{roles['AGENT']} must not {predicate}"
         else:
             predicate = AR_PRESENT[roles["ACTION"]]
-            text = f"قد لا {predicate} {roles['AGENT']} {roles['PATIENT']}"
+            text = f"قد لا {predicate} {roles['AGENT']}"
         graph = {
             "nodes": [{"id": "event", "kind": "EVENT"}],
             "operators": [
@@ -361,9 +361,9 @@ def _generate_discourse(lang: str, seeds: list[dict[str, Any]]) -> list[dict[str
         agent = seed["expected_roles"]["AGENT"]
         if lang == "en":
             pronoun = en_pronoun.get(agent, "They")
-            text = f"{agent} arrived. {pronoun} smiled."
+            text = f"{_trim_clause(seed['text'])}. {pronoun} reads."
         else:
-            text = f"{agent} عاد. هو ابتسم."
+            text = f"{_trim_clause(seed['text'])}. هو قرأ."
         graph = {
             "mentions": [
                 {"id": "antecedent", "kind": "ENTITY_MENTION"},
@@ -377,7 +377,7 @@ def _generate_discourse(lang: str, seeds: list[dict[str, Any]]) -> list[dict[str
             f"{lang}.discourse_reference.POSITIVE.{i+1:02d}", lang, "6.11",
             "discourse_reference", "POSITIVE", text, graph,
             {"minimum_references": 1, "minimum_antecedent_candidates": 1,
-             "require_unique_resolution": True},
+             "require_unresolved_candidate": True},
             source_seed_ids=[seed["id"]],
         ))
     for i in range(20):
@@ -394,9 +394,9 @@ def _generate_discourse(lang: str, seeds: list[dict[str, Any]]) -> list[dict[str
         a, b = seeds[i], seeds[(i + 8) % 20]
         first, second = a["expected_roles"]["AGENT"], b["expected_roles"]["AGENT"]
         if lang == "en":
-            text = f"{first} met {second}. They smiled."
+            text = f"{_trim_clause(a['text'])}. {_trim_clause(b['text'])}. They read."
         else:
-            text = f"{first} قابل {second}. هما ابتسما."
+            text = f"{_trim_clause(a['text'])}. {_trim_clause(b['text'])}. هما قرأا."
         graph = {
             "mentions": [
                 {"id": "antecedent-1", "kind": "ENTITY_MENTION"},
