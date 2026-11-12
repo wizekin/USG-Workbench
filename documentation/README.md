@@ -153,7 +153,8 @@
 
 - [PHASE 6 BENCHMARK ANNOTATION CORRECTION 0.3.1](PHASE-6-BENCHMARK-ANNOTATION-CORRECTION-0.3.1.md) — Evaluation design, results, fixtures, or limitations.
 - [PHASE 6 BENCHMARK ANNOTATION CORRECTION 0.3.2](PHASE-6-BENCHMARK-ANNOTATION-CORRECTION-0.3.2.md) — Evaluation design, results, fixtures, or limitations.
-- [PHASE 6 DEFINITIONS ROADMAP](PHASE-6-DEFINITIONS-ROADMAP.md) — Bounded exit scope, accepted steps, dependencies, and remaining limitations.\n- [PHASE 6 CONTINUATION TRACKER](PHASE-6-CONTINUATION-TRACKER.md) — Independent non-blocking workstream ledger and scheduled PR/check monitoring.
+- [PHASE 6 DEFINITIONS ROADMAP](PHASE-6-DEFINITIONS-ROADMAP.md) — Bounded exit scope, accepted steps, dependencies, and remaining limitations.
+- [PHASE 6 CONTINUATION TRACKER](PHASE-6-CONTINUATION-TRACKER.md) — Independent non-blocking workstream ledger and scheduled PR/check monitoring.
 - [PHASE 6 AUTOMATIC ACCEPTANCE FACTORY](PHASE-6-AUTOMATIC-ACCEPTANCE-FACTORY.md) — Graph-first bilingual corpus generation, end-to-end scoring, preservation and integration checks, and report interpretation.
 - [PHASE 6 BOUNDED AUTOMATIC ACCEPTANCE RECORD](PHASE-6-BOUNDED-AUTOMATIC-ACCEPTANCE-RECORD.md) — Accepted registered-profile results, exact corpus digest, per-profile metrics, and explicit limitations for Steps 6.7–6.14.
 - [PHASE 6 STEPS 6.7–6.14 CANDIDATE INTEGRATION](PHASE-6-STEPS-6.7-6.14-COMPLETION-IMPLEMENTATION.md) — Candidate composition, strict-template extraction, API/CLI/Kernel Lab integration, SQLite replay, and capability limitations.
