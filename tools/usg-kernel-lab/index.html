@@ -37,6 +37,17 @@ details{border:1px solid var(--line);border-radius:10px;background:#0d1626}summa
 .query-summary .metric b{font-size:18px}
 .query-trace{max-height:560px;min-height:300px}
 .query-note{background:#0d1c2e;border:1px solid #304764;border-radius:9px;padding:10px 12px;color:#b9cce5;font-size:12px;margin:10px 0}.interpret-grid{display:grid;grid-template-columns:minmax(0,1fr) 170px;gap:10px;align-items:start}.interpret-grid textarea{min-height:110px;height:110px}.interpret-controls{display:flex;flex-direction:column;gap:9px}.interpret-controls select{background:#111e31;border:1px solid #30415d;border-radius:7px;padding:9px;color:#e6eef9}.interpret-result{max-height:360px;min-height:90px}.phase5-result{max-height:460px;min-height:120px}.phase5-tools{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;margin-top:14px}.phase5-tools input{background:#111e31;border:1px solid #30415d;border-radius:7px;padding:8px;color:#e6eef9;width:100%}
+.stage-explanations{display:grid;gap:9px;margin:12px 0}
+.stage-summary{border:1px solid var(--line);background:#0c1524;border-radius:10px;padding:11px 13px}
+.stage-summary h3{font-size:12px;margin:0 0 4px;display:flex;justify-content:space-between;gap:10px}
+.stage-summary p{font-size:12px;color:#b7c7dc;margin:5px 0}
+.stage-summary .stage-meta{font-size:11px;color:var(--muted);overflow-wrap:anywhere}
+.stage-summary .stage-diagnostics{font-size:11px;color:#f1c879;margin-top:6px}
+.stage-summary.blocking{border-color:#8a5c36}
+.stage-summary.complete{border-color:#315b4c}
+.stage-status{font-size:10px;color:#c5d5e9;white-space:nowrap}
+.stage-first-blocker{border:1px solid #8a5c36;background:#302315;color:#f3d29b;border-radius:9px;padding:10px 12px;font-size:12px}
+.stage-source{font-size:11px;color:var(--muted);overflow-wrap:anywhere}
 .footer{margin-top:18px;color:#8394ad;font-size:11px;text-align:center}
 @media(max-width:950px){.layout{grid-template-columns:1fr}textarea,.output{min-height:360px}.status{width:100%;margin-left:0}}
 @media(max-width:950px){.query-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.query-summary{grid-template-columns:repeat(2,1fr)}}
@@ -85,7 +96,8 @@ details{border:1px solid var(--line);border-radius:10px;background:#0d1626}summa
 <div class="field"><label>Stored interpretation run ID</label><input id="phase5RunId" placeholder="run:..."></div>
 <div class="field" style="justify-content:end"><label>&nbsp;</label><button class="subtle" id="phase5ReplayBtn">Replay and compare deterministic output</button></div>
 </div>
-<details open style="margin-top:12px"><summary>Phase 5 stages, composition, alternatives, and diagnostics</summary><pre id="phase5Output" class="phase5-result">Enter text and choose Interpret with Phase 5.</pre></details>
+<div id="phase5Explanation" class="stage-explanations" aria-live="polite"><div class="empty">Run Phase 5 to receive a plain-language explanation of each processing stage.</div></div>
+<details style="margin-top:12px"><summary>Full machine-readable Phase 5 envelope</summary><pre id="phase5Output" class="phase5-result">Enter text and choose Interpret with Phase 5.</pre></details>
 <div class="phase5-tools">
 <div>
 <div class="query-actions"><button class="subtle" id="phase5ResourcesBtn">Load resource catalogue</button></div>
@@ -424,6 +436,113 @@ $("interpretTextBtn").onclick=async()=>{
   $("interpretTextBtn").disabled=false;
  }
 };
+const PHASE5_STAGE_GUIDE = {
+ lexical: ["Lexical analysis", "Looks up each word in the versioned vocabulary and applies only registered word-form rules. Multiple candidates remain ambiguous; unknown words remain unresolved."],
+ segmentation: ["Segmentation", "Groups the source tokens into sentence and clause-sized units. This is structural grouping, not a claim about meaning."],
+ operators: ["Operators and scope", "Looks for grammatical operators such as negation, modality, tense, and their scope. Incomplete or ambiguous scope is reported rather than guessed."],
+ syntax: ["Syntax and roles", "Checks how words relate inside clauses and whether the bounded construction rules can assign structural roles."],
+ semantic_composition: ["Semantic composition", "Combines supported lexical and syntactic evidence into candidate meaning structures. A candidate is not automatically a true statement."],
+ discourse: ["Discourse and reference", "Tracks links across clauses, including pronouns and possible antecedents. Competing referents are retained when the evidence is insufficient."]
+};
+function addExplanationText(parent, tag, value, className) {
+ const node=document.createElement(tag);
+ if(className)node.className=className;
+ node.textContent=String(value);
+ parent.appendChild(node);
+ return node;
+}
+function renderPhase5Explanation(result) {
+ const root=$("phase5Explanation");
+ root.replaceChildren();
+ if(!result||!result.stages||typeof result.stages!=="object"){
+  addExplanationText(root,"div","No stage envelope was returned.","empty");
+  return;
+ }
+ const order=["lexical","segmentation","operators","syntax","semantic_composition","discourse"];
+ const diagnostics=Array.isArray(result.diagnostics)?result.diagnostics:[];
+ const firstStage=order.find(stage=>diagnostics.some(item=>item&&item.stage===stage));
+ const source=result.source||{};
+ addExplanationText(root,"div",
+  "Source: "+(source.language_profile||source.language||"language unknown")+
+  " · "+(source.text||"source text unavailable"),"stage-source");
+ if(firstStage){
+  const item=diagnostics.find(d=>d&&d.stage===firstStage);
+  const guide=PHASE5_STAGE_GUIDE[firstStage];
+  addExplanationText(root,"div",
+   "Earliest stage with an explicit diagnostic: "+guide[0]+". This is a useful investigation starting point, not proof that every later diagnostic was caused by this stage. First code: "+item.code,
+   "stage-first-blocker");
+ }else{
+  addExplanationText(root,"div",
+   "No blocking diagnostics were emitted by the registered stages. This does not independently prove that the interpretation is semantically correct.",
+   "stage-first-blocker");
+ }
+ for(const stage of order){
+  const data=result.stages[stage]||{};
+  const guide=PHASE5_STAGE_GUIDE[stage];
+  const stageDiagnostics=diagnostics.filter(item=>item&&item.stage===stage);
+  const card=document.createElement("section");
+  card.className="stage-summary "+(stageDiagnostics.length?"blocking":data.status==="COMPLETE"?"complete":"");
+  const heading=document.createElement("h3");
+  addExplanationText(heading,"span",guide[0]);
+  addExplanationText(heading,"span",data.status||"STATUS NOT REPORTED","stage-status");
+  card.appendChild(heading);
+  addExplanationText(card,"p",guide[1]);
+  const meta=[];
+  if(data.version)meta.push("stage version "+data.version);
+  if(data.resource_id)meta.push("resource "+data.resource_id+" @ "+(data.resource_version||"version unknown"));
+  if(data.resource_sha256)meta.push("resource SHA-256 "+data.resource_sha256);
+  const artifact=data.artifact||{};
+  if(stage==="lexical"&&Array.isArray(artifact.tokens)){
+   const counts={RESOLVED:0,AMBIGUOUS:0,UNRESOLVED:0,NOT_APPLICABLE:0};
+   artifact.tokens.forEach(token=>{if(token&&counts[token.status]!==undefined)counts[token.status]++});
+   meta.push("tokens: "+Object.entries(counts).filter(([,n])=>n).map(([k,n])=>k+" "+n).join(", "));
+  }
+  if(stage==="syntax"&&Array.isArray(artifact.clauses))meta.push("clauses "+artifact.clauses.length);
+  if(stage==="operators"&&Array.isArray(artifact.clauses))meta.push("operator clauses "+artifact.clauses.length);
+  if(stage==="semantic_composition"){
+   const candidates=(result.alternatives&&result.alternatives.semantic_candidates)||artifact.candidates;
+   if(Array.isArray(candidates))meta.push("semantic candidates "+candidates.length);
+  }
+  if(stage==="discourse"){
+   const refs=(result.alternatives&&result.alternatives.discourse_reference_candidates)||artifact.reference_candidates;
+   if(Array.isArray(refs))meta.push("reference candidates "+refs.length);
+  }
+  if(meta.length)addExplanationText(card,"div",meta.join(" · "),"stage-meta");
+  if(stageDiagnostics.length){
+   const codes=stageDiagnostics.map(item=>{
+    const span=Array.isArray(item.source_span)?" · source span "+item.source_span.join("–"):"";
+    const ref=item.token_ref||item.clause_ref||item.mention_ref;
+    return item.code+(ref?" · "+ref:"")+span;
+   });
+   addExplanationText(card,"div","Diagnostics ("+stageDiagnostics.length+"): "+codes.join(" | "),"stage-diagnostics");
+  }else{
+   addExplanationText(card,"div","No explicit diagnostic recorded for this stage.","stage-meta");
+  }
+  if(Object.keys(artifact).length){
+   const evidence=document.createElement("details");
+   const evidenceTitle=document.createElement("summary");
+   evidenceTitle.textContent=stage==="lexical"?"Inspect token candidates and morphology evidence":
+    stage==="semantic_composition"?"Inspect semantic alternatives and composition evidence":
+    stage==="discourse"?"Inspect reference candidates and antecedent evidence":
+    "Inspect stage evidence";
+   evidence.appendChild(evidenceTitle);
+   const evidenceBody=document.createElement("pre");
+   evidenceBody.textContent=JSON.stringify(artifact,null,2);
+   evidence.appendChild(evidenceBody);
+   card.appendChild(evidence);
+  }
+  root.appendChild(card);
+ }
+ const alternatives=result.alternatives||{};
+ const semantic=Array.isArray(alternatives.semantic_candidates)?alternatives.semantic_candidates.length:0;
+ const discourse=Array.isArray(alternatives.discourse_reference_candidates)?alternatives.discourse_reference_candidates.length:0;
+ addExplanationText(root,"div",
+  "Pipeline outcome: "+(result.completion_status||"not reported")+
+  " · semantic alternatives: "+semantic+
+  " · discourse reference candidates: "+discourse+
+  " · pipeline: "+(result.pipeline_version||"version unknown"),
+  "stage-source");
+}
 $("phase5InterpretBtn").onclick=async()=>{
  try{
   $("phase5InterpretBtn").disabled=true;
@@ -434,6 +553,7 @@ $("phase5InterpretBtn").onclick=async()=>{
    persist:$("phase5Persist").checked
   });
   $("phase5Output").textContent=JSON.stringify(result,null,2);
+  renderPhase5Explanation(result);
   if(result.persistence){
    $("phase5RunId").value=result.persistence.run_id;
    setStatus("Phase 5 "+result.completion_status+" · run saved "+result.persistence.run_id,"ok");
