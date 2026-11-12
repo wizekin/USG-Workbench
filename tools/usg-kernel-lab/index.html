@@ -518,6 +518,19 @@ function renderPhase5Explanation(result) {
   }else{
    addExplanationText(card,"div","No explicit diagnostic recorded for this stage.","stage-meta");
   }
+  if(Object.keys(artifact).length){
+   const evidence=document.createElement("details");
+   const evidenceTitle=document.createElement("summary");
+   evidenceTitle.textContent=stage==="lexical"?"Inspect token candidates and morphology evidence":
+    stage==="semantic_composition"?"Inspect semantic alternatives and composition evidence":
+    stage==="discourse"?"Inspect reference candidates and antecedent evidence":
+    "Inspect stage evidence";
+   evidence.appendChild(evidenceTitle);
+   const evidenceBody=document.createElement("pre");
+   evidenceBody.textContent=JSON.stringify(artifact,null,2);
+   evidence.appendChild(evidenceBody);
+   card.appendChild(evidence);
+  }
   root.appendChild(card);
  }
  const alternatives=result.alternatives||{};
@@ -558,7 +571,6 @@ $("phase5ReplayBtn").onclick=async()=>{
   if(!runId)throw new Error("Enter or create an interpretation run ID first");
   const result=await apiRequest("POST","/v2/interpretations/"+encodeURIComponent(runId)+"/replay",{});
   $("phase5Output").textContent=JSON.stringify(result,null,2);
-  renderPhase5Explanation(result);
   setStatus(result.deterministic_match?"Phase 5 replay matched the stored digest":"Replay digest mismatch",result.deterministic_match?"ok":"err");
  }catch(e){$("phase5Output").textContent=JSON.stringify({error:e.message},null,2);setStatus(e.message,"err")}
 };
