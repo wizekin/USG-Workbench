@@ -92,6 +92,61 @@
   ],
   "source_families": [
     {
+      "id": "automation_workflows_and_actions",
+      "title": "GitHub Actions and scheduled system automation",
+      "category": "automation",
+      "description": "CI validation, six-hour lexical crawl, daily growth planner, Open-World campaigns, naturalistic pilots, phase continuation trackers, and reporting workflows.",
+      "patterns": [
+        ".github/workflows/**/*.yml",
+        ".github/workflows/**/*.yaml",
+        "documentation/USG-EXTERNAL-LEXICAL-SCHEDULED-CRAWLER-v0.1.0.md",
+        "documentation/USG-OPEN-WORLD-CONTINUOUS-EXPLORATION.md"
+      ],
+      "consumers": [
+        "P1",
+        "P2",
+        "P3",
+        "P4",
+        "P5",
+        "P6",
+        "P7",
+        "P8"
+      ],
+      "use_mode": "planning_only",
+      "evidence_class": "planning_evidence",
+      "refresh": "on_workflow_change_and_each_run",
+      "guardrails": [
+        "Workflow configuration is not evidence that a run succeeded.",
+        "Scheduled work may be skipped or blocked by permissions; always collect actual run and artifact status."
+      ]
+    },
+    {
+      "id": "canonical_persistence_and_workspace",
+      "title": "Canonical SQLite persistence and workspace",
+      "category": "persistence",
+      "description": "Phase 3 SQLite authority, local API/CLI, Kernel Lab, immutable revisions, replay, and alternative backend evaluations.",
+      "patterns": [
+        "tools/semantic_graph_store_v1_0_0/**/*",
+        "tools/usg_local_api_v1_0_0/**/*",
+        "tools/usg-kernel-lab/**/*",
+        "benchmarks/phase3-storage/**/*",
+        "documentation/PHASE-3-*.md",
+        "documentation/STORAGE-BACKEND-EVALUATIONS.md"
+      ],
+      "consumers": [
+        "P3",
+        "P7",
+        "P8"
+      ],
+      "use_mode": "runtime",
+      "evidence_class": "accepted_component_evidence",
+      "refresh": "on_repository_change",
+      "guardrails": [
+        "SQLite is the canonical persistence authority.",
+        "DuckDB/LanceDB/Qdrant/RocksDB comparisons are not competing runtime stores."
+      ]
+    },
+    {
       "id": "canonical_semantic_interchange",
       "title": "Canonical semantic interchange",
       "category": "contract",
@@ -122,84 +177,92 @@
       ]
     },
     {
-      "id": "phase_development_history",
-      "title": "Seven development phases and acceptance records",
-      "category": "phase_history",
-      "description": "Roadmaps, completion records, step implementations, and explicit non-claims for Phases 1–7.",
+      "id": "cross_implementation_conformance",
+      "title": "Cross-implementation conformance",
+      "category": "interoperability",
+      "description": "Inventory and common-contract gates across JavaScript Workbench, Python kernels, interpreters, adapters, and APIs.",
       "patterns": [
-        "interoperability/PHASE-1-EXIT-ACCEPTANCE.md",
-        "documentation/PHASE-2-*.md",
-        "documentation/PHASE-3-*.md",
-        "documentation/PHASE-4-*.md",
-        "documentation/PHASE-5-*.md",
-        "documentation/PHASE-6-*.md",
-        "documentation/PHASE-7-*.md"
+        "documentation/USG-CROSS-IMPLEMENTATION-CONFORMANCE-MATRIX.md",
+        "evaluations/system-wide/cross-implementation-matrix-*.json",
+        ".github/workflows/cross-implementation-conformance.yml",
+        "interoperability/**/*",
+        "tests/test_workbench*",
+        "tests/test_python_kernel*"
       ],
       "consumers": [
+        "P1",
+        "P2",
+        "P3",
+        "P4",
+        "P5",
+        "P6",
+        "P8"
+      ],
+      "use_mode": "evaluation_only",
+      "evidence_class": "diagnostic_experiment",
+      "refresh": "on_conformance_run_and_repository_change",
+      "guardrails": [
+        "Component tests do not imply cross-runtime equivalence.",
+        "Cross-runtime agreement does not establish semantic correctness.",
+        "Compare normalized outputs and retain disagreement cases."
+      ]
+    },
+    {
+      "id": "evidence_driven_growth_planner",
+      "title": "Evidence-driven growth planner",
+      "category": "planning",
+      "description": "Growth policy, blocker attribution, ranked investigations, backlog links, and scheduled 90-day growth-plan artifacts.",
+      "patterns": [
+        "tools/open_world_evaluation/growth_controller.py",
+        "tools/open_world_evaluation/growth_diagnostics.py",
+        "tools/open_world_evaluation/stage_dependency_graph.json",
+        "documentation/USG-GROWTH-POLICY-AND-AUTONOMY.md",
+        "documentation/USG-AUTONOMOUS-GROWTH-AND-GOVERNANCE.md",
+        "documentation/USG-SYSTEM-IMPROVEMENT-BACKLOG.md",
+        ".github/workflows/usg-evidence-driven-growth-controller.yml",
+        "tests/test_open_world_growth*.py"
+      ],
+      "consumers": [
+        "P5",
+        "P6",
+        "P7",
         "P8"
       ],
       "use_mode": "planning_only",
-      "evidence_class": "accepted_component_evidence",
-      "refresh": "on_repository_change",
+      "evidence_class": "planning_evidence",
+      "refresh": "daily_and_after_campaign",
       "guardrails": [
-        "Retain each phase's acceptance boundary.",
-        "Do not infer phase completeness from file existence.",
-        "Phase 6 continuation is separate from its bounded exit."
+        "First blocker is a diagnostic starting point, not proven causation.",
+        "Planner ranking is not an intelligence or correctness score.",
+        "Planner performs no runtime mutation or semantic promotion."
       ]
     },
     {
-      "id": "structured_reasoning",
-      "title": "Phase 2 structured reasoning",
-      "category": "reasoning",
-      "description": "Grounding, rule registry/semantics, deterministic inference, evidence/conflict assessment, query/explanation, and associated benchmarks.",
+      "id": "external_lexical_acquisition",
+      "title": "External lexical knowledge acquisition",
+      "category": "external_lexical",
+      "description": "Incremental pinned-source crawl, checkpoint/manifest/shards, retry recovery, structural audit, candidate analysis, and independent PUD lexical/morphology evaluation.",
       "patterns": [
-        "tools/semantic_grounding_v1_0_0/**/*",
-        "tools/semantic_rule_registry_v1_0_0/**/*",
-        "tools/semantic_rule_semantics_v1_0_0/**/*",
-        "tools/semantic_inference_v1_0_0/**/*",
-        "tools/semantic_evidence_assessment_v1_0_0/**/*",
-        "tools/semantic_query_interface_v1_0_0/**/*",
-        "benchmarks/semantic-reasoning/**/*",
-        "documentation/PHASE-2-*.md"
+        "tools/usg_external_lexical_v0_1_0/**/*",
+        "documentation/EXTERNAL-LEXICAL-*.md",
+        "documentation/USG-EXTERNAL-LEXICAL-*.md",
+        ".github/workflows/usg-external-lexical-crawl.yml",
+        ".github/workflows/external-lexical-pud-evaluation.yml",
+        "tests/test_external_lexical*.py"
       ],
       "consumers": [
-        "P2",
+        "P5",
+        "P6",
         "P7",
         "P8"
       ],
-      "use_mode": "runtime",
-      "evidence_class": "accepted_component_evidence",
-      "refresh": "on_repository_change",
+      "use_mode": "candidate_only",
+      "evidence_class": "external_candidate_evidence",
+      "refresh": "every_six_hours_and_after_batch",
       "guardrails": [
-        "Structured-document reasoning is not free-form language understanding.",
-        "Preserve evidence and conflict dimensions separately.",
-        "Do not infer objective truth from rule execution."
-      ]
-    },
-    {
-      "id": "canonical_persistence_and_workspace",
-      "title": "Canonical SQLite persistence and workspace",
-      "category": "persistence",
-      "description": "Phase 3 SQLite authority, local API/CLI, Kernel Lab, immutable revisions, replay, and alternative backend evaluations.",
-      "patterns": [
-        "tools/semantic_graph_store_v1_0_0/**/*",
-        "tools/usg_local_api_v1_0_0/**/*",
-        "tools/usg-kernel-lab/**/*",
-        "benchmarks/phase3-storage/**/*",
-        "documentation/PHASE-3-*.md",
-        "documentation/STORAGE-BACKEND-EVALUATIONS.md"
-      ],
-      "consumers": [
-        "P3",
-        "P7",
-        "P8"
-      ],
-      "use_mode": "runtime",
-      "evidence_class": "accepted_component_evidence",
-      "refresh": "on_repository_change",
-      "guardrails": [
-        "SQLite is the canonical persistence authority.",
-        "DuckDB/LanceDB/Qdrant/RocksDB comparisons are not competing runtime stores."
+        "Crawler output is candidate evidence only.",
+        "Do not store or redistribute raw definitions/examples absent rights.",
+        "External PUD metrics describe exact candidate coverage, not contextual POS or semantic accuracy."
       ]
     },
     {
@@ -232,62 +295,56 @@
       ]
     },
     {
-      "id": "phase6_candidate_expansion",
-      "title": "Phase 6 broader semantic construction candidates",
-      "category": "semantic_construction",
-      "description": "Predicate/argument structures, semantic frames, nominal candidates, morphology experiments, automatic acceptance, and continuation tracking.",
+      "id": "javascript_semantic_workbench",
+      "title": "JavaScript Semantic Workbench",
+      "category": "browser_runtime",
+      "description": "Versioned browser Workbench releases, browser execution adapter, canonical interchange bridge, and JavaScript regression suites.",
       "patterns": [
-        "tools/phase6_*/**/*",
-        "resources/constructions/phase6-*/**/*",
-        "resources/lexical/phase6-*/**/*",
-        "benchmarks/phase6-*/**/*",
-        "documentation/PHASE-6-*.md",
-        "evaluations/phase6-continuation/**/*"
+        "implementations/semantic-workbench-js/v*/**/*",
+        "interoperability/workbench_adapter/**/*",
+        "tests/test_workbench*.js",
+        "tests/test_open_world_browser*.py"
       ],
       "consumers": [
-        "P5",
-        "P6",
-        "P7",
+        "P1",
+        "P4",
         "P8"
       ],
-      "use_mode": "candidate_only",
-      "evidence_class": "bounded_synthetic_evidence",
-      "refresh": "on_repository_change_and_tracker_refresh",
+      "use_mode": "runtime",
+      "evidence_class": "accepted_component_evidence",
+      "refresh": "on_repository_change_and_browser_campaign",
       "guardrails": [
-        "Phase 6 runtime results remain candidate-only.",
-        "Step 6.12 acceptance is OPAQUE preservation only.",
-        "Naturalistic semantic correctness is not established by synthetic acceptance."
+        "The tested browser path is English-only for the registered version; do not infer Arabic coverage.",
+        "Browser execution and canonical serialization do not establish semantic correctness."
       ]
     },
     {
-      "id": "phase7_knowledge_layer",
-      "title": "Phase 7 semantic knowledge layer",
-      "category": "knowledge",
-      "description": "Typed records, persistent snapshots, rights-aware source adapters, relation registry, contextual retrieval, read-only consumer integration, inspection APIs, and frozen evaluation.",
+      "id": "kernel_lab_and_local_api",
+      "title": "Kernel Lab and local application interfaces",
+      "category": "developer_interface",
+      "description": "Loopback-only Kernel Lab, Phase 2/3 local API/CLI, Phase 4/5/6 interpretation endpoints, and Phase 7 knowledge inspection panel.",
       "patterns": [
-        "tools/phase7_knowledge_*/**/*",
-        "specifications/usg-knowledge*",
-        "specifications/usg-lexical-candidates-0.1.0.schema.json",
-        "specifications/usg-knowledge-relation-registry-0.1.0.json",
-        "evaluations/phase7/**/*",
-        "documentation/PHASE-7-*.md",
-        "tests/test_phase7_knowledge_*.py"
+        "tools/usg-kernel-lab/**/*",
+        "tools/usg_local_api_v1_0_0/**/*",
+        "tests/test_phase3_local_api_cli.py",
+        "tests/test_phase4_integrated_api.py",
+        "tests/test_phase5_integrated_api.py",
+        "tests/test_phase7_knowledge_inspection.py"
       ],
       "consumers": [
-        "P2",
+        "P3",
         "P4",
         "P5",
         "P6",
         "P7",
         "P8"
       ],
-      "use_mode": "read_only_adapter",
-      "evidence_class": "bounded_synthetic_evidence",
+      "use_mode": "runtime",
+      "evidence_class": "accepted_component_evidence",
       "refresh": "on_repository_change",
       "guardrails": [
-        "Unresolved mappings are not accepted translations or equivalences.",
-        "Consumer adapters are read-only.",
-        "Candidate evidence is never promoted by catalogue generation."
+        "Kernel Lab binds to loopback only.",
+        "Phase-specific APIs return different contracts; do not collapse envelopes into canonical documents."
       ]
     },
     {
@@ -316,6 +373,89 @@
         "Rights default to UNKNOWN unless explicitly overridden.",
         "The adapter does not activate runtime lexicon records.",
         "Definitions/examples are withheld unless redistribution rights are explicitly cleared."
+      ]
+    },
+    {
+      "id": "long_term_development_plan",
+      "title": "USG long-term development plan",
+      "category": "planning",
+      "description": "Strategic and machine-readable long-horizon roadmap, future work packets, dependencies, acceptance boundaries, and deterministic synchronization tooling.",
+      "patterns": [
+        "documentation/USG-LONG-TERM-DEVELOPMENT-PLAN.md",
+        "config/usg-long-term-development-plan-0.1.0.json",
+        "specifications/usg-long-term-development-plan-0.1.0.schema.json",
+        "tools/system_evidence/long_term_plan_sync.py",
+        "tests/test_long_term_plan_sync.py",
+        ".github/workflows/usg-long-term-roadmap-sync.yml",
+        "evaluations/roadmap/plan-sync/latest.json",
+        "evaluations/roadmap/plan-sync/latest.md"
+      ],
+      "consumers": [
+        "P8"
+      ],
+      "use_mode": "planning_only",
+      "evidence_class": "planning_evidence",
+      "refresh": "on_repository_change_and_weekly",
+      "guardrails": [
+        "Future phase labels are proposals, not authorization or evidence of implementation.",
+        "The plan synchronizer reports source and status changes but does not edit runtime code, source-of-truth trackers, or the strategic plan.",
+        "A merged PR does not establish semantic acceptance.",
+        "Phase 8 formal acceptance must be verified from its exact-head decision artifact before Phase 9 implementation begins."
+      ]
+    },
+    {
+      "id": "morphology_and_pos_experiments",
+      "title": "Morphology, POS, and external treebank experiments",
+      "category": "morphology_research",
+      "description": "Pinned PUD morphology experiments, cross-validation, Stanza/spaCy/UD adapters, POS diagnostics, and language-specific morphology resources.",
+      "patterns": [
+        "tools/phase6_external_pud_v0_*/**/*",
+        "tools/phase6_external_pud_v0_4/**/*",
+        "tools/phase6_nominal_candidate_v0_4_1/**/*",
+        "documentation/PHASE-6-STEP-6.4-*.md",
+        "documentation/PHASE-6-STEP-6.6-*-PUD*.md",
+        "documentation/PHASE-6-STEP-6.6-*-SPACY*.md",
+        "documentation/PHASE-6-STEP-6.6-*-STANZA*.md",
+        "documentation/PHASE-6-STEP-6.6-*-UD*.md"
+      ],
+      "consumers": [
+        "P4",
+        "P5",
+        "P6",
+        "P8"
+      ],
+      "use_mode": "benchmark_only",
+      "evidence_class": "diagnostic_experiment",
+      "refresh": "on_experiment_or_source_pin_change",
+      "guardrails": [
+        "Treebank UPOS/FEATS are not USG semantic-role gold.",
+        "Fold-trained morphology rules remain experimental candidate generators; they are not active runtime morphology."
+      ]
+    },
+    {
+      "id": "naturalistic_pud_population",
+      "title": "Naturalistic PUD evaluation population",
+      "category": "naturalistic_evaluation",
+      "description": "Pinned English/Arabic PUD source, privacy/source checks, deterministic sampling, and explicitly input-only naturalistic evaluation.",
+      "patterns": [
+        "tools/open_world_evaluation/pud_naturalistic_pilot.py",
+        "documentation/USG-NATURALISTIC-PUD-PILOT.md",
+        ".github/workflows/open-world-naturalistic-pud-pilot.yml",
+        "tests/test_open_world_naturalistic_pud*.py"
+      ],
+      "consumers": [
+        "P4",
+        "P5",
+        "P6",
+        "P8"
+      ],
+      "use_mode": "evaluation_only",
+      "evidence_class": "naturalistic_input_only",
+      "refresh": "weekly_pilot_and_source_pin_changes",
+      "guardrails": [
+        "No semantic gold is inferred from UD POS/dependencies.",
+        "Arabic PUD is translated and is not representative of native MSA/conversational input.",
+        "Keep naturalistic population separate from randomized and synthetic diagnostics."
       ]
     },
     {
@@ -383,47 +523,43 @@
       ]
     },
     {
-      "id": "evidence_driven_growth_planner",
-      "title": "Evidence-driven growth planner",
-      "category": "planning",
-      "description": "Growth policy, blocker attribution, ranked investigations, backlog links, and scheduled 90-day growth-plan artifacts.",
+      "id": "phase_development_history",
+      "title": "Seven development phases and acceptance records",
+      "category": "phase_history",
+      "description": "Roadmaps, completion records, step implementations, and explicit non-claims for Phases 1–7.",
       "patterns": [
-        "tools/open_world_evaluation/growth_controller.py",
-        "tools/open_world_evaluation/growth_diagnostics.py",
-        "tools/open_world_evaluation/stage_dependency_graph.json",
-        "documentation/USG-GROWTH-POLICY-AND-AUTONOMY.md",
-        "documentation/USG-AUTONOMOUS-GROWTH-AND-GOVERNANCE.md",
-        "documentation/USG-SYSTEM-IMPROVEMENT-BACKLOG.md",
-        ".github/workflows/usg-evidence-driven-growth-controller.yml",
-        "tests/test_open_world_growth*.py"
+        "interoperability/PHASE-1-EXIT-ACCEPTANCE.md",
+        "documentation/PHASE-2-*.md",
+        "documentation/PHASE-3-*.md",
+        "documentation/PHASE-4-*.md",
+        "documentation/PHASE-5-*.md",
+        "documentation/PHASE-6-*.md",
+        "documentation/PHASE-7-*.md"
       ],
       "consumers": [
-        "P5",
-        "P6",
-        "P7",
         "P8"
       ],
       "use_mode": "planning_only",
-      "evidence_class": "planning_evidence",
-      "refresh": "daily_and_after_campaign",
+      "evidence_class": "accepted_component_evidence",
+      "refresh": "on_repository_change",
       "guardrails": [
-        "First blocker is a diagnostic starting point, not proven causation.",
-        "Planner ranking is not an intelligence or correctness score.",
-        "Planner performs no runtime mutation or semantic promotion."
+        "Retain each phase's acceptance boundary.",
+        "Do not infer phase completeness from file existence.",
+        "Phase 6 continuation is separate from its bounded exit."
       ]
     },
     {
-      "id": "external_lexical_acquisition",
-      "title": "External lexical knowledge acquisition",
-      "category": "external_lexical",
-      "description": "Incremental pinned-source crawl, checkpoint/manifest/shards, retry recovery, structural audit, candidate analysis, and independent PUD lexical/morphology evaluation.",
+      "id": "phase6_candidate_expansion",
+      "title": "Phase 6 broader semantic construction candidates",
+      "category": "semantic_construction",
+      "description": "Predicate/argument structures, semantic frames, nominal candidates, morphology experiments, automatic acceptance, and continuation tracking.",
       "patterns": [
-        "tools/usg_external_lexical_v0_1_0/**/*",
-        "documentation/EXTERNAL-LEXICAL-*.md",
-        "documentation/USG-EXTERNAL-LEXICAL-*.md",
-        ".github/workflows/usg-external-lexical-crawl.yml",
-        ".github/workflows/external-lexical-pud-evaluation.yml",
-        "tests/test_external_lexical*.py"
+        "tools/phase6_*/**/*",
+        "resources/constructions/phase6-*/**/*",
+        "resources/lexical/phase6-*/**/*",
+        "benchmarks/phase6-*/**/*",
+        "documentation/PHASE-6-*.md",
+        "evaluations/phase6-continuation/**/*"
       ],
       "consumers": [
         "P5",
@@ -432,122 +568,43 @@
         "P8"
       ],
       "use_mode": "candidate_only",
-      "evidence_class": "external_candidate_evidence",
-      "refresh": "every_six_hours_and_after_batch",
+      "evidence_class": "bounded_synthetic_evidence",
+      "refresh": "on_repository_change_and_tracker_refresh",
       "guardrails": [
-        "Crawler output is candidate evidence only.",
-        "Do not store or redistribute raw definitions/examples absent rights.",
-        "External PUD metrics describe exact candidate coverage, not contextual POS or semantic accuracy."
+        "Phase 6 runtime results remain candidate-only.",
+        "Step 6.12 acceptance is OPAQUE preservation only.",
+        "Naturalistic semantic correctness is not established by synthetic acceptance."
       ]
     },
     {
-      "id": "naturalistic_pud_population",
-      "title": "Naturalistic PUD evaluation population",
-      "category": "naturalistic_evaluation",
-      "description": "Pinned English/Arabic PUD source, privacy/source checks, deterministic sampling, and explicitly input-only naturalistic evaluation.",
+      "id": "phase7_knowledge_layer",
+      "title": "Phase 7 semantic knowledge layer",
+      "category": "knowledge",
+      "description": "Typed records, persistent snapshots, rights-aware source adapters, relation registry, contextual retrieval, read-only consumer integration, inspection APIs, and frozen evaluation.",
       "patterns": [
-        "tools/open_world_evaluation/pud_naturalistic_pilot.py",
-        "documentation/USG-NATURALISTIC-PUD-PILOT.md",
-        ".github/workflows/open-world-naturalistic-pud-pilot.yml",
-        "tests/test_open_world_naturalistic_pud*.py"
+        "tools/phase7_knowledge_*/**/*",
+        "specifications/usg-knowledge*",
+        "specifications/usg-lexical-candidates-0.1.0.schema.json",
+        "specifications/usg-knowledge-relation-registry-0.1.0.json",
+        "evaluations/phase7/**/*",
+        "documentation/PHASE-7-*.md",
+        "tests/test_phase7_knowledge_*.py"
       ],
       "consumers": [
-        "P4",
-        "P5",
-        "P6",
-        "P8"
-      ],
-      "use_mode": "evaluation_only",
-      "evidence_class": "naturalistic_input_only",
-      "refresh": "weekly_pilot_and_source_pin_changes",
-      "guardrails": [
-        "No semantic gold is inferred from UD POS/dependencies.",
-        "Arabic PUD is translated and is not representative of native MSA/conversational input.",
-        "Keep naturalistic population separate from randomized and synthetic diagnostics."
-      ]
-    },
-    {
-      "id": "cross_implementation_conformance",
-      "title": "Cross-implementation conformance",
-      "category": "interoperability",
-      "description": "Inventory and common-contract gates across JavaScript Workbench, Python kernels, interpreters, adapters, and APIs.",
-      "patterns": [
-        "documentation/USG-CROSS-IMPLEMENTATION-CONFORMANCE-MATRIX.md",
-        "evaluations/system-wide/cross-implementation-matrix-*.json",
-        ".github/workflows/cross-implementation-conformance.yml",
-        "interoperability/**/*",
-        "tests/test_workbench*",
-        "tests/test_python_kernel*"
-      ],
-      "consumers": [
-        "P1",
         "P2",
-        "P3",
-        "P4",
-        "P5",
-        "P6",
-        "P8"
-      ],
-      "use_mode": "evaluation_only",
-      "evidence_class": "diagnostic_experiment",
-      "refresh": "on_conformance_run_and_repository_change",
-      "guardrails": [
-        "Component tests do not imply cross-runtime equivalence.",
-        "Cross-runtime agreement does not establish semantic correctness.",
-        "Compare normalized outputs and retain disagreement cases."
-      ]
-    },
-    {
-      "id": "versioned_lexical_construction_and_operator_resources",
-      "title": "Bundled lexical, construction, frame, and operator resources",
-      "category": "linguistic_resources",
-      "description": "Versioned English/MSA Arabic lexical foundations, candidate lexicons, nominal/predicate construction rules, semantic frames, and operator inventories.",
-      "patterns": [
-        "resources/lexical/**/*",
-        "resources/constructions/**/*",
-        "resources/semantic-frames/**/*",
-        "resources/operators/**/*",
-        "tools/usg_interpretation_v0_2_0/catalogue.py",
-        "tools/usg_interpretation_v0_1_0/resources.py"
-      ],
-      "consumers": [
         "P4",
         "P5",
         "P6",
         "P7",
         "P8"
       ],
-      "use_mode": "runtime",
-      "evidence_class": "accepted_component_evidence",
+      "use_mode": "read_only_adapter",
+      "evidence_class": "bounded_synthetic_evidence",
       "refresh": "on_repository_change",
       "guardrails": [
-        "Track resource versions and digests per interpretation.",
-        "Candidate resources must not silently replace accepted runtime profiles.",
-        "Language-specific morphology and lexicalization remain distinct from concept alignment."
-      ]
-    },
-    {
-      "id": "system_assessments_and_backlog",
-      "title": "System-wide assessment and improvement backlog",
-      "category": "governance",
-      "description": "Historical capability assessment, prioritized system improvement queue, evidence-driven status, and bounded autonomy policy.",
-      "patterns": [
-        "documentation/USG-SYSTEM-WIDE-CAPABILITY-ASSESSMENT-*.md",
-        "evaluations/system-wide/assessment.json",
-        "documentation/USG-SYSTEM-IMPROVEMENT-BACKLOG.md",
-        "documentation/USG-GROWTH-POLICY-AND-AUTONOMY.md",
-        "documentation/USG-AUTONOMOUS-GROWTH-AND-GOVERNANCE.md"
-      ],
-      "consumers": [
-        "P8"
-      ],
-      "use_mode": "planning_only",
-      "evidence_class": "historical_baseline",
-      "refresh": "daily_snapshot_and_after_major_acceptance",
-      "guardrails": [
-        "Historical assessments must be marked as dated baselines.",
-        "A missing measurement is not zero.",
-        "Changes to accepted phases require traceable amendments and regression protection."
+        "Unresolved mappings are not accepted translations or equivalences.",
+        "Consumer adapters are read-only.",
+        "Candidate evidence is never promoted by catalogue generation."
       ]
     },
     {
@@ -574,117 +631,6 @@
       "guardrails": [
         "Different native model versions are separate implementation lines until conformance tests establish agreement.",
         "An import test does not establish semantic correctness."
-      ]
-    },
-    {
-      "id": "javascript_semantic_workbench",
-      "title": "JavaScript Semantic Workbench",
-      "category": "browser_runtime",
-      "description": "Versioned browser Workbench releases, browser execution adapter, canonical interchange bridge, and JavaScript regression suites.",
-      "patterns": [
-        "implementations/semantic-workbench-js/v*/**/*",
-        "interoperability/workbench_adapter/**/*",
-        "tests/test_workbench*.js",
-        "tests/test_open_world_browser*.py"
-      ],
-      "consumers": [
-        "P1",
-        "P4",
-        "P8"
-      ],
-      "use_mode": "runtime",
-      "evidence_class": "accepted_component_evidence",
-      "refresh": "on_repository_change_and_browser_campaign",
-      "guardrails": [
-        "The tested browser path is English-only for the registered version; do not infer Arabic coverage.",
-        "Browser execution and canonical serialization do not establish semantic correctness."
-      ]
-    },
-    {
-      "id": "morphology_and_pos_experiments",
-      "title": "Morphology, POS, and external treebank experiments",
-      "category": "morphology_research",
-      "description": "Pinned PUD morphology experiments, cross-validation, Stanza/spaCy/UD adapters, POS diagnostics, and language-specific morphology resources.",
-      "patterns": [
-        "tools/phase6_external_pud_v0_*/**/*",
-        "tools/phase6_external_pud_v0_4/**/*",
-        "tools/phase6_nominal_candidate_v0_4_1/**/*",
-        "documentation/PHASE-6-STEP-6.4-*.md",
-        "documentation/PHASE-6-STEP-6.6-*-PUD*.md",
-        "documentation/PHASE-6-STEP-6.6-*-SPACY*.md",
-        "documentation/PHASE-6-STEP-6.6-*-STANZA*.md",
-        "documentation/PHASE-6-STEP-6.6-*-UD*.md"
-      ],
-      "consumers": [
-        "P4",
-        "P5",
-        "P6",
-        "P8"
-      ],
-      "use_mode": "benchmark_only",
-      "evidence_class": "diagnostic_experiment",
-      "refresh": "on_experiment_or_source_pin_change",
-      "guardrails": [
-        "Treebank UPOS/FEATS are not USG semantic-role gold.",
-        "Fold-trained morphology rules remain experimental candidate generators; they are not active runtime morphology."
-      ]
-    },
-    {
-      "id": "kernel_lab_and_local_api",
-      "title": "Kernel Lab and local application interfaces",
-      "category": "developer_interface",
-      "description": "Loopback-only Kernel Lab, Phase 2/3 local API/CLI, Phase 4/5/6 interpretation endpoints, and Phase 7 knowledge inspection panel.",
-      "patterns": [
-        "tools/usg-kernel-lab/**/*",
-        "tools/usg_local_api_v1_0_0/**/*",
-        "tests/test_phase3_local_api_cli.py",
-        "tests/test_phase4_integrated_api.py",
-        "tests/test_phase5_integrated_api.py",
-        "tests/test_phase7_knowledge_inspection.py"
-      ],
-      "consumers": [
-        "P3",
-        "P4",
-        "P5",
-        "P6",
-        "P7",
-        "P8"
-      ],
-      "use_mode": "runtime",
-      "evidence_class": "accepted_component_evidence",
-      "refresh": "on_repository_change",
-      "guardrails": [
-        "Kernel Lab binds to loopback only.",
-        "Phase-specific APIs return different contracts; do not collapse envelopes into canonical documents."
-      ]
-    },
-    {
-      "id": "automation_workflows_and_actions",
-      "title": "GitHub Actions and scheduled system automation",
-      "category": "automation",
-      "description": "CI validation, six-hour lexical crawl, daily growth planner, Open-World campaigns, naturalistic pilots, phase continuation trackers, and reporting workflows.",
-      "patterns": [
-        ".github/workflows/**/*.yml",
-        ".github/workflows/**/*.yaml",
-        "documentation/USG-EXTERNAL-LEXICAL-SCHEDULED-CRAWLER-v0.1.0.md",
-        "documentation/USG-OPEN-WORLD-CONTINUOUS-EXPLORATION.md"
-      ],
-      "consumers": [
-        "P1",
-        "P2",
-        "P3",
-        "P4",
-        "P5",
-        "P6",
-        "P7",
-        "P8"
-      ],
-      "use_mode": "planning_only",
-      "evidence_class": "planning_evidence",
-      "refresh": "on_workflow_change_and_each_run",
-      "guardrails": [
-        "Workflow configuration is not evidence that a run succeeded.",
-        "Scheduled work may be skipped or blocked by permissions; always collect actual run and artifact status."
       ]
     },
     {
@@ -717,6 +663,59 @@
       ]
     },
     {
+      "id": "structured_reasoning",
+      "title": "Phase 2 structured reasoning",
+      "category": "reasoning",
+      "description": "Grounding, rule registry/semantics, deterministic inference, evidence/conflict assessment, query/explanation, and associated benchmarks.",
+      "patterns": [
+        "tools/semantic_grounding_v1_0_0/**/*",
+        "tools/semantic_rule_registry_v1_0_0/**/*",
+        "tools/semantic_rule_semantics_v1_0_0/**/*",
+        "tools/semantic_inference_v1_0_0/**/*",
+        "tools/semantic_evidence_assessment_v1_0_0/**/*",
+        "tools/semantic_query_interface_v1_0_0/**/*",
+        "benchmarks/semantic-reasoning/**/*",
+        "documentation/PHASE-2-*.md"
+      ],
+      "consumers": [
+        "P2",
+        "P7",
+        "P8"
+      ],
+      "use_mode": "runtime",
+      "evidence_class": "accepted_component_evidence",
+      "refresh": "on_repository_change",
+      "guardrails": [
+        "Structured-document reasoning is not free-form language understanding.",
+        "Preserve evidence and conflict dimensions separately.",
+        "Do not infer objective truth from rule execution."
+      ]
+    },
+    {
+      "id": "system_assessments_and_backlog",
+      "title": "System-wide assessment and improvement backlog",
+      "category": "governance",
+      "description": "Historical capability assessment, prioritized system improvement queue, evidence-driven status, and bounded autonomy policy.",
+      "patterns": [
+        "documentation/USG-SYSTEM-WIDE-CAPABILITY-ASSESSMENT-*.md",
+        "evaluations/system-wide/assessment.json",
+        "documentation/USG-SYSTEM-IMPROVEMENT-BACKLOG.md",
+        "documentation/USG-GROWTH-POLICY-AND-AUTONOMY.md",
+        "documentation/USG-AUTONOMOUS-GROWTH-AND-GOVERNANCE.md"
+      ],
+      "consumers": [
+        "P8"
+      ],
+      "use_mode": "planning_only",
+      "evidence_class": "historical_baseline",
+      "refresh": "daily_snapshot_and_after_major_acceptance",
+      "guardrails": [
+        "Historical assessments must be marked as dated baselines.",
+        "A missing measurement is not zero.",
+        "Changes to accepted phases require traceable amendments and regression protection."
+      ]
+    },
+    {
       "id": "system_evidence_catalogue_and_phase_manifest",
       "title": "System evidence catalogue, source registry, and phase resource manifests",
       "category": "system_governance",
@@ -745,6 +744,35 @@
         "Resource consumer maps are declared intentions; verify actual imports and tests.",
         "Phase manifests are required for Phase 8+ roadmaps.",
         "Snapshots are append-only; Phase 8 status changes only through the exact-head formal acceptance protocol; canonical contracts and runtime resources are never auto-mutated."
+      ]
+    },
+    {
+      "id": "versioned_lexical_construction_and_operator_resources",
+      "title": "Bundled lexical, construction, frame, and operator resources",
+      "category": "linguistic_resources",
+      "description": "Versioned English/MSA Arabic lexical foundations, candidate lexicons, nominal/predicate construction rules, semantic frames, and operator inventories.",
+      "patterns": [
+        "resources/lexical/**/*",
+        "resources/constructions/**/*",
+        "resources/semantic-frames/**/*",
+        "resources/operators/**/*",
+        "tools/usg_interpretation_v0_2_0/catalogue.py",
+        "tools/usg_interpretation_v0_1_0/resources.py"
+      ],
+      "consumers": [
+        "P4",
+        "P5",
+        "P6",
+        "P7",
+        "P8"
+      ],
+      "use_mode": "runtime",
+      "evidence_class": "accepted_component_evidence",
+      "refresh": "on_repository_change",
+      "guardrails": [
+        "Track resource versions and digests per interpretation.",
+        "Candidate resources must not silently replace accepted runtime profiles.",
+        "Language-specific morphology and lexicalization remain distinct from concept alignment."
       ]
     }
   ]
