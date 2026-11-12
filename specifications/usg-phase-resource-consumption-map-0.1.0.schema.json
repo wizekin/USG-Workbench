@@ -1,0 +1,127 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wizekin.github.io/USG-Workbench/schemas/usg-phase-resource-consumption-map-0.1.0.schema.json",
+  "title": "USG Phase Resource Consumption Map 0.1.0",
+  "type": "object",
+  "required": [
+    "contract",
+    "version",
+    "policy",
+    "phases",
+    "dependency_rules"
+  ],
+  "properties": {
+    "contract": {
+      "const": "USG-PHASE-RESOURCE-CONSUMPTION-MAP/0.1.0"
+    },
+    "version": {
+      "const": "0.1.0"
+    },
+    "policy": {
+      "type": "object",
+      "required": [
+        "purpose",
+        "semantics",
+        "default_rule"
+      ],
+      "properties": {
+        "purpose": {
+          "type": "string"
+        },
+        "semantics": {
+          "type": "string"
+        },
+        "default_rule": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "phases": {
+      "type": "array",
+      "minItems": 8,
+      "items": {
+        "type": "object",
+        "required": [
+          "phase_id",
+          "objective",
+          "required_sources",
+          "optional_sources",
+          "consume_modes",
+          "prohibited_uses"
+        ],
+        "properties": {
+          "phase_id": {
+            "type": "string",
+            "pattern": "^P[1-9][0-9]*$"
+          },
+          "objective": {
+            "type": "string",
+            "minLength": 1
+          },
+          "required_sources": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z0-9_]+$"
+            },
+            "uniqueItems": true
+          },
+          "optional_sources": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z0-9_]+$"
+            },
+            "uniqueItems": true
+          },
+          "consume_modes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          },
+          "prohibited_uses": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "dependency_rules": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "rule_id",
+          "condition",
+          "route"
+        ],
+        "properties": {
+          "rule_id": {
+            "type": "string"
+          },
+          "condition": {
+            "type": "string"
+          },
+          "route": {
+            "type": "string"
+          },
+          "requires": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,284 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wizekin.github.io/USG-Workbench/schemas/usg-phase-resource-manifest-0.1.0.schema.json",
+  "title": "USG Phase Resource Manifest 0.1.0",
+  "type": "object",
+  "required": [
+    "contract",
+    "manifest_version",
+    "phase_id",
+    "phase_step_id",
+    "created_at",
+    "purpose",
+    "resources",
+    "evidence_inputs",
+    "dependencies",
+    "acceptance_gates",
+    "governance"
+  ],
+  "properties": {
+    "contract": {
+      "const": "USG-PHASE-RESOURCE-MANIFEST/0.1.0"
+    },
+    "manifest_version": {
+      "const": "0.1.0"
+    },
+    "phase_id": {
+      "type": "string",
+      "pattern": "^P[1-9][0-9]*$"
+    },
+    "phase_step_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "purpose": {
+      "type": "string",
+      "minLength": 1
+    },
+    "resources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "source_family_id",
+          "source_path",
+          "use_mode",
+          "requirement",
+          "runtime_integration_verified",
+          "evidence_refs",
+          "known_limitations"
+        ],
+        "properties": {
+          "source_family_id": {
+            "type": "string",
+            "pattern": "^[a-z0-9_]+$"
+          },
+          "source_path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "version": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "sha256": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^([a-f0-9]{64})?$"
+          },
+          "use_mode": {
+            "enum": [
+              "normative",
+              "runtime",
+              "read_only_adapter",
+              "candidate_only",
+              "benchmark_only",
+              "evaluation_only",
+              "planning_only",
+              "historical_only"
+            ]
+          },
+          "requirement": {
+            "enum": [
+              "required",
+              "optional",
+              "reference_only"
+            ]
+          },
+          "runtime_integration_verified": {
+            "type": "boolean"
+          },
+          "rights_status": {
+            "type": "string"
+          },
+          "evidence_refs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "known_limitations": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "evidence_inputs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "evidence_id",
+          "population",
+          "source_path",
+          "commit_or_version",
+          "purpose",
+          "independence_status",
+          "semantic_gold"
+        ],
+        "properties": {
+          "evidence_id": {
+            "type": "string"
+          },
+          "population": {
+            "enum": [
+              "synthetic",
+              "controlled_diagnostic",
+              "randomized_open_world",
+              "naturalistic_input_only",
+              "external_lexical_evaluation",
+              "cross_implementation",
+              "runtime_regression",
+              "historical"
+            ]
+          },
+          "source_path": {
+            "type": "string"
+          },
+          "commit_or_version": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "purpose": {
+            "type": "string"
+          },
+          "independence_status": {
+            "type": "string"
+          },
+          "semantic_gold": {
+            "enum": [
+              "independent",
+              "repository_authored",
+              "structural_only",
+              "none",
+              "not_applicable",
+              "unknown"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "phase_id",
+          "step_id",
+          "dependency_type",
+          "status"
+        ],
+        "properties": {
+          "phase_id": {
+            "type": "string",
+            "pattern": "^P[1-9][0-9]*$"
+          },
+          "step_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "dependency_type": {
+            "enum": [
+              "normative_contract",
+              "runtime_api",
+              "resource",
+              "acceptance",
+              "research_input",
+              "non_blocking_continuation"
+            ]
+          },
+          "status": {
+            "enum": [
+              "required",
+              "available",
+              "optional",
+              "blocked",
+              "not_assessed"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "acceptance_gates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "gate_id",
+          "description",
+          "evidence_required",
+          "promotion_effect"
+        ],
+        "properties": {
+          "gate_id": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "evidence_required": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "promotion_effect": {
+            "enum": [
+              "no_runtime_change",
+              "candidate_only",
+              "feature_gated",
+              "accepted_runtime_change",
+              "contract_migration"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "governance": {
+      "type": "object",
+      "required": [
+        "candidate_resources_remain_separate",
+        "accepted_contracts_changed",
+        "requires_versioned_migration_for_contract_change",
+        "phase_status_auto_mutation"
+      ],
+      "properties": {
+        "candidate_resources_remain_separate": {
+          "const": true
+        },
+        "accepted_contracts_changed": {
+          "type": "boolean"
+        },
+        "requires_versioned_migration_for_contract_change": {
+          "const": true
+        },
+        "phase_status_auto_mutation": {
+          "const": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

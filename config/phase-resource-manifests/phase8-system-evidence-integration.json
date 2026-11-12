@@ -1,0 +1,440 @@
+{
+  "contract": "USG-PHASE-RESOURCE-MANIFEST/0.1.0",
+  "manifest_version": "0.1.0",
+  "phase_id": "P8",
+  "phase_step_id": null,
+  "created_at": "2026-11-12T12:00:00Z",
+  "purpose": "Declare the existing USG system evidence, contracts, resources, campaigns, and planning outputs Phase 8 consumes to coordinate future development.",
+  "resources": [
+    {
+      "source_family_id": "canonical_semantic_interchange",
+      "source_path": "specifications/USG-SEM-1.0.md",
+      "version": "1.0",
+      "sha256": null,
+      "use_mode": "normative",
+      "requirement": "required",
+      "runtime_integration_verified": true,
+      "rights_status": "internal_project_contract",
+      "evidence_refs": [
+        "interoperability/PHASE-1-EXIT-ACCEPTANCE.md"
+      ],
+      "known_limitations": [
+        "Changes require explicit versioned migration and adapter compatibility acceptance."
+      ]
+    },
+    {
+      "source_family_id": "phase_development_history",
+      "source_path": "documentation/PHASE-1-through-PHASE-7 completion and roadmap records",
+      "version": "2026-11-12",
+      "sha256": null,
+      "use_mode": "planning_only",
+      "requirement": "required",
+      "runtime_integration_verified": false,
+      "rights_status": "repository-owned",
+      "evidence_refs": [
+        "documentation/PHASE-7-COMPLETION-RECORD.md",
+        "documentation/PHASE-6-CONTINUATION-TRACKER.md"
+      ],
+      "known_limitations": [
+        "Historical acceptance is scoped to each phase's documented corpus and contract."
+      ]
+    },
+    {
+      "source_family_id": "phase7_knowledge_layer",
+      "source_path": "tools/phase7_knowledge_*/",
+      "version": "0.1.0",
+      "sha256": null,
+      "use_mode": "read_only_adapter",
+      "requirement": "required",
+      "runtime_integration_verified": true,
+      "rights_status": "rights-aware source metadata retained",
+      "evidence_refs": [
+        "documentation/PHASE-7-COMPLETION-RECORD.md"
+      ],
+      "known_limitations": [
+        "43 bilingual mappings remain unresolved; no automatic concept promotion."
+      ]
+    },
+    {
+      "source_family_id": "open_world_evaluation_foundation",
+      "source_path": "tools/open_world_evaluation/",
+      "version": "1.0.0",
+      "sha256": null,
+      "use_mode": "evaluation_only",
+      "requirement": "required",
+      "runtime_integration_verified": false,
+      "rights_status": "repository-owned evaluation assets; naturalistic sources individually licensed",
+      "evidence_refs": [
+        "documentation/USG-OPEN-WORLD-CAMPAIGN-REPORTING.md",
+        "evaluations/open-world/campaigns/OWC-OW6-43015126807-1/campaign-report.json"
+      ],
+      "known_limitations": [
+        "Randomized and controlled diagnostic populations are not semantic gold; campaign completion is not accuracy."
+      ]
+    },
+    {
+      "source_family_id": "evidence_driven_growth_planner",
+      "source_path": "tools/open_world_evaluation/growth_controller.py",
+      "version": "USG-GROWTH-POLICY/0.1.0",
+      "sha256": null,
+      "use_mode": "planning_only",
+      "requirement": "required",
+      "runtime_integration_verified": false,
+      "rights_status": "repository-owned",
+      "evidence_refs": [
+        "documentation/USG-GROWTH-POLICY-AND-AUTONOMY.md"
+      ],
+      "known_limitations": [
+        "First-blocker ranking is diagnostic prioritization, not proven causation or semantic score."
+      ]
+    },
+    {
+      "source_family_id": "external_lexical_acquisition",
+      "source_path": "usg-external-lexical-data:state/manifest.json and shards/",
+      "version": "enwiktionary-2026-10-01-raw-244dcdc56868",
+      "sha256": null,
+      "use_mode": "candidate_only",
+      "requirement": "required",
+      "runtime_integration_verified": false,
+      "rights_status": "source-specific per-entry/per-sense licences; no raw definitions/examples stored",
+      "evidence_refs": [
+        "documentation/USG-EXTERNAL-LEXICAL-SCHEDULED-CRAWLER-v0.1.0.md"
+      ],
+      "known_limitations": [
+        "Latest recorded state at 2026-11-12: 60602/1396111 headwords, 76719 senses; candidate-only and incomplete."
+      ]
+    },
+    {
+      "source_family_id": "lexical_candidate_adapter",
+      "source_path": "tools/usg_external_lexical_v0_1_0/adapter.py",
+      "version": "USG-LEXICAL-ADAPTER/0.1.0",
+      "sha256": null,
+      "use_mode": "candidate_only",
+      "requirement": "required",
+      "runtime_integration_verified": false,
+      "rights_status": "candidate records retain provider rights/attribution",
+      "evidence_refs": [
+        "documentation/USG-SYSTEM-IMPROVEMENT-BACKLOG.md"
+      ],
+      "known_limitations": [
+        "No runtime lexical promotion; definition text withheld unless rights explicitly permit redistribution."
+      ]
+    },
+    {
+      "source_family_id": "oov_and_ambiguity_regressions",
+      "source_path": "tests/test_external_lexical*.py",
+      "version": "current-main",
+      "sha256": null,
+      "use_mode": "benchmark_only",
+      "requirement": "required",
+      "runtime_integration_verified": false,
+      "rights_status": "repository test fixtures",
+      "evidence_refs": [
+        "documentation/USG-SYSTEM-IMPROVEMENT-BACKLOG.md"
+      ],
+      "known_limitations": [
+        "Regression coverage is bounded to explicitly authored cases."
+      ]
+    },
+    {
+      "source_family_id": "cross_implementation_conformance",
+      "source_path": "documentation/USG-CROSS-IMPLEMENTATION-CONFORMANCE-MATRIX.md",
+      "version": "2026-11-12",
+      "sha256": null,
+      "use_mode": "evaluation_only",
+      "requirement": "required",
+      "runtime_integration_verified": false,
+      "rights_status": "repository-owned",
+      "evidence_refs": [
+        "documentation/USG-CROSS-IMPLEMENTATION-CONFORMANCE-MATRIX.md"
+      ],
+      "known_limitations": [
+        "Inventory is complete for its snapshot; common semantic conformance is not yet demonstrated."
+      ]
+    },
+    {
+      "source_family_id": "system_assessments_and_backlog",
+      "source_path": "documentation/USG-SYSTEM-IMPROVEMENT-BACKLOG.md",
+      "version": "2026-11-12",
+      "sha256": null,
+      "use_mode": "historical_only",
+      "requirement": "required",
+      "runtime_integration_verified": false,
+      "rights_status": "repository-owned",
+      "evidence_refs": [
+        "evaluations/system-wide/2026-11-12/assessment.json"
+      ],
+      "known_limitations": [
+        "Historical assessment metrics are not current until refreshed from live data sources."
+      ]
+    },
+    {
+      "source_family_id": "python_native_model_packages",
+      "source_path": "implementations/python-kernel/",
+      "version": "versioned model packages",
+      "sha256": null,
+      "use_mode": "runtime",
+      "requirement": "optional",
+      "runtime_integration_verified": false,
+      "rights_status": "repository-owned",
+      "evidence_refs": [
+        "documentation/USG-SYSTEM-EVIDENCE-AND-RESOURCE-INTEGRATION.md"
+      ],
+      "known_limitations": [
+        "Availability and file indexing do not prove active runtime consumption; verify import/call paths and tests."
+      ]
+    },
+    {
+      "source_family_id": "javascript_semantic_workbench",
+      "source_path": "implementations/semantic-workbench-js/",
+      "version": "versioned browser workbench",
+      "sha256": null,
+      "use_mode": "runtime",
+      "requirement": "optional",
+      "runtime_integration_verified": false,
+      "rights_status": "repository-owned",
+      "evidence_refs": [
+        "documentation/USG-SYSTEM-EVIDENCE-AND-RESOURCE-INTEGRATION.md"
+      ],
+      "known_limitations": [
+        "Availability and file indexing do not prove active runtime consumption; verify import/call paths and tests."
+      ]
+    },
+    {
+      "source_family_id": "morphology_and_pos_experiments",
+      "source_path": "tools/phase6_external_pud_v0_*/",
+      "version": "PUD morphology experiment family",
+      "sha256": null,
+      "use_mode": "benchmark_only",
+      "requirement": "optional",
+      "runtime_integration_verified": false,
+      "rights_status": "pinned UD/PUD data and repository candidate code",
+      "evidence_refs": [
+        "documentation/USG-SYSTEM-EVIDENCE-AND-RESOURCE-INTEGRATION.md"
+      ],
+      "known_limitations": [
+        "Availability and file indexing do not prove active runtime consumption; verify import/call paths and tests."
+      ]
+    },
+    {
+      "source_family_id": "kernel_lab_and_local_api",
+      "source_path": "tools/usg-kernel-lab/ and tools/usg_local_api_v1_0_0/",
+      "version": "local APIs and interface",
+      "sha256": null,
+      "use_mode": "runtime",
+      "requirement": "optional",
+      "runtime_integration_verified": true,
+      "rights_status": "repository-owned",
+      "evidence_refs": [
+        "documentation/USG-SYSTEM-EVIDENCE-AND-RESOURCE-INTEGRATION.md"
+      ],
+      "known_limitations": [
+        "Availability and file indexing do not prove active runtime consumption; verify import/call paths and tests."
+      ]
+    },
+    {
+      "source_family_id": "automation_workflows_and_actions",
+      "source_path": ".github/workflows/",
+      "version": "GitHub Actions processing workflows",
+      "sha256": null,
+      "use_mode": "planning_only",
+      "requirement": "required",
+      "runtime_integration_verified": false,
+      "rights_status": "GitHub Actions run data",
+      "evidence_refs": [
+        "documentation/USG-SYSTEM-EVIDENCE-AND-RESOURCE-INTEGRATION.md"
+      ],
+      "known_limitations": [
+        "Availability and file indexing do not prove active runtime consumption; verify import/call paths and tests."
+      ]
+    },
+    {
+      "source_family_id": "regression_and_acceptance_suites",
+      "source_path": "tests/ and benchmarks/",
+      "version": "contract and acceptance regressions",
+      "sha256": null,
+      "use_mode": "benchmark_only",
+      "requirement": "required",
+      "runtime_integration_verified": false,
+      "rights_status": "repository-owned test fixtures",
+      "evidence_refs": [
+        "documentation/USG-SYSTEM-EVIDENCE-AND-RESOURCE-INTEGRATION.md"
+      ],
+      "known_limitations": [
+        "Availability and file indexing do not prove active runtime consumption; verify import/call paths and tests."
+      ]
+    },
+    {
+      "source_family_id": "system_evidence_catalogue_and_phase_manifest",
+      "source_path": "tools/system_evidence/ and config/phase-resource-manifests/",
+      "version": "this Phase 8 evidence/control plane",
+      "sha256": null,
+      "use_mode": "planning_only",
+      "requirement": "required",
+      "runtime_integration_verified": false,
+      "rights_status": "repository-owned",
+      "evidence_refs": [
+        "documentation/USG-SYSTEM-EVIDENCE-AND-RESOURCE-INTEGRATION.md"
+      ],
+      "known_limitations": [
+        "Availability and file indexing do not prove active runtime consumption; verify import/call paths and tests."
+      ]
+    }
+  ],
+  "evidence_inputs": [
+    {
+      "evidence_id": "phase7-bounded-exit",
+      "population": "synthetic",
+      "source_path": "documentation/PHASE-7-COMPLETION-RECORD.md",
+      "commit_or_version": "Phase7 PR #216 exact-head acceptance",
+      "purpose": "Accepted bounded bilingual knowledge/retrieval profile and integrity gates.",
+      "independence_status": "project-authored frozen profile",
+      "semantic_gold": "repository_authored"
+    },
+    {
+      "evidence_id": "ow6-open-world-campaign",
+      "population": "randomized_open_world",
+      "source_path": "evaluations/open-world/campaigns/OWC-OW6-43015126807-1/campaign-report.json",
+      "commit_or_version": "a04806d1480e692913943693b5251535c6a520f0",
+      "purpose": "Prior broad randomized campaign outcomes, accounting, failure clusters, and target coverage.",
+      "independence_status": "execution observations; randomized population without semantic gold",
+      "semantic_gold": "none"
+    },
+    {
+      "evidence_id": "external-lexical-current-data-branch",
+      "population": "external_lexical_evaluation",
+      "source_path": "usg-external-lexical-data:state/manifest.json",
+      "commit_or_version": "2026-11-12 live state; source snapshot enwiktionary-2026-10-01-raw-244dcdc56868",
+      "purpose": "Current crawl progress, shard inventory, and lexical evidence coverage refresh.",
+      "independence_status": "external candidate source; PUD evaluation provides independent UD form/lemma/POS annotation comparison",
+      "semantic_gold": "structural_only"
+    },
+    {
+      "evidence_id": "growth-plan-scheduled",
+      "population": "historical",
+      "source_path": "tools/open_world_evaluation/growth_controller.py",
+      "commit_or_version": "USG-GROWTH-POLICY/0.1.0",
+      "purpose": "Prioritized first-blocker investigations from recent campaign artifacts.",
+      "independence_status": "same-system diagnostic planner",
+      "semantic_gold": "none"
+    },
+    {
+      "evidence_id": "cross-runtime-inventory",
+      "population": "cross_implementation",
+      "source_path": "documentation/USG-CROSS-IMPLEMENTATION-CONFORMANCE-MATRIX.md",
+      "commit_or_version": "2026-11-12",
+      "purpose": "Identify implementation/version/entry-point and conformance coverage gaps.",
+      "independence_status": "repository inventory; common semantic agreement not established",
+      "semantic_gold": "structural_only"
+    },
+    {
+      "evidence_id": "live-github-actions-workflow-status",
+      "population": "runtime_regression",
+      "source_path": "evaluations/system-wide/evidence-catalogue/<snapshot-id>/github-actions-workflows.json",
+      "commit_or_version": "USG-GITHUB-ACTIONS-EVIDENCE/0.1.0",
+      "purpose": "Distinguish workflow definitions from actual latest non-PR run results across repository subsystems.",
+      "independence_status": "repository Actions execution status; operational evidence only",
+      "semantic_gold": "none"
+    }
+  ],
+  "dependencies": [
+    {
+      "phase_id": "P1",
+      "step_id": null,
+      "dependency_type": "normative_contract",
+      "status": "required"
+    },
+    {
+      "phase_id": "P2",
+      "step_id": null,
+      "dependency_type": "research_input",
+      "status": "available"
+    },
+    {
+      "phase_id": "P3",
+      "step_id": null,
+      "dependency_type": "runtime_api",
+      "status": "available"
+    },
+    {
+      "phase_id": "P4",
+      "step_id": null,
+      "dependency_type": "research_input",
+      "status": "available"
+    },
+    {
+      "phase_id": "P5",
+      "step_id": null,
+      "dependency_type": "research_input",
+      "status": "available"
+    },
+    {
+      "phase_id": "P6",
+      "step_id": null,
+      "dependency_type": "non_blocking_continuation",
+      "status": "optional"
+    },
+    {
+      "phase_id": "P7",
+      "step_id": null,
+      "dependency_type": "resource",
+      "status": "available"
+    }
+  ],
+  "acceptance_gates": [
+    {
+      "gate_id": "P8-REGISTRY",
+      "description": "Registry and phase resource-consumption map validate and identify all relevant existing source families and phase consumers.",
+      "evidence_required": [
+        "source registry schema test",
+        "phase resource map test",
+        "repository asset inventory"
+      ],
+      "promotion_effect": "no_runtime_change"
+    },
+    {
+      "gate_id": "P8-COLLECTION",
+      "description": "Collector records exact source-file digests, stored Open-World campaign denominators/accounting, current external branch state, a current PUD evaluation or explicit failure, and a growth plan or explicit missing state.",
+      "evidence_required": [
+        "collector tests",
+        "scheduled/manual workflow run",
+        "append-only snapshot"
+      ],
+      "promotion_effect": "no_runtime_change"
+    },
+    {
+      "gate_id": "P8-ROUTING",
+      "description": "New observations are linked to phase impacts and route to existing continuation, explicit accepted-phase amendment, migration, or future phase candidate without mutating statuses.",
+      "evidence_required": [
+        "routing tests",
+        "reviewable catalogue JSON"
+      ],
+      "promotion_effect": "no_runtime_change"
+    },
+    {
+      "gate_id": "P8-MANIFEST",
+      "description": "New Phase 8+ phase steps declare resource/evidence dependencies with the versioned phase resource manifest.",
+      "evidence_required": [
+        "manifest JSON schema",
+        "phase manifest policy test"
+      ],
+      "promotion_effect": "no_runtime_change"
+    },
+    {
+      "gate_id": "P8-WORKFLOW-EVIDENCE",
+      "description": "Collect latest non-pull-request run status for repository workflows and preserve failures, disabled/no-run states, and collection errors distinctly.",
+      "evidence_required": [
+        "GitHub Actions API response snapshot",
+        "workflow collector tests",
+        "schema-valid evidence catalogue"
+      ],
+      "promotion_effect": "no_runtime_change"
+    }
+  ],
+  "governance": {
+    "candidate_resources_remain_separate": true,
+    "accepted_contracts_changed": false,
+    "requires_versioned_migration_for_contract_change": true,
+    "phase_status_auto_mutation": false
+  }
+}

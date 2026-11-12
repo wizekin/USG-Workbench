@@ -26,6 +26,7 @@ Start here — jump directly to any major section:
 | 8 | [How to explore and test USG](#how-to-explore-and-test-usg) | Start the interface and find tests |
 | 9 | [Repository structure](#repository-structure) | Where code, specifications, evidence, and data are stored |
 | 10 | [Phase 7 definitions roadmap](documentation/PHASE-7-DEFINITIONS-ROADMAP.md) | Semantic knowledge integration; all ten steps accepted for the frozen bilingual profile |
+| 11 | [Phase 8 evidence integration roadmap](documentation/PHASE-8-DEFINITIONS-ROADMAP.md) | System-wide collection and reuse of resources, evaluation results, and development evidence |
 
 ---
 
@@ -113,6 +114,7 @@ When a workflow, campaign, or scheduled task changes, update the corresponding d
 | Prioritized improvement backlog | [System improvement backlog](documentation/USG-SYSTEM-IMPROVEMENT-BACKLOG.md) |
 | Cross-implementation status | [Cross-implementation conformance matrix](documentation/USG-CROSS-IMPLEMENTATION-CONFORMANCE-MATRIX.md) |
 | Phase 7 roadmap | [Phase 7 definitions roadmap](documentation/PHASE-7-DEFINITIONS-ROADMAP.md) |
+| Phase 8 evidence integration | [Phase 8 definitions roadmap](documentation/PHASE-8-DEFINITIONS-ROADMAP.md) · [System evidence integration](documentation/USG-SYSTEM-EVIDENCE-AND-RESOURCE-INTEGRATION.md) |
 | Phase 6 continuation | [Phase 6 Continuation Tracker](documentation/PHASE-6-CONTINUATION-TRACKER.md) |
 
 The phase roadmaps and implementation-specific documents are the detailed sources of truth for their respective components. The README is the high-level navigation and status dashboard; it must not replace those documents.
@@ -130,6 +132,7 @@ This section distinguishes a workflow that was observed running from workflows t
 | [Evidence-driven growth planner](https://github.com/wizekin/USG-Workbench/actions/workflows/usg-evidence-driven-growth-controller.yml) | Daily at 04:45 UTC; also manual | **Scheduled.** Reviews recent Open-World evidence and publishes a ranked growth plan. It plans improvements; it does not modify or promote runtime semantic rules. |
 | [Bilingual naturalistic PUD pilot](https://github.com/wizekin/USG-Workbench/actions/workflows/open-world-naturalistic-pud-pilot.yml) | Weekly Monday at 04:00 UTC; also manual | **Scheduled; full campaign result not yet verified.** The source/sample validation passed. The default campaign samples 50 English and 50 Arabic sentences and evaluates the registered bounded targets. Arabic PUD is translated text, not a representative native-Arabic or conversational corpus. |
 | [Phase 6 Continuation Tracker](https://github.com/wizekin/USG-Workbench/actions/workflows/phase6-continuation-tracker.yml) | Daily at 05:30 UTC; also manual | **Configured; read-only and non-blocking.** Discovers linked Phase 6 PRs, records PR/check-run observations, and uploads a separate status snapshot. It does not gate Phase 7 or modify semantic resources. |
+| [System-wide evidence and resource collection](.github/workflows/system-evidence-collection.yml) | Daily at 05:30 UTC; on relevant main-branch resource/evidence updates; also manual | **Configured after Phase 8 integration merges.** Collects source-file digests, external lexical manifest/checkpoint/shard hashes, current PUD evaluation, recent Open-World campaign accounting, growth planner results, and the latest non-PR status for each GitHub Actions workflow. Publishes append-only snapshots through PRs. |
 | [External lexical PUD evaluation](https://github.com/wizekin/USG-Workbench/actions/workflows/external-lexical-pud-evaluation.yml) | After successful crawler runs, relevant pushes, or manual dispatch | **Event-driven.** Measures external lexical candidate coverage against pinned English PUD data. It is an inventory diagnostic, not an accuracy score for contextual interpretation. |
 
 Useful live views:
@@ -181,6 +184,18 @@ Related evidence: [system improvement backlog](documentation/USG-SYSTEM-IMPROVEM
 ## Incomplete major tasks
 
 These are the major open workstreams. Detailed step definitions, dependencies, and acceptance criteria remain in the linked roadmaps and backlog.
+
+### 1. Phase 8 — system-wide evidence, resource, and development intelligence
+
+**Status: FOUNDATION IMPLEMENTATION UNDER REVIEW; EXIT ACCEPTANCE NOT YET COMPLETE.** Phase 8 creates a continuously refreshed evidence/resource catalogue spanning the canonical semantic interchange, Phases 1–7, native Python model generations, JavaScript Workbench, lexical candidate adapters, OOV/ambiguity regressions, Open-World campaigns, naturalistic input populations, external lexical shards, cross-implementation diagnostics, and the evidence-driven growth planner.
+
+The first implementation adds a source registry, phase/resource-consumption map, per-step resource manifest schema/template, read-only catalogue collector, and scheduled collection workflow. The collector records source file digests, current crawl manifest/checkpoint and shard inventory, PUD evaluation freshness, stored campaign population/accounting, growth-planner recommendations, and reviewable phase-impact routes.
+
+New phases must declare the resources and evidence they consume. New discoveries should first update an existing continuation, then propose an amendment to an accepted phase when appropriate, then use a versioned migration for contract changes; only genuinely cross-cutting uncovered work should become a new phase. No accepted phase, canonical contract, or runtime resource is silently modified or promoted.
+
+References: [Phase 8 definitions roadmap](documentation/PHASE-8-DEFINITIONS-ROADMAP.md) · [System-wide evidence and resource integration](documentation/USG-SYSTEM-EVIDENCE-AND-RESOURCE-INTEGRATION.md) · [Resource registry](config/usg-system-evidence-source-registry-0.1.0.json) · [Phase resource manifest template](templates/phase-resource-manifest-0.1.0.template.json).
+
+### 2. Phase 6 — bounded exit accepted; continuation tracked separately
 
 ### 2. Phase 6 — bounded exit accepted; continuation tracked separately
 
@@ -318,6 +333,8 @@ Run the version-specific test commands documented with each implementation. Do n
 | `resources/` | Bundled, versioned lexical, morphology, and operator resources. |
 | `tools/usg_interpretation_*/` | Versioned Python interpretation pipelines. |
 | `tools/usg-kernel-lab/` | Local Kernel Lab application and interface. |
+| `tools/system_evidence/` | System-wide source inventory, workflow execution status collection, phase routing, and evidence catalogue. |
+| `config/phase-resource-manifests/` and `templates/` | Per-phase resource/evidence dependency manifests and reusable templates. |
 | `tools/usg_external_lexical_*/` | External lexical retrieval, analysis, crawling, and candidate adapters. |
 | `tools/open_world_evaluation/` | Randomized evaluation, target adapters, execution, scoring, replay, reporting, and growth planning. |
 | `interoperability/` | Versioned adapters and cross-implementation conformance work. |
