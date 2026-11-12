@@ -22,6 +22,9 @@ on:
       - ".github/workflows/phase7-knowledge-repository-validation.yml"
       - "tools/phase7_knowledge_sources/**"
       - "tests/test_phase7_knowledge_sources.py"
+      - "tools/phase7_knowledge_alignment/**"
+      - "tests/test_phase7_knowledge_alignment.py"
+      - ".github/workflows/phase7-knowledge-alignment-validation.yml"
       - ".github/workflows/phase7-knowledge-sources-validation.yml"
 
 permissions:
@@ -50,6 +53,10 @@ jobs:
         run: python -m compileall -q tools/phase7_knowledge_sources
       - name: Test Phase 7 source adapters
         run: python -m unittest discover -s tests -p 'test_phase7_knowledge_sources.py' -v
+      - name: Compile Phase 7 alignment builder
+        run: python -m compileall -q tools/phase7_knowledge_alignment
+      - name: Test Phase 7 bilingual alignment proposals
+        run: python -m unittest discover -s tests -p 'test_phase7_knowledge_alignment.py' -v
       - name: Validate JSON files
         run: |
           python -m json.tool evaluations/phase6-continuation/tracker.json > /dev/null
