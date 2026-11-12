@@ -81,7 +81,7 @@ class ExternalLexicalPudEvaluationTests(unittest.TestCase):
             first = Path(temp) / "batch-000001-first.jsonl.gz"
             second = Path(temp) / "batch-000001-retry-copy.jsonl.gz"
             with gzip.open(first, "wt", encoding="utf-8") as stream:
-                stream.write(json.dumps(record) + "\\n")
+                stream.write(json.dumps(record) + "\n")
             second.write_bytes(first.read_bytes())
             evidence = load_candidate_evidence(temp)
         self.assertEqual(evidence["physical_shard_count"], 2)
