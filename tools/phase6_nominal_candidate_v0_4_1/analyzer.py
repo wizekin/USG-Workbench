@@ -44,11 +44,22 @@ def _candidate(text,lang,construction,rule,roles,tokens,markers=(),predicate=Non
     bindings={}; spans={}
     for role,(a,b) in roles.items():
         spans[role]=_span(text,tokens,a,b); bindings[role]=spans[role]["surface"]
+    semantic_relation = relation_type or {
+        "en.nominal.adjective_modifier": "ATTRIBUTE",
+        "ar.nominal.adjective_modifier": "ATTRIBUTE",
+        "en.compound.noun_noun": "LEXICALIZED_COMPOUND_COMPONENT",
+        "ar.compound.lexicalized_idafa": "LEXICALIZED_COMPOUND_COMPONENT",
+        "en.prepositional.nominal_modifier": "LOCATIVE_NOMINAL_MODIFIER",
+        "ar.prepositional.nominal_modifier": "LOCATIVE_NOMINAL_MODIFIER",
+        "en.temporal.adverbial_modifier": "EVENT_TIME",
+        "ar.temporal.adverbial_modifier": "EVENT_TIME",
+    }.get(construction)
     return {"status":"CANDIDATE","candidate_only":True,"construction_id":construction,
         "role_bindings":bindings,"role_spans":spans,
         "grammatical_markers":[_span(text,tokens,i,i) for i in markers],
         "predicate_span":_span(text,tokens,*predicate) if predicate else None,
         "relation_type":relation_type,
+        "semantic_relation_candidate":semantic_relation,
         "derivation":{"rule_id":rule,"lexical_resource":"phase6.nominal-lexicon.candidate/0.4.1",
                       "evaluation_scope":"IN_SAMPLE_CLOSED_LEXICON"}}
 

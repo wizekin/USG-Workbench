@@ -1,0 +1,43 @@
+name: Phase 6 Step 6.6 Automatic Synthetic Reference Gate
+on:
+  pull_request:
+    paths:
+      - "tools/phase6_auto_reference_v1_0/**"
+      - "tools/phase6_nominal_candidate_v0_4_1/analyzer.py"
+      - "tests/test_phase6_auto_reference_v1_0.py"
+      - "documentation/PHASE-6-STEP-6.6-AUTOMATIC-SYNTHETIC-REFERENCE-PROTOCOL.md"
+      - ".github/workflows/phase6-step-6-6-automatic-reference.yml"
+  push:
+    branches: [main]
+    paths:
+      - "tools/phase6_auto_reference_v1_0/**"
+      - "tools/phase6_nominal_candidate_v0_4_1/analyzer.py"
+      - "tests/test_phase6_auto_reference_v1_0.py"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  automatic-reference:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Compile
+        run: python -m compileall -q tools/phase6_auto_reference_v1_0 tools/phase6_nominal_candidate_v0_4_1
+      - name: Test automatic reference and candidate gate
+        run: python -m unittest discover -s tests -p 'test_phase6_auto_reference_v1_0.py' -v
+      - name: Generate corpus and evaluation report
+        run: python -m tools.phase6_auto_reference_v1_0.evaluate
+      - name: Upload deterministic benchmark artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase6-step-6-6-auto-reference-v1.0
+          if-no-files-found: error
+          path: |
+            benchmarks/phase6-auto-reference-v1.0/corpus.json
+            benchmarks/phase6-auto-reference-v1.0/reference-lexicon.json
+            artifacts/phase6-step-6.6-automatic-reference-report.json

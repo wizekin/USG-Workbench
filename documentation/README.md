@@ -148,6 +148,7 @@
 - [PHASE5 LEXICAL FOUNDATION V0.6.0](PHASE5-LEXICAL-FOUNDATION-v0.6.0.md) — Lexical resources, morphology, retrieval, or analysis.
 
 ### Phase 6 — expanded semantic interpretation
+- [PHASE 6 STEP 6.6 AUTOMATIC SYNTHETIC REFERENCE PROTOCOL](PHASE-6-STEP-6.6-AUTOMATIC-SYNTHETIC-REFERENCE-PROTOCOL.md) — Automatic bilingual semantic reference generation, acceptance gates, benchmark scope, and limits.
 
 - [PHASE 6 BENCHMARK ANNOTATION CORRECTION 0.3.1](PHASE-6-BENCHMARK-ANNOTATION-CORRECTION-0.3.1.md) — Evaluation design, results, fixtures, or limitations.
 - [PHASE 6 BENCHMARK ANNOTATION CORRECTION 0.3.2](PHASE-6-BENCHMARK-ANNOTATION-CORRECTION-0.3.2.md) — Evaluation design, results, fixtures, or limitations.

@@ -1,0 +1,7 @@
+CC0 1.0 Universal
+
+The generated corpus, reference lexicon, case text, reference semantic graphs, and generated evaluation reports in this benchmark directory are dedicated to the public domain under CC0 1.0 Universal.
+
+https://creativecommons.org/publicdomain/zero/1.0/
+
+This dedication covers generated benchmark data and reports, not the USG source code or unrelated repository files.
