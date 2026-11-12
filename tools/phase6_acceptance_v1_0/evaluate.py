@@ -18,7 +18,7 @@ from tools.phase5_interpretation_benchmark_v0_2_0.run import load_and_validate
 from tools.phase6_auto_reference_v1_0.evaluate import run as run_step_6_6
 from tools.usg_local_api_v1_0_0.application import USGApplication
 
-from .generate import build, canonical_bytes, corpus_sha256, validate
+from .generate import PROFILE_SPECS, build, corpus_sha256, validate
 
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_CORPUS = ROOT / "benchmarks/phase6-automatic-acceptance-v1.0/corpus.json"
@@ -36,7 +36,7 @@ def _graph_observation(response: dict[str, Any]) -> dict[str, Any]:
                        "speech_act": graph.get("speech_act", "UNKNOWN")}
     relations = graph.get("relations", [])
     operators = graph.get("operators", [])
-    references = graph.get("references", [])
+    references = composed_graph.get("references", graph.get("references", []))
     nodes = graph.get("nodes", [])
     spans_valid = True
     source = interpretation.get("source", {}).get("text")
@@ -109,10 +109,6 @@ def _role_span_match(expected: list[dict[str, Any]], observed: dict[str, Any]) -
 def _positive_match(case: dict[str, Any], observed: dict[str, Any]) -> tuple[bool, bool, list[str]]:
     expected = case["expected"]
     failures = []
-    if not expected.get("required_relations", []) <= observed["relation_types"] if isinstance(expected.get("required_relations"), set) else False:
-        # JSON corpus uses arrays; the explicit branch below keeps this helper
-        # straightforward while avoiding truthy string coercion.
-        pass
     for relation in expected.get("required_relations", []):
         if relation not in observed["relation_types"]:
             failures.append("missing_relation:" + relation)
@@ -299,9 +295,7 @@ def _evaluate_corpus(corpus: dict[str, Any], predictions: list[dict[str, Any]]) 
 
 PROFILE_SPECS_BY_KEY = {
     f"{lang}/{profile}": {"step": step}
-    for (lang, profile), (step, _family) in __import__(
-        "tools.phase6_acceptance_v1_0.generate", fromlist=["PROFILE_SPECS"]
-    ).PROFILE_SPECS.items()
+    for (lang, profile), (step, _family) in PROFILE_SPECS.items()
 }
 
 
@@ -365,8 +359,9 @@ def _check_integration(seed_rows: dict[str, list[dict[str, Any]]]) -> dict[str, 
 def run_acceptance(corpus: dict[str, Any] | None = None) -> dict[str, Any]:
     corpus = corpus or build()
     validate(corpus)
+    frozen_seed_corpus = load_and_validate()
     seed_rows = {
-        lang: [case for case in load_and_validate()["cases"]
+        lang: [case for case in frozen_seed_corpus["cases"]
                if case["language"] == lang and case["gold_class"] == "POSITIVE"]
         for lang in ("en", "ar")
     }
