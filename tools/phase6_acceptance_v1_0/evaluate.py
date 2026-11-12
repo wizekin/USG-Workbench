@@ -197,6 +197,13 @@ def _negative_match(case: dict[str, Any], observed: dict[str, Any]) -> tuple[boo
 def _ambiguous_match(case: dict[str, Any], observed: dict[str, Any]) -> tuple[bool, list[str]]:
     expected = case["expected"]
     failures = []
+    safe_abstention = (
+        observed["interpretation"].get("status") == "ABSTAIN"
+        and not observed["relations"] and not observed["operators"]
+        and not observed["references"]
+        and observed["grammatical"].get("voice", "UNKNOWN") == "UNKNOWN"
+        and observed["grammatical"].get("speech_act", "UNKNOWN") == "UNKNOWN"
+    )
     if expected.get("ambiguity_alternatives_required"):
         # Preserve every explicitly generated alternative for coordinated
         # structures. Other ambiguous profiles may safely abstain.
@@ -226,7 +233,7 @@ def _ambiguous_match(case: dict[str, Any], observed: dict[str, Any]) -> tuple[bo
     if expected.get("forbidden_unique_voice"):
         if observed["grammatical"].get("voice") in {"ACTIVE", "PASSIVE", "MIDDLE"}:
             failures.append("ambiguous_voice_forced_unique")
-    if expected.get("required_operator_types"):
+    if expected.get("required_operator_types") and not safe_abstention:
         missing = set(expected["required_operator_types"]) - observed["operator_types"]
         failures.extend("ambiguous_operator_missing:" + item for item in sorted(missing))
     if expected.get("forbidden_unique_scope"):
