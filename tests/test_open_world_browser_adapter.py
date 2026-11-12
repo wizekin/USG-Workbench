@@ -73,7 +73,7 @@ class BrowserAdapterProjectionTests(unittest.TestCase):
             created_at="2026-11-12T00:00:00Z",
         )
         case = generator.generate(1)[0]
-        self.assertEqual(case["resource_limits"]["memory_megabytes"], 8192)
+        self.assertEqual(case["resource_limits"]["memory_megabytes"], 4096)
         self.assertEqual(case["resource_limits"]["wall_time_seconds"], 45)
         self.assertFalse(case["resource_limits"]["network_access"])
 
@@ -124,6 +124,7 @@ class BrowserAdapterEndToEndTests(unittest.TestCase):
         self.assertEqual(target["source"]["text"], case["input"]["text"])
         self.assertEqual(result["execution_metadata"]["ollama_used"], False)
         self.assertEqual(result["execution_metadata"]["adapter"], "playwright-js-semantic-workbench")
+        self.assertEqual(result["execution_metadata"]["memory_limit_enforcement"], "ephemeral_hosted_runner_vm")
 
 
 if __name__ == "__main__":
