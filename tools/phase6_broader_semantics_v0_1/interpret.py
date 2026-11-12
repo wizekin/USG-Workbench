@@ -18,7 +18,7 @@ from tools.usg_interpretation_v0_2_0 import (
 from .engine import compose, project_loss_aware, CompositionError
 from .extract import extract_candidate_graph
 
-VERSION = "usg-phase6-integrated-interpreter/0.1.0"
+VERSION = "usg-phase6-integrated-interpreter/0.2.0"
 
 
 def _stable(prefix: str, value: Any) -> str:

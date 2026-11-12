@@ -12,10 +12,11 @@ The implementation is no longer limited to separately supplied graphs or one str
 1. Versioned lexical analysis and morphology.
 2. Sentence and clause segmentation with explicit conjunction/subordinator boundaries.
 3. Syntax and predicate/argument candidate generation.
+4. If Phase 5 does not license a core predicate, run the existing Phase 6 predicate/argument candidate analyzer (eight bilingual profiles), then the nominal candidate analyzer (ten bilingual profiles); ambiguous results are retained as diagnostics.
 4. Operator candidates with explicit target and scope.
 5. Discourse mentions and possible antecedents, without identity resolution.
 6. Phase 6 graph composition and source-span validation.
-7. Strict Phase 6 template fallback only when Phase 5 did not emit a predicate candidate.
+7. Strict Phase 6 template fallback only when neither Phase 5 nor the specialized Phase 6 candidate providers emit a unique candidate.
 8. Optional append-only run persistence and deterministic replay.
 
 The new route is \`POST /v3/phase6/interpret\`. It returns the Phase 5 stage envelope, Phase 6 graph, candidate status, diagnostics, and a canonical preservation preview. The same service is used by the \`phase6-interpret\` CLI command and the new integrated operation in Kernel Lab.
@@ -65,6 +66,7 @@ The following are implemented and regression-tested as candidate behavior:
 - operator target/scope transfer;
 - unresolved discourse candidate transfer;
 - strict-template fallback for the ten existing English/MSA patterns;
+- integrated use of the existing eight-profile predicate/argument candidate analyzer and ten-profile nominal candidate analyzer;
 - lossless OPAQUE preservation into the unchanged canonical schema;
 - API, CLI, Kernel Lab, append-only SQLite run storage, and replay;
 - frozen Phase 5 to Phase 6 graph-bridge regression.

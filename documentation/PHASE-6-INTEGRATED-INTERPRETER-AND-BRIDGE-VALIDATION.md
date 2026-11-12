@@ -34,7 +34,8 @@ The integrated interpreter reuses the established \`Phase5InterpretationService\
 - carries explicit conjunction and subordination boundaries to typed candidate relations;
 - carries operator candidates with their exact marker spans and targets;
 - carries mention/antecedent candidates without resolving referent identity;
-- uses strict Phase 6 templates only when the Phase 5 stages produced no predicate candidate.
+- uses the existing predicate/argument and nominal candidate providers when Phase 5 has no predicate candidate;
+- uses strict Phase 6 templates only when neither provider yields a unique candidate.
 
 A missing candidate does not cause a guess. Diagnostics explain when a clause boundary has no two predicate candidates, an operator target is missing, or a discourse marker cannot be represented by a registered relation.
 
@@ -57,4 +58,4 @@ Do not interpret \`LOSSLESS_PRESERVATION_ONLY\` as a claim that the semantic gra
 
 ## Non-goals and limitations
 
-No unrestricted English/Arabic parsing, broad passive/imperative recognition, productive phrase coordination, general argument-gap resolution, unique discourse identity resolution, or naturalistic Phase 6 accuracy claim is established. All additional Phase 6 construction output stays candidate-only pending independent per-language acceptance evidence. No human annotation or runtime review is required.
+No unrestricted English/Arabic parsing, broad passive/imperative recognition, productive phrase coordination, general argument-gap resolution, unique discourse identity resolution, semantic assertion promotion, or naturalistic Phase 6 accuracy claim is established. The integrated provider output is candidate-only; its provider-specific self-consistency benchmarks are not independent naturalistic validation. All additional Phase 6 construction output stays candidate-only pending independent per-language acceptance evidence. No human annotation or runtime review is required.
