@@ -17,6 +17,8 @@ class Phase8AcceptanceTests(unittest.TestCase):
         phases = [{"id": f"P{i}", "name": f"Phase {i}", "status": "in_progress", "open_work": ""}
                   for i in range(1, 9)]
         return {
+            "repository": {"commit_sha": "test-sha"},
+            "generated_at": "2026-11-12T16:00:00Z",
             "phase_status": phases,
             "source_families": [{"id": item} for item in [
                 "canonical_semantic_interchange", "phase_development_history",
@@ -39,19 +41,32 @@ class Phase8AcceptanceTests(unittest.TestCase):
                            "amendments_require_review": True},
         }
 
-    def test_integrated_gate_is_review_eligible_but_never_accepts_phase(self):
+    def test_integrated_gate_automatically_accepts_on_exact_head_ci(self):
         report = self.make_report()
-        result = evaluate_phase8_acceptance(report, ROOT)
-        self.assertEqual(result["status"], "eligible_for_review")
-        self.assertFalse(result["phase_accepted"])
-        self.assertTrue(result["governance"]["human_acceptance_required"])
+        result = evaluate_phase8_acceptance(report, ROOT, validated_commit_sha="test-sha", workflow_run_id="12345", workflow_run_attempt="1")
+        self.assertEqual(result["status"], "accepted")
+        self.assertTrue(result["phase_accepted"])
+        self.assertFalse(result["governance"]["human_acceptance_required"])
+        self.assertEqual(result["acceptance_decision"]["source_commit_sha"], "test-sha")
+        self.assertEqual(result["acceptance_decision"]["validated_commit_sha"], "test-sha")
+        self.assertTrue(result["acceptance_decision"]["decision_id"])
         self.assertTrue(all(item["passed"] for item in result["checks"]))
+
+    def test_mismatched_validation_commit_blocks_automatic_acceptance(self):
+        report = self.make_report()
+        result = evaluate_phase8_acceptance(
+            report, ROOT, validated_commit_sha="different-sha",
+            workflow_run_id="12345", workflow_run_attempt="1")
+        self.assertEqual(result["status"], "blocked")
+        self.assertFalse(result["phase_accepted"])
+        failed = {item["check_id"] for item in result["checks"] if not item["passed"]}
+        self.assertIn("P8-EXACT-HEAD-CI", failed)
 
     def test_missing_required_source_blocks_review(self):
         report = self.make_report()
         report["source_families"] = [item for item in report["source_families"]
                                      if item["id"] != "external_lexical_acquisition"]
-        result = evaluate_phase8_acceptance(report, ROOT)
+        result = evaluate_phase8_acceptance(report, ROOT, validated_commit_sha="test-sha", workflow_run_id="12345", workflow_run_attempt="1")
         self.assertEqual(result["status"], "blocked")
         self.assertFalse(result["phase_accepted"])
         failed = {item["check_id"] for item in result["checks"] if not item["passed"]}
@@ -66,7 +81,7 @@ class Phase8AcceptanceTests(unittest.TestCase):
             "canonical_contract_mutation_allowed": False,
             "runtime_promotion_allowed": False,
         }]
-        result = evaluate_phase8_acceptance(report, ROOT)
+        result = evaluate_phase8_acceptance(report, ROOT, validated_commit_sha="test-sha", workflow_run_id="12345", workflow_run_attempt="1")
         self.assertEqual(result["status"], "blocked")
         failed = {item["check_id"] for item in result["checks"] if not item["passed"]}
         self.assertIn("P8-PROPOSAL-COVERAGE", failed)
@@ -75,7 +90,7 @@ class Phase8AcceptanceTests(unittest.TestCase):
     def test_workflow_evidence_must_be_live_and_nonempty(self):
         report = self.make_report()
         report["workflow_evidence"] = {"status": "not_collected", "workflow_count": 0}
-        result = evaluate_phase8_acceptance(report, ROOT)
+        result = evaluate_phase8_acceptance(report, ROOT, validated_commit_sha="test-sha", workflow_run_id="12345", workflow_run_attempt="1")
         self.assertEqual(result["status"], "blocked")
         failed = {item["check_id"] for item in result["checks"] if not item["passed"]}
         self.assertIn("P8-WORKFLOW-OBSERVABILITY", failed)
