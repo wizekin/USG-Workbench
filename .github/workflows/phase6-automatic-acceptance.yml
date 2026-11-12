@@ -4,7 +4,10 @@ on:
   pull_request:
     paths:
       - "tools/phase6_acceptance_v1_0/**"
+      - "tools/phase6_broader_semantics_v0_1/**"
       - "tests/test_phase6_acceptance_v1_0.py"
+      - "tests/test_phase6_integrated_interpreter.py"
+      - "tests/test_phase6_candidate_provider_integration.py"
       - "specifications/phase6-automatic-acceptance-report-1.0.schema.json"
       - "documentation/PHASE-6-AUTOMATIC-ACCEPTANCE-FACTORY.md"
       - "documentation/PHASE-6-DEFINITIONS-ROADMAP.md"
@@ -15,7 +18,10 @@ on:
     branches: [main]
     paths:
       - "tools/phase6_acceptance_v1_0/**"
+      - "tools/phase6_broader_semantics_v0_1/**"
       - "tests/test_phase6_acceptance_v1_0.py"
+      - "tests/test_phase6_integrated_interpreter.py"
+      - "tests/test_phase6_candidate_provider_integration.py"
       - "specifications/phase6-automatic-acceptance-report-1.0.schema.json"
       - ".github/workflows/phase6-automatic-acceptance.yml"
   workflow_dispatch:
