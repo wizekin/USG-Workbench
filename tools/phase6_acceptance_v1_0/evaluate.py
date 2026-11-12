@@ -204,6 +204,17 @@ def _ambiguous_match(case: dict[str, Any], observed: dict[str, Any]) -> tuple[bo
         and observed["grammatical"].get("voice", "UNKNOWN") == "UNKNOWN"
         and observed["grammatical"].get("speech_act", "UNKNOWN") == "UNKNOWN"
     )
+    if expected.get("allow_explicit_attachment_abstention"):
+        diagnostics = observed["interpretation"].get("diagnostics", [])
+        diagnostic_codes = {
+            item.get("code") if isinstance(item, dict) else str(item)
+            for item in diagnostics
+        }
+        for required in expected.get("required_ambiguous_diagnostics", []):
+            if required not in diagnostic_codes:
+                failures.append("attachment_abstention_diagnostic_missing:" + required)
+        forced = set(expected.get("forbidden_unique_relations", [])) & observed["relation_types"]
+        failures.extend("ambiguous_attachment_forced_unique:" + item for item in sorted(forced))
     if expected.get("ambiguity_alternatives_required"):
         # Preserve every explicitly generated alternative for coordinated
         # structures. Other ambiguous profiles may safely abstain.
