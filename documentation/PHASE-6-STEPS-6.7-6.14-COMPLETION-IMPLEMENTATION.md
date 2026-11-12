@@ -48,7 +48,8 @@ This preserves the complete candidate payload in the canonical document format w
 ## Step 6.13: integrated interfaces and persistence
 
 - API: \`POST /v3/phase6/interpret\` plus the existing compose, extract, list, get, and replay endpoints.
-- CLI: \`usg-workbench phase6-interpret source.txt --language en|ar [--db PATH] [--no-persist] [--output PATH]\`.
+- CLI: \`usg-workbench phase6-interpret source.txt --language en|ar [--db PATH] [--no-persist] [--output PATH]\`; the acceptance factory invokes this entry point directly for both languages and checks the returned Phase 6 contract/source.
+- Packaging: CI installs the project in editable mode without replacing runtime dependencies and verifies \`usg-workbench --help\` and \`usg-workbench phase6-interpret --help\`.
 - Kernel Lab: one integrated Phase 6 action runs the pipeline and displays the resulting graph and all diagnostics; lower-level extract/compose tools remain available for debugging.
 - Persistence: Phase 6 run records still use the existing store-owned SQLite connection, immutable triggers, content digests, and replay path. The canonical OPAQUE preservation preview is not automatically committed as a canonical assertion/document revision.
 
@@ -60,7 +61,7 @@ This is a bridge-regression benchmark. It demonstrates that the new graph and in
 
 ## Current acceptance boundary
 
-The following are implemented and regression-tested as candidate behavior:
+The following are accepted for the registered automatic synthetic profiles and regression-tested as candidate behavior:
 - integrated bilingual pipeline composition and Phase 5 stage reuse;
 - explicit clause boundaries and typed clause relation candidates;
 - operator target/scope transfer;
@@ -71,7 +72,7 @@ The following are implemented and regression-tested as candidate behavior:
 - API, CLI, Kernel Lab, append-only SQLite run storage, and replay;
 - frozen Phase 5 to Phase 6 graph-bridge regression.
 
-The following remain **not accepted as general Phase 6 semantic capabilities**:
+The following remain **outside the bounded acceptance profile set and are not accepted as general Phase 6 semantic capabilities**:
 - productive coordination and shared-argument extraction beyond the narrow registered cases;
 - broad complement, relative, causal, conditional, temporal, and argument-gap attachment;
 - general active/passive, question, command, and request interpretation;
@@ -80,4 +81,4 @@ The following remain **not accepted as general Phase 6 semantic capabilities**:
 - semantic projection of candidate graphs into canonical assertions;
 - per-construction naturalistic Phase 6 accuracy and final full exit acceptance.
 
-No human annotation step, manual runtime review, or unverified bilingual gold dataset is introduced by this increment. Runtime output stays \`CANDIDATE_ONLY\`; unsupported text abstains. The Phase 6 roadmap stays IN PROGRESS until each construction has independent per-language evidence and the exact integrated exit gate passes.
+No human annotation step, manual runtime review, or unverified bilingual gold dataset is introduced by this increment. Runtime output stays \`CANDIDATE_ONLY\`; unsupported text abstains. The registered bounded Phase 6 exit gate has passed. Broader construction coverage, naturalistic validation, unique identity resolution, and semantic-assertion projection remain separate open research/engineering work.
