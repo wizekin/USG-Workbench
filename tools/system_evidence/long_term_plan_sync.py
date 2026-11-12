@@ -97,7 +97,16 @@ def parse_continuation_statuses(tracker: dict[str, Any]) -> dict[str, str]:
 
 def collect_phase8_acceptance(root: Path) -> dict[str, Any]:
     directory = root / DEFAULT_ACCEPTANCE_DIR
-    artifacts = sorted(directory.glob("*/phase8-integrated-acceptance.json"))
+    artifacts = list(directory.glob("*/phase8-integrated-acceptance.json"))
+    def artifact_order(path: Path) -> tuple[int, int, str]:
+        parts = path.parent.name.split("-", 1)
+        try:
+            run_id = int(parts[0])
+            attempt = int(parts[1]) if len(parts) > 1 else 0
+        except ValueError:
+            run_id, attempt = -1, -1
+        return run_id, attempt, path.as_posix()
+    artifacts.sort(key=artifact_order)
     if not artifacts:
         return {
             "status": "not_verified",
@@ -118,13 +127,25 @@ def collect_phase8_acceptance(root: Path) -> dict[str, Any]:
     decision = artifact.get("acceptance_decision", {})
     source_sha = decision.get("source_commit_sha")
     validated_sha = decision.get("validated_commit_sha")
+    run_id = str(decision.get("workflow_run_id", ""))
+    run_attempt = str(decision.get("workflow_run_attempt", ""))
+    checks = artifact.get("checks", [])
+    checks_passed = isinstance(checks, list) and bool(checks) and all(
+        isinstance(item, dict) and item.get("passed") is True for item in checks
+    )
     accepted = (
         artifact.get("status") == "accepted"
         and artifact.get("phase_accepted") is True
+        and decision.get("decision") == "accepted"
+        and decision.get("phase_id") == "P8"
         and bool(source_sha)
         and source_sha == validated_sha
-        and bool(decision.get("workflow_run_id"))
-        and bool(decision.get("workflow_run_attempt"))
+        and run_id.isdigit()
+        and run_attempt.isdigit()
+        and int(run_attempt) >= 1
+        and checks_passed
+        and artifact.get("checks_passed") == artifact.get("checks_total")
+        and artifact.get("checks_total") == len(checks)
     )
     return {
         "status": "accepted" if accepted else artifact.get("status", "invalid"),
