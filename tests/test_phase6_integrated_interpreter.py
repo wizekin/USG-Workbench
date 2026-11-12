@@ -45,6 +45,73 @@ class Phase6IntegratedInterpreterTests(unittest.TestCase):
         self.assertTrue(any(edge["type"] == "CAUSAL" for edge in graph["relations"]))
         self.assertFalse(interpretation["composition"]["safety"]["canonical_assertions_emitted"])
 
+    def test_unresolved_bilingual_discourse_candidates_are_preserved(self):
+        examples = [
+            ("Ada writes code. She reads.", "en", 1),
+            ("كتب الطالب الرسالة. هو قرأ.", "ar", 1),
+            ("Ada writes code. Mira reads reports. They read.", "en", 2),
+            ("كتب الطالب الرسالة. قرأ المعلم التقارير. هما قرآ.", "ar", 2),
+        ]
+        for source, language, minimum_candidates in examples:
+            with self.subTest(language=language, source=source):
+                status, result = self.call(source, language)
+                self.assertEqual(status, 200, result)
+                graph = result["interpretation"]["graph"]
+                self.assertTrue(graph["references"])
+                reference = graph["references"][-1]
+                self.assertEqual(reference["status"], "UNRESOLVED")
+                self.assertIsNone(reference["resolved_antecedent"])
+                self.assertGreaterEqual(
+                    len(reference["antecedent_candidates"]), minimum_candidates
+                )
+                self.assertIn("DISCOURSE_REFERENCE", graph["features"])
+
+    def test_nested_operator_templates_preserve_unresolved_scope(self):
+        for source, language in [
+            ("Ada must not read", "en"),
+            ("ربما لا يقرأ الطالب", "ar"),
+        ]:
+            with self.subTest(language=language):
+                status, result = self.call(source, language)
+                self.assertEqual(status, 200, result)
+                graph = result["interpretation"]["graph"]
+                self.assertEqual(
+                    {item["type"] for item in graph["operators"]},
+                    {"MODALITY", "NEGATION"},
+                )
+                self.assertTrue(all(
+                    item.get("scope") == "UNRESOLVED"
+                    for item in graph["operators"]
+                ))
+                self.assertEqual(
+                    graph["ambiguity"], "NESTED_OPERATOR_SCOPE_AMBIGUITY"
+                )
+                self.assertEqual(
+                    set(graph["scope_alternatives"]),
+                    {"MODALITY_OVER_NEGATION", "NEGATION_OVER_MODALITY"},
+                )
+
+    def test_ambiguous_bilingual_subordinator_preserves_both_readings(self):
+        examples = [
+            ("Ada writes code as Omar reads reports.", "en", "as"),
+            ("كتب الطالب الرسالة إذ قرأ المعلم التقرير", "ar", "إذ"),
+        ]
+        for source, language, marker in examples:
+            with self.subTest(language=language):
+                status, result = self.call(source, language)
+                self.assertEqual(status, 200, result)
+                graph = result["interpretation"]["graph"]
+                self.assertTrue({"CAUSAL", "TEMPORAL"}.issubset(
+                    {edge["type"] for edge in graph["relations"]}
+                ))
+                self.assertEqual(
+                    graph["ambiguity"], "AMBIGUOUS_CAUSAL_OR_TEMPORAL_ATTACHMENT"
+                )
+                self.assertTrue(any(
+                    edge.get("evidence", {}).get("surface") == marker
+                    for edge in graph["relations"]
+                ))
+
     def test_phase6_closed_template_fallback_remains_available(self):
         status, result = self.call("Lina and Omar read books.")
         self.assertEqual(status, 200, result)
