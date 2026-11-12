@@ -1,0 +1,46 @@
+name: USG Growth Controller Validation
+
+on:
+  pull_request:
+    paths:
+      - "tools/open_world_evaluation/growth_controller.py"
+      - "tools/open_world_evaluation/growth_diagnostics.py"
+      - "tests/test_open_world_growth_controller.py"
+      - "documentation/USG-GROWTH-POLICY-AND-AUTONOMY.md"
+      - "documentation/USG-SYSTEM-IMPROVEMENT-BACKLOG.md"
+      - ".github/workflows/usg-growth-controller-validation.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  growth-plan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install report validator
+        run: python -m pip install "jsonschema>=4.18,<5"
+      - name: Run growth controller unit tests
+        run: python -m unittest discover -s tests -p "test_open_world_growth_controller.py" -v
+      - name: Build a plan from committed campaign evidence
+        run: |
+          python -m tools.open_world_evaluation.growth_controller \
+            --max-campaigns 10 \
+            --output "$RUNNER_TEMP/usg-growth-plan.json" \
+            --markdown "$RUNNER_TEMP/usg-growth-plan.md"
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          plan = json.loads((Path(os.environ["RUNNER_TEMP"]) / "usg-growth-plan.json").read_text(encoding="utf-8"))
+          assert plan["contract"] == "USG-EVIDENCE-DRIVEN-GROWTH-PLAN/0.1.0"
+          assert plan["safety_policy"]["runtime_mutations_performed"] is False
+          assert plan["safety_policy"]["candidate_lexical_data_promoted"] is False
+          assert all(item["runtime_change_allowed"] is False for item in plan["ranked_actions"])
+          print(f"campaigns={plan['campaigns_analyzed']} ranked_actions={len(plan['ranked_actions'])}")
+          PY
+      - name: Compile growth planner
+        run: python -m py_compile tools/open_world_evaluation/growth_controller.py
