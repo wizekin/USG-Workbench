@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 from collections import Counter
 import json
+from hashlib import sha256
 from pathlib import Path
 import sys
 from time import perf_counter
@@ -46,7 +47,7 @@ def _graph_observation(response: dict[str, Any], expected_source: str) -> dict[s
     source_integrity = (
         source == expected_source
         and composition_source.get("text") == expected_source
-        and composition_source.get("sha256") == __import__("hashlib").sha256(
+        and composition_source.get("sha256") == sha256(
             expected_source.encode("utf-8")
         ).hexdigest()
     )
