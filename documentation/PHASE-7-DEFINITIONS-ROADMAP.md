@@ -1,7 +1,7 @@
 # USG Phase 7 — Semantic Knowledge Integration and Contextual Knowledge Layer
 
 **Phase:** 7 — Semantic knowledge integration and contextual knowledge retrieval  
-**Status:** STEPS 7.1–7.3 MERGED; Step 7.4 implemented in PR and pending exact-head validation. Steps 7.5–7.10 remain unstarted.  
+**Status:** STEPS 7.1–7.4 MERGED; Step 7.5 implemented in PR and pending exact-head validation. Steps 7.6–7.10 remain unstarted.  
 **Primary objective:** build a governed, persistent semantic knowledge layer that connects lexical forms, lexical senses, language-neutral concepts, semantic classes, typed relations, source evidence, contexts, and validated canonical documents.  
 **Prerequisites:** accepted Phase 1–5 foundations; Phase 6 bounded automatic exit accepted for its registered scope.  
 **Non-blocking parallel work:** Phase 6 construction expansion continues through the [Phase 6 Continuation Tracker](PHASE-6-CONTINUATION-TRACKER.md). No unfinished Phase 6 continuation item is a prerequisite for Phase 7 unless a specific Phase 7 step explicitly adopts it.  
