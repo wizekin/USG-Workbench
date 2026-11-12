@@ -191,14 +191,8 @@ def execute(case: dict[str, Any]) -> dict[str, Any]:
         }
 
     if target_id == "js-semantic-workbench-v054":
-        return {
-            "outcome": "not_executed",
-            "reason": (
-                "OW-3 does not yet include a browser automation adapter. "
-                "The JS Workbench target is registered but no browser execution was attempted."
-            ),
-            "execution_metadata": {"adapter": "not-implemented"},
-        }
+        from tools.open_world_evaluation.browser_adapter import interpret_in_browser
+        return interpret_in_browser(case)
 
     return {
         "outcome": "not_executed",
