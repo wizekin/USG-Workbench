@@ -67,7 +67,7 @@ def _utc_now() -> str:
 
 
 def _download(url: str, timeout: int = 45) -> bytes:
-    request = Request(url, headers={"User-Agent": "USG-Naturalistic-Pilot/0.1.0"})
+    request = Request(url, headers={"User-Agent": "USG-Naturalistic-Pilot/0.2.0"})
     with urlopen(request, timeout=timeout) as response:
         if response.status != 200:
             raise RuntimeError(f"download failed ({response.status}): {url}")
@@ -446,11 +446,20 @@ def generate_pilot(
     ).encode("utf-8")
 
     output_dir.mkdir(parents=True, exist_ok=True)
+    for filename in (
+        "scenario-cases.jsonl",
+        "structural-frequency.json",
+        "source-manifest.json",
+        "LICENSE.txt",
+        "ATTRIBUTION.md",
+        "generation-manifest.json",
+    ):
+        existing_path = output_dir / filename
+        if existing_path.exists():
+            raise FileExistsError(f"refusing to overwrite {existing_path}")
     structural_report_path = output_dir / "structural-frequency.json"
     structural_report_path.write_bytes(structural_report_payload)
     cases_path = output_dir / "scenario-cases.jsonl"
-    if cases_path.exists():
-        raise FileExistsError(f"refusing to overwrite {cases_path}")
     payload = ("\n".join(json.dumps(case, ensure_ascii=False, sort_keys=True) for case in cases) + "\n").encode("utf-8")
     cases_path.write_bytes(payload)
     source_manifest["cases_jsonl_sha256"] = _sha256(payload)
