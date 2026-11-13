@@ -1,0 +1,108 @@
+{
+  "acceptance_decision": {
+    "accepted_scope": "Phase 8 system-wide evidence catalogue, freshness diagnostics, phase-aware routing, resource manifests, and development-intelligence control plane",
+    "checks_passed": 14,
+    "checks_total": 14,
+    "decided_at": "2026-11-13T06:23:22Z",
+    "decision": "accepted",
+    "decision_basis": "exact_head_github_actions_validation_and_all_integrated_checks",
+    "decision_id": "759e6134391004051c97b45eebce478cc64e192d63e56aec2f5b0f45f8157bd7",
+    "phase_id": "P8",
+    "source_commit_sha": "4fa85a3206659d1389d8650e83ed23c7610a861a",
+    "validated_commit_sha": "4fa85a3206659d1389d8650e83ed23c7610a861a",
+    "workflow_run_attempt": "1",
+    "workflow_run_id": "43378257188"
+  },
+  "checks": [
+    {
+      "check_id": "P8-MAP",
+      "detail": "Phase resource-consumption map parses and validates against its versioned schema.",
+      "passed": true
+    },
+    {
+      "check_id": "P8-MANIFEST",
+      "detail": "Phase 8 resource manifest parses and validates against its versioned schema.",
+      "passed": true
+    },
+    {
+      "check_id": "P8-PHASE-COVERAGE",
+      "detail": "Catalogue includes phase status records for Phases 1–8.",
+      "passed": true
+    },
+    {
+      "check_id": "P8-EXACT-HEAD-CI",
+      "detail": "GitHub Actions validation attests the exact catalogue source commit and records its workflow run/attempt.",
+      "passed": true
+    },
+    {
+      "check_id": "P8-RESOURCE-COVERAGE",
+      "detail": "All required Phase 8 source families are represented in the catalogue.",
+      "passed": true
+    },
+    {
+      "check_id": "P8-INTEGRATED-CATALOGUE",
+      "detail": "Catalogue contains every required evidence, diagnostics, routing, and planning section.",
+      "passed": true
+    },
+    {
+      "check_id": "P8-SYSTEM-INTELLIGENCE",
+      "detail": "Cross-implementation and knowledge-layer evidence are represented, including explicit unavailable states.",
+      "passed": true
+    },
+    {
+      "check_id": "P8-DISCOVERY-COVERAGE",
+      "detail": "Every deduplicated discovery appears in the integrated priority queue.",
+      "passed": true
+    },
+    {
+      "check_id": "P8-PROPOSAL-COVERAGE",
+      "detail": "Every discovery has a corresponding review-only proposal record.",
+      "passed": true
+    },
+    {
+      "check_id": "P8-DISCOVERY-GOVERNANCE",
+      "detail": "All findings remain review-required and cannot change runtime.",
+      "passed": true
+    },
+    {
+      "check_id": "P8-PROPOSAL-GOVERNANCE",
+      "detail": "All proposals remain drafts and cannot mutate phase status, contracts, or runtime.",
+      "passed": true
+    },
+    {
+      "check_id": "P8-GLOBAL-GOVERNANCE",
+      "detail": "Catalogue confirms no runtime mutation, candidate promotion, phase-status mutation, or canonical-contract change.",
+      "passed": true
+    },
+    {
+      "check_id": "P8-WORKFLOW-OBSERVABILITY",
+      "detail": "Live workflow definitions and latest-run collection are present; failures remain evidence, not passes.",
+      "passed": true
+    },
+    {
+      "check_id": "P8-LEXICAL-EVIDENCE-BOUNDARY",
+      "detail": "PUD evidence state is explicit and candidate data cannot be promoted by the collector.",
+      "passed": true
+    }
+  ],
+  "checks_passed": 14,
+  "checks_total": 14,
+  "contract": "USG-PHASE8-INTEGRATED-ACCEPTANCE/0.1.0",
+  "governance": {
+    "automatic_acceptance_enabled": true,
+    "candidate_promotion_allowed": false,
+    "canonical_contract_mutation_allowed": false,
+    "human_acceptance_required": false,
+    "manual_override_allowed": false,
+    "phase_status_mutation_allowed": true,
+    "runtime_mutation_allowed": false
+  },
+  "limitations": [
+    "Acceptance applies only to the bounded Phase 8 development-intelligence/control-plane scope.",
+    "A passing gate establishes structural completeness and governance compliance, not semantic accuracy or AGI.",
+    "This decision does not accept other phases, promote candidate resources, modify runtime semantics, or change canonical contracts.",
+    "Naturalistic and independent semantic evaluation must be judged within their documented populations."
+  ],
+  "phase_accepted": true,
+  "status": "accepted"
+}
