@@ -42,6 +42,10 @@ jobs:
           export PLAYWRIGHT_BROWSERS_PATH="$HOME/.cache/ms-playwright"
           python -m pip install "jsonschema>=4.18,<5" "playwright>=1.48,<2"
           python -m playwright install --with-deps chromium
+      - name: Run PUD generator and structural-frequency regression tests
+        run: |
+          python -m unittest discover -s tests -p test_pud_naturalistic_pilot.py -v
+          python -m unittest discover -s tests -p test_pud_structural_frequency.py -v
       - name: Validate requested sample size
         run: |
           python - <<'PY'
@@ -64,6 +68,13 @@ jobs:
           root = Path(os.environ["RUNNER_TEMP"]) / "pud-naturalistic"
           source = json.loads((root / "source-manifest.json").read_text(encoding="utf-8"))
           generation = json.loads((root / "generation-manifest.json").read_text(encoding="utf-8"))
+          structural_path = root / "structural-frequency.json"
+          structural = json.loads(structural_path.read_text(encoding="utf-8"))
+          import hashlib
+          assert generation["structural_frequency_report"]["sha256"] == hashlib.sha256(structural_path.read_bytes()).hexdigest()
+          assert structural["contract"] == "USG-PUD-STRUCTURAL-FREQUENCY/0.1.0"
+          assert structural["interpretation_boundary"]["ud_annotations_are_usg_semantic_gold"] is False
+          assert structural["candidate_selection"]["status"] == "candidate_for_SYS09_independent_annotation"
           expected = int(os.environ["SAMPLE_PER_LANGUAGE"]) * 2 * 3
           assert generation["case_count"] == expected
           assert source["license"] == "CC BY-SA 3.0"
@@ -111,6 +122,7 @@ jobs:
           cp "$RUNNER_TEMP/pud-naturalistic/source-manifest.json" "evaluations/open-world/campaigns/$CAMPAIGN_ID/"
           cp "$RUNNER_TEMP/pud-naturalistic/LICENSE.txt" "evaluations/open-world/campaigns/$CAMPAIGN_ID/"
           cp "$RUNNER_TEMP/pud-naturalistic/ATTRIBUTION.md" "evaluations/open-world/campaigns/$CAMPAIGN_ID/"
+          cp "$RUNNER_TEMP/pud-naturalistic/structural-frequency.json" "evaluations/open-world/campaigns/$CAMPAIGN_ID/"
       - name: Upload complete naturalistic campaign artifact
         uses: actions/upload-artifact@v4
         with:
@@ -135,6 +147,7 @@ jobs:
             - License: CC BY-SA 3.0; source license and attribution are included
             - Sample: ${{ env.SAMPLE_PER_LANGUAGE }} sentences per language, target matrix across JS Workbench and bounded Phase 4/5
             - Population: naturalistic news/Wikipedia text, separate from random and controlled diagnostics
+            - Structural-frequency counts are UD syntactic proxies only; the selected adjective-modifier family is for independent annotation, not runtime promotion
             - No semantic gold is claimed; UD annotations are not used as USG semantic labels
             - Arabic PUD is translated and is not representative of native MSA distribution
             - Privacy screen and known limitations are recorded in source-manifest.json

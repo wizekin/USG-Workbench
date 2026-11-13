@@ -36,6 +36,25 @@ The privacy review is scoped to this bounded internal evaluation: no user-submit
 - The JS Workbench is English-only; Arabic cases are expected to be marked unsupported by that target, not translated.
 - Results are reported separately from randomized and controlled-diagnostic cases.
 
+## Structural-frequency diagnostics (SYS-08)
+
+The pilot generator now emits `structural-frequency.json` from the **full pinned PUD treebanks**, separately from the sampled scenario population and campaign outcome counts. It reuses the existing Phase 6 external-PUD structural extractor rather than creating a second construction parser. The report is content-hashed from `generation-manifest.json` and copied into the campaign bundle.
+
+The latest independently recorded PUD structural audit (workflow run [42987777649](https://github.com/wizekin/USG-Workbench/actions/runs/42987777649)) extracted 393 eligible contiguous structural cases: 254 English and 139 Arabic. Its construction counts were:
+
+| Structural family | English | Arabic |
+|---|---:|---:|
+| Nominal adjective modifier | 72 | 42 |
+| Genitive surface pattern | 77 | 46 |
+| Prepositional nominal modifier | 56 | 45 |
+| Temporal adverbial modifier | 5 | 6 |
+
+**Selected candidate for SYS-09 annotation:** nominal adjective modification (`en.nominal.adjective_modifier` / `ar.nominal.adjective_modifier`), with 72 English and 42 Arabic eligible cases. This is a bounded, already represented candidate family with a shared UD `amod` structural proxy and language-specific ordering to evaluate. Genitive and prepositional families have greater unresolved relation/attachment ambiguity. The selection is an annotation priority only.
+
+These counts are **eligible structural proxies**, not total raw occurrences and not semantic gold. The previous audit had zero exact candidate matches and abstained on all 114 adjective-modifier cases; that is a coverage diagnostic, not proof that the construction or its semantics are incorrect. The new report explicitly records that UD annotations are not USG semantic gold and that runtime promotion is prohibited.
+
+The PUD source population remains news/Wikipedia text, not conversational requests. Arabic PUD is translated and is not a native-MSA distribution. Structural-frequency counts must not be merged with randomized, controlled-diagnostic, or naturalistic campaign outcome denominators.
+
 ## Run locally
 
     python -m tools.open_world_evaluation.pud_naturalistic_pilot \

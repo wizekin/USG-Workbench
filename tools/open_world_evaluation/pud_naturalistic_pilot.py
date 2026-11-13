@@ -19,9 +19,10 @@ from urllib.request import Request, urlopen
 
 from .generate_scenarios import ROOT, _read_targets
 from .validate_protocol import validate_instance
+from .pud_structural_frequency import build_structural_frequency_report
 
 GENERATOR_ID = "usg-naturalistic-pud-pilot"
-GENERATOR_VERSION = "0.1.0"
+GENERATOR_VERSION = "0.2.0"
 SEED = "USG-NATURALISTIC-PUD-PILOT-0.1.0"
 LICENSE = "CC BY-SA 3.0"
 LICENSE_URL = "https://creativecommons.org/licenses/by-sa/3.0/"
@@ -54,6 +55,11 @@ SOURCES = {
 
 def _sha256(value: bytes) -> str:
     return hashlib.sha256(value).hexdigest()
+
+
+def _git_blob_sha1(value: bytes) -> str:
+    header = f"blob {len(value)}\0".encode("ascii")
+    return hashlib.sha1(header + value).hexdigest()
 
 
 def _utc_now() -> str:
@@ -280,7 +286,7 @@ def build_naturalistic_cases(
                 "content_sha256": source_file_digests[language],
                 "attribution": "Universal Dependencies contributors; see the pinned upstream README for full contributor attribution.",
                 "genre": ["news", "wikipedia"],
-                "sentence_count": 1000,
+                "sentence_count": selection_stats[language]["source_sentence_count"],
             }
             for language in ("en", "ar")
         },
@@ -337,23 +343,86 @@ def generate_pilot(
     if not targets:
         raise ValueError("at least one target must be selected")
 
+    from tools.phase6_external_pud_v0_1.run import (
+        DATASETS as PUD_DATASETS,
+        extract_gold,
+        parse_conllu,
+    )
+
     sentence_groups: dict[str, list[dict[str, str]]] = {}
     source_digests: dict[str, str] = {}
-    license_text = ""
+    structural_cases_by_language: dict[str, list[dict[str, Any]]] = {}
+    structural_dataset_metadata: dict[str, dict[str, Any]] = {}
+    license_payload: bytes | None = None
     for language, source in SOURCES.items():
+        audit_source = PUD_DATASETS.get(language)
+        if audit_source is None or any(
+            source[key] != audit_source[key] for key in ("commit", "file", "blob_sha")
+        ):
+            raise RuntimeError(f"{language} PUD source pins differ from the Phase 6 structural extractor")
         raw_url = (
             f"https://raw.githubusercontent.com/{source['repository']}/"
             f"{source['commit']}/{source['file']}"
         )
         payload = _download(raw_url)
+        actual_blob_sha = _git_blob_sha1(payload)
+        if actual_blob_sha != source["blob_sha"]:
+            raise RuntimeError(f"{language} PUD CoNLL-U Git blob SHA-1 mismatch")
         source_digests[language] = _sha256(payload)
-        sentence_groups[language] = parse_conllu_sentences(payload.decode("utf-8"))
-        if not license_text:
-            license_url = (
-                f"https://raw.githubusercontent.com/{source['repository']}/"
-                f"{source['commit']}/LICENSE.txt"
+
+        parsed = parse_conllu(payload)
+        expected_sentence_count = int(audit_source["sentences"])
+        if len(parsed) != expected_sentence_count:
+            raise RuntimeError(
+                f"{language} PUD sentence count mismatch: expected {expected_sentence_count}, got {len(parsed)}"
             )
-            license_text = _download(license_url).decode("utf-8")
+        sentence_groups[language] = [
+            {"sentence_id": item["meta"].get("sent_id"), "text": item["meta"].get("text")}
+            for item in parsed
+            if item["meta"].get("sent_id") and item["meta"].get("text")
+        ]
+        structural_cases_by_language[language] = extract_gold(parsed, language)
+        structural_dataset_metadata[language] = {
+            "repository": source["repository"],
+            "commit": source["commit"],
+            "file": source["file"],
+            "git_blob_sha1": actual_blob_sha,
+            "readme_sha1": source["readme_sha"],
+            "license_blob_sha1": source["license_blob_sha"],
+            "git_blob_sha1_verified": True,
+            "readme_blob_sha1_verified": False,
+            "license_blob_sha1_verified": False,
+            "content_sha256": source_digests[language],
+            "license": LICENSE,
+            "sentence_count": len(parsed),
+            "syntactic_word_count": sum(len(item["tokens"]) for item in parsed),
+        }
+
+        readme_url = (
+            f"https://raw.githubusercontent.com/{source['repository']}/"
+            f"{source['commit']}/README.md"
+        )
+        readme_payload = _download(readme_url)
+        if _git_blob_sha1(readme_payload) != source["readme_sha"]:
+            raise RuntimeError(f"{language} PUD README Git blob SHA-1 mismatch")
+        structural_dataset_metadata[language]["readme_blob_sha1_verified"] = True
+
+        license_url = (
+            f"https://raw.githubusercontent.com/{source['repository']}/"
+            f"{source['commit']}/LICENSE.txt"
+        )
+        current_license_payload = _download(license_url)
+        if _git_blob_sha1(current_license_payload) != source["license_blob_sha"]:
+            raise RuntimeError(f"{language} PUD LICENSE Git blob SHA-1 mismatch")
+        structural_dataset_metadata[language]["license_blob_sha1_verified"] = True
+        if license_payload is None:
+            license_payload = current_license_payload
+        elif current_license_payload != license_payload:
+            raise RuntimeError("pinned English and Arabic PUD license files differ")
+
+    if license_payload is None:
+        raise RuntimeError("no pinned PUD license file was retrieved")
+    license_text = license_payload.decode("utf-8")
 
     cases, source_manifest = build_naturalistic_cases(
         sentence_groups,
@@ -364,7 +433,21 @@ def generate_pilot(
         source_file_digests=source_digests,
         target_matrix=target_matrix,
     )
+    source_manifest["privacy_review"]["checks"].append(
+        "Pinned CoNLL-U, README, and LICENSE Git blob SHA-1 values were verified for both treebanks."
+    )
+    structural_report = build_structural_frequency_report(
+        cases_by_language=structural_cases_by_language,
+        dataset_metadata=structural_dataset_metadata,
+        generated_at=retrieved_at,
+    )
+    structural_report_payload = (
+        json.dumps(structural_report, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
+    ).encode("utf-8")
+
     output_dir.mkdir(parents=True, exist_ok=True)
+    structural_report_path = output_dir / "structural-frequency.json"
+    structural_report_path.write_bytes(structural_report_payload)
     cases_path = output_dir / "scenario-cases.jsonl"
     if cases_path.exists():
         raise FileExistsError(f"refusing to overwrite {cases_path}")
@@ -406,6 +489,11 @@ def generate_pilot(
         "target_ids": [item["component_id"] for item in targets],
         "jsonl_sha256": _sha256(payload),
         "source_manifest": "source-manifest.json",
+        "structural_frequency_report": {
+            "path": "structural-frequency.json",
+            "contract": structural_report["contract"],
+            "sha256": _sha256(structural_report_payload),
+        },
     }
     (output_dir / "generation-manifest.json").write_text(
         json.dumps(manifest, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
@@ -416,6 +504,7 @@ def generate_pilot(
         "source_manifest": str(source_manifest_path),
         "cases": str(cases_path),
         "generation_manifest": str(output_dir / "generation-manifest.json"),
+        "structural_frequency_report": str(structural_report_path),
         "license": LICENSE,
     }
 
