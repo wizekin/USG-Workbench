@@ -117,6 +117,12 @@ jobs:
           cp "$RUNNER_TEMP/pud-naturalistic/LICENSE.txt" "evaluations/open-world/campaigns/$CAMPAIGN_ID/"
           cp "$RUNNER_TEMP/pud-naturalistic/ATTRIBUTION.md" "evaluations/open-world/campaigns/$CAMPAIGN_ID/"
           cp "$RUNNER_TEMP/pud-structural-frequency-report.json" "evaluations/open-world/campaigns/$CAMPAIGN_ID/"
+          python -m tools.open_world_evaluation.pud_campaign_manifest \
+            --campaign-dir "evaluations/open-world/campaigns/$CAMPAIGN_ID" \
+            --file source-manifest.json \
+            --file LICENSE.txt \
+            --file ATTRIBUTION.md \
+            --file structural-frequency-report.json
       - name: Upload complete naturalistic campaign artifact
         uses: actions/upload-artifact@v4
         with:
