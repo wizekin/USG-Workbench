@@ -73,6 +73,11 @@ jobs:
           assert source["selection"]["ar"]["selected_count"] == int(os.environ["SAMPLE_PER_LANGUAGE"])
           print(f"Validated {generation['case_count']} naturalistic target records.")
           PY
+      - name: Compute reproducible bilingual PUD structural-frequency diagnostics
+        run: |
+          python -m tools.open_world_evaluation.pud_structural_frequency \
+            --source-manifest "$RUNNER_TEMP/pud-naturalistic/source-manifest.json" \
+            --output "$RUNNER_TEMP/pud-structural-frequency-report.json"
       - name: Execute JS Workbench and bounded Phase 4/5 targets
         run: |
           python -m tools.open_world_evaluation.execute_cases \
@@ -111,6 +116,7 @@ jobs:
           cp "$RUNNER_TEMP/pud-naturalistic/source-manifest.json" "evaluations/open-world/campaigns/$CAMPAIGN_ID/"
           cp "$RUNNER_TEMP/pud-naturalistic/LICENSE.txt" "evaluations/open-world/campaigns/$CAMPAIGN_ID/"
           cp "$RUNNER_TEMP/pud-naturalistic/ATTRIBUTION.md" "evaluations/open-world/campaigns/$CAMPAIGN_ID/"
+          cp "$RUNNER_TEMP/pud-structural-frequency-report.json" "evaluations/open-world/campaigns/$CAMPAIGN_ID/"
       - name: Upload complete naturalistic campaign artifact
         uses: actions/upload-artifact@v4
         with:
@@ -138,6 +144,7 @@ jobs:
             - No semantic gold is claimed; UD annotations are not used as USG semantic labels
             - Arabic PUD is translated and is not representative of native MSA distribution
             - Privacy screen and known limitations are recorded in source-manifest.json
+            - structural-frequency-report.json contains full-source UD syntax proxy counts only; it is not semantic gold
 
             This report measures observed coverage, abstention, and stage diagnostics only.
       - name: Enable auto-merge for the validated append-only report
@@ -153,3 +160,4 @@ jobs:
           echo "Population: naturalistic (news/Wikipedia)" >> "$GITHUB_STEP_SUMMARY"
           echo "Sample per language: $SAMPLE_PER_LANGUAGE" >> "$GITHUB_STEP_SUMMARY"
           echo "No semantic gold was claimed." >> "$GITHUB_STEP_SUMMARY"
+          echo "Structural frequencies are UD syntactic proxies only; no semantic gold is claimed." >> "$GITHUB_STEP_SUMMARY"
