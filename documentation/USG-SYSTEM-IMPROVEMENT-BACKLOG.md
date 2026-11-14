@@ -34,6 +34,7 @@ This backlog converts the system-wide assessment into bounded, dependency-ordere
 | SYS-01 | **Complete** | PR #185 merged to main; merge commit ebfcd46f85f7795f4d736178aab72270e044782c. Explicit result-record, actual-attempt, skipped-target, scenario, target, and population accounting is validated. |
 | SYS-02 | **Complete for registered Phase 4/5 profiles** | PR #185 added accounting and initial attribution; PR #188 added diagnostic-code counts, resource fingerprints, and strict pipeline-version matching before applying a dependency profile. |
 | SYS-07 | **Complete for registered Phase 4/5 profiles** | PR #186 merged to main; merge commit 39fd60d2c9ab4089820a7441a29d90aa957cac3a. Phase-specific DAG dependencies preserve parallel blockers and avoid a false global linear order. |
+| SYS-08 | **Initial structural-frequency diagnostics on isolated branch; full campaign/CI acceptance pending** | Branch `automation/sys-08-pud-structural-frequency-2026-11-13` adds pinned bilingual PUD source/hash checks, privacy-screened and deduplicated UD proxy counts, regression tests, and campaign artifact integration. Eight targeted local harness tests pass; full repository CI and the first naturalistic campaign have not run. Relative-clause attachment remains candidate-only. |
 | SYS-14 | **Initial implementation merged; corpus-wide replay remains open** | PR #187 adds pinned replay, target-result comparison, explicit volatile-field policy, and CI smoke replay. Full automatic replay of every accepted repair and frozen failure corpus remains a follow-up acceptance step. |
 | SYS-12 | **Initial inventory complete; cross-runtime conformance not yet tested** | PR #192 publishes component evidence and five explicit cross-runtime acceptance gates. It deliberately does not claim semantic equivalence. |
 | SYS-13 | **Complete for Phase 5 Kernel Lab explanations** | PR #191 merged; stage guide, first diagnostic location, statuses, source spans, resource version/hash, and expandable stage artifacts are displayed separately from the raw envelope. |
@@ -58,14 +59,15 @@ These are implementation states, not claims that USG's semantic accuracy has imp
 
 ## Current execution sequence
 
-1. **SYS-03 — naturalistic pilot:** validate and run the pinned English/Arabic PUD news/Wikipedia population. It is naturalistic text, not conversational requests; Arabic is translated and no semantic gold is claimed.
-2. **SYS-16 — bounded repair executor:** automate deterministic infrastructure, report, and regression-test repairs in isolated branches with exact replay and PR checks. Do not auto-promote semantic rules or candidate resources.
-3. **SYS-08 + SYS-09 — construction pilot and independent evidence:** select one bilingual construction using measured gaps and report synthetic, structural, and naturalistic evidence as separate populations.
-4. **SYS-17 — candidate semantic/lexical growth:** use measured failure clusters to generate candidate resources and construction proposals, then require held-out independent acceptance.
-5. **SYS-12 — cross-runtime gates:** build the shared frozen corpus and compare JS/Python outputs without treating agreement as semantic truth.
+1. **SYS-08 — bilingual PUD structural-frequency diagnostics and bounded construction selection:** compute reproducible full-source syntactic UD proxy counts, keep them separate from semantic gold, then select one bounded construction using measured bilingual evidence. Relative-clause attachment is the current candidate only.
+2. **SYS-09 — independent construction-level evidence and acceptance:** define annotation units, positive/negative/ambiguous/boundary cases, adjudication, provenance, held-out splits, and per-language thresholds before any semantic rule promotion.
+3. **SYS-16 — bounded automatic repair executor:** automate deterministic CI, reporting, packaging, and regression-fixture repairs in isolated branches with replay; never auto-promote semantic rules or candidate resources.
+4. **SYS-17 — candidate semantic/lexical growth:** generate candidate resources from measured failure clusters and require source licensing, ambiguity tests, independent gold, held-out evaluation, and rollback.
+5. **SYS-12 — cross-runtime conformance:** freeze shared fixtures and run JS/Python implementations separately. Agreement is not semantic correctness.
+6. **SYS-14 — full deterministic replay:** extend replay to accepted repairs and the frozen failure corpus.
+7. **SYS-10/11 — Phase 6 rights, independent-gold, and annotation prerequisites:** continue when access, rights, and annotation prerequisites are available.
 
-The completed SYS-04 browser adapter now makes the JS Workbench observable in Open-World campaigns. Its current profile is English-only and uses the deterministic local rule fallback. The SYS-15 planner is the first unattended whole-system growth coordinator; it currently produces a ranked plan, not code changes.
-
+SYS-03's pinned PUD generator and weekly workflow exist, but the first full 50-per-language campaign is still pending. Do not count the naturalistic population as established until its complete campaign artifact and publication/report behavior are verified. The JS Workbench remains English-only and uses its deterministic local rule fallback; browser execution establishes UI execution and structured output only.
 
 ## Phase 6 Step 6.6 follow-up status — 2026-11-12
 
