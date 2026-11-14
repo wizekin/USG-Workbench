@@ -51,6 +51,8 @@ UD POS and dependency labels are syntactic annotations. They are not independent
 
 The analyzer reports the full pinned source population separately from the pilot's sampled campaign cases. Do not combine these frequency counts with randomized or controlled-diagnostic campaign outcome rates.
 
+The workflow also adds the source manifest, license, attribution, and structural-frequency report to the append-only campaign bundle manifest after the campaign pipeline creates the core bundle. This makes the auxiliary evidence files part of the same size/hash inventory.
+
 ## Rollback
 
-This branch adds a diagnostic module, its tests, documentation, and a workflow artifact step only. It does not change runtime semantics, lexical resources, gold labels, thresholds, or canonical contracts. Revert the branch commits or discard the branch to remove the proposal.
+This branch adds diagnostic modules, their tests, documentation, and a workflow artifact step only. It does not change runtime semantics, lexical resources, gold labels, thresholds, or canonical contracts. Revert the branch commits or discard the branch to remove the proposal.
