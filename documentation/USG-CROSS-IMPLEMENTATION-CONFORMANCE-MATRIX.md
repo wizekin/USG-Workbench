@@ -1,7 +1,7 @@
 # USG Cross-Implementation Conformance Matrix
 
 **Contract:** `USG-CROSS-IMPLEMENTATION-MATRIX/0.1.0`  
-**Snapshot:** 2026-11-12  
+**Snapshot:** 2026-11-14  
 **Status:** inventory published; shared cross-runtime conformance has not yet been demonstrated.
 
 ## Why this matrix exists
@@ -19,7 +19,7 @@ The machine-readable source of truth is `evaluations/system-wide/cross-implement
 
 | Implementation | Demonstrated component scope | Important limit |
 |---|---|---|
-| JavaScript Semantic Workbench v0.5.4 | Browser workbench and its own semantic-model tests | Its v0.5 record schema is not proof of USG-SEM/1.0 interchange; Open-World browser execution is still missing |
+| JavaScript Semantic Workbench v0.5.4 | Browser workbench and its own semantic-model tests; 20 English Open-World cases executed through Chromium/Playwright in [run 43549135187](https://github.com/wizekin/USG-Workbench/actions/runs/43549135187) | English-only deterministic local rule fallback; browser/UI execution and structured output are not semantic correctness or USG-SEM/1.0 interchange evidence; Arabic remains unsupported |
 | Python kernel v0.7.0 | USG-SEM/1.0 document adapter and native Mention model | No shared frozen test currently proves semantic equivalence with JavaScript |
 | Python Phase 5 interpreter USG-INTERPRET/0.2.0 | Bounded bilingual lexical-to-discourse pipeline and stage diagnostics | Bounded construction benchmarks do not establish broad language understanding or equivalence with JS |
 | External lexical candidate adapter | Provenance-preserving candidate package and candidate-only validation | It is deliberately not a runtime lexicon and cannot promote candidate data |
