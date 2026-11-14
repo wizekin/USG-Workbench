@@ -1,0 +1,100 @@
+{
+  "conflicting_batch_numbers": [],
+  "consistency_status": "matched",
+  "duplicate_physical_copy_count": 1,
+  "file_count": 14,
+  "files": [
+    {
+      "git_blob_sha1": "af191bfeb261429eb0c87fd2fee851b169675660",
+      "path": "enwiktionary-2026-10-01-raw-244dcdc56868/batch-000001-43092728803-1.jsonl.gz",
+      "sha256": "f7c92d9430b02f65e33ad3e46b3526369f3ce79fb8866957510d0029a3f3b56c",
+      "size_bytes": 17292
+    },
+    {
+      "git_blob_sha1": "b1f333a82d7df9c8c20ab9bf338f465431ec52ea",
+      "path": "enwiktionary-2026-10-01-raw-244dcdc56868/batch-000002-43093479847-1.jsonl.gz",
+      "sha256": "fb9bb24221a70e1f94a78b5565c2c2df9a2c559eb78bcba84c2a478e128051f0",
+      "size_bytes": 55973
+    },
+    {
+      "git_blob_sha1": "b1f333a82d7df9c8c20ab9bf338f465431ec52ea",
+      "path": "enwiktionary-2026-10-01-raw-244dcdc56868/batch-000002-43094020466-1.jsonl.gz",
+      "sha256": "fb9bb24221a70e1f94a78b5565c2c2df9a2c559eb78bcba84c2a478e128051f0",
+      "size_bytes": 55973
+    },
+    {
+      "git_blob_sha1": "42aa2da03d31a6e6087171d06cca7ce019ee899e",
+      "path": "enwiktionary-2026-10-01-raw-244dcdc56868/batch-000003-43102113033-1.jsonl.gz",
+      "sha256": "54244354cd788066797aff4b58ce6e55fc4235c8ef80fdf281c391a34f9edfe7",
+      "size_bytes": 55996
+    },
+    {
+      "git_blob_sha1": "916810701e05f9d7551a86362391a34b2c3101ce",
+      "path": "enwiktionary-2026-10-01-raw-244dcdc56868/batch-000004-43104585537-1.jsonl.gz",
+      "sha256": "d266a6381654c2dd887fe0a928f87ec870851821537ba8076eee983021df3ba2",
+      "size_bytes": 64651
+    },
+    {
+      "git_blob_sha1": "1aeaa69d72c14f8a4bd16d66c1a1d46edbd7a2fd",
+      "path": "enwiktionary-2026-10-01-raw-244dcdc56868/batch-000005-43136279741-1.jsonl.gz",
+      "sha256": "07c14bc2fb385225513471682c689adc0fa258a08c93675c489b5eefd03e27e3",
+      "size_bytes": 7660763
+    },
+    {
+      "git_blob_sha1": "65b2160627c01f448949f399ea26960e6969e5cb",
+      "path": "enwiktionary-2026-10-01-raw-244dcdc56868/batch-000006-43177652622-1.jsonl.gz",
+      "sha256": "8231386ffff296f9402d3e308672e7668b337e14d1944ea215187fd7c1a0294c",
+      "size_bytes": 7445502
+    },
+    {
+      "git_blob_sha1": "f67c0b7073680ff0ad47d2aa992805de209a4393",
+      "path": "enwiktionary-2026-10-01-raw-244dcdc56868/batch-000007-43229640274-1.jsonl.gz",
+      "sha256": "f0058ad4584105452629cfa9e77856af66381d81644f53377a6ef5d69845c62f",
+      "size_bytes": 7618030
+    },
+    {
+      "git_blob_sha1": "b234d373f2166e20793c6f1a0b2d988c8601fd62",
+      "path": "enwiktionary-2026-10-01-raw-244dcdc56868/batch-000008-43289535111-1.jsonl.gz",
+      "sha256": "e0ad60f677dacb00ca15b4bc36615294396219a35ddd1c522ba1c472615389bc",
+      "size_bytes": 7678440
+    },
+    {
+      "git_blob_sha1": "3de4d41fd3ba75a94b6c8bf8c1bfdcfefcdd6e19",
+      "path": "enwiktionary-2026-10-01-raw-244dcdc56868/batch-000009-43346117071-1.jsonl.gz",
+      "sha256": "05ef0c38b3d41d8510f9d6863402a00644425d387e6aef6702a55aa8df0081e4",
+      "size_bytes": 7752907
+    },
+    {
+      "git_blob_sha1": "7f63ddd1bc63ee83aa5af2a35d5c1c55e4256591",
+      "path": "enwiktionary-2026-10-01-raw-244dcdc56868/batch-000010-43387960680-1.jsonl.gz",
+      "sha256": "33cc5bfc952d1cbcd573cf8c25f6a3a7bf1475a7f1741cc96e1b2c28f349a909",
+      "size_bytes": 7746582
+    },
+    {
+      "git_blob_sha1": "be9e02662eaa433b310fc4ca5b2c789e459af0a6",
+      "path": "enwiktionary-2026-10-01-raw-244dcdc56868/batch-000011-43435270691-1.jsonl.gz",
+      "sha256": "65800bedb9533826ab36ac93d298bba955b56e4a6f3d30dc5dd19d6942dbd830",
+      "size_bytes": 7601547
+    },
+    {
+      "git_blob_sha1": "3ab7c855e2dfcf7e3f295c5a3e1775231cebcd6a",
+      "path": "enwiktionary-2026-10-01-raw-244dcdc56868/batch-000012-43491750033-1.jsonl.gz",
+      "sha256": "b79da0e29c9d2ffb357922103b9eaf24637466006dcce65e7744cdac3b268e9b",
+      "size_bytes": 7645676
+    },
+    {
+      "git_blob_sha1": "1a2612fdfd29f930a226c14f83cec6fe2e5da2c3",
+      "path": "enwiktionary-2026-10-01-raw-244dcdc56868/batch-000013-43540962616-1.jsonl.gz",
+      "sha256": "e64945a617f94d4350554a7ab8b3fe03fe75bcebbcbcf773f025985754b62d8a",
+      "size_bytes": 7846629
+    }
+  ],
+  "logical_batch_count": 13,
+  "manifest_batch_count": 13,
+  "matches_manifest": true,
+  "physical_file_count": 14,
+  "snapshot_id": "enwiktionary-2026-10-01-raw-244dcdc56868",
+  "status": "available",
+  "total_size_bytes": 69245961,
+  "unrecognized_paths": []
+}
