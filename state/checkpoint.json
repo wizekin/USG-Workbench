@@ -1,11 +1,11 @@
 {
-  "batch_number": 12,
+  "batch_number": 13,
   "cycle_number": 1,
   "entry_index": 779,
   "expected_headwords": 1396111,
   "failed_headwords": 198,
   "failed_pages": 0,
-  "page_index": 241,
+  "page_index": 271,
   "pages": [
     "dictionary/browse/a/0001.md",
     "dictionary/browse/a/0002.md",
@@ -1416,9 +1416,9 @@
     "dictionary/browse/_/0004.md",
     "dictionary/browse/_/0005.md"
   ],
-  "processed_entries": 258334,
-  "processed_headwords": 240602,
-  "processed_senses": 313480,
+  "processed_entries": 290671,
+  "processed_headwords": 270602,
+  "processed_senses": 353563,
   "recovered_headwords": 198,
   "retried_headwords": 198,
   "retry_dead_letter_headwords": 0,
@@ -1430,6 +1430,6 @@
   "source_repository": "figueirego/english-dictionary",
   "source_snapshot_id": "enwiktionary-2026-10-01-raw-244dcdc56868",
   "status": "in_progress",
-  "stored_bytes": 61399332,
-  "updated_at": "2026-11-13T23:40:17.143113+00:00"
+  "stored_bytes": 69245961,
+  "updated_at": "2026-11-14T05:39:50.486778+00:00"
 }
