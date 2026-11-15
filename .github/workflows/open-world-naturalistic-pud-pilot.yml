@@ -151,6 +151,7 @@ jobs:
 
             This report measures observed coverage, abstention, and stage diagnostics only.
       - name: Enable auto-merge for the validated append-only report
+        id: request-auto-merge
         if: steps.create-report-pr.outputs.pull-request-number != ''
         continue-on-error: true
         env:
@@ -166,7 +167,13 @@ jobs:
           echo "Bilingual structural-frequency diagnostics: structural-frequency.json (UD proxies only)" >> "$GITHUB_STEP_SUMMARY"
           if [ -n "${{ steps.create-report-pr.outputs.pull-request-number }}" ]; then
             echo "Report PR: ${{ steps.create-report-pr.outputs.pull-request-number }}" >> "$GITHUB_STEP_SUMMARY"
-            echo "Auto-merge requested; verify the resulting PR state separately." >> "$GITHUB_STEP_SUMMARY"
+            if [ "${{ steps.request-auto-merge.outcome }}" = "success" ]; then
+              echo "Auto-merge request accepted; verify the merge commit after required checks." >> "$GITHUB_STEP_SUMMARY"
+            elif [ "${{ steps.request-auto-merge.outcome }}" = "failure" ]; then
+              echo "Auto-merge request failed; verify repository auto-merge settings and required checks." >> "$GITHUB_STEP_SUMMARY"
+            else
+              echo "Auto-merge step was not executed; verify the PR state manually." >> "$GITHUB_STEP_SUMMARY"
+            fi
           elif [ "${{ steps.create-report-pr.outcome }}" = "failure" ]; then
             echo "Report branch: reports/naturalistic-pud-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" >> "$GITHUB_STEP_SUMMARY"
             echo "PR creation failed; artifact upload remains available. Inspect repository Actions permissions before publication." >> "$GITHUB_STEP_SUMMARY"
