@@ -1,6 +1,6 @@
 {
   "contract": "USG-CROSS-IMPLEMENTATION-MATRIX/0.1.0",
-  "assessment_date": "2026-11-12",
+  "assessment_date": "2026-11-15",
   "purpose": "Separate component-level evidence from actual cross-implementation conformance. No row marked component_tested implies that another implementation produces equivalent output.",
   "canonical_semantic_contract": "USG-SEM/1.0",
   "implementations": [
@@ -29,11 +29,12 @@
         },
         {
           "id": "open_world_browser_execution",
-          "status": "blocked_missing_browser_adapter",
+          "status": "component_tested",
           "evidence": [
-            "documentation/USG-SYSTEM-WIDE-CAPABILITY-ASSESSMENT-2026-11-12.md"
+            "tools/open_world_evaluation/browser_adapter.py",
+            "tests/test_open_world_browser.py"
           ],
-          "notes": "The prior Open-World campaign did not execute this browser-only target."
+          "notes": "OWC-OW7 run 43670079717 records Playwright adapter v0.1.0 and Chromium 159.0.8154.6 execution. The target is English-only and uses the deterministic local rule fallback; this establishes browser/UI execution and structured output only, not semantic correctness or cross-runtime equivalence."
         }
       ]
     },
