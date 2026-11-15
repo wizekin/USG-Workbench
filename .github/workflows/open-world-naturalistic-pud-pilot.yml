@@ -128,6 +128,7 @@ jobs:
           retention-days: 90
       - name: Publish licensed naturalistic campaign through append-only PR
         id: create-report-pr
+        continue-on-error: true
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -157,9 +158,19 @@ jobs:
           PR_NUMBER: ${{ steps.create-report-pr.outputs.pull-request-number }}
         run: gh pr merge "$PR_NUMBER" --auto --squash --delete-branch
       - name: Summarize naturalistic campaign
+        if: always()
         run: |
           echo "Campaign: $CAMPAIGN_ID" >> "$GITHUB_STEP_SUMMARY"
           echo "Population: naturalistic (news/Wikipedia)" >> "$GITHUB_STEP_SUMMARY"
           echo "Sample per language: $SAMPLE_PER_LANGUAGE" >> "$GITHUB_STEP_SUMMARY"
           echo "Bilingual structural-frequency diagnostics: structural-frequency.json (UD proxies only)" >> "$GITHUB_STEP_SUMMARY"
+          if [ -n "${{ steps.create-report-pr.outputs.pull-request-number }}" ]; then
+            echo "Report PR: ${{ steps.create-report-pr.outputs.pull-request-number }}" >> "$GITHUB_STEP_SUMMARY"
+            echo "Auto-merge requested; verify the resulting PR state separately." >> "$GITHUB_STEP_SUMMARY"
+          elif [ "${{ steps.create-report-pr.outcome }}" = "failure" ]; then
+            echo "Report branch: reports/naturalistic-pud-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" >> "$GITHUB_STEP_SUMMARY"
+            echo "PR creation failed; artifact upload remains available. Inspect repository Actions permissions before publication." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "No report PR was created; inspect the create-report-pr step output." >> "$GITHUB_STEP_SUMMARY"
+          fi
           echo "No semantic gold was claimed." >> "$GITHUB_STEP_SUMMARY"
