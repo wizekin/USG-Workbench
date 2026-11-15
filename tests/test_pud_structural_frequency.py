@@ -1,10 +1,14 @@
 """Frozen tests for UD-proxy PUD structural-frequency diagnostics."""
 from __future__ import annotations
 
+import hashlib
 import unittest
+from unittest.mock import patch
 
+import tools.open_world_evaluation.pud_structural_frequency as structural
 from tools.open_world_evaluation.pud_structural_frequency import (
     CONTRACT,
+    build_report,
     parse_conllu_structure,
     summarize_language,
 )
@@ -112,6 +116,71 @@ class PudStructuralFrequencyTests(unittest.TestCase):
     def test_empty_population_is_not_reported_as_zero_frequency(self):
         with self.assertRaises(ValueError):
             summarize_language([])
+
+    def test_report_validates_source_hashes_and_keeps_semantic_gold_unavailable(self):
+        payload = CONLLU.encode("utf-8")
+        blob_sha = structural._git_blob_sha1(payload)
+        content_sha = hashlib.sha256(payload).hexdigest()
+        fake_sources = {
+            language: {
+                "repository": f"UniversalDependencies/UD_{language.upper()}-PUD",
+                "commit": f"pinned-{language}",
+                "file": f"{language}_pud-ud-test.conllu",
+                "blob_sha": blob_sha,
+            }
+            for language in ("en", "ar")
+        }
+        manifest = {
+            "license": "CC BY-SA 3.0",
+            "dataset_id": "UD-PUD-EN-AR",
+            "retrieved_at": "2026-11-15T00:00:00Z",
+            "semantic_gold": {"available": False},
+            "privacy_review": {"status": "approved_for_bounded_internal_evaluation"},
+            "sources": {
+                language: {
+                    **fake_sources[language],
+                    "content_sha256": content_sha,
+                    "sentence_count": 7,
+                }
+                for language in ("en", "ar")
+            },
+        }
+        with patch.object(structural, "SOURCES", fake_sources):
+            report = build_report({"en": payload, "ar": payload}, manifest, generated_at="2026-11-15T00:00:00Z")
+        self.assertEqual(report["contract"], CONTRACT)
+        self.assertFalse(report["semantic_gold"]["available"])
+        self.assertEqual(report["languages"]["en"]["sentence_count"], 7)
+        self.assertEqual(report["languages"]["ar"]["sentence_count"], 7)
+        self.assertNotIn("text", report["languages"]["en"])
+
+    def test_report_rejects_source_manifest_hash_mismatch(self):
+        payload = CONLLU.encode("utf-8")
+        blob_sha = structural._git_blob_sha1(payload)
+        fake_sources = {
+            language: {
+                "repository": f"UniversalDependencies/UD_{language.upper()}-PUD",
+                "commit": f"pinned-{language}",
+                "file": f"{language}_pud-ud-test.conllu",
+                "blob_sha": blob_sha,
+            }
+            for language in ("en", "ar")
+        }
+        manifest = {
+            "license": "CC BY-SA 3.0",
+            "semantic_gold": {"available": False},
+            "privacy_review": {"status": "approved_for_bounded_internal_evaluation"},
+            "sources": {
+                language: {
+                    **fake_sources[language],
+                    "content_sha256": "0" * 64,
+                    "sentence_count": 7,
+                }
+                for language in ("en", "ar")
+            },
+        }
+        with patch.object(structural, "SOURCES", fake_sources):
+            with self.assertRaisesRegex(ValueError, "SHA-256 differs"):
+                build_report({"en": payload, "ar": payload}, manifest)
 
     def test_report_contract_is_explicitly_syntactic_not_semantic_gold(self):
         self.assertEqual(CONTRACT, "USG-PUD-STRUCTURAL-FREQUENCY/0.1.0")
