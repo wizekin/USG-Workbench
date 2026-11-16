@@ -62,19 +62,47 @@ The campaign artifact was uploaded and its report branch was pushed as `reports/
 
 The first campaign has no `structural-frequency.json`: it ran before the branch workflow change. This branch's updated workflow adds the diagnostic and publication-failure reporting, but that workflow has not yet completed a full campaign. Do not reuse the first campaign's execution results as proof that the new diagnostic ran.
 
-## Construction selection policy
+## Measured full-treebank frequencies — 2026-11-16
 
-The report deliberately does not automatically select or promote a construction. After a full campaign using this branch produces a verified bilingual structural-frequency artifact:
-1. compare per-language sentence frequencies and instance counts;
-2. identify one bounded construction whose evidence is meaningful in both populations or explicitly record the language imbalance;
-3. inspect the existing USG syntax, composition, operator, and discourse interfaces before proposing work;
-4. freeze positive, negative, ambiguous, and attachment-boundary fixtures;
-5. define independent construction-level semantic gold and adjudication under SYS-09 before any semantic rule promotion.
+A manual reproduction was completed against the exact pinned CoNLL-U blobs. Both Git blob SHA-1 and content SHA-256 matched the campaign source manifest. The full machine-readable report is [pud-structural-frequency-manual-2026-11-16.json](../evaluations/system-wide/pud-structural-frequency-manual-2026-11-16.json).
 
-A high UD frequency alone is not a reason to expand runtime behavior.
+| UD proxy | English sentences / instances per 1,000 | Arabic sentences / instances per 1,000 |
+|---|---:|---:|
+| Relative-clause attachment | 193 / 211 | 265 / 319 |
+| Active transitive root | 295 / 295 | 241 / 241 |
+| Copular predicate | 286 / 319 | 93 / 95 |
+| Clause complement (`ccomp` or `xcomp`) | 348 / 453 | 349 / 437 |
+| Passive root | 141 / 141 | 85 / 85 |
+| Adverbial clause | 241 / 294 | 274 / 315 |
+| Coordination (`conj`) | 428 / 634 | 440 / 661 |
+
+Denominators are 1,000 sentences per language (21,180 English syntactic word tokens; 20,747 Arabic). These are descriptive counts from the pinned PUD test treebanks, not population estimates.
+
+The actual naturalistic campaign used 50 unique sentences per language, repeated across three targets (300 target records total). On those same source sentences, the combined clause-complement proxy appeared in 18/50 English sentences (23 instances) and 16/50 Arabic sentences (18 instances). The `ccomp` and `xcomp` subtypes both occurred in both languages, but their balance differs; preserve the subtype as a separate stratum.
+
+## Candidate construction selection
+
+**Selected for independent annotation/evaluation design only:** `clause_complement.ccomp_xcomp`.
+
+Reasons:
+1. Full-treebank sentence presence is closely balanced (34.8% English; 34.9% Arabic).
+2. The actual 50-sentence-per-language naturalistic sample is also reasonably balanced (36% English; 32% Arabic).
+3. Both `ccomp` and `xcomp` occur in both languages, so a bounded evaluation can explicitly test the distinction rather than treating the labels as interchangeable.
+4. The current accepted Phase 4 interpreter has only tiny SVO/VSO patterns, while the Phase 5 roadmap documents no nested or multi-clause syntax.
+5. The existing Phase 6 continuation item P6-CONT-02 already covers broader embedded/subordinate/relative/argument-gap attachment; SYS-09 should supply its independent evidence path rather than duplicate runtime functionality.
+
+The broader `conj` frequency is higher, but it mixes phrase-level and clause-level coordination and is not a sufficiently specific proxy for one clause-level semantic construction. Clause complement is therefore the more bounded initial candidate.
+
+This selection is **CANDIDATE_ONLY**. Frequency does not establish semantic correctness, and no runtime rule or semantic relation is enabled.
+
+The first naturalistic campaign (run [43810018720](https://github.com/wizekin/USG-Workbench/actions/runs/43810018720)) still has 300 actual attempts (4 completed, 245 partial, 51 unsupported), 100 lexical and 99 syntax first blockers, and zero semantic-scored attempts. Its campaign artifact did not contain `structural-frequency.json`; the manual full-treebank report is separate from that campaign artifact.
 
 ## Verification status
 
-The new unit fixtures cover parser behavior, multiword/empty-node exclusion, separate sentence and instance denominators, active/passive distinction, malformed input, empty-population handling, source-hash reconciliation, and the explicit no-semantic-gold boundary.
-
-No GitHub Actions run has tested this branch's workflow or test suite. The branch contains eight unit tests, but their presence is not a CI pass. Passing these unit tests would be component-level diagnostic verification only. SYS-08 remains evidence-incomplete until the branch tests pass and a full campaign produces the bilingual structural-frequency artifact.
+- Both pinned source Git blob SHA-1 values and content SHA-256 values were verified against the PUD campaign source manifest.
+- The seven documented UD proxy rules were manually reproduced over the full pinned English and Arabic CoNLL-U sources; the report contains exact denominators and source hashes.
+- The report is a manual analysis artifact, **not** a GitHub Actions run and not execution evidence for the branch's Python module.
+- The branch contains eight unit tests, but no GitHub Actions run has tested this branch's workflow or test suite. Their presence is not a CI pass.
+- The first full naturalistic campaign ran on main before the SYS-08 workflow integration and has no structural-frequency artifact.
+- SYS-08 has completed the full-treebank frequency measurement and candidate selection. It remains incomplete until the branch tests/workflow are executed, a full campaign emits the structural-frequency artifact, and positive/negative/ambiguous/boundary fixtures are frozen.
+- No independent semantic gold exists for this construction. No semantic runtime, lexical resource, or canonical contract was changed.
