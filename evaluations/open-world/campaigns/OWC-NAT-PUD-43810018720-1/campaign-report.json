@@ -1,0 +1,733 @@
+{
+  "artifacts": [
+    {
+      "name": "scenario-cases.jsonl",
+      "sha256": "d22caf95e747e7034c2a77036e5b9f86433ba23e695ab7fa447e52525958818d",
+      "uri": "scenario-cases.jsonl"
+    },
+    {
+      "name": "execution-results.jsonl",
+      "sha256": "4a211a38bbb2454a625c11aef9b21dfce7e5d88bb3f0799cd4bf50d5d2fabbc8",
+      "uri": "execution-results.jsonl"
+    },
+    {
+      "name": "score-results.jsonl",
+      "sha256": "f632a62b5c79c16df2cfb87617aece6d4b33f1b51ee50e03387329161676c126",
+      "uri": "score-results.jsonl"
+    },
+    {
+      "name": "generation-manifest.json",
+      "sha256": "14472c196229d34f51adb2bc55fce1b3b7f55a0321bc4b32706e5a2b2fa2cca4",
+      "uri": "generation-manifest.json"
+    },
+    {
+      "name": "coverage-ledger.json",
+      "sha256": "399bf1485eaab8ea54f47dc4c1c3b67657de6b3a3e5cd678a91abf486ee695e9",
+      "uri": "coverage-ledger.json"
+    }
+  ],
+  "attempted": 300,
+  "campaign_id": "OWC-NAT-PUD-43810018720-1",
+  "completed": 4,
+  "coverage": {
+    "adaptive_candidate_new_cluster_count": 0,
+    "adaptive_failure_cluster_count": 0,
+    "adaptive_followup_case_count": 0,
+    "adaptive_history_campaign_count": 0,
+    "case_count": 300,
+    "complete_population_coverage": false,
+    "execution_accounting": {
+      "accounting_version": "1.0.0",
+      "actual_attempt_count": 300,
+      "legacy_attempted_field_definition": "execution_result_record_count_including_not_executed",
+      "not_executed_record_count": 0,
+      "result_record_count": 300,
+      "scenario_count": 300,
+      "scenario_count_only_not_executed": 0,
+      "scenario_count_with_actual_attempt": 300,
+      "scenario_count_with_multiple_result_records": 0,
+      "scenario_count_with_result_record": 300,
+      "scenario_count_without_result_record": 0,
+      "target_accounting": [
+        {
+          "actual_attempt_count": 100,
+          "not_executed_record_count": 0,
+          "result_record_count": 100,
+          "scenario_count_only_not_executed": 0,
+          "scenario_count_with_actual_attempt": 100,
+          "scenario_count_with_result": 100,
+          "target_id": "js-semantic-workbench-v054"
+        },
+        {
+          "actual_attempt_count": 100,
+          "not_executed_record_count": 0,
+          "result_record_count": 100,
+          "scenario_count_only_not_executed": 0,
+          "scenario_count_with_actual_attempt": 100,
+          "scenario_count_with_result": 100,
+          "target_id": "phase4-bounded-interpreter"
+        },
+        {
+          "actual_attempt_count": 100,
+          "not_executed_record_count": 0,
+          "result_record_count": 100,
+          "scenario_count_only_not_executed": 0,
+          "scenario_count_with_actual_attempt": 100,
+          "scenario_count_with_result": 100,
+          "target_id": "phase5-bounded-interpreter"
+        }
+      ]
+    },
+    "execution_result_count": 300,
+    "failure_cluster_count": 8,
+    "language_hint_counts": {
+      "ar": 150,
+      "en": 150
+    },
+    "population_case_counts": {
+      "naturalistic": 300
+    },
+    "scope_ledger": {
+      "candidate_new_generator_families": [],
+      "candidate_new_taxonomy_labels": [
+        "naturalistic_news_wiki"
+      ],
+      "entrypoint_exercised_component_count": 3,
+      "inventory_component_count": 11,
+      "not_executed_only_component_ids": [],
+      "not_registered_component_ids": [],
+      "registered_target_profile_count": 11,
+      "unclassified_case_count": 300
+    },
+    "scored_attempt_count": 300,
+    "semantic_scored_attempt_count": 0,
+    "stage_attribution": {
+      "analyzed_actual_attempt_count": 300,
+      "attribution_basis": "target_specific_dependency_dag_ancestry",
+      "attribution_version": "2.0.0",
+      "breakdown_by_target_population_language": [
+        {
+          "first_blocking_stage_counts": {
+            "syntax": 49
+          },
+          "language": "ar",
+          "pipeline_version": "usg-interpretation/0.1.0",
+          "population": "naturalistic",
+          "resource_fingerprint": "stage-refs:c0dc48196f0e57ba3d4ef0d150250db96bf4815102d039dfbdd6bf93d9c52a2a",
+          "target_id": "phase4-bounded-interpreter"
+        },
+        {
+          "first_blocking_stage_counts": {
+            "syntax": 50
+          },
+          "language": "en",
+          "pipeline_version": "usg-interpretation/0.1.0",
+          "population": "naturalistic",
+          "resource_fingerprint": "stage-refs:c0dc48196f0e57ba3d4ef0d150250db96bf4815102d039dfbdd6bf93d9c52a2a",
+          "target_id": "phase4-bounded-interpreter"
+        },
+        {
+          "first_blocking_stage_counts": {
+            "lexical": 50
+          },
+          "language": "ar",
+          "pipeline_version": "phase5-interpretation-integration/0.3.0",
+          "population": "naturalistic",
+          "resource_fingerprint": "manifest:76e83880e7932135390553a1becd26b532fc569893882dda068e6f09076aaf3f",
+          "target_id": "phase5-bounded-interpreter"
+        },
+        {
+          "first_blocking_stage_counts": {
+            "lexical": 50
+          },
+          "language": "en",
+          "pipeline_version": "phase5-interpretation-integration/0.3.0",
+          "population": "naturalistic",
+          "resource_fingerprint": "manifest:76e83880e7932135390553a1becd26b532fc569893882dda068e6f09076aaf3f",
+          "target_id": "phase5-bounded-interpreter"
+        }
+      ],
+      "causality_warning": "A first blocker is an observed diagnostic with no other blocked declared ancestor. Parallel first blockers are retained. Dependency-related later blockers are co-occurrences, not proof that an upstream failure caused them.",
+      "dependency_related_later_stage_counts": {
+        "discourse": 20,
+        "operators": 14,
+        "semantic_composition": 199,
+        "syntax": 100
+      },
+      "dependency_related_later_stage_diagnostic_counts": {
+        "discourse": {
+          "DISCOURSE_ANTECEDENT_UNRESOLVED": 20,
+          "STAGE_STATUS_PARTIAL": 20
+        },
+        "operators": {
+          "OPERATOR_INCOMPLETE": 14,
+          "STAGE_STATUS_PARTIAL": 14
+        },
+        "semantic_composition": {
+          "SEMANTIC_CLAUSE_UNRESOLVED": 100,
+          "STAGE_STATUS_PARTIAL": 100,
+          "STAGE_STATUS_UNRESOLVED": 99,
+          "UNRESOLVED": 99
+        },
+        "syntax": {
+          "STAGE_STATUS_PARTIAL": 100,
+          "SYNTAX_INCOMPLETE": 100
+        }
+      },
+      "example_case_ids_by_first_blocking_stage": {
+        "lexical": [
+          "OW-NAT-PUD-EN-36E190990EDA",
+          "OW-NAT-PUD-EN-36261ADF8775",
+          "OW-NAT-PUD-EN-4E18A1351ECC",
+          "OW-NAT-PUD-EN-737B2EF35BCB",
+          "OW-NAT-PUD-EN-B8421ACCCA4D",
+          "OW-NAT-PUD-EN-DAA8F9887823",
+          "OW-NAT-PUD-EN-721DFAE8593C",
+          "OW-NAT-PUD-EN-8E291108E994"
+        ],
+        "syntax": [
+          "OW-NAT-PUD-EN-C6392CCFE970",
+          "OW-NAT-PUD-EN-5B4927D02ADE",
+          "OW-NAT-PUD-EN-052C65529111",
+          "OW-NAT-PUD-EN-9123779F81EF",
+          "OW-NAT-PUD-EN-E7BBE13ECB82",
+          "OW-NAT-PUD-EN-3516123D7E17",
+          "OW-NAT-PUD-EN-9236EF8EC641",
+          "OW-NAT-PUD-EN-1F5385604F61"
+        ]
+      },
+      "first_blocking_diagnostic_counts": {
+        "lexical": {
+          "LEXICAL_UNRESOLVED_TOKEN": 100,
+          "STAGE_STATUS_PARTIAL": 100
+        },
+        "syntax": {
+          "INCOMPLETE": 99,
+          "STAGE_STATUS_INCOMPLETE": 99
+        }
+      },
+      "first_blocking_stage_counts": {
+        "lexical": 100,
+        "syntax": 99
+      },
+      "not_executed_record_count_excluded": 0,
+      "pipeline_identity_mismatch_record_counts": {},
+      "pipeline_version_mismatch_record_counts": {},
+      "profiles": {
+        "phase4-bounded-interpreter": {
+          "pipeline_contract": "USG-INTERPRET/0.1.0",
+          "pipeline_version": "usg-interpretation/0.1.0",
+          "stages": {
+            "discourse": {
+              "depends_on": [
+                "lexical",
+                "segmentation"
+              ]
+            },
+            "document_projection": {
+              "depends_on": [
+                "semantic_composition",
+                "mentions",
+                "discourse"
+              ]
+            },
+            "lexical": {
+              "depends_on": [
+                "source_ingestion"
+              ]
+            },
+            "mentions": {
+              "depends_on": [
+                "lexical"
+              ]
+            },
+            "segmentation": {
+              "depends_on": [
+                "source_ingestion"
+              ]
+            },
+            "semantic_composition": {
+              "depends_on": [
+                "lexical",
+                "syntax"
+              ]
+            },
+            "source_ingestion": {
+              "depends_on": []
+            },
+            "syntax": {
+              "depends_on": [
+                "lexical"
+              ]
+            }
+          }
+        },
+        "phase5-bounded-interpreter": {
+          "pipeline_contract": "USG-INTERPRET/0.2.0",
+          "pipeline_version": "phase5-interpretation-integration/0.3.0",
+          "stages": {
+            "discourse": {
+              "depends_on": [
+                "lexical",
+                "segmentation"
+              ]
+            },
+            "document_projection": {
+              "depends_on": [
+                "semantic_composition",
+                "discourse"
+              ]
+            },
+            "lexical": {
+              "depends_on": []
+            },
+            "operators": {
+              "depends_on": [
+                "lexical",
+                "segmentation"
+              ]
+            },
+            "segmentation": {
+              "depends_on": [
+                "lexical"
+              ]
+            },
+            "semantic_composition": {
+              "depends_on": [
+                "lexical",
+                "segmentation",
+                "operators",
+                "syntax"
+              ]
+            },
+            "syntax": {
+              "depends_on": [
+                "lexical",
+                "segmentation",
+                "operators"
+              ]
+            }
+          }
+        }
+      },
+      "records_with_blocking_diagnostics": 199,
+      "records_with_multiple_parallel_first_blockers": 0,
+      "records_without_observed_blocking_diagnostic": 101,
+      "records_without_target_result_payload": 50,
+      "resource_fingerprint_kind_counts": {
+        "resource_manifest_digest": 100,
+        "stage_resource_references": 99
+      },
+      "stage_dependency_graph_version": "1.0.0",
+      "unconfigured_target_record_counts": {},
+      "unmapped_blocking_stage_counts": {}
+    },
+    "target_case_counts": {
+      "js-semantic-workbench-v054": 100,
+      "phase4-bounded-interpreter": 100,
+      "phase5-bounded-interpreter": 100
+    },
+    "taxonomy_label_counts": {
+      "naturalistic": {
+        "naturalistic_news_wiki": 300
+      }
+    },
+    "unclassified_case_counts": {
+      "naturalistic": 300
+    },
+    "unexecuted_case_count": 0
+  },
+  "created_at": "2026-11-16T05:26:54Z",
+  "evaluator_version": "1.0.0",
+  "failure_families": [
+    {
+      "category": "interpretation_partial",
+      "count": 46,
+      "example_case_ids": [
+        "OW-NAT-PUD-EN-70BD23A86C50",
+        "OW-NAT-PUD-EN-2F0880DA6E07",
+        "OW-NAT-PUD-EN-BBD47BB455F0",
+        "OW-NAT-PUD-EN-7D8C7C6B756D",
+        "OW-NAT-PUD-EN-16B96E91B7C7"
+      ],
+      "first_seen_case_id": "OW-NAT-PUD-EN-70BD23A86C50"
+    },
+    {
+      "category": "interpretation_partial",
+      "count": 99,
+      "example_case_ids": [
+        "OW-NAT-PUD-EN-C6392CCFE970",
+        "OW-NAT-PUD-EN-5B4927D02ADE",
+        "OW-NAT-PUD-EN-052C65529111",
+        "OW-NAT-PUD-EN-9123779F81EF",
+        "OW-NAT-PUD-EN-E7BBE13ECB82"
+      ],
+      "first_seen_case_id": "OW-NAT-PUD-EN-C6392CCFE970"
+    },
+    {
+      "category": "interpretation_partial",
+      "count": 4,
+      "example_case_ids": [
+        "OW-NAT-PUD-EN-737B2EF35BCB",
+        "OW-NAT-PUD-EN-416288F1709B",
+        "OW-NAT-PUD-EN-AE4528DDA3BE",
+        "OW-NAT-PUD-EN-56F23F11F184"
+      ],
+      "first_seen_case_id": "OW-NAT-PUD-EN-737B2EF35BCB"
+    },
+    {
+      "category": "interpretation_partial",
+      "count": 16,
+      "example_case_ids": [
+        "OW-NAT-PUD-EN-E9E63005D3E0",
+        "OW-NAT-PUD-EN-B2B9D533A3A2",
+        "OW-NAT-PUD-EN-03A5449CBABC",
+        "OW-NAT-PUD-EN-F66D5C296107",
+        "OW-NAT-PUD-EN-16235DFDBD97"
+      ],
+      "first_seen_case_id": "OW-NAT-PUD-EN-E9E63005D3E0"
+    },
+    {
+      "category": "interpretation_partial",
+      "count": 10,
+      "example_case_ids": [
+        "OW-NAT-PUD-EN-AD568B3C0D05",
+        "OW-NAT-PUD-EN-DB8866CDFAD7",
+        "OW-NAT-PUD-EN-C9587C7C3387",
+        "OW-NAT-PUD-EN-464B31043568",
+        "OW-NAT-PUD-AR-EB032ABEBC5B"
+      ],
+      "first_seen_case_id": "OW-NAT-PUD-EN-AD568B3C0D05"
+    },
+    {
+      "category": "interpretation_partial",
+      "count": 70,
+      "example_case_ids": [
+        "OW-NAT-PUD-EN-36E190990EDA",
+        "OW-NAT-PUD-EN-36261ADF8775",
+        "OW-NAT-PUD-EN-4E18A1351ECC",
+        "OW-NAT-PUD-EN-B8421ACCCA4D",
+        "OW-NAT-PUD-EN-DAA8F9887823"
+      ],
+      "first_seen_case_id": "OW-NAT-PUD-EN-36E190990EDA"
+    },
+    {
+      "category": "interpretation_unsupported",
+      "count": 50,
+      "example_case_ids": [
+        "OW-NAT-PUD-AR-9560CA70FAC7",
+        "OW-NAT-PUD-AR-16633C8A8C2B",
+        "OW-NAT-PUD-AR-3E4278E2A79A",
+        "OW-NAT-PUD-AR-341D5E2E9CC7",
+        "OW-NAT-PUD-AR-0E12775B3D6D"
+      ],
+      "first_seen_case_id": "OW-NAT-PUD-AR-9560CA70FAC7"
+    },
+    {
+      "category": "interpretation_unsupported",
+      "count": 1,
+      "example_case_ids": [
+        "OW-NAT-PUD-AR-7988404D2A82"
+      ],
+      "first_seen_case_id": "OW-NAT-PUD-AR-7988404D2A82"
+    }
+  ],
+  "finished_at": "2026-11-16T05:26:53Z",
+  "generator_version": "0.1.0",
+  "limitations": [
+    "A finite campaign samples a bounded set of cases and cannot prove unrestricted real-world coverage.",
+    "Novel clusters are within-campaign groupings and require historical comparison and human review before being called newly discovered failure families.",
+    "Structural validation does not establish semantic correctness or factual truth.",
+    "Semantic metrics are reported only when independent case-specific oracle adapters are available.",
+    "Naturalistic and controlled-diagnostic populations may be empty; missing populations are reported explicitly and keep campaign status partial.",
+    "The registered browser-only JavaScript target is not executed until a real browser automation adapter is available.",
+    "Process isolation is best-effort containment, not a hardened sandbox for hostile native code."
+  ],
+  "master_seed": "3c0ff9b37877675321787efb205b3a08e5dabeaa548cef1afa8cbba9a548fe35",
+  "novel_clusters": [
+    {
+      "case_count": 46,
+      "cluster_id": "OWCL-5076B13CCA1B3CA4",
+      "example_case_ids": [
+        "OW-NAT-PUD-EN-70BD23A86C50",
+        "OW-NAT-PUD-EN-2F0880DA6E07",
+        "OW-NAT-PUD-EN-BBD47BB455F0",
+        "OW-NAT-PUD-EN-7D8C7C6B756D",
+        "OW-NAT-PUD-EN-16B96E91B7C7"
+      ],
+      "minimized_reproducer_ids": [],
+      "proposed_label": "interpretation_partial|js-semantic-workbench-v054|no_diagnostic",
+      "reviewed": false,
+      "target_ids": [
+        "js-semantic-workbench-v054"
+      ]
+    },
+    {
+      "case_count": 99,
+      "cluster_id": "OWCL-3C5D8709F73A92B7",
+      "example_case_ids": [
+        "OW-NAT-PUD-EN-C6392CCFE970",
+        "OW-NAT-PUD-EN-5B4927D02ADE",
+        "OW-NAT-PUD-EN-052C65529111",
+        "OW-NAT-PUD-EN-9123779F81EF",
+        "OW-NAT-PUD-EN-E7BBE13ECB82"
+      ],
+      "minimized_reproducer_ids": [],
+      "proposed_label": "interpretation_partial|phase4-bounded-interpreter|semantic_composition:unspecified,syntax:unspecified",
+      "reviewed": false,
+      "target_ids": [
+        "phase4-bounded-interpreter"
+      ]
+    },
+    {
+      "case_count": 4,
+      "cluster_id": "OWCL-DE429831B6628DF7",
+      "example_case_ids": [
+        "OW-NAT-PUD-EN-737B2EF35BCB",
+        "OW-NAT-PUD-EN-416288F1709B",
+        "OW-NAT-PUD-EN-AE4528DDA3BE",
+        "OW-NAT-PUD-EN-56F23F11F184"
+      ],
+      "minimized_reproducer_ids": [],
+      "proposed_label": "interpretation_partial|phase5-bounded-interpreter|discourse:DISCOURSE_ANTECEDENT_UNRESOLVED,lexical:LEXICAL_UNRESOLVED_TOKEN,operators:OPERATOR_INCOMPLETE,semantic_composition:SEMANTIC_CLAUSE_UNRESOLVED,syntax:SYNTAX_INCOMPLETE",
+      "reviewed": false,
+      "target_ids": [
+        "phase5-bounded-interpreter"
+      ]
+    },
+    {
+      "case_count": 16,
+      "cluster_id": "OWCL-72084C09038185A2",
+      "example_case_ids": [
+        "OW-NAT-PUD-EN-E9E63005D3E0",
+        "OW-NAT-PUD-EN-B2B9D533A3A2",
+        "OW-NAT-PUD-EN-03A5449CBABC",
+        "OW-NAT-PUD-EN-F66D5C296107",
+        "OW-NAT-PUD-EN-16235DFDBD97"
+      ],
+      "minimized_reproducer_ids": [],
+      "proposed_label": "interpretation_partial|phase5-bounded-interpreter|discourse:DISCOURSE_ANTECEDENT_UNRESOLVED,lexical:LEXICAL_UNRESOLVED_TOKEN,semantic_composition:SEMANTIC_CLAUSE_UNRESOLVED,syntax:SYNTAX_INCOMPLETE",
+      "reviewed": false,
+      "target_ids": [
+        "phase5-bounded-interpreter"
+      ]
+    },
+    {
+      "case_count": 10,
+      "cluster_id": "OWCL-5650588D074E1112",
+      "example_case_ids": [
+        "OW-NAT-PUD-EN-AD568B3C0D05",
+        "OW-NAT-PUD-EN-DB8866CDFAD7",
+        "OW-NAT-PUD-EN-C9587C7C3387",
+        "OW-NAT-PUD-EN-464B31043568",
+        "OW-NAT-PUD-AR-EB032ABEBC5B"
+      ],
+      "minimized_reproducer_ids": [],
+      "proposed_label": "interpretation_partial|phase5-bounded-interpreter|lexical:LEXICAL_UNRESOLVED_TOKEN,operators:OPERATOR_INCOMPLETE,semantic_composition:SEMANTIC_CLAUSE_UNRESOLVED,syntax:SYNTAX_INCOMPLETE",
+      "reviewed": false,
+      "target_ids": [
+        "phase5-bounded-interpreter"
+      ]
+    },
+    {
+      "case_count": 70,
+      "cluster_id": "OWCL-80FCACA741E4537B",
+      "example_case_ids": [
+        "OW-NAT-PUD-EN-36E190990EDA",
+        "OW-NAT-PUD-EN-36261ADF8775",
+        "OW-NAT-PUD-EN-4E18A1351ECC",
+        "OW-NAT-PUD-EN-B8421ACCCA4D",
+        "OW-NAT-PUD-EN-DAA8F9887823"
+      ],
+      "minimized_reproducer_ids": [],
+      "proposed_label": "interpretation_partial|phase5-bounded-interpreter|lexical:LEXICAL_UNRESOLVED_TOKEN,semantic_composition:SEMANTIC_CLAUSE_UNRESOLVED,syntax:SYNTAX_INCOMPLETE",
+      "reviewed": false,
+      "target_ids": [
+        "phase5-bounded-interpreter"
+      ]
+    },
+    {
+      "case_count": 50,
+      "cluster_id": "OWCL-9ED248EE0107E15D",
+      "example_case_ids": [
+        "OW-NAT-PUD-AR-9560CA70FAC7",
+        "OW-NAT-PUD-AR-16633C8A8C2B",
+        "OW-NAT-PUD-AR-3E4278E2A79A",
+        "OW-NAT-PUD-AR-341D5E2E9CC7",
+        "OW-NAT-PUD-AR-0E12775B3D6D"
+      ],
+      "minimized_reproducer_ids": [],
+      "proposed_label": "interpretation_unsupported|js-semantic-workbench-v054|no_diagnostic",
+      "reviewed": false,
+      "target_ids": [
+        "js-semantic-workbench-v054"
+      ]
+    },
+    {
+      "case_count": 1,
+      "cluster_id": "OWCL-C47AEE338D923D3F",
+      "example_case_ids": [
+        "OW-NAT-PUD-AR-7988404D2A82"
+      ],
+      "minimized_reproducer_ids": [],
+      "proposed_label": "interpretation_unsupported|phase4-bounded-interpreter|no_diagnostic",
+      "reviewed": false,
+      "target_ids": [
+        "phase4-bounded-interpreter"
+      ]
+    }
+  ],
+  "outcome_counts": {
+    "abstained": 0,
+    "ambiguous": 0,
+    "completed": 4,
+    "crashed": 0,
+    "infrastructure_error": 0,
+    "invalid_output": 0,
+    "not_executed": 0,
+    "partial": 245,
+    "timeout": 0,
+    "unsupported": 51
+  },
+  "population_results": [
+    {
+      "attempted": 0,
+      "completed": 0,
+      "coverage": {
+        "attempted_case_count": 0,
+        "execution_accounting": {
+          "accounting_version": "1.0.0",
+          "actual_attempt_count": 0,
+          "legacy_attempted_field_definition": "execution_result_record_count_including_not_executed",
+          "not_executed_record_count": 0,
+          "result_record_count": 0,
+          "scenario_count": 0,
+          "scenario_count_only_not_executed": 0,
+          "scenario_count_with_actual_attempt": 0,
+          "scenario_count_with_multiple_result_records": 0,
+          "scenario_count_with_result_record": 0,
+          "scenario_count_without_result_record": 0,
+          "target_accounting": []
+        },
+        "scenario_count": 0
+      },
+      "outcome_counts": {
+        "abstained": 0,
+        "ambiguous": 0,
+        "completed": 0,
+        "crashed": 0,
+        "infrastructure_error": 0,
+        "invalid_output": 0,
+        "not_executed": 0,
+        "partial": 0,
+        "timeout": 0,
+        "unsupported": 0
+      },
+      "population": "unconstrained_random"
+    },
+    {
+      "attempted": 300,
+      "completed": 4,
+      "coverage": {
+        "attempted_case_count": 300,
+        "execution_accounting": {
+          "accounting_version": "1.0.0",
+          "actual_attempt_count": 300,
+          "legacy_attempted_field_definition": "execution_result_record_count_including_not_executed",
+          "not_executed_record_count": 0,
+          "result_record_count": 300,
+          "scenario_count": 300,
+          "scenario_count_only_not_executed": 0,
+          "scenario_count_with_actual_attempt": 300,
+          "scenario_count_with_multiple_result_records": 0,
+          "scenario_count_with_result_record": 300,
+          "scenario_count_without_result_record": 0,
+          "target_accounting": [
+            {
+              "actual_attempt_count": 100,
+              "not_executed_record_count": 0,
+              "result_record_count": 100,
+              "scenario_count_only_not_executed": 0,
+              "scenario_count_with_actual_attempt": 100,
+              "scenario_count_with_result": 100,
+              "target_id": "js-semantic-workbench-v054"
+            },
+            {
+              "actual_attempt_count": 100,
+              "not_executed_record_count": 0,
+              "result_record_count": 100,
+              "scenario_count_only_not_executed": 0,
+              "scenario_count_with_actual_attempt": 100,
+              "scenario_count_with_result": 100,
+              "target_id": "phase4-bounded-interpreter"
+            },
+            {
+              "actual_attempt_count": 100,
+              "not_executed_record_count": 0,
+              "result_record_count": 100,
+              "scenario_count_only_not_executed": 0,
+              "scenario_count_with_actual_attempt": 100,
+              "scenario_count_with_result": 100,
+              "target_id": "phase5-bounded-interpreter"
+            }
+          ]
+        },
+        "scenario_count": 300
+      },
+      "outcome_counts": {
+        "abstained": 0,
+        "ambiguous": 0,
+        "completed": 4,
+        "crashed": 0,
+        "infrastructure_error": 0,
+        "invalid_output": 0,
+        "not_executed": 0,
+        "partial": 245,
+        "timeout": 0,
+        "unsupported": 51
+      },
+      "population": "naturalistic"
+    },
+    {
+      "attempted": 0,
+      "completed": 0,
+      "coverage": {
+        "attempted_case_count": 0,
+        "execution_accounting": {
+          "accounting_version": "1.0.0",
+          "actual_attempt_count": 0,
+          "legacy_attempted_field_definition": "execution_result_record_count_including_not_executed",
+          "not_executed_record_count": 0,
+          "result_record_count": 0,
+          "scenario_count": 0,
+          "scenario_count_only_not_executed": 0,
+          "scenario_count_with_actual_attempt": 0,
+          "scenario_count_with_multiple_result_records": 0,
+          "scenario_count_with_result_record": 0,
+          "scenario_count_without_result_record": 0,
+          "target_accounting": []
+        },
+        "scenario_count": 0
+      },
+      "outcome_counts": {
+        "abstained": 0,
+        "ambiguous": 0,
+        "completed": 0,
+        "crashed": 0,
+        "infrastructure_error": 0,
+        "invalid_output": 0,
+        "not_executed": 0,
+        "partial": 0,
+        "timeout": 0,
+        "unsupported": 0
+      },
+      "population": "controlled_diagnostic"
+    }
+  ],
+  "protocol_version": "1.0.0",
+  "repository": "wizekin/USG-Workbench",
+  "schema_version": "1.0.0",
+  "started_at": "2026-11-16T05:24:55Z",
+  "status": "partial",
+  "tested_commit_sha": "8e3f1308882b2e8ce581350746d9ee76fca31216"
+}

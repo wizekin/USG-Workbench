@@ -1,0 +1,18 @@
+{
+  "case_count": 300,
+  "created_at": "2026-11-16T05:24:54Z",
+  "generator_id": "usg-naturalistic-pud-pilot",
+  "generator_version": "0.1.0",
+  "jsonl_sha256": "d22caf95e747e7034c2a77036e5b9f86433ba23e695ab7fa447e52525958818d",
+  "manifest_version": "1.0.0",
+  "master_seed": "3c0ff9b37877675321787efb205b3a08e5dabeaa548cef1afa8cbba9a548fe35",
+  "population": "naturalistic",
+  "seed_mode": "explicit",
+  "source_manifest": "source-manifest.json",
+  "target_ids": [
+    "phase4-bounded-interpreter",
+    "phase5-bounded-interpreter",
+    "js-semantic-workbench-v054"
+  ],
+  "target_matrix": true
+}

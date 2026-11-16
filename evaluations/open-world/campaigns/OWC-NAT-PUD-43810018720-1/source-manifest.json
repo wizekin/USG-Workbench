@@ -1,0 +1,100 @@
+{
+  "case_count": 300,
+  "cases_jsonl_sha256": "d22caf95e747e7034c2a77036e5b9f86433ba23e695ab7fa447e52525958818d",
+  "contract": "USG-NATURALISTIC-CORPUS-MANIFEST/0.1.0",
+  "dataset_id": "UD-PUD-EN-AR",
+  "license": "CC BY-SA 3.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/3.0/",
+  "population": "naturalistic",
+  "privacy_review": {
+    "checks": [
+      "source repositories and CC BY-SA 3.0 license files were inspected",
+      "email and URL direct-contact patterns are screened and excluded",
+      "deduplication is applied within each language",
+      "no sensitive-attribute inference or user profiling is performed"
+    ],
+    "known_limitations": [
+      "Public proper names and public-event references are retained as part of the source text.",
+      "The pattern screen is not a comprehensive personal-data detector.",
+      "This is an internal evaluation pilot, not a general-purpose personal-data corpus."
+    ],
+    "scope": "Public news/Wikipedia treebank text only; no user-submitted or private chat data is included.",
+    "status": "approved_for_bounded_internal_evaluation"
+  },
+  "redistribution_notice": "The verbatim sentence excerpts and scenario artifacts derived from them are distributed under CC BY-SA 3.0 with attribution and share-alike terms. See ATTRIBUTION.md and LICENSE.txt.",
+  "retrieved_at": "2026-11-16T05:24:54Z",
+  "sample_per_language_requested": 50,
+  "selection": {
+    "ar": {
+      "duplicate_count": 0,
+      "privacy_rejected_count": 0,
+      "privacy_rejection_reasons": {},
+      "selected_count": 50,
+      "source_sentence_count": 1000,
+      "unique_after_deduplication": 1000
+    },
+    "en": {
+      "duplicate_count": 0,
+      "privacy_rejected_count": 0,
+      "privacy_rejection_reasons": {},
+      "selected_count": 50,
+      "source_sentence_count": 1000,
+      "unique_after_deduplication": 1000
+    }
+  },
+  "semantic_gold": {
+    "available": false,
+    "reason": "PUD POS/dependency annotations are not independent USG semantic-frame or semantic-role gold."
+  },
+  "sources": {
+    "ar": {
+      "attribution": "Universal Dependencies contributors; see the pinned upstream README for full contributor attribution.",
+      "blob_sha": "075361d5425ea0d43ff6b4f5459a306e26df6fbf",
+      "commit": "c606299bc9eb8baa6c61c8dd3efc9a0fbf73aa87",
+      "content_sha256": "befc6dd18b5b8803644ae8208e2e5f52c0957a36437627c05110914ec42281a3",
+      "file": "ar_pud-ud-test.conllu",
+      "genre": [
+        "news",
+        "wikipedia"
+      ],
+      "language": "ar",
+      "license_blob_sha": "a0bd8baeb667daae1407869f3152489fab3001de",
+      "license_url": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "readme_sha": "4ea76ca71d04fe03c7da6a1afa94833d837e89a7",
+      "repository": "UniversalDependencies/UD_Arabic-PUD",
+      "sentence_count": 1000,
+      "source_url": "https://github.com/UniversalDependencies/UD_Arabic-PUD/blob/c606299bc9eb8baa6c61c8dd3efc9a0fbf73aa87/ar_pud-ud-test.conllu",
+      "treebank": "UD_Arabic-PUD"
+    },
+    "en": {
+      "attribution": "Universal Dependencies contributors; see the pinned upstream README for full contributor attribution.",
+      "blob_sha": "828f827759e7a9f89a8c42bfe79402dd65db71c3",
+      "commit": "a697bab43d4111073356de0df5802488bca3de7e",
+      "content_sha256": "befc5e901b58732f2308b1aac5cdd804d938362ab31c9fe400c61c28e8e155d8",
+      "file": "en_pud-ud-test.conllu",
+      "genre": [
+        "news",
+        "wikipedia"
+      ],
+      "language": "en",
+      "license_blob_sha": "a0bd8baeb667daae1407869f3152489fab3001de",
+      "license_url": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "readme_sha": "15ab0c810de4c223663e25f956c9225e34d376fc",
+      "repository": "UniversalDependencies/UD_English-PUD",
+      "sentence_count": 1000,
+      "source_url": "https://github.com/UniversalDependencies/UD_English-PUD/blob/a697bab43d4111073356de0df5802488bca3de7e/en_pud-ud-test.conllu",
+      "treebank": "UD_English-PUD"
+    }
+  },
+  "target_ids": [
+    "phase4-bounded-interpreter",
+    "phase5-bounded-interpreter",
+    "js-semantic-workbench-v054"
+  ],
+  "target_matrix": true,
+  "translation_profile": {
+    "arabic": "All Arabic PUD sentences are translations: 750 originate in English and 250 originate in German, French, Italian, or Spanish and are translated via English; this is not a native-MSA distribution.",
+    "english": "PUD contains news/Wikipedia sentences; 750 are originally English and 250 are translations from other European languages."
+  },
+  "usage": "evaluation_only_unlabeled_input"
+}
