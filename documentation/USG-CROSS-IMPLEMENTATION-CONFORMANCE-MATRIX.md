@@ -1,7 +1,7 @@
 # USG Cross-Implementation Conformance Matrix
 
 **Contract:** `USG-CROSS-IMPLEMENTATION-MATRIX/0.1.0`  
-**Snapshot:** 2026-11-15  
+**Snapshot:** 2026-11-16  
 **Status:** component inventory updated; shared cross-runtime conformance has not yet been demonstrated.
 
 ## Why this matrix exists
@@ -19,14 +19,25 @@ The machine-readable source of truth is `evaluations/system-wide/cross-implement
 
 | Implementation | Demonstrated component scope | Important limit |
 |---|---|---|
-| JavaScript Semantic Workbench v0.5.4 | Browser workbench, its own semantic-model tests, and English Open-World execution through the Playwright adapter | The v0.5 record schema is not proof of USG-SEM/1.0 interchange. Open-World browser execution uses the deterministic local rule fallback and proves UI execution/structured output only; it does not establish semantic correctness or cross-runtime equivalence. |
+| JavaScript Semantic Workbench v0.5.4 | Browser workbench, its own semantic-model tests, and English Open-World/PUD execution through the Playwright adapter | Its v0.5 record schema is not proof of USG-SEM/1.0 interchange. The deterministic local rule fallback proves UI execution and structured output only; it does not establish semantic correctness or cross-runtime equivalence. The JS target remains English-only. |
 | Python kernel v0.7.0 | USG-SEM/1.0 document adapter and native Mention model | No shared frozen test currently proves semantic equivalence with JavaScript |
-| Python Phase 5 interpreter USG-INTERPRET/0.2.0 | Bounded bilingual lexical-to-discourse pipeline and stage diagnostics | Bounded construction benchmarks do not establish broad language understanding or equivalence with JS |
+| Python Phase 5 interpreter USG-INTERPRET/0.2.0 | Bounded bilingual lexical-to-discourse pipeline and stage diagnostics | Naturalistic PUD first blockers expose lexical and syntax gaps; PUD has no independent USG semantic gold. Bounded construction benchmarks do not establish broad language understanding or equivalence with JS. |
 | External lexical candidate adapter | Provenance-preserving candidate package and candidate-only validation | It is deliberately not a runtime lexicon and cannot promote candidate data |
 
-### Browser evidence correction
+### Browser evidence refresh — 2026-11-16
 
-OWC-OW7 run [43670079717](https://github.com/wizekin/USG-Workbench/actions/runs/43670079717) contains per-case execution metadata identifying `playwright-js-semantic-workbench` v0.1.0 and Chromium 159.0.8154.6. The browser was loopback-only; the Workbench used its local rule fallback, with no Ollama request and no recorded page/console errors in the browser-backed cases. The JS target remains English-only. The earlier status claiming that the browser adapter was missing is stale.
+Two newer campaigns confirm that the browser adapter is actually exercised inside the campaign runner:
+
+- [OWC-OW7 run 43807165809](https://github.com/wizekin/USG-Workbench/actions/runs/43807165809): 100 JS target records. The 68 English cases were 2 completed and 66 partial; the 32 mixed/Arabic cases were unsupported.
+- [Naturalistic PUD run 43810018720](https://github.com/wizekin/USG-Workbench/actions/runs/43810018720): 100 JS target records. The 50 English cases were 4 completed and 46 partial; all 50 Arabic cases were unsupported.
+
+Browser-backed records identify Playwright adapter v0.1.0 and Chromium 159.0.8154.6, with loopback-only networking, deterministic local rule fallback, no Ollama request, and no recorded page/console errors in those records. A separate conditional browser job may be skipped while the campaign runner still executes its JS target; do not confuse the job status with the per-case adapter evidence.
+
+The JavaScript target remains English-only. These runs prove browser/UI execution and structured output only, not semantic correctness, Arabic support, canonical USG-SEM/1.0 interchange, or cross-runtime equivalence.
+
+### Naturalistic evidence boundary
+
+PUD is news/Wikipedia text, not conversational user requests. The Arabic PUD sample is translated and is not a representative native-MSA distribution. The first campaign ran 300 actual attempts, with 4 completed, 245 partial, and 51 unsupported; it had no independent semantic gold and no semantic-scored attempts. UD POS/dependency labels are syntactic proxies, not USG semantic roles or frames. The campaign report is on an unmerged report branch because Actions PR creation was denied; it is not yet part of main's committed campaign history.
 
 ## Required cross-implementation gates
 
