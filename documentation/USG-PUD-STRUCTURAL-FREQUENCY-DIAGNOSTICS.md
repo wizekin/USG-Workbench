@@ -1,6 +1,6 @@
 # SYS-08: PUD Structural-Frequency Diagnostics
 
-**Status:** implementation branch; full-campaign evidence pending  
+**Status:** implementation branch; first naturalistic campaign executed without this diagnostic; structural-frequency campaign evidence pending  
 **Contract:** `USG-PUD-STRUCTURAL-FREQUENCY/0.1.0`  
 **Population:** pinned English and Arabic PUD, kept separate
 
@@ -39,13 +39,32 @@ The source manifest records the pinned commits:
 - English: `UD_English-PUD@a697bab43d4111073356de0df5802488bca3de7e`
 - Arabic: `UD_Arabic-PUD@c606299bc9eb8baa6c61c8dd3efc9a0fbf73aa87`
 
-Both sources are CC BY-SA 3.0. Campaign publication must retain `LICENSE.txt`, `ATTRIBUTION.md`, and `source-manifest.json`. The existing privacy screen rejects email and URL patterns, but is not a comprehensive personal-data detector and retains public proper names.
+Both sources are CC BY-SA 3.0. Campaign publication must retain `LICENSE.txt`, `ATTRIBUTION.md`, and `source-manifest.json`. The current attribution file names Universal Dependencies contributors and points to the pinned upstream READMEs; the named contributor lists are not embedded in the campaign bundle. Before external redistribution, verify whether the pinned README files or their complete contributor/acknowledgement content should also be included to make attribution self-contained.
+
+The existing privacy screen rejects email and URL patterns, but is not a comprehensive personal-data detector and retains public proper names.
 
 PUD is news/Wikipedia text, not conversational user requests. Arabic PUD is translated and is not a representative native-MSA distribution. English PUD also contains translated sentences.
 
+## First naturalistic campaign — 2026-11-16
+
+The first full 50-per-language campaign ran on main commit `8e3f1308882b2e8ce581350746d9ee76fca31216` before this branch's workflow integration was available:
+
+- Run: [43810018720](https://github.com/wizekin/USG-Workbench/actions/runs/43810018720)
+- Campaign: `OWC-NAT-PUD-43810018720-1`
+- Population: 300 naturalistic cases; 150 English and 150 Arabic
+- Target matrix: 100 records each for JS Workbench, Phase 4, and Phase 5
+- Actual attempts: 300; completed 4, partial 245, unsupported 51
+- First blockers: lexical 100, syntax 99; no semantic-scored attempts
+- No independent USG semantic gold was available
+- The JS Workbench executed 50 English cases (4 completed, 46 partial) and returned unsupported for all 50 Arabic cases; this confirms the current English-only boundary, not semantic correctness
+
+The campaign artifact was uploaded and its report branch was pushed as `reports/naturalistic-pud-43810018720-1` at commit `e6841e98d5512c19b98b58e15da0ec956d3d60af`. Pull-request creation failed because GitHub Actions is not permitted to create or approve pull requests. Therefore the report is not committed to main, auto-merge was not attempted, and the naturalistic population is executed artifact evidence rather than accepted committed campaign history.
+
+The first campaign has no `structural-frequency.json`: it ran before the branch workflow change. This branch's updated workflow adds the diagnostic and publication-failure reporting, but that workflow has not yet completed a full campaign. Do not reuse the first campaign's execution results as proof that the new diagnostic ran.
+
 ## Construction selection policy
 
-The report deliberately does not automatically select or promote a construction. After the full bilingual campaign is available:
+The report deliberately does not automatically select or promote a construction. After a full campaign using this branch produces a verified bilingual structural-frequency artifact:
 1. compare per-language sentence frequencies and instance counts;
 2. identify one bounded construction whose evidence is meaningful in both populations or explicitly record the language imbalance;
 3. inspect the existing USG syntax, composition, operator, and discourse interfaces before proposing work;
@@ -58,4 +77,4 @@ A high UD frequency alone is not a reason to expand runtime behavior.
 
 The new unit fixtures cover parser behavior, multiword/empty-node exclusion, separate sentence and instance denominators, active/passive distinction, malformed input, empty-population handling, source-hash reconciliation, and the explicit no-semantic-gold boundary.
 
-Passing these unit tests is component-level diagnostic verification only. The first full naturalistic PUD campaign and its generated structural-frequency artifact are still required before SYS-08 can be considered evidence-complete.
+No GitHub Actions run has tested this branch's workflow or test suite. The branch contains eight unit tests, but their presence is not a CI pass. Passing these unit tests would be component-level diagnostic verification only. SYS-08 remains evidence-incomplete until the branch tests pass and a full campaign produces the bilingual structural-frequency artifact.
