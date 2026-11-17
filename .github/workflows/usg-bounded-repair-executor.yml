@@ -1,0 +1,243 @@
+name: USG Bounded Repair Executor
+
+on:
+  schedule:
+    - cron: "17 */6 * * *"
+  workflow_dispatch:
+    inputs:
+      repair_id:
+        description: "Optional ready repair plan ID; otherwise the first ready plan is selected"
+        required: false
+        type: string
+  pull_request:
+    paths:
+      - "specifications/usg-bounded-repair-plan-0.1.0.schema.json"
+      - "tools/usg_repair_executor_v0_1_0/**"
+      - "tests/test_usg_repair_executor.py"
+      - "automation/repair-plans/**"
+      - ".github/workflows/usg-bounded-repair-executor.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: usg-bounded-repair-executor-${{ github.event_name }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install pinned schema validator
+        run: python -m pip install "jsonschema==4.23.0"
+      - name: Compile executor
+        run: python -m compileall -q tools/usg_repair_executor_v0_1_0
+      - name: Test executor policy, rollback, and command registry
+        run: python -m unittest discover -s tests -p "test_usg_repair_executor.py" -v
+      - name: Validate every committed repair plan
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from jsonschema import Draft202012Validator
+          schema = json.loads(Path("specifications/usg-bounded-repair-plan-0.1.0.schema.json").read_text(encoding="utf-8"))
+          validator = Draft202012Validator(schema)
+          plans = sorted(Path("automation/repair-plans").glob("*.json"))
+          for path in plans:
+              plan = json.loads(path.read_text(encoding="utf-8"))
+              validator.validate(plan)
+              assert plan["status"] == "ready"
+              assert plan["contract"] == "USG-BOUNDED-REPAIR-PLAN/0.1.0"
+          print(f"Validated {len(plans)} bounded repair plan(s); no plan-supplied commands or merge instructions are accepted.")
+          PY
+
+  execute:
+    if: github.event_name != 'pull_request'
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      pull-requests: write
+    env:
+      GITHUB_TOKEN: ${{ github.token }}
+      REQUESTED_REPAIR_ID: ${{ inputs.repair_id || '' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install pinned schema validator
+        run: python -m pip install "jsonschema==4.23.0"
+      - name: Select one reviewed ready plan
+        id: plan
+        run: |
+          python - <<'PY'
+          import json, os, re
+          from pathlib import Path
+          requested = os.environ.get("REQUESTED_REPAIR_ID", "").strip()
+          root = Path("automation/repair-plans")
+          if requested:
+              if not re.fullmatch(r"[a-z0-9][a-z0-9-]{2,63}", requested):
+                  raise SystemExit("repair_id is not a safe plan identifier")
+              candidates = [root / f"{requested}.json"]
+          else:
+              candidates = sorted(root.glob("*.json")) if root.exists() else []
+          selected = None
+          for path in candidates:
+              if not path.is_file() or path.is_symlink():
+                  continue
+              plan = json.loads(path.read_text(encoding="utf-8"))
+              if plan.get("status") == "ready":
+                  selected = (path, plan)
+                  break
+          if selected is None:
+              with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
+                  output.write("available=false\\n")
+              print("No ready repair plan; no files changed.")
+          else:
+              path, plan = selected
+              with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
+                  output.write("available=true\n")
+                  output.write(f"path={path.as_posix()}\n")
+                  output.write(f"repair_id={plan['repair_id']}\n")
+              print(f"Selected reviewed plan {plan['repair_id']}")
+          PY
+      - name: Check whether this repair already has a published branch
+        id: existing
+        if: steps.plan.outputs.available == 'true'
+        run: |
+          branch="automation/repairs/${{ steps.plan.outputs.repair_id }}"
+          refs="$RUNNER_TEMP/repair-branch-refs.txt"
+          if ! git ls-remote --heads origin "$branch" > "$refs"; then
+            echo "Unable to check the repair branch safely; failing closed."
+            exit 1
+          fi
+          if [ -s "$refs" ]; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+            echo "Repair branch already exists; this plan will not be executed twice."
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Record existing repair branch
+        if: steps.existing.outputs.exists == 'true'
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          result = {
+              "contract": "USG-BOUNDED-REPAIR-RESULT/0.1.0",
+              "repair_id": "${{ steps.plan.outputs.repair_id }}",
+              "status": "already_processed_branch",
+              "note": "A branch for this repair ID already exists; no second execution was attempted.",
+              "runtime_semantics_changed": False,
+              "candidate_resources_promoted": False,
+              "gold_labels_changed": False
+          }
+          (Path(os.environ["RUNNER_TEMP"]) / "repair-result.json").write_text(
+              json.dumps(result, indent=2, sort_keys=True) + chr(10), encoding="utf-8"
+          )
+          PY
+      - name: Apply one bounded repair and run registered tests
+        id: apply
+        if: steps.plan.outputs.available == 'true' && steps.existing.outputs.exists != 'true'
+        continue-on-error: true
+        run: |
+          python -m tools.usg_repair_executor_v0_1_0.executor \
+            --plan "${{ steps.plan.outputs.path }}" \
+            --repo-root . \
+            --current-commit "$(git rev-parse HEAD)" \
+            --result "$RUNNER_TEMP/repair-result.json" \
+            --apply
+      - name: Prepare append-only repair result and path allowlist
+        id: paths
+        if: steps.apply.outcome == 'success'
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          result = json.loads((Path(os.environ["RUNNER_TEMP"]) / "repair-result.json").read_text(encoding="utf-8"))
+          if result.get("status") != "applied_validated":
+              raise SystemExit("executor did not produce an applied_validated result")
+          repair_id = result["repair_id"]
+          output_dir = Path("evaluations/system-wide/repairs") / repair_id
+          output_dir.mkdir(parents=True, exist_ok=True)
+          output_path = output_dir / "repair-result.json"
+          output_path.write_text(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True) + chr(10), encoding="utf-8")
+          paths = [item["path"] for item in result["patches"]] + [output_path.as_posix()]
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
+              output.write("paths<<EOF\n" + "\n".join(paths) + "\nEOF\n")
+          print(f"Prepared {len(paths)} reviewed paths for the repair PR.")
+          PY
+          git diff --check
+      - name: Upload bounded repair result
+        if: always() && steps.plan.outputs.available == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: usg-bounded-repair-${{ steps.plan.outputs.repair_id }}-${{ github.run_id }}
+          path: ${{ runner.temp }}/repair-result.json
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Open repair pull request
+        id: repair-pr
+        if: steps.apply.outcome == 'success' && steps.paths.outcome == 'success' && steps.existing.outputs.exists != 'true'
+        continue-on-error: true
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: automation/repairs/${{ steps.plan.outputs.repair_id }}
+          base: main
+          add-paths: ${{ steps.paths.outputs.paths }}
+          commit-message: "USG bounded repair: ${{ steps.plan.outputs.repair_id }}"
+          title: "USG bounded repair: ${{ steps.plan.outputs.repair_id }}"
+          body: |
+            Deterministic repair produced by the bounded USG repair executor.
+
+            - Plan: ${{ steps.plan.outputs.repair_id }}
+            - Executor contract: USG-BOUNDED-REPAIR-PLAN/0.1.0
+            - Only allowlisted exact-text patches were applied.
+            - Registered tests passed before this PR was created.
+            - No runtime semantic, lexical, gold-label, canonical contract, or Phase 1-5 changes are permitted.
+            - Rollback: revert this PR's merge commit.
+            - No automatic merge is requested.
+      - name: Record executor and publication summary
+        if: always()
+        run: |
+          {
+            echo "## Bounded repair executor"
+            if [ "${{ steps.plan.outputs.available }}" != "true" ]; then
+              echo "- No ready repair plan was found; no files changed."
+            elif [ "${{ steps.existing.outputs.exists }}" = "true" ]; then
+              echo "- A branch for this repair ID already exists; execution was skipped to prevent duplicate repair branches."
+            elif [ "${{ steps.apply.outcome }}" != "success" ]; then
+              echo "- Repair was rejected or rolled back; inspect the uploaded result artifact."
+            elif [ -n "${{ steps.repair-pr.outputs.pull-request-url }}" ]; then
+              echo "- Repair PR: ${{ steps.repair-pr.outputs.pull-request-url }}"
+            else
+              echo "- Repair tests passed, but PR creation did not complete. Check repository Actions PR permissions; the result artifact is preserved."
+            fi
+            echo "- The executor never merges and never promotes semantic rules or resources."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          if [ "${{ steps.plan.outputs.available }}" = "true" ] && [ "${{ steps.existing.outputs.exists }}" != "true" ]; then
+            if [ "${{ steps.apply.outcome }}" != "success" ]; then
+              echo "Repair execution or registered validation failed; preserving the failure result and failing this workflow."
+              exit 1
+            fi
+            if [ "${{ steps.paths.outcome }}" != "success" ]; then
+              echo "Validated repair could not be prepared for publication; failing this workflow."
+              exit 1
+            fi
+            if [ "${{ steps.repair-pr.outcome }}" = "failure" ] || [ -z "${{ steps.repair-pr.outputs.pull-request-url }}" ]; then
+              echo "Repair PR publication failed; the branch and result artifact are preserved, but this workflow is not a pass."
+              exit 1
+            fi
+          fi

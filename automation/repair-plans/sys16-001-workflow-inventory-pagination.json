@@ -1,0 +1,53 @@
+{
+  "contract": "USG-BOUNDED-REPAIR-PLAN/0.1.0",
+  "repair_id": "sys16-001-workflow-inventory-pagination",
+  "status": "ready",
+  "base_commit": "4a5b0a8164b22a9b178790d2d275c2411fb71fbf",
+  "description": "Fix incomplete system-evidence workflow inventory by collecting all paginated GitHub Actions workflow definitions and failing closed on incomplete pages.",
+  "patches": [
+    {
+      "path": "tools/system_evidence/github_actions.py",
+      "scope": "reporting",
+      "expected_git_blob_sha1": "5bdc671ffea5e121198c863d8371de8a8645eea2",
+      "edits": [
+        {
+          "match_text": "API_VERSION = \"2022-11-28\"\n",
+          "replacement_text": "API_VERSION = \"2022-11-28\"\nMAX_WORKFLOW_PAGES = 10\n",
+          "expected_occurrences": 1
+        },
+        {
+          "match_text": "    index = _get_json(f\"{base}/actions/workflows?per_page=100\", token, opener)\n    workflows = index.get(\"workflows\")\n    if not isinstance(workflows, list):\n        raise ValueError(\"GitHub workflow listing did not return a workflows array\")\n",
+          "replacement_text": "    workflows: list[dict[str, Any]] = []\n    workflow_pages_collected = 0\n    workflow_total_count: int | None = None\n    for page in range(1, MAX_WORKFLOW_PAGES + 1):\n        index = _get_json(\n            f\"{base}/actions/workflows?per_page=100&page={page}\", token, opener\n        )\n        page_workflows = index.get(\"workflows\")\n        if not isinstance(page_workflows, list):\n            raise ValueError(\"GitHub workflow listing did not return a workflows array\")\n        reported_total = index.get(\"total_count\")\n        if isinstance(reported_total, int) and not isinstance(reported_total, bool) and reported_total >= 0:\n            if workflow_total_count is None:\n                workflow_total_count = reported_total\n            elif reported_total != workflow_total_count:\n                raise ValueError(\"GitHub workflow total_count changed during pagination\")\n        workflows.extend(page_workflows)\n        workflow_pages_collected += 1\n        if workflow_total_count is not None and len(workflows) >= workflow_total_count:\n            break\n        if len(page_workflows) < 100:\n            break\n    else:\n        raise ValueError(f\"GitHub workflow pagination exceeded {MAX_WORKFLOW_PAGES} pages\")\n    if workflow_total_count is not None and len(workflows) != workflow_total_count:\n        raise ValueError(\n            f\"GitHub workflow pagination incomplete: collected {len(workflows)} of {workflow_total_count}\"\n        )\n    workflow_ids = [item.get(\"id\") for item in workflows]\n    if any(not isinstance(item, int) or isinstance(item, bool) for item in workflow_ids):\n        raise ValueError(\"GitHub workflow listing contains a missing or invalid workflow id\")\n    if len(set(workflow_ids)) != len(workflow_ids):\n        raise ValueError(\"GitHub workflow listing contains duplicate workflow ids\")\n",
+          "expected_occurrences": 1
+        },
+        {
+          "match_text": "        \"repository\": repository,\n        \"workflow_count\": len(results),\n        \"latest_run_count\": sum(item.get(\"latest_run\") is not None for item in results),\n",
+          "replacement_text": "        \"repository\": repository,\n        \"workflow_count\": len(results),\n        \"workflow_pages_collected\": workflow_pages_collected,\n        \"workflow_total_count\": workflow_total_count if workflow_total_count is not None else len(results),\n        \"latest_run_count\": sum(item.get(\"latest_run\") is not None for item in results),\n",
+          "expected_occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "tests/test_system_evidence_github_actions.py",
+      "scope": "ci",
+      "expected_git_blob_sha1": "1dc3f3074c62ab2992c64db357712cd65cf65741",
+      "edits": [
+        {
+          "match_text": "base + \"/actions/workflows?per_page=100\"",
+          "replacement_text": "base + \"/actions/workflows?per_page=100&page=1\"",
+          "expected_occurrences": 3
+        },
+        {
+          "match_text": "    def test_requires_repository_and_token(self):\n",
+          "replacement_text": "    def test_collects_all_workflow_pages_and_reports_completeness(self):\n        base = \"https://api.github.com/repos/wizekin/USG-Workbench\"\n        first_page = [\n            {\"id\": index, \"name\": f\"Disabled {index}\",\n             \"path\": f\".github/workflows/disabled-{index}.yml\", \"state\": \"disabled_manually\"}\n            for index in range(1, 101)\n        ]\n        second_page = [{\n            \"id\": 101, \"name\": \"Disabled 101\",\n            \"path\": \".github/workflows/disabled-101.yml\", \"state\": \"disabled_manually\"\n        }]\n        payloads = {\n            base + \"/actions/workflows?per_page=100&page=1\": {\n                \"total_count\": 101, \"workflows\": first_page\n            },\n            base + \"/actions/workflows?per_page=100&page=2\": {\n                \"total_count\": 101, \"workflows\": second_page\n            },\n        }\n        report = collect_workflow_runs(\"wizekin/USG-Workbench\", \"token\",\n                                       opener=self.make_opener(payloads), workers=1)\n        self.assertEqual(report[\"workflow_count\"], 101)\n        self.assertEqual(report[\"workflow_total_count\"], 101)\n        self.assertEqual(report[\"workflow_pages_collected\"], 2)\n        self.assertEqual(report[\"latest_run_count\"], 0)\n        self.assertEqual(report[\"status_counts\"][\"disabled\"], 101)\n\n    def test_incomplete_workflow_pagination_fails_closed(self):\n        base = \"https://api.github.com/repos/wizekin/USG-Workbench\"\n        first_page = [\n            {\"id\": index, \"name\": f\"Disabled {index}\",\n             \"path\": f\".github/workflows/disabled-{index}.yml\", \"state\": \"disabled_manually\"}\n            for index in range(1, 101)\n        ]\n        payloads = {\n            base + \"/actions/workflows?per_page=100&page=1\": {\n                \"total_count\": 101, \"workflows\": first_page\n            },\n            base + \"/actions/workflows?per_page=100&page=2\": {\n                \"total_count\": 101, \"workflows\": []\n            },\n        }\n        with self.assertRaisesRegex(ValueError, \"pagination incomplete\"):\n            collect_workflow_runs(\"wizekin/USG-Workbench\", \"token\",\n                                  opener=self.make_opener(payloads), workers=1)\n\n    def test_requires_repository_and_token(self):\n",
+          "expected_occurrences": 1
+        }
+      ]
+    }
+  ],
+  "validation_profile": "system_evidence_github_actions",
+  "evidence": [
+    "https://github.com/wizekin/USG-Workbench/actions/runs/44030813370"
+  ],
+  "rollback_note": "Revert the isolated repair PR with git revert; only the system-evidence workflow inventory collector and its pagination regression tests are changed."
+}
