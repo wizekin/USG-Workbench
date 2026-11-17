@@ -1,0 +1,291 @@
+{
+  "contract": "USG-PUD-STRUCTURAL-FREQUENCY/0.1.0",
+  "report_id": "USG-PUD-STRUCTURAL-FREQUENCY-MANUAL-2026-11-16",
+  "generated_at_utc": "2026-11-16T19:56:04Z",
+  "execution_kind": "manual_reproduction_of_pinned_ud_proxy_rules",
+  "github_actions_run_id": null,
+  "implementation_reference": {
+    "repository": "wizekin/USG-Workbench",
+    "branch": "automation/sys-08-pud-structural-frequency",
+    "commit": "6f415fb8bc741b77c7a518ed40547603cc839221",
+    "path": "tools/open_world_evaluation/pud_structural_frequency.py",
+    "implementation_executed": false,
+    "note": "Counts were independently reproduced from the exact pinned source blobs using the same seven documented UD proxy definitions. This is not evidence that the branch Python module, tests, or workflow ran."
+  },
+  "population": {
+    "kind": "naturalistic_full_pud_treebank_diagnostic",
+    "sentences_per_language": 1000,
+    "semantic_gold_available": false,
+    "label_basis": "Universal Dependencies CoNLL-U UPOS and dependency labels; syntactic proxies only",
+    "limitations": [
+      "UD dependency labels are not USG semantic roles, frames, relations, or semantic gold.",
+      "PUD is news/Wikipedia text, not conversational user requests.",
+      "All Arabic PUD sentences are translated and do not represent a native-MSA distribution.",
+      "English PUD includes translated sentences.",
+      "Frequency is descriptive for these pinned test treebanks and is not a population estimate for general language use."
+    ]
+  },
+  "sources": {
+    "license": "CC BY-SA 3.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/3.0/",
+    "license_blob_sha1": "a0bd8baeb667daae1407869f3152489fab3001de",
+    "en": {
+      "repository": "UniversalDependencies/UD_English-PUD",
+      "commit": "a697bab43d4111073356de0df5802488bca3de7e",
+      "file": "en_pud-ud-test.conllu",
+      "git_blob_sha1": "828f827759e7a9f89a8c42bfe79402dd65db71c3",
+      "content_sha256": "befc5e901b58732f2308b1aac5cdd804d938362ab31c9fe400c61c28e8e155d8",
+      "readme_blob_sha1": "15ab0c810de4c223663e25f956c9225e34d376fc",
+      "sentence_count": 1000,
+      "syntactic_word_token_count": 21180
+    },
+    "ar": {
+      "repository": "UniversalDependencies/UD_Arabic-PUD",
+      "commit": "c606299bc9eb8baa6c61c8dd3efc9a0fbf73aa87",
+      "file": "ar_pud-ud-test.conllu",
+      "git_blob_sha1": "075361d5425ea0d43ff6b4f5459a306e26df6fbf",
+      "content_sha256": "befc6dd18b5b8803644ae8208e2e5f52c0957a36437627c05110914ec42281a3",
+      "readme_blob_sha1": "4ea76ca71d04fe03c7da6a1afa94833d837e89a7",
+      "sentence_count": 1000,
+      "syntactic_word_token_count": 20747
+    },
+    "integrity": {
+      "git_blob_sha1_verified": true,
+      "content_sha256_verified_against_campaign_source_manifest": true,
+      "raw_source_text_committed_to_usg_repository": false
+    }
+  },
+  "construction_rules": {
+    "relative_clause_attachment": "One or more acl:relcl arcs",
+    "active_transitive_root": "Root VERB with a direct obj dependent and no passive marker",
+    "copular_predicate": "Predicate head with a dependent cop",
+    "clause_complement": "One or more ccomp or xcomp arcs; subtypes retained separately",
+    "passive_root": "Root VERB with Voice=Pass, aux:pass, nsubj:pass, or csubj:pass",
+    "adverbial_clause": "One or more advcl arcs",
+    "coordination": "One or more conj arcs; phrase-level and clause-level coordination are not conflated semantically"
+  },
+  "full_treebank_frequency": {
+    "en": {
+      "sentence_count": 1000,
+      "token_count": 21180,
+      "constructions": {
+        "relative_clause_attachment": {
+          "sentence_count": 193,
+          "instance_count": 211,
+          "per_1000_sentences": 193,
+          "instances_per_1000_sentences": 211
+        },
+        "active_transitive_root": {
+          "sentence_count": 295,
+          "instance_count": 295,
+          "per_1000_sentences": 295,
+          "instances_per_1000_sentences": 295
+        },
+        "copular_predicate": {
+          "sentence_count": 286,
+          "instance_count": 319,
+          "per_1000_sentences": 286,
+          "instances_per_1000_sentences": 319
+        },
+        "clause_complement": {
+          "sentence_count": 348,
+          "instance_count": 453,
+          "per_1000_sentences": 348,
+          "instances_per_1000_sentences": 453
+        },
+        "passive_root": {
+          "sentence_count": 141,
+          "instance_count": 141,
+          "per_1000_sentences": 141,
+          "instances_per_1000_sentences": 141
+        },
+        "adverbial_clause": {
+          "sentence_count": 241,
+          "instance_count": 294,
+          "per_1000_sentences": 241,
+          "instances_per_1000_sentences": 294
+        },
+        "coordination": {
+          "sentence_count": 428,
+          "instance_count": 634,
+          "per_1000_sentences": 428,
+          "instances_per_1000_sentences": 634
+        }
+      },
+      "clause_complement_subtypes": {
+        "ccomp": {
+          "sentence_count": 156,
+          "instance_count": 172
+        },
+        "xcomp": {
+          "sentence_count": 243,
+          "instance_count": 281
+        }
+      }
+    },
+    "ar": {
+      "sentence_count": 1000,
+      "token_count": 20747,
+      "constructions": {
+        "relative_clause_attachment": {
+          "sentence_count": 265,
+          "instance_count": 319,
+          "per_1000_sentences": 265,
+          "instances_per_1000_sentences": 319
+        },
+        "active_transitive_root": {
+          "sentence_count": 241,
+          "instance_count": 241,
+          "per_1000_sentences": 241,
+          "instances_per_1000_sentences": 241
+        },
+        "copular_predicate": {
+          "sentence_count": 93,
+          "instance_count": 95,
+          "per_1000_sentences": 93,
+          "instances_per_1000_sentences": 95
+        },
+        "clause_complement": {
+          "sentence_count": 349,
+          "instance_count": 437,
+          "per_1000_sentences": 349,
+          "instances_per_1000_sentences": 437
+        },
+        "passive_root": {
+          "sentence_count": 85,
+          "instance_count": 85,
+          "per_1000_sentences": 85,
+          "instances_per_1000_sentences": 85
+        },
+        "adverbial_clause": {
+          "sentence_count": 274,
+          "instance_count": 315,
+          "per_1000_sentences": 274,
+          "instances_per_1000_sentences": 315
+        },
+        "coordination": {
+          "sentence_count": 440,
+          "instance_count": 661,
+          "per_1000_sentences": 440,
+          "instances_per_1000_sentences": 661
+        }
+      },
+      "clause_complement_subtypes": {
+        "ccomp": {
+          "sentence_count": 242,
+          "instance_count": 286
+        },
+        "xcomp": {
+          "sentence_count": 140,
+          "instance_count": 151
+        }
+      }
+    }
+  },
+  "first_naturalistic_campaign_sample": {
+    "campaign_id": "OWC-NAT-PUD-43810018720-1",
+    "workflow_run_id": 43810018720,
+    "tested_commit_sha": "8e3f1308882b2e8ce581350746d9ee76fca31216",
+    "report_branch": "reports/naturalistic-pud-43810018720-1",
+    "report_branch_commit": "e6841e98d5512c19b98b58e15da0ec956d3d60af",
+    "campaign_source_manifest_sha256": "2410ba071ae70b5f2ab1130328a983954bce8ce9d2aef751f455686c0a2908d6",
+    "campaign_cases_sha256": "d22caf95e747e7034c2a77036e5b9f86433ba23e695ab7fa447e52525958818d",
+    "campaign_execution_results_sha256": "4a211a38bbb2454a625c11aef9b21dfce7e5d88bb3f0799cd4bf50d5d2fabbc8",
+    "campaign_score_results_sha256": "f632a62b5c79c16df2cfb87617aece6d4b33f1b51ee50e03387329161676c126",
+    "unique_source_sentences_per_language": 50,
+    "target_records": 300,
+    "actual_attempts": 300,
+    "outcomes": {
+      "completed": 4,
+      "partial": 245,
+      "unsupported": 51,
+      "ambiguous": 0,
+      "abstained": 0,
+      "not_executed": 0,
+      "crashed": 0,
+      "timeout": 0,
+      "infrastructure_error": 0,
+      "invalid_output": 0
+    },
+    "structural_status_counts": {
+      "valid": 300
+    },
+    "semantic_scored_attempts": 0,
+    "attempts_without_target_result_payload": 50,
+    "first_blocking_stage_counts": {
+      "lexical": 100,
+      "syntax": 99
+    },
+    "outcomes_by_target": {
+      "phase4-bounded-interpreter": {
+        "partial": 99,
+        "unsupported": 1
+      },
+      "phase5-bounded-interpreter": {
+        "partial": 100
+      },
+      "js-semantic-workbench-v054": {
+        "completed": 4,
+        "partial": 46,
+        "unsupported": 50
+      }
+    },
+    "sample_frequency_unique_sentences": {
+      "en": {
+        "sentence_count": 50,
+        "token_count": 1012,
+        "clause_complement": {
+          "sentence_count": 18,
+          "instance_count": 23,
+          "per_1000_sentences": 360
+        },
+        "ccomp": {
+          "sentence_count": 8,
+          "instance_count": 8
+        },
+        "xcomp": {
+          "sentence_count": 14,
+          "instance_count": 15
+        }
+      },
+      "ar": {
+        "sentence_count": 50,
+        "token_count": 1051,
+        "clause_complement": {
+          "sentence_count": 16,
+          "instance_count": 18,
+          "per_1000_sentences": 320
+        },
+        "ccomp": {
+          "sentence_count": 7,
+          "instance_count": 9
+        },
+        "xcomp": {
+          "sentence_count": 9,
+          "instance_count": 9
+        }
+      }
+    },
+    "publication_status": "artifact_uploaded_report_branch_pushed_pr_creation_failed_actions_permission",
+    "committed_to_main": false,
+    "structural_frequency_was_in_campaign_artifact": false
+  },
+  "candidate_selection": {
+    "construction_id": "clause_complement.ccomp_xcomp",
+    "status": "CANDIDATE_ONLY",
+    "decision": "selected_for_independent_construction_evidence_and_annotation_design_only",
+    "rationale": [
+      "Full-treebank sentence presence is closely balanced: 348/1000 English and 349/1000 Arabic.",
+      "The actual 50-sentence-per-language campaign sample contains 18/50 English and 16/50 Arabic sentences with ccomp or xcomp.",
+      "Both ccomp and xcomp are represented in each language, but their subtype balance differs and must remain explicit.",
+      "The accepted Phase 4 interpreter only has tiny SVO/VSO patterns; the Phase 5 roadmap documents no nested or multi-clause syntax.",
+      "The existing Phase 6 continuation item P6-CONT-02 explicitly covers broader embedded, subordinate, relative, and argument-gap attachment."
+    ],
+    "non_claims": [
+      "Frequency does not establish semantic accuracy or priority by itself.",
+      "The sample is news/Wikipedia and not conversational input.",
+      "UD ccomp/xcomp labels are syntactic proxies, not semantic argument-role gold.",
+      "No runtime rule, semantic relation, or lexical resource is enabled or promoted."
+    ]
+  }
+}
