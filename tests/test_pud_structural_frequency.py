@@ -104,6 +104,28 @@ class PudStructuralFrequencyTests(unittest.TestCase):
         self.assertEqual(c["coordination"]["instance_count"], 1)
         self.assertAlmostEqual(c["relative_clause_attachment"]["per_1000_sentences"], 1000 / 7)
 
+    def test_clause_complement_keeps_ccomp_and_xcomp_subtypes_separate(self):
+        payload = """# sent_id = ccomp
+# text = They said that it worked.
+1\tThey\tthey\tPRON\tPRP\t_\t2\tnsubj\t_\t_
+2\tsaid\tsay\tVERB\tVBD\t_\t0\troot\t_\t_
+3\tit\tit\tPRON\tPRP\t_\t4\tnsubj\t_\t_
+4\tworked\twork\tVERB\tVBD\t_\t2\tccomp\t_\t_
+
+# sent_id = xcomp
+# text = They want to leave.
+1\tThey\tthey\tPRON\tPRP\t_\t2\tnsubj\t_\t_
+2\twant\twant\tVERB\tVBP\t_\t0\troot\t_\t_
+3\tleave\tleave\tVERB\tVB\t_\t2\txcomp\t_\t_
+"""
+        clause = summarize_language(parse_conllu_structure(payload))["constructions"]["clause_complement"]
+        self.assertEqual(clause["sentence_count"], 2)
+        self.assertEqual(clause["instance_count"], 2)
+        self.assertEqual(clause["subtypes"]["ccomp"]["sentence_count"], 1)
+        self.assertEqual(clause["subtypes"]["ccomp"]["instance_count"], 1)
+        self.assertEqual(clause["subtypes"]["xcomp"]["sentence_count"], 1)
+        self.assertEqual(clause["subtypes"]["xcomp"]["instance_count"], 1)
+
     def test_passive_root_is_not_counted_as_active_transitive(self):
         summary = summarize_language(parse_conllu_structure(CONLLU))
         self.assertEqual(summary["constructions"]["passive_root"]["instance_count"], 1)
