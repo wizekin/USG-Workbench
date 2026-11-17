@@ -1,6 +1,6 @@
 # SYS-09 — Independent Construction-Level Semantic Evidence Protocol
 
-**Status:** protocol draft on an isolated branch; SYS-08 diagnostic implementation merged; no annotation campaign has started  
+**Status:** draft protocol published on main by PR #231 (merge commit `4a5b0a8164b22a9b178790d2d275c2411fb71fbf`); no annotation campaign has started  
 **Selected candidate:** `clause_complement.ccomp_xcomp`  
 **Dependency:** SYS-08 bilingual PUD structural-frequency diagnostics  
 **Related continuation:** Phase 6 P6-CONT-02 (broader embedded, subordinate, relative, and argument-gap attachment)  
