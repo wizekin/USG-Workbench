@@ -226,3 +226,18 @@ jobs:
             fi
             echo "- The executor never merges and never promotes semantic rules or resources."
           } >> "$GITHUB_STEP_SUMMARY"
+
+          if [ "${{ steps.plan.outputs.available }}" = "true" ] && [ "${{ steps.existing.outputs.exists }}" != "true" ]; then
+            if [ "${{ steps.apply.outcome }}" != "success" ]; then
+              echo "Repair execution or registered validation failed; preserving the failure result and failing this workflow."
+              exit 1
+            fi
+            if [ "${{ steps.paths.outcome }}" != "success" ]; then
+              echo "Validated repair could not be prepared for publication; failing this workflow."
+              exit 1
+            fi
+            if [ "${{ steps.repair-pr.outcome }}" = "failure" ] || [ -z "${{ steps.repair-pr.outputs.pull-request-url }}" ]; then
+              echo "Repair PR publication failed; the branch and result artifact are preserved, but this workflow is not a pass."
+              exit 1
+            fi
+          fi
