@@ -168,13 +168,15 @@ class RepairExecutorTests(unittest.TestCase):
         self.assertIn("secret", report["error"])
 
     def test_regression_fixture_scope_cannot_change_gold_label_keys(self):
-        (self.root / "tests").mkdir(parents=True)
-        fixture_target = self.root / "tests/test_example.py"
-        fixture_target.write_text("alpha = 1\\nbeta = 2\\n", encoding="utf-8")
+        fixture_dir = self.root / "tests/fixtures/regressions"
+        fixture_dir.mkdir(parents=True)
+        fixture_target = fixture_dir / "example.json"
+        fixture_target.write_text('{"status": "candidate"}\\n', encoding="utf-8")
         plan = self.plan()
-        plan["patches"][0]["path"] = "tests/test_example.py"
+        plan["patches"][0]["path"] = "tests/fixtures/regressions/example.json"
         plan["patches"][0]["scope"] = "regression_fixture"
         plan["patches"][0]["expected_git_blob_sha1"] = git_blob_sha1(fixture_target.read_bytes())
+        plan["patches"][0]["edits"][0]["match_text"] = '"status": "candidate"'
         plan["patches"][0]["edits"][0]["replacement_text"] = '"gold_label": "Agent"'
         report, code = execute_plan(
             plan, self.root, BASE, apply=True,
