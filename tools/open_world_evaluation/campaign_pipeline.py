@@ -361,7 +361,7 @@ def build_campaign_report(
             "Structural validation does not establish semantic correctness or factual truth.",
             "Semantic metrics are reported only when independent case-specific oracle adapters are available.",
             "Naturalistic and controlled-diagnostic populations may be empty; missing populations are reported explicitly and keep campaign status partial.",
-            "The registered browser-only JavaScript target is not executed until a real browser automation adapter is available.",
+            "The JavaScript Workbench target is English-only and uses a deterministic local rule fallback. When the Playwright adapter runs, its evidence establishes UI execution and structured output only, not semantic correctness.",
             "Process isolation is best-effort containment, not a hardened sandbox for hostile native code.",
         ],
         "artifacts": artifact_entries or [],

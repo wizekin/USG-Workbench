@@ -3,7 +3,9 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+import re
 import unittest
+from urllib.parse import urlparse
 
 ROOT = Path(__file__).resolve().parents[1]
 MATRIX_PATH = ROOT / "evaluations/system-wide/cross-implementation-matrix-2026-11-12.json"
@@ -26,7 +28,17 @@ class CrossImplementationMatrixTests(unittest.TestCase):
                     self.assertTrue(capability["evidence"], capability["id"])
                     for evidence in capability["evidence"]:
                         with self.subTest(capability=capability["id"], evidence=evidence):
-                            self.assertTrue((ROOT / evidence).exists(), evidence)
+                            parsed = urlparse(evidence)
+                            if parsed.scheme or parsed.netloc:
+                                self.assertEqual(parsed.scheme, "https", evidence)
+                                self.assertEqual(parsed.netloc, "github.com", evidence)
+                                self.assertRegex(
+                                    parsed.path,
+                                    r"^/wizekin/USG-Workbench/actions/runs/\d+$",
+                                    evidence,
+                                )
+                            else:
+                                self.assertTrue((ROOT / evidence).exists(), evidence)
 
     def test_cross_runtime_gates_are_not_claimed_complete(self):
         matrix = json.loads(MATRIX_PATH.read_text(encoding="utf-8"))

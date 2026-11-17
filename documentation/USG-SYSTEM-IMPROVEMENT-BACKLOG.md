@@ -16,7 +16,7 @@ This backlog converts the system-wide assessment into bounded, dependency-ordere
 | SYS-05 | P1 | Define versioned lexical-candidate adapter contract | SYS-02 | POS/lemma/forms/senses/morphology/provenance/ambiguity exposed as candidates; schema and adapter tests pass | Adapter only; no auto-promotion |
 | SYS-06 | P1 | Add OOV and lexical ambiguity regression suite | SYS-05 | Unknown and ambiguous forms remain explicit; no unsupported unique sense/POS assertion | Interpreter diagnostics |
 | SYS-07 | P1 | Build stage dependency/error graph | SYS-02 | Root blockers separated from downstream symptoms; every recommendation links to a reproducible case | Diagnostics only |
-| SYS-08 | P1 | Select one construction for bilingual expansion pilot | SYS-02, SYS-03 | Construction chosen using evidence/frequency and available gold; per-language positive/negative/ambiguous/boundary fixtures frozen | Candidate feature |
+| SYS-08 | P1 | Add reproducible bilingual PUD structural-frequency diagnostics, then select one bounded construction | SYS-02, SYS-03 | Pinned CoNLL-U hashes verified; per-language sentence/instance frequencies published with UD-proxy labels and denominators; one construction selected only after bilingual evidence review; positive/negative/ambiguous/boundary fixtures frozen | Diagnostics and candidate feature only |
 | SYS-09 | P1 | Independent construction-level evidence and acceptance | SYS-08 | Each construction has a separately described evidence population, provenance, limitations, held-out split, and per-language thresholds | Acceptance only |
 | SYS-10 | P2 | Audit external Step 6.6 semantic dataset alternatives | SYS-03 | Candidate datasets, annotation-unit mismatches, access, and licensing limitations are documented; no restricted data is copied | Research only |
 | SYS-11 | P2 | Automatic bilingual synthetic semantic-reference benchmark | SYS-10 | Graph-first deterministic generator, CC0 benchmark data, ten profiles, exact-span oracle, ambiguity cases, per-profile evaluator, and CI artifacts pass | Evaluation only; no runtime promotion |
@@ -27,7 +27,7 @@ This backlog converts the system-wide assessment into bounded, dependency-ordere
 | SYS-16 | P1 | Bounded automatic repair executor | SYS-15 | Deterministic CI/report/test-harness repairs can be proposed in isolated branches, validated, replayed, and opened as PRs; semantic runtime promotion remains gated | Harness/test/docs only |
 | SYS-17 | P1 | Candidate semantic and lexical growth loop | SYS-03, SYS-08, SYS-09, SYS-15 | New lexical/morphology/semantic candidates are generated from measured gaps, independently evaluated, held out, and promoted only through explicit acceptance | Candidate resources until accepted |
 
-## Implementation status — 2026-11-12
+## Implementation status — 2026-11-15
 
 | ID | Current state | Evidence |
 |---|---|---|
@@ -39,11 +39,19 @@ This backlog converts the system-wide assessment into bounded, dependency-ordere
 | SYS-13 | **Complete for Phase 5 Kernel Lab explanations** | PR #191 merged; stage guide, first diagnostic location, statuses, source spans, resource version/hash, and expandable stage artifacts are displayed separately from the raw envelope. |
 | SYS-05 | **Complete** | PR #190 publishes the versioned `USG-LEXICAL-CANDIDATES/0.1.0` JSON Schema and deterministic `USG-LEXICAL-ADAPTER/0.1.0` read-only adapter with provenance/identity checks and candidate-only enforcement. |
 | SYS-06 | **Complete** | PR #190 adds English OOV and polysemy regressions plus Arabic OOV regression; unknown forms remain unresolved and bank remains ambiguous. |
-| SYS-03 | **Pilot generator and source validation complete; first full campaign scheduled** | PR #196 adds pinned English/Arabic PUD ingestion, CC BY-SA 3.0 attribution/share-alike artifacts, deterministic sampling, deduplication, scoped email/URL screening, and explicit translation/no-semantic-gold limitations. The live 5-per-language validation passed; the first 50-per-language campaign is scheduled weekly. |
-| SYS-04 | **Complete for English browser execution** | PR #194 adds a real Chromium/Playwright adapter for JS Semantic Workbench v0.5.4, with loopback-only browser requests, stable result projection, explicit unsupported-language outcomes, and a full isolated-worker smoke test. It does not add Arabic support or semantic correctness guarantees. |
-| SYS-15 | **Complete for evidence aggregation and prioritization** | PR #195 adds the daily scheduled growth controller, first-blocker/resource-aware ranking, growth policy, validation tests, and 90-day report artifacts. It does not synthesize or merge semantic rules. |
+| SYS-03 | **First 50-per-language campaign executed; report branch published but not merged to main** | Run [43810018720](https://github.com/wizekin/USG-Workbench/actions/runs/43810018720) generated campaign `OWC-NAT-PUD-43810018720-1`: 300 actual attempts, 4 completed, 245 partial, 51 unsupported; 150 English and 150 Arabic cases, 100 per target. First blockers: lexical 100 and syntax 99. No semantic gold was available. The append-only report is committed on `reports/naturalistic-pud-43810018720-1` at `e6841e98d5512c19b98b58e15da0ec956d3d60af`, but PR creation failed because Actions cannot create/approve PRs; repository auto-merge is disabled. The naturalistic population is executed evidence, not yet part of main's committed campaign history. PUD remains news/Wikipedia text; Arabic is translated. |
+| SYS-08 | **Diagnostic implementation on isolated branch; first PUD campaign lacks structural-frequency output; branch CI pending** | Branch `automation/sys-08-pud-structural-frequency` contains the SYS-08 implementation and is ahead of main; it adds pinned-source CoNLL-U diagnostics, seven syntactic proxy families, separate sentence/instance denominators, source-hash checks, a no-semantic-gold boundary, workflow integration, and eight frozen unit tests. The first full PUD campaign ran on main commit `8e3f1308882b2e8ce581350746d9ee76fca31216`, before this branch's workflow changes, so it contains no `structural-frequency.json`. No Actions run exists for this branch; the tests are present but not CI-verified in this checkpoint. No bilingual construction frequencies have been measured, no construction is selected, and nothing is promoted. |
+| SYS-04 | **Complete for English browser execution** | PR #194 adds the Chromium/Playwright adapter. OWC-OW7 run 43670079717 confirms adapter v0.1.0/Chromium 159 execution with loopback-only networking and the local rule fallback. It does not add Arabic support or semantic correctness guarantees. |
+| SYS-15 | **Planner runs; newest plan is stale against current campaigns** | PR #195 adds the daily scheduled growth controller and first-blocker/resource-aware ranking. The latest plan artifact from run [43813242170](https://github.com/wizekin/USG-Workbench/actions/runs/43813242170), generated 2026-11-16T05:54:35Z, still analyzes only OWC-OW6. It omits OWC-OW7 run 43807165809 and naturalistic PUD run 43810018720 because their report bundles are on unmerged branches. The plan retains a 1,058-record Phase 5 pipeline-version mismatch warning from OW6. |
 
 These are implementation states, not claims that USG's semantic accuracy has improved. The work so far improves evaluation trustworthiness and repeatability; it does not add new accepted language-understanding capabilities.
+
+## Evidence refresh — 2026-11-16
+
+- The latest Open-World campaign is `OWC-OW7-43807165809-1` ([run 43807165809](https://github.com/wizekin/USG-Workbench/actions/runs/43807165809)); its 1,100 randomized records and 106 controlled-diagnostic records remain separate. Its report branch is `reports/ow7-43807165809-1` at `14f9a5be4b9a34e564d9ebcbf8c6fa7ba6b00705`; Actions PR creation failed. No naturalistic cases were included in that campaign.
+- The latest growth plan does not yet incorporate either report branch. Do not treat a generated plan as current evidence when its input campaigns are unmerged.
+- The PUD campaign report contains CC BY-SA 3.0 license and attribution files and pins both source commits. The source manifest records the privacy-screen limitations and the absence of USG semantic gold. Full contributor attribution remains a packaging review item because the bundle points to pinned upstream READMEs rather than embedding their named contributor lists.
+- No semantic runtime, canonical USG-SEM/1.0 contract, accepted Phase 1–5 contract, gold label, or candidate-resource acceptance state changed in this evidence refresh.
 
 ## Execution rules
 
@@ -58,14 +66,15 @@ These are implementation states, not claims that USG's semantic accuracy has imp
 
 ## Current execution sequence
 
-1. **SYS-03 — naturalistic pilot:** validate and run the pinned English/Arabic PUD news/Wikipedia population. It is naturalistic text, not conversational requests; Arabic is translated and no semantic gold is claimed.
-2. **SYS-16 — bounded repair executor:** automate deterministic infrastructure, report, and regression-test repairs in isolated branches with exact replay and PR checks. Do not auto-promote semantic rules or candidate resources.
-3. **SYS-08 + SYS-09 — construction pilot and independent evidence:** select one bilingual construction using measured gaps and report synthetic, structural, and naturalistic evidence as separate populations.
-4. **SYS-17 — candidate semantic/lexical growth:** use measured failure clusters to generate candidate resources and construction proposals, then require held-out independent acceptance.
-5. **SYS-12 — cross-runtime gates:** build the shared frozen corpus and compare JS/Python outputs without treating agreement as semantic truth.
+1. **SYS-08 — PUD structural-frequency diagnostics:** compute reproducible English/Arabic construction counts from the pinned CoNLL-U sources; keep UD syntax proxies separate from semantic gold. Use the full naturalistic campaign's measured bilingual evidence to select one bounded construction. Do not mark the naturalistic population established until the campaign artifact and publication behavior are verified.
+2. **SYS-09 — independent construction-level semantic gold:** define annotation units, annotator guidance, adjudication, ambiguity/abstention labels, provenance, and held-out evaluation before any semantic rule promotion.
+3. **SYS-16 — bounded repair executor:** automate deterministic CI, reporting, packaging, and regression-fixture repairs in isolated branches; run tests/replay and preserve rollback; never auto-promote semantic rules or resources.
+4. **SYS-17 — candidate lexical/semantic growth loop:** derive candidates from measured failure clusters, source licensing, ambiguity tests, independent gold, held-out evaluation, and rollback.
+5. **SYS-12 — cross-runtime conformance:** freeze shared fixtures and compare implementations independently. Agreement is component conformance evidence, not semantic correctness.
+6. **SYS-14 — deterministic replay:** extend replay to accepted repairs and the frozen failure corpus.
+7. **SYS-10/11 — Phase 6 prerequisites:** continue rights, independent-gold, and annotation prerequisites when available; preserve existing bounded synthetic acceptance without generalizing it to naturalistic semantics.
 
-The completed SYS-04 browser adapter now makes the JS Workbench observable in Open-World campaigns. Its current profile is English-only and uses the deterministic local rule fallback. The SYS-15 planner is the first unattended whole-system growth coordinator; it currently produces a ranked plan, not code changes.
-
+The completed SYS-04 browser adapter is exercised by OWC-OW7 through Playwright, but the JavaScript target remains English-only and uses the deterministic local rule fallback. The SYS-15 planner remains a planning system, not a code-changing agent. The current growth plan is stale because OWC-OW7 is not committed to main.
 
 ## Phase 6 Step 6.6 follow-up status — 2026-11-12
 

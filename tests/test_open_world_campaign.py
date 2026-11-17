@@ -228,6 +228,11 @@ class OpenWorldCampaignPipelineTests(unittest.TestCase):
         self.assertIn("not_executed", markdown)
         self.assertIn("Limitations", markdown)
         self.assertIn("finite sample", markdown)
+        limitations = " ".join(report["limitations"])
+        self.assertIn("English-only", limitations)
+        self.assertIn("local rule fallback", limitations)
+        self.assertIn("not semantic correctness", limitations)
+        self.assertNotIn("not executed until a real browser automation adapter is available", limitations)
 
     def test_append_only_bundle_stores_hash_manifest_and_refuses_overwrite(self):
         cases = [make_case("OW-CASE-00000001", "unconstrained_random")]

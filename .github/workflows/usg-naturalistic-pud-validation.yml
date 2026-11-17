@@ -4,8 +4,11 @@ on:
   pull_request:
     paths:
       - "tools/open_world_evaluation/pud_naturalistic_pilot.py"
+      - "tools/open_world_evaluation/pud_structural_frequency.py"
       - "tests/test_pud_naturalistic_pilot.py"
+      - "tests/test_pud_structural_frequency.py"
       - "documentation/USG-NATURALISTIC-PUD-PILOT.md"
+      - "documentation/USG-PUD-STRUCTURAL-FREQUENCY-DIAGNOSTICS.md"
       - ".github/workflows/open-world-naturalistic-pud-pilot.yml"
       - ".github/workflows/usg-naturalistic-pud-validation.yml"
   workflow_dispatch:
@@ -36,6 +39,8 @@ jobs:
           PY
       - name: Run PUD pilot unit tests
         run: python -m unittest discover -s tests -p "test_pud_naturalistic_pilot.py" -v
+      - name: Run structural-frequency unit tests
+        run: python -m unittest discover -s tests -p "test_pud_structural_frequency.py" -v
       - name: Download pinned public corpus and generate a 5-per-language validation sample
         run: |
           python -m tools.open_world_evaluation.pud_naturalistic_pilot \
@@ -55,6 +60,28 @@ jobs:
           assert source["selection"]["en"]["selected_count"] == 5
           assert source["selection"]["ar"]["selected_count"] == 5
           print("Pinned English/Arabic PUD source and naturalistic scenario contract validated.")
+          PY
+      - name: Compute and validate full-treebank bilingual structural-frequency report
+        run: |
+          python -m tools.open_world_evaluation.pud_structural_frequency \
+            --source-manifest "$RUNNER_TEMP/pud-validation/source-manifest.json" \
+            --output "$RUNNER_TEMP/pud-validation/structural-frequency.json"
+          python - <<'PY'
+          import hashlib, json, os
+          from pathlib import Path
+          root = Path(os.environ["RUNNER_TEMP"]) / "pud-validation"
+          manifest = json.loads((root / "source-manifest.json").read_text(encoding="utf-8"))
+          report_path = root / "structural-frequency.json"
+          report = json.loads(report_path.read_text(encoding="utf-8"))
+          assert report["contract"] == "USG-PUD-STRUCTURAL-FREQUENCY/0.1.0"
+          assert report["semantic_gold"]["available"] is False
+          for language in ("en", "ar"):
+              assert report["languages"][language]["sentence_count"] == manifest["sources"][language]["sentence_count"]
+              subtypes = report["languages"][language]["constructions"]["clause_complement"]["subtypes"]
+              assert set(subtypes) == {"ccomp", "xcomp"}
+          expected = hashlib.sha256(report_path.read_bytes()).hexdigest()
+          assert manifest["structural_frequency"]["sha256"] == expected
+          print("Pinned bilingual full-treebank structural frequencies validated; ccomp/xcomp remain separate UD proxies.")
           PY
       - name: Upload source and attribution validation artifact
         uses: actions/upload-artifact@v4
