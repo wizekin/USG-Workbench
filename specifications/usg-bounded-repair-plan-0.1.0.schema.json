@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "USG Bounded Repair Plan 0.1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "repair_id",
+    "status",
+    "base_commit",
+    "description",
+    "patches",
+    "validation_profile",
+    "evidence",
+    "rollback_note"
+  ],
+  "properties": {
+    "contract": {
+      "const": "USG-BOUNDED-REPAIR-PLAN/0.1.0"
+    },
+    "repair_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{2,63}$"
+    },
+    "status": {
+      "const": "ready"
+    },
+    "base_commit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 20,
+      "maxLength": 500
+    },
+    "patches": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "scope",
+          "expected_git_blob_sha1",
+          "match_text",
+          "replacement_text"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 240
+          },
+          "scope": {
+            "enum": [
+              "ci",
+              "reporting",
+              "packaging",
+              "regression_fixture"
+            ]
+          },
+          "expected_git_blob_sha1": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{40}$"
+          },
+          "match_text": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 5000
+          },
+          "replacement_text": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 10000
+          }
+        }
+      }
+    },
+    "validation_profile": {
+      "enum": [
+        "system_evidence_github_actions",
+        "system_evidence",
+        "open_world",
+        "pud",
+        "phase4_phase5_smoke",
+        "replay_smoke"
+      ]
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 10,
+      "items": {
+        "type": "string",
+        "pattern": "^https://github\\.com/wizekin/USG-Workbench/(actions/runs/[0-9]+|pull/[0-9]+|commit/[0-9a-f]{40})$"
+      }
+    },
+    "rollback_note": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 500
+    }
+  }
+}
