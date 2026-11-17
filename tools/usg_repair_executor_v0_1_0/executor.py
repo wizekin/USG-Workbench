@@ -205,7 +205,7 @@ def _prepare_patches(plan: dict[str, Any], root: Path) -> list[dict[str, Any]]:
             if any(pattern.search(after) for pattern in SECRET_PATTERNS):
                 raise RepairRejected(f"replacement appears to contain a secret: {relative}")
             if item["scope"] == "regression_fixture" and re.search(
-                r'"(?:gold_label|semantic_gold|semantic_role_gold|semantic_relation_gold|expected_semantic)"\\s*:',
+                r'"(?:gold_label|semantic_gold|semantic_role_gold|semantic_relation_gold|expected_semantic)"\s*:',
                 after,
             ):
                 raise RepairRejected("regression-fixture patches may not edit semantic gold labels")
