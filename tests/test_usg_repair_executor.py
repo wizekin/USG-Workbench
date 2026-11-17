@@ -96,6 +96,50 @@ class RepairExecutorTests(unittest.TestCase):
         ])
         self.assertNotEqual(report["patches"][0]["before_sha256"], report["patches"][0]["after_sha256"])
 
+    def test_multiple_exact_edits_and_occurrence_counts_apply_in_order(self):
+        self.target.write_text("alpha = 1\\nbeta = 2\\nalpha = 1\\n", encoding="utf-8")
+        plan = self.plan()
+        plan["patches"][0]["expected_git_blob_sha1"] = git_blob_sha1(self.target.read_bytes())
+        plan["patches"][0]["edits"] = [
+            {
+                "match_text": "alpha = 1",
+                "replacement_text": "alpha = 3",
+                "expected_occurrences": 2,
+            },
+            {
+                "match_text": "beta = 2",
+                "replacement_text": "beta = 4",
+                "expected_occurrences": 1,
+            },
+        ]
+        runner, _ = self.runner()
+        report, code = execute_plan(
+            plan, self.root, BASE, apply=True,
+            ancestor_checker=lambda *_: True, command_runner=runner,
+        )
+        self.assertEqual(code, 0)
+        self.assertEqual(report["patches"][0]["edit_count"], 2)
+        self.assertEqual(
+            self.target.read_text(encoding="utf-8"),
+            "alpha = 3\\nbeta = 4\\nalpha = 3\\n",
+        )
+
+    def test_ci_scope_cannot_target_accepted_phase4_or_phase5_tests(self):
+        (self.root / "tests").mkdir(parents=True)
+        target = self.root / "tests/test_phase4_benchmark.py"
+        target.write_text("alpha = 1\\nbeta = 2\\n", encoding="utf-8")
+        plan = self.plan()
+        plan["patches"][0]["path"] = "tests/test_phase4_benchmark.py"
+        plan["patches"][0]["scope"] = "ci"
+        plan["patches"][0]["expected_git_blob_sha1"] = git_blob_sha1(target.read_bytes())
+        report, code = execute_plan(
+            plan, self.root, BASE, apply=True,
+            ancestor_checker=lambda *_: True,
+        )
+        self.assertEqual(code, 2)
+        self.assertIn("allowlist", report["error"])
+        self.assertEqual(target.read_text(encoding="utf-8"), "alpha = 1\\nbeta = 2\\n")
+
     def test_failed_validation_restores_every_patched_file(self):
         original = self.target.read_bytes()
         runner, _ = self.runner(returncode=1)
