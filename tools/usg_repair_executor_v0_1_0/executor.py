@@ -192,21 +192,33 @@ def _prepare_patches(plan: dict[str, Any], root: Path) -> list[dict[str, Any]]:
             text = original.decode("utf-8")
         except UnicodeDecodeError as exc:
             raise RepairRejected(f"patch target is not UTF-8 text: {relative}") from exc
-        before = item["match_text"]
-        after = item["replacement_text"]
-        if before == after:
-            raise RepairRejected(f"no-op patch is forbidden: {relative}")
-        if text.count(before) != 1:
-            raise RepairRejected(f"match text must occur exactly once: {relative}")
-        if any(pattern.search(after) for pattern in SECRET_PATTERNS):
-            raise RepairRejected(f"replacement appears to contain a secret: {relative}")
-        updated = text.replace(before, after, 1).encode("utf-8")
+        for edit in item["edits"]:
+            before = edit["match_text"]
+            after = edit["replacement_text"]
+            expected = edit["expected_occurrences"]
+            if before == after:
+                raise RepairRejected(f"no-op patch is forbidden: {relative}")
+            if text.count(before) != expected:
+                raise RepairRejected(
+                    f"expected {expected} exact match(es), found {text.count(before)}: {relative}"
+                )
+            if any(pattern.search(after) for pattern in SECRET_PATTERNS):
+                raise RepairRejected(f"replacement appears to contain a secret: {relative}")
+            if item["scope"] == "regression_fixture" and re.search(
+                r'"(?:gold_label|semantic_gold|semantic_role_gold|semantic_relation_gold|expected_semantic)"\\s*:',
+                after,
+            ):
+                raise RepairRejected("regression-fixture patches may not edit semantic gold labels")
+            text = text.replace(before, after, expected)
+            total_patch_bytes += len(before.encode("utf-8")) + len(after.encode("utf-8"))
+            if total_patch_bytes > MAX_TOTAL_PATCH_BYTES:
+                raise RepairRejected("repair plan exceeds the total patch-text budget")
+        updated = text.encode("utf-8")
         if len(updated) > MAX_FILE_BYTES:
             raise RepairRejected(f"patched file exceeds the per-file size limit: {relative}")
-        total_patch_bytes += len(before.encode("utf-8")) + len(after.encode("utf-8"))
         total_changed_bytes += len(updated)
-        if total_patch_bytes > MAX_TOTAL_PATCH_BYTES or total_changed_bytes > MAX_TOTAL_CHANGED_BYTES:
-            raise RepairRejected("repair plan exceeds the total patch/changed-byte budget")
+        if total_changed_bytes > MAX_TOTAL_CHANGED_BYTES:
+            raise RepairRejected("repair plan exceeds the total changed-byte budget")
         prepared.append({
             "path": relative,
             "target": target,
@@ -214,6 +226,7 @@ def _prepare_patches(plan: dict[str, Any], root: Path) -> list[dict[str, Any]]:
             "updated": updated,
             "before_sha256": hashlib.sha256(original).hexdigest(),
             "after_sha256": hashlib.sha256(updated).hexdigest(),
+            "edit_count": len(item["edits"]),
         })
     return prepared
 
@@ -310,7 +323,7 @@ def execute_plan(
             raise RepairRejected("plan base commit is not an ancestor of the checked-out commit")
         prepared = _prepare_patches(plan, root)
         report["patches"] = [
-            {"path": item["path"], "before_sha256": item["before_sha256"], "after_sha256": item["after_sha256"]}
+            {"path": item["path"], "before_sha256": item["before_sha256"], "after_sha256": item["after_sha256"], "edit_count": item["edit_count"]}
             for item in prepared
         ]
         report["validation_profile"] = plan["validation_profile"]
@@ -359,12 +372,14 @@ def execute_plan(
 
 
 def _load_plan(path: Path, root: Path) -> dict[str, Any]:
+    if path.is_symlink():
+        raise RepairRejected("plan symlinks are forbidden")
     try:
         resolved = path.resolve(strict=True)
         resolved.relative_to((root / "automation" / "repair-plans").resolve(strict=True))
     except (OSError, ValueError) as exc:
         raise RepairRejected("plan must be an existing file under automation/repair-plans") from exc
-    if resolved.is_symlink() or resolved.stat().st_size > 128_000:
+    if resolved.stat().st_size > 128_000:
         raise RepairRejected("plan symlink or size limit rejected")
     try:
         value = json.loads(resolved.read_text(encoding="utf-8"))
