@@ -100,7 +100,8 @@ jobs:
                   selected = (path, plan)
                   break
           if selected is None:
-              print("available=false" >> open(os.environ["GITHUB_OUTPUT"], "a"))
+              with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
+                  output.write("available=false\\n")
               print("No ready repair plan; no files changed.")
           else:
               path, plan = selected
@@ -118,7 +119,7 @@ jobs:
           python -m tools.usg_repair_executor_v0_1_0.executor \
             --plan "${{ steps.plan.outputs.path }}" \
             --repo-root . \
-            --current-commit "$GITHUB_SHA" \
+            --current-commit "$(git rev-parse HEAD)" \
             --result "$RUNNER_TEMP/repair-result.json" \
             --apply
       - name: Prepare append-only repair result and path allowlist
