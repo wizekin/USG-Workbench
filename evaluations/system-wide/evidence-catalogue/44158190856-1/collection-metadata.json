@@ -1,0 +1,12 @@
+{
+  "snapshot_id": "44158190856-1",
+  "repository": "wizekin/USG-Workbench",
+  "main_commit_sha": "41a429ea3d389cf4548d49796221674edc43ed2f",
+  "external_data_branch": "usg-external-lexical-data",
+  "external_data_branch_sha": "e771653b4b903372a262a6b6f3808948cd551d2f",
+  "workflow_run_id": "44158190856",
+  "workflow_run_attempt": "1",
+  "collected_at": "2026-11-17T19:25:04Z",
+  "collector_contract": "USG-SYSTEM-EVIDENCE-CATALOGUE/0.1.0",
+  "snapshot_policy": "append_only"
+}
