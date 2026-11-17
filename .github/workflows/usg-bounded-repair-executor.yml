@@ -111,9 +111,39 @@ jobs:
                   output.write(f"repair_id={plan['repair_id']}\n")
               print(f"Selected reviewed plan {plan['repair_id']}")
           PY
+      - name: Check whether this repair already has a published branch
+        id: existing
+        if: steps.plan.outputs.available == 'true'
+        run: |
+          branch="automation/repairs/${{ steps.plan.outputs.repair_id }}"
+          if git ls-remote --exit-code --heads origin "$branch" >/dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+            echo "Repair branch already exists; this plan will not be executed twice."
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Record existing repair branch
+        if: steps.existing.outputs.exists == 'true'
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          result = {
+              "contract": "USG-BOUNDED-REPAIR-RESULT/0.1.0",
+              "repair_id": "${{ steps.plan.outputs.repair_id }}",
+              "status": "already_processed_branch",
+              "note": "A branch for this repair ID already exists; no second execution was attempted.",
+              "runtime_semantics_changed": False,
+              "candidate_resources_promoted": False,
+              "gold_labels_changed": False
+          }
+          (Path(os.environ["RUNNER_TEMP"]) / "repair-result.json").write_text(
+              json.dumps(result, indent=2, sort_keys=True) + chr(10), encoding="utf-8"
+          )
+          PY
       - name: Apply one bounded repair and run registered tests
         id: apply
-        if: steps.plan.outputs.available == 'true'
+        if: steps.plan.outputs.available == 'true' && steps.existing.outputs.exists != 'true'
         continue-on-error: true
         run: |
           python -m tools.usg_repair_executor_v0_1_0.executor \
@@ -153,7 +183,7 @@ jobs:
           retention-days: 30
       - name: Open repair pull request
         id: repair-pr
-        if: steps.apply.outcome == 'success' && steps.paths.outcome == 'success'
+        if: steps.apply.outcome == 'success' && steps.paths.outcome == 'success' && steps.existing.outputs.exists != 'true'
         continue-on-error: true
         uses: peter-evans/create-pull-request@v7
         with:
@@ -180,6 +210,8 @@ jobs:
             echo "## Bounded repair executor"
             if [ "${{ steps.plan.outputs.available }}" != "true" ]; then
               echo "- No ready repair plan was found; no files changed."
+            elif [ "${{ steps.existing.outputs.exists }}" = "true" ]; then
+              echo "- A branch for this repair ID already exists; execution was skipped to prevent duplicate repair branches."
             elif [ "${{ steps.apply.outcome }}" != "success" ]; then
               echo "- Repair was rejected or rolled back; inspect the uploaded result artifact."
             elif [ -n "${{ steps.repair-pr.outputs.pull-request-url }}" ]; then
