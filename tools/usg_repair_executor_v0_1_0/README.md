@@ -10,7 +10,7 @@ The executor applies only reviewed, machine-readable repair plans using exact, s
 - Plans cannot supply shell commands, Python modules, URLs to fetch, arbitrary file paths, or merge instructions. Validation profiles map to fixed test command lists in code.
 - Runtime semantic/syntax/operator/discourse implementations, lexical resources, active resources, gold directories, canonical USG-SEM/1.0 specifications, and accepted Phase 1–5 contracts are outside the allowlist.
 - A failed test restores every patched file. The result records hashes, test outcomes, and rollback status.
-- The workflow can open a PR after successful tests, but it never merges. Repository Actions PR permissions may prevent automatic PR creation; the artifact and branch are preserved and the failure is reported.
+- The workflow uses one stable branch per repair ID to avoid duplicate branches. It can open a PR after successful tests, but it never merges. Repository Actions PR permissions may prevent automatic PR creation; the artifact and branch are preserved and the failure is reported.
 - Candidate resources and semantic gold are never promoted or modified by this executor.
 
 ## v0.1 scope
