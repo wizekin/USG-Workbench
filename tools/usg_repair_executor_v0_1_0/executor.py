@@ -138,8 +138,12 @@ def _allowed_path(scope: str, relative: str) -> bool:
 
 
 def _resolve_existing_file(root: Path, relative: str, scope: str) -> Path:
-    if not isinstance(relative, str) or not relative or "\\" in relative or "\0" in relative:
-        raise RepairRejected("patch path must be a non-empty POSIX relative path")
+    if (
+        not isinstance(relative, str) or not relative
+        or "\\" in relative or "\0" in relative
+        or any(ord(char) < 32 for char in relative)
+    ):
+        raise RepairRejected("patch path must be a non-empty POSIX relative path without control characters")
     pure = PurePosixPath(relative)
     if pure.is_absolute() or any(part in {"", ".", ".."} for part in pure.parts):
         raise RepairRejected("absolute, dot, and parent-traversal paths are forbidden")
