@@ -29,7 +29,7 @@
     },
     {
       "path": "tests/test_system_evidence_github_actions.py",
-      "scope": "regression_fixture",
+      "scope": "ci",
       "expected_git_blob_sha1": "1dc3f3074c62ab2992c64db357712cd65cf65741",
       "edits": [
         {
