@@ -116,7 +116,12 @@ jobs:
         if: steps.plan.outputs.available == 'true'
         run: |
           branch="automation/repairs/${{ steps.plan.outputs.repair_id }}"
-          if git ls-remote --exit-code --heads origin "$branch" >/dev/null 2>&1; then
+          refs="$RUNNER_TEMP/repair-branch-refs.txt"
+          if ! git ls-remote --heads origin "$branch" > "$refs"; then
+            echo "Unable to check the repair branch safely; failing closed."
+            exit 1
+          fi
+          if [ -s "$refs" ]; then
             echo "exists=true" >> "$GITHUB_OUTPUT"
             echo "Repair branch already exists; this plan will not be executed twice."
           else
