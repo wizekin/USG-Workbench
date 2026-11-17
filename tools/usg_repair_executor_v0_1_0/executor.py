@@ -107,9 +107,15 @@ def validate_plan(plan: dict[str, Any]) -> None:
 
 
 def _allowed_path(scope: str, relative: str) -> bool:
+    filename = relative.rsplit("/", 1)[-1]
     if scope == "ci":
         return relative.startswith(".github/workflows/") or (
-            relative.startswith("tests/test_") and relative.endswith(".py")
+            relative.startswith("tests/test_")
+            and relative.endswith(".py")
+            and filename.startswith((
+                "test_system_evidence_", "test_open_world_", "test_pud_",
+                "test_usg_repair_executor", "test_phase8_", "test_long_term_plan_sync",
+            ))
         )
     if scope == "reporting":
         return relative.startswith((
@@ -124,9 +130,7 @@ def _allowed_path(scope: str, relative: str) -> bool:
             and relative.endswith("/bundle-manifest.json")
         )
     if scope == "regression_fixture":
-        return (
-            relative.startswith("tests/test_") and relative.endswith(".py")
-        ) or relative.startswith((
+        return relative.startswith((
             "tests/fixtures/diagnostics/",
             "tests/fixtures/regressions/",
         ))
