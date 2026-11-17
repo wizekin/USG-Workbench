@@ -25,6 +25,8 @@ Each language is reported independently. For each construction, the report inclu
 | Active transitive root | A root `VERB` with a direct `obj` dependent and no passive marker |
 | Copular predicate | A predicate head with a dependent `cop` |
 | Clause complement | One or more `ccomp` or `xcomp` arcs |
+
+The combined `clause_complement` family is retained for convenience, but the report also preserves separate `ccomp` and `xcomp` sentence-presence and instance counts. These are syntactic strata only; neither subtype is a semantic relation label.
 | Passive root | A root `VERB` with `Voice=Pass`, `aux:pass`, `nsubj:pass`, or `csubj:pass` |
 | Adverbial clause | One or more `advcl` arcs |
 | Coordination | One or more `conj` arcs |
