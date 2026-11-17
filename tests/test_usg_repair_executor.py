@@ -239,6 +239,20 @@ class RepairExecutorTests(unittest.TestCase):
         self.assertEqual(code, 2)
         self.assertIn("expected 2 exact match", report["error"])
 
+    def test_workflow_does_not_report_failed_repair_or_pr_publication_as_success(self):
+        workflow_path = (
+            Path(__file__).resolve().parents[1]
+            / ".github"
+            / "workflows"
+            / "usg-bounded-repair-executor.yml"
+        )
+        workflow = workflow_path.read_text(encoding="utf-8")
+        self.assertIn('if [ "${{ steps.apply.outcome }}" != "success" ]; then', workflow)
+        self.assertIn('if [ "${{ steps.paths.outcome }}" != "success" ]; then', workflow)
+        self.assertIn('if [ "${{ steps.repair-pr.outcome }}" = "failure" ]', workflow)
+        self.assertIn('echo "Repair PR publication failed;', workflow)
+        self.assertIn("exit 1", workflow)
+
     def test_plan_cannot_supply_arbitrary_commands(self):
         plan = self.plan()
         plan["commands"] = ["rm", "-rf", "/"]
