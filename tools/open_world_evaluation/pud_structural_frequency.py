@@ -117,6 +117,8 @@ def summarize_language(sentences: list[dict[str, Any]]) -> dict[str, Any]:
 
     sentence_counts = {key: 0 for key in CONSTRUCTION_RULES}
     instance_counts = {key: 0 for key in CONSTRUCTION_RULES}
+    clause_subtype_sentence_counts = {"ccomp": 0, "xcomp": 0}
+    clause_subtype_instance_counts = {"ccomp": 0, "xcomp": 0}
     token_count = 0
 
     for sentence in sentences:
@@ -126,10 +128,14 @@ def summarize_language(sentences: list[dict[str, Any]]) -> dict[str, Any]:
         for token in tokens:
             children.setdefault(token["head"], []).append(token)
 
+        clause_subtypes = {
+            relation: sum(t["deprel"] == relation for t in tokens)
+            for relation in ("ccomp", "xcomp")
+        }
         matches: dict[str, int] = {
             "relative_clause_attachment": sum(t["deprel"] == "acl:relcl" for t in tokens),
             "copular_predicate": sum(any(c["deprel"] == "cop" for c in children.get(t["id"], [])) for t in tokens),
-            "clause_complement": sum(t["deprel"] in {"ccomp", "xcomp"} for t in tokens),
+            "clause_complement": sum(clause_subtypes.values()),
             "adverbial_clause": sum(t["deprel"] == "advcl" for t in tokens),
             "coordination": sum(t["deprel"] == "conj" for t in tokens),
             "active_transitive_root": 0,
@@ -145,6 +151,11 @@ def summarize_language(sentences: list[dict[str, Any]]) -> dict[str, Any]:
             elif any(child["deprel"] == "obj" for child in root_children):
                 matches["active_transitive_root"] += 1
 
+        for relation, count in clause_subtypes.items():
+            clause_subtype_instance_counts[relation] += count
+            if count:
+                clause_subtype_sentence_counts[relation] += 1
+
         for key, count in matches.items():
             instance_counts[key] += count
             if count:
@@ -154,7 +165,7 @@ def summarize_language(sentences: list[dict[str, Any]]) -> dict[str, Any]:
     constructions: dict[str, Any] = {}
     for key, rules in CONSTRUCTION_RULES.items():
         present = sentence_counts[key]
-        constructions[key] = {
+        construction = {
             **rules,
             "sentence_count": present,
             "instance_count": instance_counts[key],
@@ -162,6 +173,18 @@ def summarize_language(sentences: list[dict[str, Any]]) -> dict[str, Any]:
             "per_1000_sentences": present * 1000 / denominator,
             "instances_per_1000_sentences": instance_counts[key] * 1000 / denominator,
         }
+        if key == "clause_complement":
+            construction["subtypes"] = {
+                relation: {
+                    "sentence_count": clause_subtype_sentence_counts[relation],
+                    "instance_count": clause_subtype_instance_counts[relation],
+                    "sentence_rate": clause_subtype_sentence_counts[relation] / denominator,
+                    "per_1000_sentences": clause_subtype_sentence_counts[relation] * 1000 / denominator,
+                    "instances_per_1000_sentences": clause_subtype_instance_counts[relation] * 1000 / denominator,
+                }
+                for relation in ("ccomp", "xcomp")
+            }
+        constructions[key] = construction
 
     return {
         "sentence_count": denominator,
