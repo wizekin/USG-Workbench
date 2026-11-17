@@ -15,7 +15,7 @@ The executor applies only reviewed, machine-readable repair plans using exact, s
 
 ## v0.1 scope
 
-Supported patch scopes: deterministic CI, reporting/diagnostics, packaging metadata, and regression-test/fixture files. The initial implementation supports exact text replacement only; it does not create/delete files or regenerate arbitrary package contents. A future template must be separately registered and tested before it is available to plans.
+Supported patch scopes: deterministic CI, reporting/diagnostics, packaging metadata, and regression-fixture directories. CI test edits are limited to registered evidence, Open-World, PUD, and executor tests; accepted Phase 4/5 semantic tests are excluded. The initial implementation supports exact text replacement only; it does not create/delete files or regenerate arbitrary package contents. A future template must be separately registered and tested before it is available to plans.
 
 ## Plan format
 
