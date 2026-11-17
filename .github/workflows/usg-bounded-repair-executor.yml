@@ -158,7 +158,7 @@ jobs:
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          branch: automation/repairs/${{ steps.plan.outputs.repair_id }}-${{ github.run_id }}
+          branch: automation/repairs/${{ steps.plan.outputs.repair_id }}
           base: main
           add-paths: ${{ steps.paths.outputs.paths }}
           commit-message: "USG bounded repair: ${{ steps.plan.outputs.repair_id }}"
