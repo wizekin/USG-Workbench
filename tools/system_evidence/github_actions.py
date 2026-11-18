@@ -11,6 +11,7 @@ from typing import Any, Callable
 
 API_ROOT = "https://api.github.com"
 API_VERSION = "2022-11-28"
+MAX_WORKFLOW_PAGES = 10
 
 def _get_json(url: str, token: str, opener: Callable = urlopen) -> dict[str, Any]:
     request = Request(url, headers={
@@ -32,10 +33,39 @@ def collect_workflow_runs(repository: str, token: str, opener: Callable = urlope
     if not token:
         raise ValueError("GitHub token is required")
     base = f"{API_ROOT}/repos/{repository}"
-    index = _get_json(f"{base}/actions/workflows?per_page=100", token, opener)
-    workflows = index.get("workflows")
-    if not isinstance(workflows, list):
-        raise ValueError("GitHub workflow listing did not return a workflows array")
+    workflows: list[dict[str, Any]] = []
+    workflow_pages_collected = 0
+    workflow_total_count: int | None = None
+    for page in range(1, MAX_WORKFLOW_PAGES + 1):
+        index = _get_json(
+            f"{base}/actions/workflows?per_page=100&page={page}", token, opener
+        )
+        page_workflows = index.get("workflows")
+        if not isinstance(page_workflows, list):
+            raise ValueError("GitHub workflow listing did not return a workflows array")
+        reported_total = index.get("total_count")
+        if isinstance(reported_total, int) and not isinstance(reported_total, bool) and reported_total >= 0:
+            if workflow_total_count is None:
+                workflow_total_count = reported_total
+            elif reported_total != workflow_total_count:
+                raise ValueError("GitHub workflow total_count changed during pagination")
+        workflows.extend(page_workflows)
+        workflow_pages_collected += 1
+        if workflow_total_count is not None and len(workflows) >= workflow_total_count:
+            break
+        if len(page_workflows) < 100:
+            break
+    else:
+        raise ValueError(f"GitHub workflow pagination exceeded {MAX_WORKFLOW_PAGES} pages")
+    if workflow_total_count is not None and len(workflows) != workflow_total_count:
+        raise ValueError(
+            f"GitHub workflow pagination incomplete: collected {len(workflows)} of {workflow_total_count}"
+        )
+    workflow_ids = [item.get("id") for item in workflows]
+    if any(not isinstance(item, int) or isinstance(item, bool) for item in workflow_ids):
+        raise ValueError("GitHub workflow listing contains a missing or invalid workflow id")
+    if len(set(workflow_ids)) != len(workflow_ids):
+        raise ValueError("GitHub workflow listing contains duplicate workflow ids")
 
     def fetch_one(workflow: dict[str, Any]) -> dict[str, Any]:
         workflow_id = workflow.get("id")
@@ -115,6 +145,8 @@ def collect_workflow_runs(repository: str, token: str, opener: Callable = urlope
         "contract": "USG-GITHUB-ACTIONS-EVIDENCE/0.1.0",
         "repository": repository,
         "workflow_count": len(results),
+        "workflow_pages_collected": workflow_pages_collected,
+        "workflow_total_count": workflow_total_count if workflow_total_count is not None else len(results),
         "latest_run_count": sum(item.get("latest_run") is not None for item in results),
         "status_counts": dict(sorted(counts.items())),
         "workflows": results,

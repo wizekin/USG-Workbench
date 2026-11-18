@@ -1,0 +1,39 @@
+{
+  "base_commit": "4a5b0a8164b22a9b178790d2d275c2411fb71fbf",
+  "candidate_resources_promoted": false,
+  "contract": "USG-BOUNDED-REPAIR-RESULT/0.1.0",
+  "current_commit": "41a429ea3d389cf4548d49796221674edc43ed2f",
+  "evidence": [
+    "https://github.com/wizekin/USG-Workbench/actions/runs/44030813370"
+  ],
+  "gold_labels_changed": false,
+  "patches": [
+    {
+      "after_sha256": "784c0f3f86a6fa6e795adcd4c663f0c50531bfc51fce522661f7e55232810584",
+      "before_sha256": "8fea4d8a851fa584f0a06afbea2ff8c655f083e7d9fe0342dbe0ec521b55e8ad",
+      "edit_count": 3,
+      "path": "tools/system_evidence/github_actions.py"
+    },
+    {
+      "after_sha256": "480fb3dd1d6af9266cac388e9521884131a5b6e9de2ebdd2bf151894c6a37233",
+      "before_sha256": "850a9adf10a5ea14659bda80e802141070c01b73b8b33b9e9c7a738ce105dff7",
+      "edit_count": 2,
+      "path": "tests/test_system_evidence_github_actions.py"
+    }
+  ],
+  "repair_id": "sys16-001-workflow-inventory-pagination",
+  "rollback_note": "Revert the isolated repair PR with git revert; only the system-evidence workflow inventory collector and its pagination regression tests are changed.",
+  "runtime_semantics_changed": false,
+  "status": "applied_validated",
+  "tests": [
+    {
+      "command_id": "python -m unittest discover -s tests -p test_system_evidence_github_actions.py -v",
+      "duration_seconds": 0.202,
+      "returncode": 0,
+      "status": "passed",
+      "stderr_tail": "test_api_collection_error_is_not_reported_as_a_pass (test_system_evidence_github_actions.GitHubActionsEvidenceTests.test_api_collection_error_is_not_reported_as_a_pass) ... ok\ntest_artifact_metadata_failure_is_separate_from_workflow_run_success (test_system_evidence_github_actions.GitHubActionsEvidenceTests.test_artifact_metadata_failure_is_separate_from_workflow_run_success) ... ok\ntest_collects_all_workflow_pages_and_reports_completeness (test_system_evidence_github_actions.GitHubActionsEvidenceTests.test_collects_all_workflow_pages_and_reports_completeness) ... ok\ntest_collects_latest_run_artifacts_no_runs_and_disabled (test_system_evidence_github_actions.GitHubActionsEvidenceTests.test_collects_latest_run_artifacts_no_runs_and_disabled) ... ok\ntest_incomplete_workflow_pagination_fails_closed (test_system_evidence_github_actions.GitHubActionsEvidenceTests.test_incomplete_workflow_pagination_fails_closed) ... ok\ntest_operational_workflow_runs_acceptance_and_preserves_blocked_reports (test_system_evidence_github_actions.GitHubActionsEvidenceTests.test_operational_workflow_runs_acceptance_and_preserves_blocked_reports) ... ok\ntest_requires_repository_and_token (test_system_evidence_github_actions.GitHubActionsEvidenceTests.test_requires_repository_and_token) ... ok\n\n----------------------------------------------------------------------\nRan 7 tests in 0.004s\n\nOK\n",
+      "stdout_tail": ""
+    }
+  ],
+  "validation_profile": "system_evidence_github_actions"
+}

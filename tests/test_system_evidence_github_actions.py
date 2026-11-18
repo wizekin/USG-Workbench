@@ -30,7 +30,7 @@ class GitHubActionsEvidenceTests(unittest.TestCase):
     def test_collects_latest_run_artifacts_no_runs_and_disabled(self):
         base = "https://api.github.com/repos/wizekin/USG-Workbench"
         payloads = {
-            base + "/actions/workflows?per_page=100": {
+            base + "/actions/workflows?per_page=100&page=1": {
                 "workflows": [
                     {"id": 1, "name": "Phase 5", "path": ".github/workflows/phase5.yml", "state": "active"},
                     {"id": 2, "name": "Open World", "path": ".github/workflows/open-world.yml", "state": "active"},
@@ -82,7 +82,7 @@ class GitHubActionsEvidenceTests(unittest.TestCase):
     def test_api_collection_error_is_not_reported_as_a_pass(self):
         base = "https://api.github.com/repos/wizekin/USG-Workbench"
         payloads = {
-            base + "/actions/workflows?per_page=100": {
+            base + "/actions/workflows?per_page=100&page=1": {
                 "workflows": [{"id": 9, "name": "Unavailable", "path": ".github/workflows/x.yml", "state": "active"}]
             }
         }
@@ -95,7 +95,7 @@ class GitHubActionsEvidenceTests(unittest.TestCase):
     def test_artifact_metadata_failure_is_separate_from_workflow_run_success(self):
         base = "https://api.github.com/repos/wizekin/USG-Workbench"
         payloads = {
-            base + "/actions/workflows?per_page=100": {
+            base + "/actions/workflows?per_page=100&page=1": {
                 "workflows": [{"id": 5, "name": "Artifact Test", "path": ".github/workflows/test.yml", "state": "active"}]
             },
             base + "/actions/workflows/5/runs?per_page=1&exclude_pull_requests=true": {
@@ -109,6 +109,52 @@ class GitHubActionsEvidenceTests(unittest.TestCase):
         self.assertEqual(len(report["collection_errors"]), 0)
         self.assertEqual(len(report["artifact_collection_errors"]), 1)
         self.assertEqual(report["workflows"][0]["latest_run"]["artifact_count"], 0)
+
+    def test_collects_all_workflow_pages_and_reports_completeness(self):
+        base = "https://api.github.com/repos/wizekin/USG-Workbench"
+        first_page = [
+            {"id": index, "name": f"Disabled {index}",
+             "path": f".github/workflows/disabled-{index}.yml", "state": "disabled_manually"}
+            for index in range(1, 101)
+        ]
+        second_page = [{
+            "id": 101, "name": "Disabled 101",
+            "path": ".github/workflows/disabled-101.yml", "state": "disabled_manually"
+        }]
+        payloads = {
+            base + "/actions/workflows?per_page=100&page=1": {
+                "total_count": 101, "workflows": first_page
+            },
+            base + "/actions/workflows?per_page=100&page=2": {
+                "total_count": 101, "workflows": second_page
+            },
+        }
+        report = collect_workflow_runs("wizekin/USG-Workbench", "token",
+                                       opener=self.make_opener(payloads), workers=1)
+        self.assertEqual(report["workflow_count"], 101)
+        self.assertEqual(report["workflow_total_count"], 101)
+        self.assertEqual(report["workflow_pages_collected"], 2)
+        self.assertEqual(report["latest_run_count"], 0)
+        self.assertEqual(report["status_counts"]["disabled"], 101)
+
+    def test_incomplete_workflow_pagination_fails_closed(self):
+        base = "https://api.github.com/repos/wizekin/USG-Workbench"
+        first_page = [
+            {"id": index, "name": f"Disabled {index}",
+             "path": f".github/workflows/disabled-{index}.yml", "state": "disabled_manually"}
+            for index in range(1, 101)
+        ]
+        payloads = {
+            base + "/actions/workflows?per_page=100&page=1": {
+                "total_count": 101, "workflows": first_page
+            },
+            base + "/actions/workflows?per_page=100&page=2": {
+                "total_count": 101, "workflows": []
+            },
+        }
+        with self.assertRaisesRegex(ValueError, "pagination incomplete"):
+            collect_workflow_runs("wizekin/USG-Workbench", "token",
+                                  opener=self.make_opener(payloads), workers=1)
 
     def test_requires_repository_and_token(self):
         with self.assertRaises(ValueError):
