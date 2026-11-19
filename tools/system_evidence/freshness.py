@@ -101,14 +101,24 @@ def evidence_quality_diagnostics(external: dict[str, Any], campaigns: list[dict[
         })
 
     manifest_batches = progress.get("batch_count")
-    physical_shards = external.get("shard_inventory", {}).get("file_count")
-    if isinstance(manifest_batches, int) and isinstance(physical_shards, int) and manifest_batches != physical_shards:
+    shard_inventory = external.get("shard_inventory", {})
+    logical_shards = (
+        shard_inventory.get("logical_batch_count")
+        if isinstance(shard_inventory, dict) else None
+    )
+    physical_shards = (
+        shard_inventory.get("physical_file_count", shard_inventory.get("file_count"))
+        if isinstance(shard_inventory, dict) else None
+    )
+    if isinstance(manifest_batches, int) and isinstance(logical_shards, int) and manifest_batches != logical_shards:
         findings.append({
             "kind": "external_lexical_shard_count_contradiction", "severity": "high",
-            "summary": "External lexical manifest batch count disagrees with the physical shard inventory.",
+            "summary": "External lexical manifest batch count disagrees with the logical shard batch inventory.",
             "evidence_refs": ["external_lexical.progress.batch_count",
-                              "external_lexical.shard_inventory.file_count"],
-            "manifest_batch_count": manifest_batches, "physical_shard_count": physical_shards,
+                              "external_lexical.shard_inventory.logical_batch_count"],
+            "manifest_batch_count": manifest_batches,
+            "logical_batch_count": logical_shards,
+            "physical_shard_count": physical_shards,
         })
     evaluated_shards = pud.get("evaluated_shard_count")
     if isinstance(manifest_batches, int) and isinstance(evaluated_shards, int) and manifest_batches != evaluated_shards:
