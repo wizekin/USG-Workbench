@@ -137,8 +137,19 @@ def external_lexical(manifest_path: Path | None, checkpoint_path: Path | None,
     morphology = pud.get("morphology_evaluation", {}).get("totals", {}) if pud else {}
     last = manifest.get("last_batch", {})
     budget = int(manifest.get("storage_budget_bytes", 0) or 0)
-    shard_count = int(shard_inventory.get("file_count", 0) or 0) if shard_inventory else None
-    shard_inventory_match = bool(shard_inventory is not None and shard_count == batches)
+    physical_shard_count = int(
+        shard_inventory.get("physical_file_count", shard_inventory.get("file_count", 0)) or 0
+    ) if shard_inventory else None
+    logical_shard_count = (
+        int(shard_inventory["logical_batch_count"])
+        if shard_inventory is not None and shard_inventory.get("logical_batch_count") is not None
+        else None
+    )
+    shard_inventory_match = bool(
+        shard_inventory is not None
+        and logical_shard_count == batches
+        and shard_inventory.get("matches_manifest") is True
+    )
     pud_fresh = bool(pud is not None and shards == batches and shard_inventory_match)
     return {
         "status": manifest.get("status", "unknown"), "manifest_available": True,
@@ -166,7 +177,14 @@ def external_lexical(manifest_path: Path | None, checkpoint_path: Path | None,
         "shard_inventory": {
             "status": ("matches_manifest" if shard_inventory_match else
                        ("count_mismatch" if shard_inventory is not None else "not_collected")),
-            "file_count": shard_count,
+            "file_count": physical_shard_count,
+            "physical_file_count": physical_shard_count,
+            "logical_batch_count": logical_shard_count,
+            "duplicate_physical_copy_count": (
+                int(shard_inventory.get("duplicate_physical_copy_count", 0) or 0)
+                if shard_inventory else None
+            ),
+            "matches_manifest": shard_inventory.get("matches_manifest") if shard_inventory else None,
             "manifest_batch_count": batches,
             "total_size_bytes": shard_inventory.get("total_size_bytes") if shard_inventory else None,
             "files": shard_inventory.get("files", []) if shard_inventory else [],
@@ -276,7 +294,10 @@ def discover(phases: list[dict[str, Any]], external: dict[str, Any],
             ["external_lexical.manifest_sha256", "external_lexical.shard_inventory"],
             ["P5", "P6", "P7", "P8"], phases, "high", "existing_external_lexical_workstream",
             {"manifest_batch_count": external.get("progress", {}).get("batch_count"),
-             "physical_shard_count": external.get("shard_inventory", {}).get("file_count"),
+             "logical_batch_count": external.get("shard_inventory", {}).get("logical_batch_count"),
+             "physical_shard_count": external.get("shard_inventory", {}).get("physical_file_count",
+                                                                           external.get("shard_inventory", {}).get("file_count")),
+             "duplicate_physical_copy_count": external.get("shard_inventory", {}).get("duplicate_physical_copy_count"),
              "inventory_status": inventory_status}))
     failed_conclusions = {"failure", "timed_out", "action_required", "startup_failure"}
     if workflows.get("status") == "collected":
@@ -528,7 +549,7 @@ def render_markdown(report: dict[str, Any]) -> str:
               "", "## External lexical acquisition", ""]
     if ext.get("manifest_available"):
         lines += [f"- Status: {ext.get('status')}; snapshot: {ext.get('source', {}).get('snapshot_id')}.",
-                  f"- Physical shards: {ext.get('shard_inventory', {}).get('file_count')} / {ext.get('shard_inventory', {}).get('manifest_batch_count')} ({ext.get('shard_inventory', {}).get('status')}); total compressed bytes: {ext.get('shard_inventory', {}).get('total_size_bytes')}.",
+                  f"- Physical shard files: {ext.get('shard_inventory', {}).get('physical_file_count', ext.get('shard_inventory', {}).get('file_count'))}; logical batches: {ext.get('shard_inventory', {}).get('logical_batch_count')} / {ext.get('shard_inventory', {}).get('manifest_batch_count')} ({ext.get('shard_inventory', {}).get('status')}); identical duplicate copies: {ext.get('shard_inventory', {}).get('duplicate_physical_copy_count')}; total compressed bytes: {ext.get('shard_inventory', {}).get('total_size_bytes')}.",
                   f"- Processed headwords: {progress.get('processed_headwords')} / {progress.get('expected_headwords')} ({progress.get('headword_completion_percent')}%).",
                   f"- Entries / senses: {progress.get('processed_entries')} / {progress.get('processed_senses')}.",
                   f"- Batches: {progress.get('batch_count')}; stored bytes: {progress.get('stored_bytes')} / {progress.get('storage_budget_bytes')}.",
