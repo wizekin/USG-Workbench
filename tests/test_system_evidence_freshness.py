@@ -26,7 +26,8 @@ class EvidenceFreshnessTests(unittest.TestCase):
     def test_manifest_and_pud_shard_contradictions_are_detected(self):
         external = {
             "progress": {"batch_count": 4, "processed_headwords": 12, "expected_headwords": 10},
-            "shard_inventory": {"file_count": 3},
+            "shard_inventory": {"file_count": 3, "physical_file_count": 3,
+                                "logical_batch_count": 3, "duplicate_physical_copy_count": 0},
             "pud_evaluation": {"evaluated_shard_count": 2},
         }
         results = evidence_quality_diagnostics(external, [], None, "2026-11-12T12:00:00Z")
@@ -34,6 +35,21 @@ class EvidenceFreshnessTests(unittest.TestCase):
         self.assertIn("external_lexical_progress_contradiction", kinds)
         self.assertIn("external_lexical_shard_count_contradiction", kinds)
         self.assertIn("external_lexical_pud_shard_contradiction", kinds)
+
+    def test_identical_duplicate_physical_copy_does_not_create_logical_batch_contradiction(self):
+        external = {
+            "progress": {"batch_count": 2},
+            "shard_inventory": {
+                "file_count": 3, "physical_file_count": 3, "logical_batch_count": 2,
+                "duplicate_physical_copy_count": 1, "matches_manifest": True,
+            },
+            "pud_evaluation": {"evaluated_shard_count": 2},
+        }
+        results = evidence_quality_diagnostics(
+            external, [], None, "2026-11-12T12:00:00Z")
+        kinds = {item["kind"] for item in results}
+        self.assertNotIn("external_lexical_shard_count_contradiction", kinds)
+        self.assertNotIn("external_lexical_pud_shard_contradiction", kinds)
 
     def test_campaign_population_and_execution_accounting_must_reconcile(self):
         campaigns = [{
