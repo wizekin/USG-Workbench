@@ -40,7 +40,9 @@ class SystemEvidenceCatalogueTests(unittest.TestCase):
         self.shard_inventory = self.root / "shard-inventory.json"
         self.shard_inventory.write_text(json.dumps({
             "status": "available", "snapshot_id": "snapshot-x", "file_count": 2,
-            "total_size_bytes": 150,
+            "physical_file_count": 2, "logical_batch_count": 2,
+            "duplicate_physical_copy_count": 0, "matches_manifest": True,
+            "consistency_status": "matched", "total_size_bytes": 150,
             "files": [{"path": "shard-1.jsonl.gz", "size_bytes": 70, "sha256": "a" * 64},
                       {"path": "shard-2.jsonl.gz", "size_bytes": 80, "sha256": "b" * 64}],
         }), encoding="utf-8")
@@ -143,12 +145,35 @@ class SystemEvidenceCatalogueTests(unittest.TestCase):
         self.assertEqual(report["external_lexical"]["pud_evaluation"]["evaluated_shard_count"], 2)
         self.assertEqual(report["external_lexical"]["shard_inventory"]["status"], "matches_manifest")
 
-    def test_pud_metrics_remain_stale_when_physical_shard_count_disagrees(self):
+    def test_identical_duplicate_physical_copy_does_not_make_pud_report_stale(self):
         value = json.loads(self.pud.read_text(encoding="utf-8"))
         value["lexical_shard_count"] = 2
         self.pud.write_text(json.dumps(value), encoding="utf-8")
         inventory = json.loads(self.shard_inventory.read_text(encoding="utf-8"))
-        inventory["file_count"] = 1
+        inventory.update({
+            "file_count": 3, "physical_file_count": 3, "logical_batch_count": 2,
+            "duplicate_physical_copy_count": 1, "matches_manifest": True,
+            "consistency_status": "matched",
+        })
+        self.shard_inventory.write_text(json.dumps(inventory), encoding="utf-8")
+        report = self.collect()
+        external = report["external_lexical"]
+        self.assertEqual(external["pud_evaluation"]["status"], "fresh_for_current_shard_count")
+        self.assertEqual(external["shard_inventory"]["status"], "matches_manifest")
+        self.assertEqual(external["shard_inventory"]["physical_file_count"], 3)
+        self.assertEqual(external["shard_inventory"]["logical_batch_count"], 2)
+        self.assertEqual(external["shard_inventory"]["duplicate_physical_copy_count"], 1)
+
+    def test_pud_metrics_remain_stale_when_logical_shard_count_disagrees(self):
+        value = json.loads(self.pud.read_text(encoding="utf-8"))
+        value["lexical_shard_count"] = 2
+        self.pud.write_text(json.dumps(value), encoding="utf-8")
+        inventory = json.loads(self.shard_inventory.read_text(encoding="utf-8"))
+        inventory.update({
+            "file_count": 1, "physical_file_count": 1, "logical_batch_count": 1,
+            "duplicate_physical_copy_count": 0, "matches_manifest": False,
+            "consistency_status": "mismatch",
+        })
         self.shard_inventory.write_text(json.dumps(inventory), encoding="utf-8")
         report = self.collect()
         self.assertEqual(report["external_lexical"]["pud_evaluation"]["status"],
