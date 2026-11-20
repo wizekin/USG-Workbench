@@ -1,0 +1,141 @@
+name: USG External Lexical Completion Launcher
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_total:
+        description: "Cumulative headword target (defaults to the pinned source's 1,396,111 inventory)"
+        required: false
+        default: "1396111"
+        type: string
+      batch_headwords:
+        description: "Maximum headwords per internal crawler batch (1-30000)"
+        required: false
+        default: "30000"
+        type: string
+      continue_until_target:
+        description: "Automatically chain Actions runs until the target or a safety stop"
+        required: false
+        default: true
+        type: boolean
+      continuation:
+        description: "Internal marker: this run was queued by the previous launcher run"
+        required: false
+        default: false
+        type: boolean
+  pull_request:
+    paths:
+      - "tools/usg_external_lexical_v0_1_0/manual_crawl.py"
+      - "tests/test_external_lexical_manual_crawl.py"
+      - ".github/workflows/usg-external-lexical-complete.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Compile lexical subsystem
+        run: python -m compileall -q tools/usg_external_lexical_v0_1_0
+      - name: Run crawler contract tests
+        run: python -m unittest discover -s tests -p "test_external_lexical_crawl.py" -v
+      - name: Run manual launcher tests
+        run: python -m unittest discover -s tests -p "test_external_lexical_manual_crawl.py" -v
+      - name: Run external lexical retrieval tests
+        run: python -m unittest discover -s tests -p "test_external_lexical_retrieval.py" -v
+      - name: Run lexical state reconciliation audit tests
+        run: python -m unittest discover -s tests -p "test_external_lexical_audit.py" -v
+      - name: Run remote lexical state audit tests
+        run: python -m unittest discover -s tests -p "test_external_lexical_remote_audit.py" -v
+      - name: Run offline structural benchmark
+        run: python -m tools.usg_external_lexical_v0_1_0 benchmark
+
+  crawl:
+    if: github.event_name == 'workflow_dispatch'
+    # This is deliberately the SAME group as the legacy scheduled crawler.
+    # The first manual launch (continuation=false) cancels any still-running
+    # legacy crawl. Chained runs (continuation=true) queue without cancelling
+    # the preceding launcher during its final reconciliation step.
+    concurrency:
+      group: usg-external-lexical-crawl-${{ github.repository }}
+      cancel-in-progress: ${{ inputs.continuation != true }}
+    permissions:
+      contents: write
+      actions: write
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    env:
+      GITHUB_TOKEN: ${{ github.token }}
+      USG_LEXICAL_DATA_BRANCH: usg-external-lexical-data
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Validate manual launcher inputs
+        shell: bash
+        env:
+          TARGET_TOTAL: ${{ inputs.target_total }}
+          BATCH_HEADWORDS: ${{ inputs.batch_headwords }}
+        run: |
+          set -euo pipefail
+          [[ "$TARGET_TOTAL" =~ ^[0-9]+$ ]] || { echo "target_total must be a non-negative integer"; exit 2; }
+          [[ "$BATCH_HEADWORDS" =~ ^[0-9]+$ ]] || { echo "batch_headwords must be an integer"; exit 2; }
+          (( TARGET_TOTAL >= 1 )) || { echo "target_total must be at least 1"; exit 2; }
+          (( BATCH_HEADWORDS >= 1 && BATCH_HEADWORDS <= 30000 )) || { echo "batch_headwords must be between 1 and 30000"; exit 2; }
+          {
+            echo "Target total: $TARGET_TOTAL"
+            echo "Maximum internal batch: $BATCH_HEADWORDS"
+            echo "Compressed shard storage ceiling: 700 MiB"
+            if [[ "${{ inputs.continuation }}" == "true" ]]; then
+              echo "Continuation run: yes"
+            else
+              echo "Continuation run: no (this launch replaces any active legacy crawler)"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Run resumable completion controller
+        shell: bash
+        env:
+          TARGET_TOTAL: ${{ inputs.target_total }}
+          BATCH_HEADWORDS: ${{ inputs.batch_headwords }}
+          CONTINUE_UNTIL_TARGET: ${{ inputs.continue_until_target }}
+        run: |
+          set -euo pipefail
+          args=()
+          if [[ "$CONTINUE_UNTIL_TARGET" == "true" ]]; then
+            args+=(--continue-chain)
+          fi
+          python -m tools.usg_external_lexical_v0_1_0.manual_crawl \
+            --target-total "$TARGET_TOTAL" \
+            --batch-headwords "$BATCH_HEADWORDS" \
+            --max-session-runtime-seconds 18000 \
+            --reserve-seconds 300 \
+            --run-id "${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
+            "${args[@]}"
+      - name: Reconcile durable checkpoint, manifest and shard inventory
+        if: success()
+        run: >-
+          python -m tools.usg_external_lexical_v0_1_0 audit-remote
+          --repository "${GITHUB_REPOSITORY}"
+          --branch "${USG_LEXICAL_DATA_BRANCH}"
+      - name: Publish completion-run diagnostics
+        if: always()
+        run: |
+          {
+            echo ""
+            echo "Durable lexical state remains on branch: usg-external-lexical-data."
+            echo "The completion launcher enforces a hard 700 MiB compressed-shard budget."
+            echo "An incomplete but healthy session queues one continuation workflow run."
+          } >> "$GITHUB_STEP_SUMMARY"
