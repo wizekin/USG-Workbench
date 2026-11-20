@@ -91,6 +91,7 @@ def dispatch_continuation(
                 "target_total": str(target_total),
                 "batch_headwords": str(batch_headwords),
                 "continue_until_target": "true",
+                "continuation": "true",
             },
         },
     )
