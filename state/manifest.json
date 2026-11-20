@@ -1,28 +1,28 @@
 {
-  "batch_count": 35,
+  "batch_count": 36,
   "cycle_number": 1,
   "expected_headwords": 1396111,
   "failed_headwords": 198,
   "failed_pages": 0,
   "last_batch": {
-    "bytes": 1084503,
-    "entries": 4700,
+    "bytes": 7406516,
+    "entries": 31776,
     "failed_headwords": 0,
     "failed_pages": 0,
-    "headwords": 4500,
-    "path": "shards/enwiktionary-2026-10-01-raw-244dcdc56868/batch-000035-44701672119-1-part-0002.jsonl.gz",
+    "headwords": 30000,
+    "path": "shards/enwiktionary-2026-10-01-raw-244dcdc56868/batch-000036-44742715557-1-part-0001.jsonl.gz",
     "pending_retries": 0,
     "retry_attempts": 0,
     "retry_failed": 0,
     "retry_recovered": 0,
-    "senses": 5466,
-    "sha256": "899363e8d52a9f02444ec7401359630b89913533baec34a0c7ac64183d11f5f7",
-    "stop_reason": "time_budget"
+    "senses": 37048,
+    "sha256": "4771b0daa49a62ec3a4a637df465a92cb0945da17bbd705138193a2ed5734983",
+    "stop_reason": "headword_limit"
   },
   "pending_retries": 0,
-  "processed_entries": 970007,
-  "processed_headwords": 905102,
-  "processed_senses": 1162488,
+  "processed_entries": 1001783,
+  "processed_headwords": 935102,
+  "processed_senses": 1199536,
   "recovered_headwords": 198,
   "retried_headwords": 198,
   "retry_dead_letter_headwords": 0,
@@ -34,6 +34,6 @@
   "source_snapshot_id": "enwiktionary-2026-10-01-raw-244dcdc56868",
   "status": "in_progress",
   "storage_budget_bytes": 734003200,
-  "stored_bytes": 229051685,
-  "updated_at": "2026-11-20T13:15:20.504172+00:00"
+  "stored_bytes": 236458201,
+  "updated_at": "2026-11-20T17:35:20.370293+00:00"
 }
