@@ -5,9 +5,9 @@
 Provide one manual initiation that continues the existing external English lexical crawl until its cumulative headword target is reached or a safety boundary prevents further processing.
 
 This is a controller/adapter over the existing implementation in
-\`tools/usg_external_lexical_v0_1_0/crawl.py\`. It does not replace the lexical
+`tools/usg_external_lexical_v0_1_0/crawl.py`. It does not replace the lexical
 crawler, source parser, checkpoint schema, shard format, manifest, or publisher.
-Each batch is executed by the repository's \`LexicalCrawler.run_batch()\`.
+Each batch is executed by the repository's `LexicalCrawler.run_batch()`.
 
 ## Default behavior
 
@@ -19,7 +19,7 @@ Each batch is executed by the repository's \`LexicalCrawler.run_batch()\`.
 - Continuation: when a session approaches its execution budget, the launcher
   dispatches one further run of this workflow. The next run reloads the
   authoritative checkpoint before doing any work.
-- Durable state: the existing \`usg-external-lexical-data\` branch.
+- Durable state: the existing `usg-external-lexical-data` branch.
 - Compressed shard storage ceiling: exactly 700 MiB (734,003,200 bytes).
 
 The 700 MiB ceiling is fixed in the launcher. It is not an overrideable
@@ -30,19 +30,19 @@ manifest, and shard updates.
 ## One-launch continuation model
 
 A manual launch starts one Actions run. The controller repeatedly invokes
-\`LexicalCrawler.run_batch()\` while it has session time and headwords remaining.
+`LexicalCrawler.run_batch()` while it has session time and headwords remaining.
 Before each batch it reads the durable checkpoint and computes the next batch
 size from the target. After each batch it reads the checkpoint again and
 verifies durable progress.
 
 When the runner's reserved time is reached, it calls GitHub's
-\`workflow_dispatch\` endpoint to queue the next run, preserving the target
+`workflow_dispatch` endpoint to queue the next run, preserving the target
 and batch size. The next run resumes from the data-branch checkpoint; it does
 not restart the source snapshot or reprocess already committed batches.
 
-The workflow has \`contents: write\` for the existing data-branch publisher and
-\`actions: write\` for the continuation dispatch. No personal access token or
-additional secret is required when the repository's \`GITHUB_TOKEN\` settings
+The workflow has `contents: write` for the existing data-branch publisher and
+`actions: write` for the continuation dispatch. No personal access token or
+additional secret is required when the repository's `GITHUB_TOKEN` settings
 allow these permissions.
 
 ## Replacing the legacy crawl
@@ -53,10 +53,10 @@ The legacy six-hour scheduled workflow has been paused:
 - its pull-request validation job remains available.
 
 The new workflow deliberately uses the same Actions concurrency group as the
-legacy crawler. Its first manual launch has \`continuation=false\` and
-\`cancel-in-progress=true\`, so GitHub cancels a still-running legacy crawl
+legacy crawler. Its first manual launch has `continuation=false` and
+`cancel-in-progress=true`, so GitHub cancels a still-running legacy crawl
 before starting the completion launcher. Continuation runs carry
-\`continuation=true\` and do not cancel their preceding launcher while it
+`continuation=true` and do not cancel their preceding launcher while it
 finishes the end-of-session reconciliation step.
 
 If the legacy run is still running before the first new manual launch, it may
@@ -86,7 +86,7 @@ promoted into an active runtime lexical resource.
 
 ## Run manually
 
-After this workflow is merged into \`main\`:
+After this workflow is merged into `main`:
 
 1. Open the repository's Actions tab.
 2. Select **USG External Lexical Completion Launcher**.
@@ -106,11 +106,11 @@ The checkpoint remains available for a later manual launch.
 
 From the repository root:
 
-\`\`\`bash
+```bash
 python -m compileall -q tools/usg_external_lexical_v0_1_0
 python -m unittest discover -s tests -p "test_external_lexical_manual_crawl.py" -v
 python -m unittest discover -s tests -p "test_external_lexical_crawl.py" -v
-\`\`\`
+```
 
 The manual launcher tests use a fake crawler and do not make network requests,
 change the real data branch, or initiate a crawl. The integration workflow also
@@ -119,7 +119,7 @@ offline structural benchmark suites.
 
 ## Acceptance criteria
 
-- The launcher calls the existing \`LexicalCrawler.run_batch()\`; no separate
+- The launcher calls the existing `LexicalCrawler.run_batch()`; no separate
   parser or source-cursor implementation is introduced.
 - Every new batch starts from the latest durable checkpoint.
 - Batch sizes never exceed 30,000 headwords.
