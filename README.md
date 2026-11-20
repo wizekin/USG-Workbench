@@ -129,7 +129,8 @@ This section distinguishes a workflow that was observed running from workflows t
 
 | Task | Trigger / cadence | Last verified state and purpose |
 |---|---|---|
-| [External lexical incremental crawl](https://github.com/wizekin/USG-Workbench/actions/workflows/usg-external-lexical-crawl.yml) | Every 6 hours (`23 */6 * * *`) | **Running at last check.** [Run 43177652622](https://github.com/wizekin/USG-Workbench/actions/runs/43177652622) had its resumable crawl step in progress on 12 Nov 2026. It writes compressed, source-linked candidate evidence and a checkpoint to the separate `usg-external-lexical-data` branch. |
+| [Legacy external lexical incremental crawl](https://github.com/wizekin/USG-Workbench/actions/workflows/usg-external-lexical-crawl.yml) | Paused | **Paused at workflow level.** The schedule was removed and the legacy crawl job disabled. An already-running legacy job is replaced when the new completion launcher enters the shared concurrency group. |
+| [External lexical completion launcher](https://github.com/wizekin/USG-Workbench/actions/workflows/usg-external-lexical-complete.yml) | Manual; automatically chained | One manual launch resumes the durable checkpoint, runs repeated batches toward 1,396,111 headwords, and dispatches continuation runs as needed. The hard compressed-shard ceiling is 700 MiB. See the [completion launcher guide](documentation/USG-EXTERNAL-LEXICAL-COMPLETION-LAUNCHER-v0.1.0.md). |
 | [Open-World continuous exploration](https://github.com/wizekin/USG-Workbench/actions/workflows/open-world-continuous.yml) | Daily at 02:15 UTC; weekly deep campaign Monday at 03:30 UTC; also release and manual triggers | **Scheduled.** Generates reproducible randomized campaigns, runs registered targets, scores outcomes, analyzes failures, and publishes append-only evidence. |
 | [Evidence-driven growth planner](https://github.com/wizekin/USG-Workbench/actions/workflows/usg-evidence-driven-growth-controller.yml) | Daily at 04:45 UTC; also manual | **Scheduled.** Reviews recent Open-World evidence and publishes a ranked growth plan. It plans improvements; it does not modify or promote runtime semantic rules. |
 | [Bilingual naturalistic PUD pilot](https://github.com/wizekin/USG-Workbench/actions/workflows/open-world-naturalistic-pud-pilot.yml) | Weekly Monday at 04:00 UTC; also manual | **Scheduled; full campaign result not yet verified.** The source/sample validation passed. The default campaign samples 50 English and 50 Arabic sentences and evaluates the registered bounded targets. Arabic PUD is translated text, not a representative native-Arabic or conversational corpus. |
@@ -144,7 +145,7 @@ Useful live views:
 - [External lexical data branch](https://github.com/wizekin/USG-Workbench/tree/usg-external-lexical-data)
 - [Open-World campaign reports](evaluations/open-world/campaigns/)
 
-**Operational note:** the lexical crawler uses resumable batches and pauses before the GitHub Actions job timeout. Its checkpoint, manifest, and compressed shards are stored on `usg-external-lexical-data`, not in the main source tree. The initial cumulative shard-storage budget is 700 MiB.
+**Operational note:** the legacy scheduled crawler is paused. The one-launch completion workflow repeatedly invokes the existing resumable crawler and chains Actions runs until its target is reached or a safety boundary stops it. Its checkpoint, manifest, and compressed shards remain on `usg-external-lexical-data`, not in the main source tree. The hard cumulative compressed-shard budget is 700 MiB.
 
 ---
 
@@ -241,13 +242,13 @@ The crawler, recovery, state reconciliation, structured analysis, evaluation, an
 
 Remaining work includes:
 
-- continue the resumable six-hour crawl and verify checkpoint/manifest/shard consistency;
+- complete the pinned source snapshot through the manual completion launcher and verify checkpoint/manifest/shard consistency;
 - evaluate the current durable inventory against pinned external data and track coverage changes;
 - improve candidate coverage, sense ambiguity, morphology, and relation evidence using measured gaps;
 - define and implement a controlled acceptance and runtime-integration path;
 - preserve provenance, source-specific rights, versioning, and reproducibility throughout.
 
-References: [External retrieval and incremental analysis](documentation/EXTERNAL-LEXICAL-RETRIEVAL-AND-INCREMENTAL-LEARNING-v0.1.0.md) · [Scheduled crawler](documentation/USG-EXTERNAL-LEXICAL-SCHEDULED-CRAWLER-v0.1.0.md) · [External lexical PUD evaluation](documentation/EXTERNAL-LEXICAL-PUD-EVALUATION-v0.1.0.md).
+References: [External retrieval and incremental analysis](documentation/EXTERNAL-LEXICAL-RETRIEVAL-AND-INCREMENTAL-LEARNING-v0.1.0.md) · [Scheduled crawler](documentation/USG-EXTERNAL-LEXICAL-SCHEDULED-CRAWLER-v0.1.0.md) · [Manual completion launcher](documentation/USG-EXTERNAL-LEXICAL-COMPLETION-LAUNCHER-v0.1.0.md) · [External lexical PUD evaluation](documentation/EXTERNAL-LEXICAL-PUD-EVALUATION-v0.1.0.md).
 
 ### 4. Open-World coverage and naturalistic evaluation
 
