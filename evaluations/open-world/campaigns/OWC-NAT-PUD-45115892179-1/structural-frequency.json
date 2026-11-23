@@ -1,0 +1,311 @@
+{
+  "construction_rules": {
+    "active_transitive_root": {
+      "description": "A verbal root has a direct obj dependent and no UD passive marker.",
+      "relations": [
+        "root VERB with direct obj and no passive marker"
+      ],
+      "unit": "sentence_presence_and_root_instances"
+    },
+    "adverbial_clause": {
+      "description": "A sentence contains one or more advcl dependency arcs.",
+      "relations": [
+        "advcl"
+      ],
+      "unit": "sentence_presence_and_relation_instances"
+    },
+    "clause_complement": {
+      "description": "A sentence contains one or more ccomp or xcomp arcs.",
+      "relations": [
+        "ccomp",
+        "xcomp"
+      ],
+      "unit": "sentence_presence_and_relation_instances"
+    },
+    "coordination": {
+      "description": "A sentence contains one or more conj dependency arcs.",
+      "relations": [
+        "conj"
+      ],
+      "unit": "sentence_presence_and_relation_instances"
+    },
+    "copular_predicate": {
+      "description": "A predicate head has a dependent with deprel=cop.",
+      "relations": [
+        "cop"
+      ],
+      "unit": "sentence_presence_and_predicate_heads"
+    },
+    "passive_root": {
+      "description": "A verbal root has an explicit UD passive feature or dependent marker.",
+      "relations": [
+        "Voice=Pass",
+        "aux:pass",
+        "nsubj:pass",
+        "csubj:pass"
+      ],
+      "unit": "sentence_presence_and_root_instances"
+    },
+    "relative_clause_attachment": {
+      "description": "A sentence contains one or more acl:relcl dependency arcs.",
+      "relations": [
+        "acl:relcl"
+      ],
+      "unit": "sentence_presence_and_relation_instances"
+    }
+  },
+  "contract": "USG-PUD-STRUCTURAL-FREQUENCY/0.1.0",
+  "dataset_id": "UD-PUD-EN-AR",
+  "generated_at": "2026-11-23T05:09:06Z",
+  "interpretation_limits": [
+    "Counts are sentence-presence and dependency-instance frequencies, not semantic accuracy.",
+    "Subject/object/dependency labels are syntactic annotations and must not be relabeled as semantic agent/patient roles.",
+    "The Arabic PUD population is translated and is not a representative native-MSA distribution.",
+    "PUD is news/Wikipedia text, not conversational user requests."
+  ],
+  "label_basis": "Pinned Universal Dependencies CoNLL-U POS and dependency labels; syntactic proxy diagnostics only.",
+  "languages": {
+    "ar": {
+      "constructions": {
+        "active_transitive_root": {
+          "description": "A verbal root has a direct obj dependent and no UD passive marker.",
+          "instance_count": 241,
+          "instances_per_1000_sentences": 241.0,
+          "per_1000_sentences": 241.0,
+          "relations": [
+            "root VERB with direct obj and no passive marker"
+          ],
+          "sentence_count": 241,
+          "sentence_rate": 0.241,
+          "unit": "sentence_presence_and_root_instances"
+        },
+        "adverbial_clause": {
+          "description": "A sentence contains one or more advcl dependency arcs.",
+          "instance_count": 315,
+          "instances_per_1000_sentences": 315.0,
+          "per_1000_sentences": 274.0,
+          "relations": [
+            "advcl"
+          ],
+          "sentence_count": 274,
+          "sentence_rate": 0.274,
+          "unit": "sentence_presence_and_relation_instances"
+        },
+        "clause_complement": {
+          "description": "A sentence contains one or more ccomp or xcomp arcs.",
+          "instance_count": 437,
+          "instances_per_1000_sentences": 437.0,
+          "per_1000_sentences": 349.0,
+          "relations": [
+            "ccomp",
+            "xcomp"
+          ],
+          "sentence_count": 349,
+          "sentence_rate": 0.349,
+          "subtypes": {
+            "ccomp": {
+              "instance_count": 286,
+              "instances_per_1000_sentences": 286.0,
+              "per_1000_sentences": 242.0,
+              "sentence_count": 242,
+              "sentence_rate": 0.242
+            },
+            "xcomp": {
+              "instance_count": 151,
+              "instances_per_1000_sentences": 151.0,
+              "per_1000_sentences": 140.0,
+              "sentence_count": 140,
+              "sentence_rate": 0.14
+            }
+          },
+          "unit": "sentence_presence_and_relation_instances"
+        },
+        "coordination": {
+          "description": "A sentence contains one or more conj dependency arcs.",
+          "instance_count": 661,
+          "instances_per_1000_sentences": 661.0,
+          "per_1000_sentences": 440.0,
+          "relations": [
+            "conj"
+          ],
+          "sentence_count": 440,
+          "sentence_rate": 0.44,
+          "unit": "sentence_presence_and_relation_instances"
+        },
+        "copular_predicate": {
+          "description": "A predicate head has a dependent with deprel=cop.",
+          "instance_count": 95,
+          "instances_per_1000_sentences": 95.0,
+          "per_1000_sentences": 93.0,
+          "relations": [
+            "cop"
+          ],
+          "sentence_count": 93,
+          "sentence_rate": 0.093,
+          "unit": "sentence_presence_and_predicate_heads"
+        },
+        "passive_root": {
+          "description": "A verbal root has an explicit UD passive feature or dependent marker.",
+          "instance_count": 85,
+          "instances_per_1000_sentences": 85.0,
+          "per_1000_sentences": 85.0,
+          "relations": [
+            "Voice=Pass",
+            "aux:pass",
+            "nsubj:pass",
+            "csubj:pass"
+          ],
+          "sentence_count": 85,
+          "sentence_rate": 0.085,
+          "unit": "sentence_presence_and_root_instances"
+        },
+        "relative_clause_attachment": {
+          "description": "A sentence contains one or more acl:relcl dependency arcs.",
+          "instance_count": 319,
+          "instances_per_1000_sentences": 319.0,
+          "per_1000_sentences": 265.0,
+          "relations": [
+            "acl:relcl"
+          ],
+          "sentence_count": 265,
+          "sentence_rate": 0.265,
+          "unit": "sentence_presence_and_relation_instances"
+        }
+      },
+      "sentence_count": 1000,
+      "source": {
+        "commit": "c606299bc9eb8baa6c61c8dd3efc9a0fbf73aa87",
+        "content_sha256": "befc6dd18b5b8803644ae8208e2e5f52c0957a36437627c05110914ec42281a3",
+        "file": "ar_pud-ud-test.conllu",
+        "git_blob_sha1": "075361d5425ea0d43ff6b4f5459a306e26df6fbf",
+        "license": "CC BY-SA 3.0",
+        "repository": "UniversalDependencies/UD_Arabic-PUD"
+      },
+      "token_count": 20747
+    },
+    "en": {
+      "constructions": {
+        "active_transitive_root": {
+          "description": "A verbal root has a direct obj dependent and no UD passive marker.",
+          "instance_count": 295,
+          "instances_per_1000_sentences": 295.0,
+          "per_1000_sentences": 295.0,
+          "relations": [
+            "root VERB with direct obj and no passive marker"
+          ],
+          "sentence_count": 295,
+          "sentence_rate": 0.295,
+          "unit": "sentence_presence_and_root_instances"
+        },
+        "adverbial_clause": {
+          "description": "A sentence contains one or more advcl dependency arcs.",
+          "instance_count": 294,
+          "instances_per_1000_sentences": 294.0,
+          "per_1000_sentences": 241.0,
+          "relations": [
+            "advcl"
+          ],
+          "sentence_count": 241,
+          "sentence_rate": 0.241,
+          "unit": "sentence_presence_and_relation_instances"
+        },
+        "clause_complement": {
+          "description": "A sentence contains one or more ccomp or xcomp arcs.",
+          "instance_count": 453,
+          "instances_per_1000_sentences": 453.0,
+          "per_1000_sentences": 348.0,
+          "relations": [
+            "ccomp",
+            "xcomp"
+          ],
+          "sentence_count": 348,
+          "sentence_rate": 0.348,
+          "subtypes": {
+            "ccomp": {
+              "instance_count": 172,
+              "instances_per_1000_sentences": 172.0,
+              "per_1000_sentences": 156.0,
+              "sentence_count": 156,
+              "sentence_rate": 0.156
+            },
+            "xcomp": {
+              "instance_count": 281,
+              "instances_per_1000_sentences": 281.0,
+              "per_1000_sentences": 243.0,
+              "sentence_count": 243,
+              "sentence_rate": 0.243
+            }
+          },
+          "unit": "sentence_presence_and_relation_instances"
+        },
+        "coordination": {
+          "description": "A sentence contains one or more conj dependency arcs.",
+          "instance_count": 634,
+          "instances_per_1000_sentences": 634.0,
+          "per_1000_sentences": 428.0,
+          "relations": [
+            "conj"
+          ],
+          "sentence_count": 428,
+          "sentence_rate": 0.428,
+          "unit": "sentence_presence_and_relation_instances"
+        },
+        "copular_predicate": {
+          "description": "A predicate head has a dependent with deprel=cop.",
+          "instance_count": 319,
+          "instances_per_1000_sentences": 319.0,
+          "per_1000_sentences": 286.0,
+          "relations": [
+            "cop"
+          ],
+          "sentence_count": 286,
+          "sentence_rate": 0.286,
+          "unit": "sentence_presence_and_predicate_heads"
+        },
+        "passive_root": {
+          "description": "A verbal root has an explicit UD passive feature or dependent marker.",
+          "instance_count": 141,
+          "instances_per_1000_sentences": 141.0,
+          "per_1000_sentences": 141.0,
+          "relations": [
+            "Voice=Pass",
+            "aux:pass",
+            "nsubj:pass",
+            "csubj:pass"
+          ],
+          "sentence_count": 141,
+          "sentence_rate": 0.141,
+          "unit": "sentence_presence_and_root_instances"
+        },
+        "relative_clause_attachment": {
+          "description": "A sentence contains one or more acl:relcl dependency arcs.",
+          "instance_count": 211,
+          "instances_per_1000_sentences": 211.0,
+          "per_1000_sentences": 193.0,
+          "relations": [
+            "acl:relcl"
+          ],
+          "sentence_count": 193,
+          "sentence_rate": 0.193,
+          "unit": "sentence_presence_and_relation_instances"
+        }
+      },
+      "sentence_count": 1000,
+      "source": {
+        "commit": "a697bab43d4111073356de0df5802488bca3de7e",
+        "content_sha256": "befc5e901b58732f2308b1aac5cdd804d938362ab31c9fe400c61c28e8e155d8",
+        "file": "en_pud-ud-test.conllu",
+        "git_blob_sha1": "828f827759e7a9f89a8c42bfe79402dd65db71c3",
+        "license": "CC BY-SA 3.0",
+        "repository": "UniversalDependencies/UD_English-PUD"
+      },
+      "token_count": 21180
+    }
+  },
+  "population": "naturalistic",
+  "semantic_gold": {
+    "available": false,
+    "reason": "UD dependency/POS labels do not establish USG semantic roles, frames, relations, or semantic correctness."
+  },
+  "source_retrieved_at": "2026-11-23T05:09:05Z"
+}
