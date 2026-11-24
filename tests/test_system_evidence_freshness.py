@@ -35,6 +35,43 @@ class EvidenceFreshnessTests(unittest.TestCase):
         self.assertIn("external_lexical_shard_count_contradiction", kinds)
         self.assertIn("external_lexical_pud_shard_contradiction", kinds)
 
+    def test_identical_duplicate_physical_copy_is_not_a_shard_count_contradiction(self):
+        external = {
+            "progress": {"batch_count": 2},
+            "shard_inventory": {
+                "file_count": 3, "logical_batch_count": 2,
+                "duplicate_physical_copy_count": 1, "matches_manifest": True,
+            },
+            "pud_evaluation": {"evaluated_shard_count": 2},
+        }
+        results = evidence_quality_diagnostics(
+            external, [], None, "2026-11-12T12:00:00Z"
+        )
+        kinds = {item["kind"] for item in results}
+        self.assertNotIn("external_lexical_shard_count_contradiction", kinds)
+        self.assertNotIn("external_lexical_pud_shard_contradiction", kinds)
+
+    def test_unreconciled_inventory_is_flagged_even_when_logical_count_matches(self):
+        external = {
+            "progress": {"batch_count": 2},
+            "shard_inventory": {
+                "file_count": 2, "logical_batch_count": 2,
+                "duplicate_physical_copy_count": 0, "matches_manifest": False,
+                "conflicting_batch_numbers": [2],
+            },
+            "pud_evaluation": {"evaluated_shard_count": 2},
+        }
+        results = evidence_quality_diagnostics(
+            external, [], None, "2026-11-12T12:00:00Z"
+        )
+        finding = next(
+            item for item in results
+            if item["kind"] == "external_lexical_shard_count_contradiction"
+        )
+        self.assertEqual(finding["logical_batch_count"], 2)
+        self.assertEqual(finding["physical_shard_count"], 2)
+        self.assertFalse(finding["inventory_matches_manifest"])
+
     def test_campaign_population_and_execution_accounting_must_reconcile(self):
         campaigns = [{
             "campaign_id": "CAMP-X", "scenario_count": 10,
