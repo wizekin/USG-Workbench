@@ -202,6 +202,14 @@ def _phase5_predictions(target_result: dict[str, Any]) -> tuple[str | None, dict
     lexical = stages.get("lexical", {}).get("artifact", {})
     syntax = stages.get("syntax", {}).get("artifact", {})
     semantic = stages.get("semantic_composition", {}).get("artifact", {})
+    operators = stages.get("operators", {}).get("artifact")
+    if not isinstance(operators, dict) or not isinstance(operators.get("clauses"), list):
+        return None, {}, {}
+    has_scoped_operator = any(
+        candidate.get("operator_type") != "AUXILIARY"
+        for clause in operators["clauses"] if isinstance(clause, dict)
+        for candidate in clause.get("candidates", []) if isinstance(candidate, dict)
+    )
     token_by_id = {}
     for item in lexical.get("tokens", []) if isinstance(lexical, dict) else []:
         token = item.get("token", {}) if isinstance(item, dict) else {}
@@ -216,6 +224,7 @@ def _phase5_predictions(target_result: dict[str, Any]) -> tuple[str | None, dict
     semantic_candidates = semantic.get("candidates", []) if isinstance(semantic, dict) else []
     if not (
         target_result.get("completion_status") == "COMPLETE"
+        and not has_scoped_operator
         and semantic.get("status") == "COMPOSED"
         and len(semantic_candidates) == 1
         and len(syntax_candidates) == 1
