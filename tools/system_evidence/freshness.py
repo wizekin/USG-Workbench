@@ -101,14 +101,32 @@ def evidence_quality_diagnostics(external: dict[str, Any], campaigns: list[dict[
         })
 
     manifest_batches = progress.get("batch_count")
-    physical_shards = external.get("shard_inventory", {}).get("file_count")
-    if isinstance(manifest_batches, int) and isinstance(physical_shards, int) and manifest_batches != physical_shards:
+    shard_inventory = external.get("shard_inventory")
+    if not isinstance(shard_inventory, dict):
+        shard_inventory = {}
+    physical_shards = shard_inventory.get("file_count")
+    logical_shards = shard_inventory.get("logical_batch_count")
+    compared_shards = logical_shards if isinstance(logical_shards, int) else physical_shards
+    inventory_reconciled = shard_inventory.get("matches_manifest")
+    logical_count_mismatch = (
+        isinstance(manifest_batches, int)
+        and isinstance(compared_shards, int)
+        and manifest_batches != compared_shards
+    )
+    if inventory_reconciled is False or logical_count_mismatch:
         findings.append({
             "kind": "external_lexical_shard_count_contradiction", "severity": "high",
-            "summary": "External lexical manifest batch count disagrees with the physical shard inventory.",
+            "summary": "External lexical manifest batch count does not reconcile with the logical shard inventory.",
             "evidence_refs": ["external_lexical.progress.batch_count",
-                              "external_lexical.shard_inventory.file_count"],
-            "manifest_batch_count": manifest_batches, "physical_shard_count": physical_shards,
+                              "external_lexical.shard_inventory.logical_batch_count",
+                              "external_lexical.shard_inventory.matches_manifest"],
+            "manifest_batch_count": manifest_batches,
+            "logical_batch_count": logical_shards if isinstance(logical_shards, int) else None,
+            "physical_shard_count": physical_shards if isinstance(physical_shards, int) else None,
+            "duplicate_physical_copy_count": shard_inventory.get("duplicate_physical_copy_count"),
+            "inventory_matches_manifest": inventory_reconciled,
+            "conflicting_batch_numbers": shard_inventory.get("conflicting_batch_numbers", []),
+            "unrecognized_paths": shard_inventory.get("unrecognized_paths", []),
         })
     evaluated_shards = pud.get("evaluated_shard_count")
     if isinstance(manifest_batches, int) and isinstance(evaluated_shards, int) and manifest_batches != evaluated_shards:
