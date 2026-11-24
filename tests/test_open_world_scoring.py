@@ -87,7 +87,7 @@ def make_phase5_payload(case):
         "stages": {
             "lexical": {"artifact": {"tokens": tokens}},
             "segmentation": {"artifact": {}},
-            "operators": {"artifact": {}},
+            "operators": {"artifact": {"clauses": []}},
             "syntax": {"artifact": {"clauses": [{"candidates": [candidate]}]}},
             "semantic_composition": {"artifact": {"status": "COMPOSED"}},
             "discourse": {"artifact": {}},
@@ -113,6 +113,84 @@ class OpenWorldScoringTests(unittest.TestCase):
             "not_scored_no_independent_oracle",
         )
         self.assertEqual(score["semantic_scoring"]["metrics"], [])
+
+
+    def test_phase5_scoring_abstains_for_scoped_operator_negative_cases(self):
+        cases = (
+            ("Ada does not write code.", "NEGATION", 13, 18, 19, 23),
+            ("Ada may write code.", "MODALITY", 8, 13, 14, 18),
+            ("Ada will write code.", "TENSE", 9, 14, 15, 19),
+        )
+        for text, operator_type, action_start, action_end, patient_start, patient_end in cases:
+            with self.subTest(text=text, operator_type=operator_type):
+                case = make_case("phase5-bounded-interpreter", text)
+                case["oracle"] = {
+                    "type": "structural",
+                    "independent": True,
+                    "oracle_id": f"phase5-negative-operator:{operator_type}",
+                    "expected": {
+                        "expected_completion_status": None,
+                        "expected_construction": None,
+                        "expected_role_spans": {},
+                        "expected_roles": {},
+                        "gold_class": "NEGATIVE",
+                    },
+                }
+                payload = make_phase5_payload(case)
+                tokens = payload["target_result"]["stages"]["lexical"]["artifact"]["tokens"]
+                tokens[1]["token"].update({
+                    "start": action_start, "end": action_end, "surface_text": "write"
+                })
+                tokens[2]["token"].update({
+                    "start": patient_start, "end": patient_end, "surface_text": "code"
+                })
+                payload["target_result"]["stages"]["operators"]["artifact"] = {
+                    "clauses": [{"candidates": [{"operator_type": operator_type}]}]
+                }
+                record = make_record(case, payload)
+                score = score_pair(case, record)
+                self.assertEqual(score["structural_status"], "valid", score["failed_checks"])
+                metrics = {
+                    item["metric_id"]: item["value"]
+                    for item in score["semantic_scoring"]["metrics"]
+                }
+                self.assertEqual(metrics["phase5_construction_exact"], 1.0)
+                self.assertEqual(metrics["phase5_nonpositive_abstention"], 1.0)
+
+    def test_phase5_scoring_does_not_suppress_auxiliary_only_candidates(self):
+        case = make_case("phase5-bounded-interpreter")
+        case["oracle"] = {
+            "type": "structural",
+            "independent": True,
+            "oracle_id": "phase5-positive-auxiliary",
+            "expected": {
+                "expected_completion_status": "COMPLETE",
+                "expected_construction": "en.simple_transitive.svo",
+                "expected_role_spans": {
+                    "AGENT": {"start": 0, "end": 3, "surface": "Ada"},
+                    "ACTION": {"start": 4, "end": 10, "surface": "writes"},
+                    "PATIENT": {"start": 11, "end": 15, "surface": "code"},
+                },
+                "expected_roles": {
+                    "AGENT": "Ada", "ACTION": "writes", "PATIENT": "code"
+                },
+                "gold_class": "POSITIVE",
+            },
+        }
+        payload = make_phase5_payload(case)
+        payload["target_result"]["stages"]["operators"]["artifact"] = {
+            "clauses": [{"candidates": [{"operator_type": "AUXILIARY"}]}]
+        }
+        record = make_record(case, payload)
+        score = score_pair(case, record)
+        self.assertEqual(score["structural_status"], "valid", score["failed_checks"])
+        metrics = {
+            item["metric_id"]: item["value"]
+            for item in score["semantic_scoring"]["metrics"]
+        }
+        self.assertEqual(metrics["phase5_construction_exact"], 1.0)
+        self.assertEqual(metrics["phase5_role_bindings_exact"], 1.0)
+        self.assertEqual(metrics["phase5_role_spans_exact"], 1.0)
 
     def test_phase5_invalid_source_span_is_detected(self):
         case = make_case("phase5-bounded-interpreter")
