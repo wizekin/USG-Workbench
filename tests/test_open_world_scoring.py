@@ -89,7 +89,7 @@ def make_phase5_payload(case):
             "segmentation": {"artifact": {}},
             "operators": {"artifact": {"clauses": []}},
             "syntax": {"artifact": {"clauses": [{"candidates": [candidate]}]}},
-            "semantic_composition": {"artifact": {"status": "COMPOSED"}},
+            "semantic_composition": {"artifact": {"status": "COMPOSED", "candidates": [{}]}},
             "discourse": {"artifact": {}},
         },
         "safety": {"truth_promotion": False},
