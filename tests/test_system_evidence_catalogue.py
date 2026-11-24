@@ -155,6 +155,47 @@ class SystemEvidenceCatalogueTests(unittest.TestCase):
                          "stale_shard_count_mismatch")
         self.assertEqual(report["external_lexical"]["shard_inventory"]["status"], "count_mismatch")
 
+    def test_identical_duplicate_physical_copy_does_not_stale_pud_evaluation(self):
+        value = json.loads(self.pud.read_text(encoding="utf-8"))
+        value["lexical_shard_count"] = 2
+        self.pud.write_text(json.dumps(value), encoding="utf-8")
+        inventory = json.loads(self.shard_inventory.read_text(encoding="utf-8"))
+        inventory.update({
+            "file_count": 3,
+            "physical_file_count": 3,
+            "logical_batch_count": 2,
+            "duplicate_physical_copy_count": 1,
+            "matches_manifest": True,
+            "consistency_status": "matched",
+        })
+        self.shard_inventory.write_text(json.dumps(inventory), encoding="utf-8")
+        report = self.collect()
+        external = report["external_lexical"]
+        self.assertEqual(external["pud_evaluation"]["status"], "fresh_for_current_shard_count")
+        self.assertEqual(external["shard_inventory"]["status"], "matches_manifest")
+        self.assertEqual(external["shard_inventory"]["file_count"], 3)
+        self.assertEqual(external["shard_inventory"]["logical_batch_count"], 2)
+        self.assertEqual(external["shard_inventory"]["duplicate_physical_copy_count"], 1)
+
+    def test_conflicting_inventory_remains_stale_when_logical_count_matches(self):
+        value = json.loads(self.pud.read_text(encoding="utf-8"))
+        value["lexical_shard_count"] = 2
+        self.pud.write_text(json.dumps(value), encoding="utf-8")
+        inventory = json.loads(self.shard_inventory.read_text(encoding="utf-8"))
+        inventory.update({
+            "file_count": 2,
+            "logical_batch_count": 2,
+            "duplicate_physical_copy_count": 0,
+            "matches_manifest": False,
+            "conflicting_batch_numbers": [2],
+        })
+        self.shard_inventory.write_text(json.dumps(inventory), encoding="utf-8")
+        report = self.collect()
+        external = report["external_lexical"]
+        self.assertEqual(external["pud_evaluation"]["status"], "stale_shard_count_mismatch")
+        self.assertEqual(external["shard_inventory"]["status"], "count_mismatch")
+
+
     def test_latest_campaign_population_and_accounting_are_preserved(self):
         report = self.collect()
         latest = report["open_world"]["latest_campaign"]

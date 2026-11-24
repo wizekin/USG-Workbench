@@ -138,7 +138,15 @@ def external_lexical(manifest_path: Path | None, checkpoint_path: Path | None,
     last = manifest.get("last_batch", {})
     budget = int(manifest.get("storage_budget_bytes", 0) or 0)
     shard_count = int(shard_inventory.get("file_count", 0) or 0) if shard_inventory else None
-    shard_inventory_match = bool(shard_inventory is not None and shard_count == batches)
+    logical_shard_count = (
+        int(shard_inventory.get("logical_batch_count", shard_count) or 0)
+        if shard_inventory is not None else None
+    )
+    shard_inventory_match = bool(
+        shard_inventory is not None
+        and logical_shard_count == batches
+        and shard_inventory.get("matches_manifest", True) is True
+    )
     pud_fresh = bool(pud is not None and shards == batches and shard_inventory_match)
     return {
         "status": manifest.get("status", "unknown"), "manifest_available": True,
@@ -167,6 +175,13 @@ def external_lexical(manifest_path: Path | None, checkpoint_path: Path | None,
             "status": ("matches_manifest" if shard_inventory_match else
                        ("count_mismatch" if shard_inventory is not None else "not_collected")),
             "file_count": shard_count,
+            "physical_file_count": shard_count,
+            "logical_batch_count": logical_shard_count,
+            "duplicate_physical_copy_count": (
+                int(shard_inventory.get("duplicate_physical_copy_count", 0) or 0)
+                if shard_inventory is not None else None
+            ),
+            "matches_manifest": shard_inventory_match if shard_inventory is not None else None,
             "manifest_batch_count": batches,
             "total_size_bytes": shard_inventory.get("total_size_bytes") if shard_inventory else None,
             "files": shard_inventory.get("files", []) if shard_inventory else [],
