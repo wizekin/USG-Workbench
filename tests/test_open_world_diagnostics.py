@@ -68,6 +68,7 @@ class OpenWorldDiagnosticImportTests(unittest.TestCase):
             "completion_status": "COMPLETE",
             "stages": {
                 "lexical": {"artifact": {"tokens": tokens}},
+                "operators": {"artifact": {"clauses": []}},
                 "syntax": {"artifact": {"clauses": [{
                     "candidates": [{
                         "construction_id": expected["expected_construction"],
@@ -96,6 +97,7 @@ class OpenWorldDiagnosticImportTests(unittest.TestCase):
             "completion_status": "UNSUPPORTED",
             "stages": {
                 "lexical": {"artifact": {"tokens": []}},
+                "operators": {"artifact": {"clauses": []}},
                 "syntax": {"artifact": {"clauses": []}},
                 "semantic_composition": {"artifact": {"status": "UNRESOLVED", "candidates": []}},
             },
