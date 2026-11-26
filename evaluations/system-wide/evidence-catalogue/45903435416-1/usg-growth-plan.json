@@ -1,0 +1,345 @@
+{
+  "baseline": {
+    "assessment_id": "USG-SYSTEM-WIDE-2026-11-12",
+    "cross_implementation_gates_not_complete": [
+      "CIC-01",
+      "CIC-02",
+      "CIC-03",
+      "CIC-04",
+      "CIC-05"
+    ],
+    "external_lexical_exact_surface_coverage": 0.0244,
+    "external_lexical_headwords_at_assessment": 602,
+    "external_lexical_oov_rate": 0.9756,
+    "open_world_naturalistic_cases_at_assessment": 0,
+    "phase6_step_6_6_status": "blocked_pending_independent_bilingual_semantic_gold"
+  },
+  "campaigns": [
+    {
+      "campaign_id": "OWC-OW7-44448277481-1",
+      "case_file_sha256": "0afd7e256b0842598391efcf6c9c9b7826861c6a662aa48386b899f12731f6cb",
+      "created_at": "2026-11-19T03:01:30Z",
+      "execution_result_count": 326,
+      "first_blocking_diagnostic_counts": {
+        "discourse": {
+          "DISCOURSE_ANTECEDENT_UNRESOLVED": 1,
+          "STAGE_STATUS_PARTIAL": 1
+        },
+        "lexical": {
+          "LEXICAL_AMBIGUOUS_TOKEN": 9,
+          "LEXICAL_UNRESOLVED_TOKEN": 61,
+          "STAGE_STATUS_AMBIGUOUS": 9,
+          "STAGE_STATUS_PARTIAL": 52
+        },
+        "syntax": {
+          "INCOMPLETE": 4,
+          "STAGE_STATUS_INCOMPLETE": 4,
+          "STAGE_STATUS_PARTIAL": 1,
+          "STAGE_STATUS_UNSUPPORTED": 11,
+          "SYNTAX_UNSUPPORTED": 11,
+          "UNSUPPORTED": 1,
+          "UNSUPPORTED_INTERROGATIVE_FORCE": 3
+        }
+      },
+      "first_blocking_stage_counts": {
+        "discourse": 1,
+        "lexical": 61,
+        "syntax": 18
+      },
+      "outcome_counts": {
+        "abstained": 0,
+        "ambiguous": 10,
+        "completed": 49,
+        "crashed": 0,
+        "infrastructure_error": 0,
+        "invalid_output": 0,
+        "not_executed": 20,
+        "partial": 209,
+        "timeout": 0,
+        "unsupported": 38
+      },
+      "report_file_sha256": "cb7a508622cdd06098618961ef6558bc1656579d5e8f3be0516cb2c5c4f331c2",
+      "result_file_sha256": "65b60aa1804075861c69703714261ec5cc079085ae098f30c875e6c653df3304",
+      "scenario_count": 326,
+      "status": "partial",
+      "tested_commit_sha": "41a429ea3d389cf4548d49796221674edc43ed2f"
+    },
+    {
+      "campaign_id": "OWC-OW7-43355525263-1",
+      "case_file_sha256": "754edfb11dd945f3c6f4aa694e259d308d1988ab5be66674bc6c7201730db67d",
+      "created_at": "2026-11-13T02:57:39Z",
+      "execution_result_count": 326,
+      "first_blocking_diagnostic_counts": {
+        "discourse": {
+          "DISCOURSE_ANTECEDENT_UNRESOLVED": 1,
+          "STAGE_STATUS_PARTIAL": 1
+        },
+        "lexical": {
+          "LEXICAL_AMBIGUOUS_TOKEN": 4,
+          "LEXICAL_UNRESOLVED_TOKEN": 61,
+          "STAGE_STATUS_AMBIGUOUS": 4,
+          "STAGE_STATUS_PARTIAL": 57
+        },
+        "syntax": {
+          "INCOMPLETE": 2,
+          "STAGE_STATUS_INCOMPLETE": 2,
+          "STAGE_STATUS_PARTIAL": 1,
+          "STAGE_STATUS_UNSUPPORTED": 11,
+          "SYNTAX_UNSUPPORTED": 11,
+          "UNSUPPORTED": 1,
+          "UNSUPPORTED_INTERROGATIVE_FORCE": 3
+        }
+      },
+      "first_blocking_stage_counts": {
+        "discourse": 1,
+        "lexical": 61,
+        "syntax": 16
+      },
+      "outcome_counts": {
+        "abstained": 0,
+        "ambiguous": 8,
+        "completed": 49,
+        "crashed": 0,
+        "infrastructure_error": 0,
+        "invalid_output": 0,
+        "not_executed": 20,
+        "partial": 208,
+        "timeout": 0,
+        "unsupported": 41
+      },
+      "report_file_sha256": "0928cc743606c26299ef91422afacc9a97d71666ae1fe4a9489439509f893f3d",
+      "result_file_sha256": "e9c1b54eb4fdf47b5c8d07b18d3e913e022dd3e195f22084d8e0397f923a9141",
+      "scenario_count": 326,
+      "status": "partial",
+      "tested_commit_sha": "4fa85a3206659d1389d8650e83ed23c7610a861a"
+    },
+    {
+      "campaign_id": "OWC-OW6-43015126807-1",
+      "case_file_sha256": "9fcde83c4ba603943c8c3a56206f2aa393095c3c78908fdc2df4473a3789f2ef",
+      "created_at": "2026-11-11T11:52:59Z",
+      "execution_result_count": 3106,
+      "first_blocking_diagnostic_counts": {
+        "syntax": {
+          "INCOMPLETE": 67,
+          "STAGE_STATUS_INCOMPLETE": 67,
+          "STAGE_STATUS_UNSUPPORTED": 1,
+          "UNSUPPORTED": 1
+        }
+      },
+      "first_blocking_stage_counts": {
+        "syntax": 68
+      },
+      "outcome_counts": {
+        "abstained": 0,
+        "ambiguous": 103,
+        "completed": 44,
+        "crashed": 0,
+        "infrastructure_error": 0,
+        "invalid_output": 0,
+        "not_executed": 1000,
+        "partial": 1013,
+        "timeout": 0,
+        "unsupported": 946
+      },
+      "report_file_sha256": "f245427941669081fe4c766677bd56dc88301d3aa66b4f524adafd6042bd96b1",
+      "result_file_sha256": "840f722dab8f7a482c25d3524cc4626399dc13bdb452ab8d88397ff146df6e6f",
+      "scenario_count": 3106,
+      "status": "partial",
+      "tested_commit_sha": "a04806d1480e692913943693b5251535c6a520f0"
+    }
+  ],
+  "campaigns_analyzed": 3,
+  "contract": "USG-EVIDENCE-DRIVEN-GROWTH-PLAN/0.1.0",
+  "diagnostic_accounting_warnings": [
+    {
+      "campaign_id": "OWC-OW6-43015126807-1",
+      "counts": {
+        "phase5-bounded-interpreter:phase5-interpretation-integration/0.1.0": 1058
+      },
+      "identity_counts": {
+        "phase5-bounded-interpreter:USG-INTERPRET/0.2.0@phase5-interpretation-integration/0.1.0": 1058
+      },
+      "kind": "pipeline_version_mismatch"
+    }
+  ],
+  "evidence_sources": [
+    {
+      "path": "evaluations/system-wide/2026-11-12/assessment.json",
+      "sha256": "d679bf6f58a4f9503be7c5d565ddd8c4d97087808e8808299ad7f7d2953e6710",
+      "status": "available"
+    },
+    {
+      "path": "evaluations/system-wide/cross-implementation-matrix-2026-11-12.json",
+      "sha256": "bcf05a1e2e3e2855d5456926c266e12a00577491f7826872762e9ca23ba6e2da",
+      "status": "available"
+    },
+    {
+      "path": "documentation/USG-SYSTEM-IMPROVEMENT-BACKLOG.md",
+      "sha256": "c2d70619dd56d68d20ae41a0d35879abea15c6e501f13bb988f4c089f26b4ab5",
+      "status": "available"
+    },
+    {
+      "path": "documentation/USG-GROWTH-POLICY-AND-AUTONOMY.md",
+      "sha256": "3468261cb07c6ee67fdc7991e710bd0c2526527535f88fd719131078540b3dac",
+      "status": "available"
+    }
+  ],
+  "generated_at": "2026-11-26T22:16:47Z",
+  "limitations": [
+    "First-blocker counts identify diagnostic starting points, not proven causes.",
+    "Repeated failures are weighted by campaign recurrence; this is prioritization, not a semantic-quality score.",
+    "Historical baseline figures are not silently replaced by newer measurements.",
+    "No naturalistic corpus or independent semantic gold is inferred when absent."
+  ],
+  "policy_id": "USG-GROWTH-POLICY/0.1.0",
+  "ranked_actions": [
+    {
+      "acceptance_gate": "independent_lexical_evaluation",
+      "action_id": "GROWTH-LEXICAL",
+      "campaign_recurrence_count": 2,
+      "example_case_ids": [
+        "OW-RAND-00000002-289A10A032",
+        "OW-RAND-00000013-8AB585B8EE",
+        "OW-RAND-00000024-37F71C9282",
+        "OW-RAND-00000035-5C1DBBA4E6",
+        "OW-RAND-00000046-4F552472F0",
+        "OW-RAND-00000057-EF1621B3E8",
+        "OW-RAND-00000068-0770BC2702",
+        "OW-RAND-00000079-F2B5D93B19",
+        "OW-RAND-00000002-2D0539593F",
+        "OW-RAND-00000013-DF749FB9D5",
+        "OW-RAND-00000024-68CF59469F",
+        "OW-RAND-00000035-2E13F6D620",
+        "OW-RAND-00000046-6EB1855132",
+        "OW-RAND-00000057-495AF348DB",
+        "OW-RAND-00000068-E17FA02904",
+        "OW-RAND-00000079-6353B040A3"
+      ],
+      "first_blocking_diagnostic_counts": {
+        "LEXICAL_AMBIGUOUS_TOKEN": 13,
+        "LEXICAL_UNRESOLVED_TOKEN": 122,
+        "STAGE_STATUS_AMBIGUOUS": 13,
+        "STAGE_STATUS_PARTIAL": 109
+      },
+      "languages": [
+        "ar",
+        "en",
+        "en-ar"
+      ],
+      "observed_first_blocker_records": 122,
+      "populations": [
+        "controlled_diagnostic",
+        "unconstrained_random"
+      ],
+      "priority_score": 135,
+      "proposed_action": "Investigate unresolved and ambiguous lexical evidence; add candidate-only source coverage and morphology regressions.",
+      "requires_independent_evidence": true,
+      "resource_fingerprints": [
+        "manifest:76e83880e7932135390553a1becd26b532fc569893882dda068e6f09076aaf3f"
+      ],
+      "runtime_change_allowed": false,
+      "stage": "lexical",
+      "targets": [
+        "phase5-bounded-interpreter"
+      ],
+      "workstream": "lexical_evidence"
+    },
+    {
+      "acceptance_gate": "independent_construction_gold",
+      "action_id": "GROWTH-SYNTAX",
+      "campaign_recurrence_count": 3,
+      "example_case_ids": [
+        "OW-RAND-00000045-6053E606C7",
+        "OW-RAND-00000067-D228BFE3A2",
+        "OW-RAND-00000100-D6DB9FD3E4",
+        "OW-DIAG-P4-000003",
+        "OW-DIAG-P4-000005",
+        "OW-DIAG-P5-000040",
+        "OW-DIAG-P5-000041",
+        "OW-DIAG-P5-000042",
+        "OW-RAND-00000111-35ECB8B1D6",
+        "OW-DIAG-P5-000044",
+        "OW-DIAG-P5-000045",
+        "OW-RAND-00000070-FB82024D12",
+        "OW-RAND-00000088-BC746DB0F5",
+        "OW-RAND-00000139-9B55C64A2B",
+        "OW-RAND-00000235-F9083DE696",
+        "OW-RAND-00000265-D842DEBDE6",
+        "OW-RAND-00000355-2F19EA9F25",
+        "OW-RAND-00000532-36253757AE",
+        "OW-RAND-00000577-3BD8D298FE"
+      ],
+      "first_blocking_diagnostic_counts": {
+        "INCOMPLETE": 73,
+        "STAGE_STATUS_INCOMPLETE": 73,
+        "STAGE_STATUS_PARTIAL": 2,
+        "STAGE_STATUS_UNSUPPORTED": 23,
+        "SYNTAX_UNSUPPORTED": 22,
+        "UNSUPPORTED": 3,
+        "UNSUPPORTED_INTERROGATIVE_FORCE": 6
+      },
+      "languages": [
+        "ar",
+        "en",
+        "en-ar"
+      ],
+      "observed_first_blocker_records": 102,
+      "populations": [
+        "controlled_diagnostic",
+        "unconstrained_random"
+      ],
+      "priority_score": 119,
+      "proposed_action": "Cluster recurring construction failures and add minimal positive, negative, ambiguous, and boundary fixtures before proposing a rule.",
+      "requires_independent_evidence": true,
+      "resource_fingerprints": [
+        "manifest:76e83880e7932135390553a1becd26b532fc569893882dda068e6f09076aaf3f",
+        "stage-refs:c0dc48196f0e57ba3d4ef0d150250db96bf4815102d039dfbdd6bf93d9c52a2a"
+      ],
+      "runtime_change_allowed": false,
+      "stage": "syntax",
+      "targets": [
+        "phase4-bounded-interpreter",
+        "phase5-bounded-interpreter"
+      ],
+      "workstream": "syntax_constructions"
+    },
+    {
+      "acceptance_gate": "independent_discourse_gold",
+      "action_id": "GROWTH-DISCOURSE",
+      "campaign_recurrence_count": 2,
+      "example_case_ids": [
+        "OW-DIAG-P5-000058"
+      ],
+      "first_blocking_diagnostic_counts": {
+        "DISCOURSE_ANTECEDENT_UNRESOLVED": 2,
+        "STAGE_STATUS_PARTIAL": 2
+      },
+      "languages": [
+        "en"
+      ],
+      "observed_first_blocker_records": 2,
+      "populations": [
+        "controlled_diagnostic"
+      ],
+      "priority_score": 11,
+      "proposed_action": "Build reference-resolution cases with competing antecedents, explicit ambiguity, and discourse-boundary negatives.",
+      "requires_independent_evidence": true,
+      "resource_fingerprints": [
+        "manifest:76e83880e7932135390553a1becd26b532fc569893882dda068e6f09076aaf3f"
+      ],
+      "runtime_change_allowed": false,
+      "stage": "discourse",
+      "targets": [
+        "phase5-bounded-interpreter"
+      ],
+      "workstream": "discourse_reference"
+    }
+  ],
+  "safety_policy": {
+    "all_proposals_require_independent_evidence": true,
+    "automatic_runtime_promotion_allowed": false,
+    "candidate_lexical_data_promoted": false,
+    "runtime_mutations_performed": false,
+    "semantic_contracts_changed": false
+  }
+}
