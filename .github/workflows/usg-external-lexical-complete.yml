@@ -1,28 +1,6 @@
 name: USG External Lexical Completion Launcher
 
 on:
-  workflow_dispatch:
-    inputs:
-      target_total:
-        description: "Cumulative headword target (defaults to the pinned source's 1,396,111 inventory)"
-        required: false
-        default: "1396111"
-        type: string
-      batch_headwords:
-        description: "Maximum headwords per internal crawler batch (1-30000)"
-        required: false
-        default: "30000"
-        type: string
-      continue_until_target:
-        description: "Automatically chain Actions runs until the target or a safety stop"
-        required: false
-        default: true
-        type: boolean
-      continuation:
-        description: "Internal marker: this run was queued by the previous launcher run"
-        required: false
-        default: false
-        type: boolean
   pull_request:
     paths:
       - "tools/usg_external_lexical_v0_1_0/manual_crawl.py"
