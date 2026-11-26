@@ -58,21 +58,16 @@ The worker records failed entry fetches and parser failures as compact failure e
 
 Older crawler versions recorded per-headword failures but did not retry them. On upgrade, the crawler scans the existing snapshot shards once, reconstructs a deduplicated retry queue from those failure events, and persists it in the checkpoint. Pending failures are retried before new headwords; recovered entries are published with an explicit `retrieval_event` marker. A failed retry is deferred to a later run and is moved to a dead-letter count after three attempts. Retry attempts, recoveries, failures, and pending queue size are reported separately from the original source-cursor counters.
 
-## Run manually
+## Automatic schedule
 
-Open the repository's Actions tab, select **USG External Lexical Incremental Crawl**, and choose **Run workflow**.
+The scheduled crawler runs every six hours at minute 23 (00:23, 06:23, 12:23, and 18:23 UTC). Each scheduled run processes up to 30,000 headwords or stops at its runtime, source, or storage safety limit. It resumes from the durable checkpoint on `usg-external-lexical-data`.
 
-The manual default is a 200-headword / 15-minute pilot. To run a larger manual batch, supply:
-- max_headwords: up to 30,000.
-- max_runtime_minutes: up to 320.
-- validation_only: true to run the offline validation suite without starting a crawl.
-
-The scheduled cadence always uses 30,000 headwords / 320 minutes.
+Manual crawl dispatch is intentionally disabled while the scheduled crawler is the active collection path. Pull-request validation remains enabled.
 
 ## Pause and resume
 
 - To pause: disable the workflow from the GitHub Actions workflow page.
-- To resume: re-enable the workflow. The next scheduled or manual run reads state/checkpoint.json and continues from the saved cursor.
+- To resume: re-enable the workflow. The next scheduled run reads `state/checkpoint.json` and continues from the saved cursor.
 - Do not delete or reset the usg-external-lexical-data branch unless you intend to discard the crawl state and all published shards.
 
 ## Important capability boundary
