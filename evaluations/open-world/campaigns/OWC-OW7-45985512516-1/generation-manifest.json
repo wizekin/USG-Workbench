@@ -1,0 +1,1389 @@
+{
+  "adaptive_discovery_version": "1.0.0",
+  "adaptive_followup_case_count": 0,
+  "adaptive_history_campaign_count": 3,
+  "cadence": "daily",
+  "diagnostic_case_count": 106,
+  "diagnostic_population": {
+    "by_target": {
+      "phase4-bounded-interpreter": 6,
+      "phase5-bounded-interpreter": 100
+    },
+    "case_count": 106,
+    "created_at": "2026-11-27T10:51:23Z",
+    "importer_version": "1.0.0",
+    "independence_note": "Gold expectations are repository-authored, versioned diagnostic annotations stored separately from execution output. They are independent of the runtime execution path but are not an external third-party human-annotation study.",
+    "manifest_version": "1.0.0",
+    "population": "controlled_diagnostic",
+    "sources": [
+      {
+        "annotation_scope": "bounded USG-INTERPRET/0.1.0 completion status and expression count",
+        "benchmark_id": "usg-interpretation-v0.1.0",
+        "case_count": 6,
+        "path": "benchmarks/phase4-interpretation/v0.1.0/fixtures.json",
+        "sha256": "75a62237fc066f4b1e1f21666bc5bfe3c91bfaac9847dc3056d8d507e7aaf674",
+        "version": "0.1.0"
+      },
+      {
+        "annotation_scope": "simple_transitive_declarative_en_svo_ar_vso_svo",
+        "benchmark_id": "usg-interpretation-v0.2.1-balanced-foundation",
+        "case_count": 100,
+        "path": "benchmarks/phase5-interpretation-v0.2.1/corpus.json",
+        "sha256": "d094d7439e365a5133049bd702aac92053df878a53c330a6cf0fadf24495e764",
+        "version": "0.2.1"
+      }
+    ]
+  },
+  "expected_case_count": 326,
+  "generator_version": "1.0.1",
+  "manifest_version": "1.0.0",
+  "master_seed": "5df1bf2f477b4adbf359039292498337c8fa6fd8124b827f704fcb49d7282980",
+  "random_case_count": 220,
+  "random_population": {
+    "case_count": 220,
+    "cases": [
+      {
+        "case_id": "OW-RAND-00000001-E9EEBA8701",
+        "case_seed": "849a3f65d0dc25d7ab4492625187a466dcf53b8772e90cbe3095c75049483b56",
+        "input_sha256": "d54f29a5163a6b59b8416a3106c02079cb90c18f63238a4ab10d154088c5fabf",
+        "target_id": "phase4-bounded-interpreter"
+      },
+      {
+        "case_id": "OW-RAND-00000002-21D20D76C5",
+        "case_seed": "24894f4ef72cb8d7a1c8a03b38fbc929d8d3ea08219f956cf99b0cedae6ed1fa",
+        "input_sha256": "d54f29a5163a6b59b8416a3106c02079cb90c18f63238a4ab10d154088c5fabf",
+        "target_id": "phase5-bounded-interpreter"
+      },
+      {
+        "case_id": "OW-RAND-00000003-68D1E27DAF",
+        "case_seed": "66511d7ad8f45afbc8ea75430205a85fc5ad47140ff74aef9fed5c7612d8be54",
+        "input_sha256": "d54f29a5163a6b59b8416a3106c02079cb90c18f63238a4ab10d154088c5fabf",
+        "target_id": "js-semantic-workbench-v054"
+      },
+      {
+        "case_id": "OW-RAND-00000004-D40D5C8448",
+        "case_seed": "bfe9b0a0168a1266afed7389f5c2ddcd3e7720fc12e4ddb683e4cef71fe17201",
+        "input_sha256": "d54f29a5163a6b59b8416a3106c02079cb90c18f63238a4ab10d154088c5fabf",
+        "target_id": "python-native-semantic-models-v06-v14"
+      },
+      {
+        "case_id": "OW-RAND-00000005-A72A06E66C",
+        "case_seed": "21d1f9c0ed12432c90d8baf378cb3a4d9c70072eecb20767be0a1f5b4628fea7",
+        "input_sha256": "d54f29a5163a6b59b8416a3106c02079cb90c18f63238a4ab10d154088c5fabf",
+        "target_id": "python-usg-sem-document-adapters-v15"
+      },
+      {
+        "case_id": "OW-RAND-00000006-3D09E89139",
+        "case_seed": "a572946ff43a8f4d92e9d7d456672632b78358c7f8755af351343485fae47e42",
+        "input_sha256": "d54f29a5163a6b59b8416a3106c02079cb90c18f63238a4ab10d154088c5fabf",
+        "target_id": "phase2-structured-semantic-reasoning"
+      },
+      {
+        "case_id": "OW-RAND-00000007-BF6D308DFB",
+        "case_seed": "47fe82d860730bc27283d410f96cf58f6123c438c59d267654c3d1976115ff6f",
+        "input_sha256": "d54f29a5163a6b59b8416a3106c02079cb90c18f63238a4ab10d154088c5fabf",
+        "target_id": "phase3-canonical-sqlite-store"
+      },
+      {
+        "case_id": "OW-RAND-00000008-063AC78412",
+        "case_seed": "54ba060ad061100f73ea7334a3615d9fe55fd1f78fbd307a6a062f1e045c4651",
+        "input_sha256": "d54f29a5163a6b59b8416a3106c02079cb90c18f63238a4ab10d154088c5fabf",
+        "target_id": "phase6-candidate-expansion"
+      },
+      {
+        "case_id": "OW-RAND-00000009-460E50ED67",
+        "case_seed": "368a1549380dd57b1be297f182f1fefcbc104796017f18db4d06f81f0f76f441",
+        "input_sha256": "d54f29a5163a6b59b8416a3106c02079cb90c18f63238a4ab10d154088c5fabf",
+        "target_id": "kernel-lab-local-api-cli"
+      },
+      {
+        "case_id": "OW-RAND-00000010-D922ED38E6",
+        "case_seed": "e4f5e52e7a4201a9257bde2f39cd7b0cddee116bea4e29a6686a141005ef5dff",
+        "input_sha256": "d54f29a5163a6b59b8416a3106c02079cb90c18f63238a4ab10d154088c5fabf",
+        "target_id": "workbench-to-canonical-adapter"
+      },
+      {
+        "case_id": "OW-RAND-00000011-8375C379C3",
+        "case_seed": "06724f85215fcca721fb37a69aa3cb075a4a1c0f8674d2ca1e928d4ab4dd5cc9",
+        "input_sha256": "d54f29a5163a6b59b8416a3106c02079cb90c18f63238a4ab10d154088c5fabf",
+        "target_id": "python-reference-kernel-v04-v05"
+      },
+      {
+        "case_id": "OW-RAND-00000012-EAD0E18431",
+        "case_seed": "528c4c4cc64b066f7ecef0c565529a9b2e61728614ae389a8a497560dca4ef26",
+        "input_sha256": "db276ced5b307a1bed6dca067a369cc03a3452511926d31439fb85062eece727",
+        "target_id": "phase4-bounded-interpreter"
+      },
+      {
+        "case_id": "OW-RAND-00000013-66688A08CF",
+        "case_seed": "5f9d68df4b7952fe14ed1b07af0f2b5e29467a0c0485059ecb7b50cddb41321d",
+        "input_sha256": "db276ced5b307a1bed6dca067a369cc03a3452511926d31439fb85062eece727",
+        "target_id": "phase5-bounded-interpreter"
+      },
+      {
+        "case_id": "OW-RAND-00000014-D023B230FA",
+        "case_seed": "3885df1633b89f3b45bab34b3c6e5724035b1fb9540d07b132b8326cf0930dc2",
+        "input_sha256": "db276ced5b307a1bed6dca067a369cc03a3452511926d31439fb85062eece727",
+        "target_id": "js-semantic-workbench-v054"
+      },
+      {
+        "case_id": "OW-RAND-00000015-EF26FD4F0F",
+        "case_seed": "524932c9801c3058014d1e4cccd7bed7ae4eca327f931bfc37dc3165021c27ad",
+        "input_sha256": "db276ced5b307a1bed6dca067a369cc03a3452511926d31439fb85062eece727",
+        "target_id": "python-native-semantic-models-v06-v14"
+      },
+      {
+        "case_id": "OW-RAND-00000016-E99A5A0400",
+        "case_seed": "bdd9f126388add00f7b3a6065ab60175920f8a6db73faccc17ad5d7ecb6d5dd5",
+        "input_sha256": "db276ced5b307a1bed6dca067a369cc03a3452511926d31439fb85062eece727",
+        "target_id": "python-usg-sem-document-adapters-v15"
+      },
+      {
+        "case_id": "OW-RAND-00000017-2BF939B9F9",
+        "case_seed": "a6d8b0a1be836458a919890905b74b53e6313353d1bd1409817c24e7926eae9b",
+        "input_sha256": "db276ced5b307a1bed6dca067a369cc03a3452511926d31439fb85062eece727",
+        "target_id": "phase2-structured-semantic-reasoning"
+      },
+      {
+        "case_id": "OW-RAND-00000018-9A7C751090",
+        "case_seed": "bec17fddc5518c8a62f085389fbd778d5963ac95e949dcab9c9ef810113170a1",
+        "input_sha256": "db276ced5b307a1bed6dca067a369cc03a3452511926d31439fb85062eece727",
+        "target_id": "phase3-canonical-sqlite-store"
+      },
+      {
+        "case_id": "OW-RAND-00000019-B4BA42E59D",
+        "case_seed": "768e27c465e89a2f22dfea87eed7a9eb35b647349a8d8e2a75f3c354db4d9c18",
+        "input_sha256": "db276ced5b307a1bed6dca067a369cc03a3452511926d31439fb85062eece727",
+        "target_id": "phase6-candidate-expansion"
+      },
+      {
+        "case_id": "OW-RAND-00000020-D9D5F7C978",
+        "case_seed": "3eb408c206a021f0515f7fef929c8c3fa14dfb2c70ea54ab6f4afd007b547fd2",
+        "input_sha256": "db276ced5b307a1bed6dca067a369cc03a3452511926d31439fb85062eece727",
+        "target_id": "kernel-lab-local-api-cli"
+      },
+      {
+        "case_id": "OW-RAND-00000021-00432FC432",
+        "case_seed": "d4b48d28598c94712dfb7b04cd605a0d6e5603ed33283ec999448720ba309079",
+        "input_sha256": "db276ced5b307a1bed6dca067a369cc03a3452511926d31439fb85062eece727",
+        "target_id": "workbench-to-canonical-adapter"
+      },
+      {
+        "case_id": "OW-RAND-00000022-FDAE3A9324",
+        "case_seed": "d07907c9d1033e2942a4c71ccc5fe27c32f3d0ea22b0f6979cb7d20a6582b432",
+        "input_sha256": "db276ced5b307a1bed6dca067a369cc03a3452511926d31439fb85062eece727",
+        "target_id": "python-reference-kernel-v04-v05"
+      },
+      {
+        "case_id": "OW-RAND-00000023-C096D2329E",
+        "case_seed": "d1da5040e81e87bd6d0c9e465248b7cdeee6aba1846065b3983b3e1a65ddc0c1",
+        "input_sha256": "c538bd8815bc3397ed20a79c23bf2e6e8f5212d367c569a6546b8051bda1c95e",
+        "target_id": "phase4-bounded-interpreter"
+      },
+      {
+        "case_id": "OW-RAND-00000024-09BA670802",
+        "case_seed": "2e501ebc1bcdd281c7716242929c228f58e72774ddd7ed824582004e2f733df5",
+        "input_sha256": "c538bd8815bc3397ed20a79c23bf2e6e8f5212d367c569a6546b8051bda1c95e",
+        "target_id": "phase5-bounded-interpreter"
+      },
+      {
+        "case_id": "OW-RAND-00000025-E445D2C48B",
+        "case_seed": "167890184028bd77ebd466ff79c14ccf253baee839dc53e932315dc36ea0af1f",
+        "input_sha256": "c538bd8815bc3397ed20a79c23bf2e6e8f5212d367c569a6546b8051bda1c95e",
+        "target_id": "js-semantic-workbench-v054"
+      },
+      {
+        "case_id": "OW-RAND-00000026-05FB637BB3",
+        "case_seed": "9e17e08b45e21af660524c97add398e15a642bd063f309dd93394f060acb23c1",
+        "input_sha256": "c538bd8815bc3397ed20a79c23bf2e6e8f5212d367c569a6546b8051bda1c95e",
+        "target_id": "python-native-semantic-models-v06-v14"
+      },
+      {
+        "case_id": "OW-RAND-00000027-9A100E5A12",
+        "case_seed": "f3e2fe227a4945a22e91c76086f76dcbeb26fac1ef9dc350ac6eda6f71588176",
+        "input_sha256": "c538bd8815bc3397ed20a79c23bf2e6e8f5212d367c569a6546b8051bda1c95e",
+        "target_id": "python-usg-sem-document-adapters-v15"
+      },
+      {
+        "case_id": "OW-RAND-00000028-946F5B714F",
+        "case_seed": "d2184f8c4b343db00c9270010248ad35444fd6f6128d0a5713b39e7bebbbe41c",
+        "input_sha256": "c538bd8815bc3397ed20a79c23bf2e6e8f5212d367c569a6546b8051bda1c95e",
+        "target_id": "phase2-structured-semantic-reasoning"
+      },
+      {
+        "case_id": "OW-RAND-00000029-F535BE38FC",
+        "case_seed": "9bd9efcb6c96e52a7051851bafd611513abd512656c20c372eb96a2ce327b912",
+        "input_sha256": "c538bd8815bc3397ed20a79c23bf2e6e8f5212d367c569a6546b8051bda1c95e",
+        "target_id": "phase3-canonical-sqlite-store"
+      },
+      {
+        "case_id": "OW-RAND-00000030-48529E9046",
+        "case_seed": "2c769bfe8dd322d42721f2963c0fb8014785ac9ce636e9c54fd9519683c2512a",
+        "input_sha256": "c538bd8815bc3397ed20a79c23bf2e6e8f5212d367c569a6546b8051bda1c95e",
+        "target_id": "phase6-candidate-expansion"
+      },
+      {
+        "case_id": "OW-RAND-00000031-E36DBF4CB8",
+        "case_seed": "735fb8a2683b792b967d295b4da735397e1e52dd42bd6ce0285bfa3931fe8119",
+        "input_sha256": "c538bd8815bc3397ed20a79c23bf2e6e8f5212d367c569a6546b8051bda1c95e",
+        "target_id": "kernel-lab-local-api-cli"
+      },
+      {
+        "case_id": "OW-RAND-00000032-A6CEDB263E",
+        "case_seed": "aeba642e81bbc291972ac50a1bbf94bc5c89a6d1c22737d9a7de29a56a1e5277",
+        "input_sha256": "c538bd8815bc3397ed20a79c23bf2e6e8f5212d367c569a6546b8051bda1c95e",
+        "target_id": "workbench-to-canonical-adapter"
+      },
+      {
+        "case_id": "OW-RAND-00000033-2A6E63C7A8",
+        "case_seed": "4bf6fe73e7b4f9567007bac27b77c9fcb2b9b7c7694001b52b46d306e39137ed",
+        "input_sha256": "c538bd8815bc3397ed20a79c23bf2e6e8f5212d367c569a6546b8051bda1c95e",
+        "target_id": "python-reference-kernel-v04-v05"
+      },
+      {
+        "case_id": "OW-RAND-00000034-BA6B74D7EC",
+        "case_seed": "4c688449003137e0bd5d652a82e36bf3f5d906b9377ccde550d531d15849892a",
+        "input_sha256": "9a44b677e06949a2bd99ebec5eefb9699df26d0da702544d5ac9b3177518550c",
+        "target_id": "phase4-bounded-interpreter"
+      },
+      {
+        "case_id": "OW-RAND-00000035-81811A4597",
+        "case_seed": "4221eede515df9b7b5b298787a9a1abbed94e5a1bbe81c630ea1be34ae9c3f37",
+        "input_sha256": "9a44b677e06949a2bd99ebec5eefb9699df26d0da702544d5ac9b3177518550c",
+        "target_id": "phase5-bounded-interpreter"
+      },
+      {
+        "case_id": "OW-RAND-00000036-0F7748281C",
+        "case_seed": "54cc2e0d5606bc774bf816d1fbce9d1b955068e7e136f56bc31ba2341fc60dcb",
+        "input_sha256": "9a44b677e06949a2bd99ebec5eefb9699df26d0da702544d5ac9b3177518550c",
+        "target_id": "js-semantic-workbench-v054"
+      },
+      {
+        "case_id": "OW-RAND-00000037-818CF89E34",
+        "case_seed": "ec27a0085d9ff1d332a93524f99eb755fd8f7d527e82493c45d29285cd4b527d",
+        "input_sha256": "9a44b677e06949a2bd99ebec5eefb9699df26d0da702544d5ac9b3177518550c",
+        "target_id": "python-native-semantic-models-v06-v14"
+      },
+      {
+        "case_id": "OW-RAND-00000038-BC9CB384E1",
+        "case_seed": "5df706c46b82d4962514376c98a71c2d2c991b67eb0ae0163dcdc8204a5024bb",
+        "input_sha256": "9a44b677e06949a2bd99ebec5eefb9699df26d0da702544d5ac9b3177518550c",
+        "target_id": "python-usg-sem-document-adapters-v15"
+      },
+      {
+        "case_id": "OW-RAND-00000039-C3601FA289",
+        "case_seed": "43d3daebe2cd8f78e53be8a46a585202ade5578394b163889bf696230f825293",
+        "input_sha256": "9a44b677e06949a2bd99ebec5eefb9699df26d0da702544d5ac9b3177518550c",
+        "target_id": "phase2-structured-semantic-reasoning"
+      },
+      {
+        "case_id": "OW-RAND-00000040-7318CC50B3",
+        "case_seed": "30bb7623cbcfa9e328b25389d06082ad201a760ad0f8326f22378b3174be84b4",
+        "input_sha256": "9a44b677e06949a2bd99ebec5eefb9699df26d0da702544d5ac9b3177518550c",
+        "target_id": "phase3-canonical-sqlite-store"
+      },
+      {
+        "case_id": "OW-RAND-00000041-BAA8C421A7",
+        "case_seed": "f47de0bb0e044fdf94960d74ab335fb4423cd7beff2177d0b67629b6135b38a6",
+        "input_sha256": "9a44b677e06949a2bd99ebec5eefb9699df26d0da702544d5ac9b3177518550c",
+        "target_id": "phase6-candidate-expansion"
+      },
+      {
+        "case_id": "OW-RAND-00000042-3615234DD5",
+        "case_seed": "3678ad31f21c4a255724c93254e4c0d98147f004a2b05eb26615fdf95c818aee",
+        "input_sha256": "9a44b677e06949a2bd99ebec5eefb9699df26d0da702544d5ac9b3177518550c",
+        "target_id": "kernel-lab-local-api-cli"
+      },
+      {
+        "case_id": "OW-RAND-00000043-BD92FB1F05",
+        "case_seed": "0c34e1529083a0e5e6df87ffac4832afec357869eb6dbbd004e53ebb2662e611",
+        "input_sha256": "9a44b677e06949a2bd99ebec5eefb9699df26d0da702544d5ac9b3177518550c",
+        "target_id": "workbench-to-canonical-adapter"
+      },
+      {
+        "case_id": "OW-RAND-00000044-6815B1D018",
+        "case_seed": "ac97cf876f9150be32e6248ded175ee2bb479831bd76468bc5b3ab888230234f",
+        "input_sha256": "9a44b677e06949a2bd99ebec5eefb9699df26d0da702544d5ac9b3177518550c",
+        "target_id": "python-reference-kernel-v04-v05"
+      },
+      {
+        "case_id": "OW-RAND-00000045-5585289FB1",
+        "case_seed": "5a93f1fcb215d83f22b3aa3d00218df441e1f5d48524f072cb09c476984ef8ff",
+        "input_sha256": "1105d566bd383b6e3718b919fdbc21df34d9f708af412dc034c7e07954d09b15",
+        "target_id": "phase4-bounded-interpreter"
+      },
+      {
+        "case_id": "OW-RAND-00000046-E52FBEE810",
+        "case_seed": "9bbec1e0f06e06913b04e417f108247615146bb91fbd3faeeb1e4afb57039a4a",
+        "input_sha256": "1105d566bd383b6e3718b919fdbc21df34d9f708af412dc034c7e07954d09b15",
+        "target_id": "phase5-bounded-interpreter"
+      },
+      {
+        "case_id": "OW-RAND-00000047-D5A8A1E440",
+        "case_seed": "2825a53b1d69dce9c3d98ddf0a1cd6bbee7b18af207fca451b77427aaedb3268",
+        "input_sha256": "1105d566bd383b6e3718b919fdbc21df34d9f708af412dc034c7e07954d09b15",
+        "target_id": "js-semantic-workbench-v054"
+      },
+      {
+        "case_id": "OW-RAND-00000048-0E9A51F365",
+        "case_seed": "fca5945f09ca711240b34b9b6375e8a0c9bfdb5580ea5ce283a5919e3032210b",
+        "input_sha256": "1105d566bd383b6e3718b919fdbc21df34d9f708af412dc034c7e07954d09b15",
+        "target_id": "python-native-semantic-models-v06-v14"
+      },
+      {
+        "case_id": "OW-RAND-00000049-956EEC79D6",
+        "case_seed": "7de432529beb53aeb89ae3b37f5ede45ea678e62583e73a96aa1c9db7a0b9bc0",
+        "input_sha256": "1105d566bd383b6e3718b919fdbc21df34d9f708af412dc034c7e07954d09b15",
+        "target_id": "python-usg-sem-document-adapters-v15"
+      },
+      {
+        "case_id": "OW-RAND-00000050-28D95E9DFA",
+        "case_seed": "696b04b5fa7da051d1d2d4866272b251e13a033805eb66efc7794b47c0b616b2",
+        "input_sha256": "1105d566bd383b6e3718b919fdbc21df34d9f708af412dc034c7e07954d09b15",
+        "target_id": "phase2-structured-semantic-reasoning"
+      },
+      {
+        "case_id": "OW-RAND-00000051-5BE6E0B373",
+        "case_seed": "ce2a3da78607e3ea598875fc971b2b8f31bf9b18ebaf2d497bfc122e208242f2",
+        "input_sha256": "1105d566bd383b6e3718b919fdbc21df34d9f708af412dc034c7e07954d09b15",
+        "target_id": "phase3-canonical-sqlite-store"
+      },
+      {
+        "case_id": "OW-RAND-00000052-ADC1F5DA22",
+        "case_seed": "c9c25b227399358c66656fbe697a7a6d17f6e3f862d7a0c5855ba7cf3f1eef44",
+        "input_sha256": "1105d566bd383b6e3718b919fdbc21df34d9f708af412dc034c7e07954d09b15",
+        "target_id": "phase6-candidate-expansion"
+      },
+      {
+        "case_id": "OW-RAND-00000053-D1EF2CC43F",
+        "case_seed": "21e0da6a13242b05cdb68bd0c19d42259831b4e66bec309a576806153584eded",
+        "input_sha256": "1105d566bd383b6e3718b919fdbc21df34d9f708af412dc034c7e07954d09b15",
+        "target_id": "kernel-lab-local-api-cli"
+      },
+      {
+        "case_id": "OW-RAND-00000054-F767FF51D8",
+        "case_seed": "9e72e495671864eb64548d009ef78489cfc8c9add4d512657580ea33c6ed8761",
+        "input_sha256": "1105d566bd383b6e3718b919fdbc21df34d9f708af412dc034c7e07954d09b15",
+        "target_id": "workbench-to-canonical-adapter"
+      },
+      {
+        "case_id": "OW-RAND-00000055-1CD22E1442",
+        "case_seed": "0570bada3012c8224cabde8d983fc87532594ae07b300199a153fd9f526abbad",
+        "input_sha256": "1105d566bd383b6e3718b919fdbc21df34d9f708af412dc034c7e07954d09b15",
+        "target_id": "python-reference-kernel-v04-v05"
+      },
+      {
+        "case_id": "OW-RAND-00000056-25890645B2",
+        "case_seed": "b28d6cce3d5ba6ed3477e5e623f9580e306d3e47df2a85e0bc27038d8fc069a7",
+        "input_sha256": "fb2e2479a52b433e7c36e20a27cc97e847f13a2e3ddba164ba381c6c7e173f8f",
+        "target_id": "phase4-bounded-interpreter"
+      },
+      {
+        "case_id": "OW-RAND-00000057-2DEB00E5C2",
+        "case_seed": "e659b17908b14d67381425e6ce549c0342420dc828ab2246f77a41e7b8394821",
+        "input_sha256": "fb2e2479a52b433e7c36e20a27cc97e847f13a2e3ddba164ba381c6c7e173f8f",
+        "target_id": "phase5-bounded-interpreter"
+      },
+      {
+        "case_id": "OW-RAND-00000058-41F78066BE",
+        "case_seed": "4a5a8a3f8d084a6ce61be03b70f6057150d44e8c1e3f4b96299e2c19ec2ad75d",
+        "input_sha256": "fb2e2479a52b433e7c36e20a27cc97e847f13a2e3ddba164ba381c6c7e173f8f",
+        "target_id": "js-semantic-workbench-v054"
+      },
+      {
+        "case_id": "OW-RAND-00000059-F039A88B67",
+        "case_seed": "2fbe6ad3ab9cffb1545baaf1fd447e16966fe85f529c854256f87b185030a3c8",
+        "input_sha256": "fb2e2479a52b433e7c36e20a27cc97e847f13a2e3ddba164ba381c6c7e173f8f",
+        "target_id": "python-native-semantic-models-v06-v14"
+      },
+      {
+        "case_id": "OW-RAND-00000060-8A6BBCD950",
+        "case_seed": "924b3ffffac447823e30f87b56ef4d3b0b4b304ae362ac03ceb9e3db365504f2",
+        "input_sha256": "fb2e2479a52b433e7c36e20a27cc97e847f13a2e3ddba164ba381c6c7e173f8f",
+        "target_id": "python-usg-sem-document-adapters-v15"
+      },
+      {
+        "case_id": "OW-RAND-00000061-DC1D57F48C",
+        "case_seed": "a9864b0233213b72c64ed0af3861b2ae3606e3f00844cd785f0093f3f0a51bd5",
+        "input_sha256": "fb2e2479a52b433e7c36e20a27cc97e847f13a2e3ddba164ba381c6c7e173f8f",
+        "target_id": "phase2-structured-semantic-reasoning"
+      },
+      {
+        "case_id": "OW-RAND-00000062-036EE3CF0A",
+        "case_seed": "fa5a1094f13c346c060b4a7878d4facd40a5b20148c57c2f9fb330ec93f7023d",
+        "input_sha256": "fb2e2479a52b433e7c36e20a27cc97e847f13a2e3ddba164ba381c6c7e173f8f",
+        "target_id": "phase3-canonical-sqlite-store"
+      },
+      {
+        "case_id": "OW-RAND-00000063-9B1140E66F",
+        "case_seed": "ca482c49250b3705f8fc803ccae0781da5639ae68ae287126e2738ac5e83e241",
+        "input_sha256": "fb2e2479a52b433e7c36e20a27cc97e847f13a2e3ddba164ba381c6c7e173f8f",
+        "target_id": "phase6-candidate-expansion"
+      },
+      {
+        "case_id": "OW-RAND-00000064-0A2231B875",
+        "case_seed": "5ec033e1c79984ae6c3b76b39df09af19d8ae42a138ac16ff9d8bb3199ee4950",
+        "input_sha256": "fb2e2479a52b433e7c36e20a27cc97e847f13a2e3ddba164ba381c6c7e173f8f",
+        "target_id": "kernel-lab-local-api-cli"
+      },
+      {
+        "case_id": "OW-RAND-00000065-08E6566EE3",
+        "case_seed": "f8a4d2923d4ba15767cb9d0c92b0bad77585f0377540cf772b5fa419f20a248e",
+        "input_sha256": "fb2e2479a52b433e7c36e20a27cc97e847f13a2e3ddba164ba381c6c7e173f8f",
+        "target_id": "workbench-to-canonical-adapter"
+      },
+      {
+        "case_id": "OW-RAND-00000066-5EC81D4E87",
+        "case_seed": "9d344b4ec9bb8c3444dd2894ed8105499d545c964487dd4d81a08fd9032fb317",
+        "input_sha256": "fb2e2479a52b433e7c36e20a27cc97e847f13a2e3ddba164ba381c6c7e173f8f",
+        "target_id": "python-reference-kernel-v04-v05"
+      },
+      {
+        "case_id": "OW-RAND-00000067-0B3655E97E",
+        "case_seed": "28c09471b6fc5cd055541e54ecf062dcdf076707a8a6ec4f6f9982487f8bb751",
+        "input_sha256": "5711aff20ba23a735a3782dea99dbecf323cbb67f8e6923b6ba3591b7c1514a8",
+        "target_id": "phase4-bounded-interpreter"
+      },
+      {
+        "case_id": "OW-RAND-00000068-01FDE2E1CA",
+        "case_seed": "3ad65a599cf9e06d6afb77423b8c8281b570d3fac10b6852a18d749b9c75ef05",
+        "input_sha256": "5711aff20ba23a735a3782dea99dbecf323cbb67f8e6923b6ba3591b7c1514a8",
+        "target_id": "phase5-bounded-interpreter"
+      },
+      {
+        "case_id": "OW-RAND-00000069-2810820B45",
+        "case_seed": "8eef8ec8ad1b307c2e7aa530e0e7bfd7cce81db4cacc1c9155ac836859288417",
+        "input_sha256": "5711aff20ba23a735a3782dea99dbecf323cbb67f8e6923b6ba3591b7c1514a8",
+        "target_id": "js-semantic-workbench-v054"
+      },
+      {
+        "case_id": "OW-RAND-00000070-9321892EB5",
+        "case_seed": "78396ecad33e465ddf11ece66393bbd4da0655271611443bc6a296c63643a3c0",
+        "input_sha256": "5711aff20ba23a735a3782dea99dbecf323cbb67f8e6923b6ba3591b7c1514a8",
+        "target_id": "python-native-semantic-models-v06-v14"
+      },
+      {
+        "case_id": "OW-RAND-00000071-850D3A273D",
+        "case_seed": "55d1a1c2d7739050ffe7cb0a2e55c2b00a7c18bee66b696756b2fa4bdd7bf7c3",
+        "input_sha256": "5711aff20ba23a735a3782dea99dbecf323cbb67f8e6923b6ba3591b7c1514a8",
+        "target_id": "python-usg-sem-document-adapters-v15"
+      },
+      {
+        "case_id": "OW-RAND-00000072-A5A06E6D87",
+        "case_seed": "b46a3abda44d447e6f552956bad404d89d538fa24b3ac4801766ec82cccbc5e8",
+        "input_sha256": "5711aff20ba23a735a3782dea99dbecf323cbb67f8e6923b6ba3591b7c1514a8",
+        "target_id": "phase2-structured-semantic-reasoning"
+      },
+      {
+        "case_id": "OW-RAND-00000073-11836963B9",
+        "case_seed": "5615eb9e9900d5db7dbfe2ee036e08ed0360804a46d610473b43433189b6bc6c",
+        "input_sha256": "5711aff20ba23a735a3782dea99dbecf323cbb67f8e6923b6ba3591b7c1514a8",
+        "target_id": "phase3-canonical-sqlite-store"
+      },
+      {
+        "case_id": "OW-RAND-00000074-9ECE35A447",
+        "case_seed": "069644931ffb31bc0977d25b0d54a20d9b1854027004e3315dfede7ffe9020a5",
+        "input_sha256": "5711aff20ba23a735a3782dea99dbecf323cbb67f8e6923b6ba3591b7c1514a8",
+        "target_id": "phase6-candidate-expansion"
+      },
+      {
+        "case_id": "OW-RAND-00000075-3A3760901D",
+        "case_seed": "0ac12b2890f6842c1c2cd8a11f9d954423b59bdf9eddfe81397eadf43abc9e33",
+        "input_sha256": "5711aff20ba23a735a3782dea99dbecf323cbb67f8e6923b6ba3591b7c1514a8",
+        "target_id": "kernel-lab-local-api-cli"
+      },
+      {
+        "case_id": "OW-RAND-00000076-48C22BB8C2",
+        "case_seed": "00116a2b67f78aa0f3f903b2d1d97b4bb5b45fafd3356cbc62fdb261ae4f3a71",
+        "input_sha256": "5711aff20ba23a735a3782dea99dbecf323cbb67f8e6923b6ba3591b7c1514a8",
+        "target_id": "workbench-to-canonical-adapter"
+      },
+      {
+        "case_id": "OW-RAND-00000077-85324C5A99",
+        "case_seed": "8c2450d39b62a667a17c50a7ff8e62e69e03557540c1d1239f58c6d597657221",
+        "input_sha256": "5711aff20ba23a735a3782dea99dbecf323cbb67f8e6923b6ba3591b7c1514a8",
+        "target_id": "python-reference-kernel-v04-v05"
+      },
+      {
+        "case_id": "OW-RAND-00000078-1E61E90C5C",
+        "case_seed": "3055546a38e6edf9af2f3a7f63214851806a81a3f95757acc7fa9e2171c382db",
+        "input_sha256": "cebdc7ba6d15c5c35251d3e87f97fbb0f1bc455c4d26809c043dcea515abe21e",
+        "target_id": "phase4-bounded-interpreter"
+      },
+      {
+        "case_id": "OW-RAND-00000079-58C1C9FE09",
+        "case_seed": "9a016e31152bff73284793fdfeb795a63ca55f5dbce1f6eb168cba76b16d045c",
+        "input_sha256": "cebdc7ba6d15c5c35251d3e87f97fbb0f1bc455c4d26809c043dcea515abe21e",
+        "target_id": "phase5-bounded-interpreter"
+      },
+      {
+        "case_id": "OW-RAND-00000080-2C706370E6",
+        "case_seed": "54943f80ab6c0163d3c1092a9a353f702025541d003e9fb1966fc91b1df9b993",
+        "input_sha256": "cebdc7ba6d15c5c35251d3e87f97fbb0f1bc455c4d26809c043dcea515abe21e",
+        "target_id": "js-semantic-workbench-v054"
+      },
+      {
+        "case_id": "OW-RAND-00000081-9CAF08FE8A",
+        "case_seed": "117ad84c2763336516c90a7484c6f672f1ee6935c1c9575b01c0f752430758e7",
+        "input_sha256": "cebdc7ba6d15c5c35251d3e87f97fbb0f1bc455c4d26809c043dcea515abe21e",
+        "target_id": "python-native-semantic-models-v06-v14"
+      },
+      {
+        "case_id": "OW-RAND-00000082-F772639FC7",
+        "case_seed": "e93d51024dce93459c6423fefad8fb7b0ce47152cadafd07fcecb0bdbc8e2551",
+        "input_sha256": "cebdc7ba6d15c5c35251d3e87f97fbb0f1bc455c4d26809c043dcea515abe21e",
+        "target_id": "python-usg-sem-document-adapters-v15"
+      },
+      {
+        "case_id": "OW-RAND-00000083-098A6D5EFC",
+        "case_seed": "6c345586375f61f199e6d9961f668e89ed7514182f22db8908d20332f82986f7",
+        "input_sha256": "cebdc7ba6d15c5c35251d3e87f97fbb0f1bc455c4d26809c043dcea515abe21e",
+        "target_id": "phase2-structured-semantic-reasoning"
+      },
+      {
+        "case_id": "OW-RAND-00000084-98EA3A548A",
+        "case_seed": "7f0f32548d4db8e3f69d695647c5fad23007cfa71abd467d87ddfd27de74381b",
+        "input_sha256": "cebdc7ba6d15c5c35251d3e87f97fbb0f1bc455c4d26809c043dcea515abe21e",
+        "target_id": "phase3-canonical-sqlite-store"
+      },
+      {
+        "case_id": "OW-RAND-00000085-D1E0F8C920",
+        "case_seed": "70848219210ca50d8cb4578770ac5632aa4c9c2a746a5917fda0c3b27a4a31a9",
+        "input_sha256": "cebdc7ba6d15c5c35251d3e87f97fbb0f1bc455c4d26809c043dcea515abe21e",
+        "target_id": "phase6-candidate-expansion"
+      },
+      {
+        "case_id": "OW-RAND-00000086-1D17F21AB7",
+        "case_seed": "1aa41160c3adca5410561be0f3f42322947b78725a02387e9d9ccf2900a69b13",
+        "input_sha256": "cebdc7ba6d15c5c35251d3e87f97fbb0f1bc455c4d26809c043dcea515abe21e",
+        "target_id": "kernel-lab-local-api-cli"
+      },
+      {
+        "case_id": "OW-RAND-00000087-999698ED99",
+        "case_seed": "123ac5f43fa1441c06faa24c5a9cfb23a6136bf66fdae93ac561937d17fa4b20",
+        "input_sha256": "cebdc7ba6d15c5c35251d3e87f97fbb0f1bc455c4d26809c043dcea515abe21e",
+        "target_id": "workbench-to-canonical-adapter"
+      },
+      {
+        "case_id": "OW-RAND-00000088-6B3E023092",
+        "case_seed": "52212827a6d5f6282992ed652c2fd6585bbe862fb80502ea69e66958f90aca6c",
+        "input_sha256": "cebdc7ba6d15c5c35251d3e87f97fbb0f1bc455c4d26809c043dcea515abe21e",
+        "target_id": "python-reference-kernel-v04-v05"
+      },
+      {
+        "case_id": "OW-RAND-00000089-38C9BC3C07",
+        "case_seed": "5232bff71605f919f04deb052b8fae8159ab60f2ff7d4f9ef64045904fa48c8f",
+        "input_sha256": "bf6ba0ef4e4c67dc4730a76b4901c52b187e51638f886813f464b802956d2a1a",
+        "target_id": "phase4-bounded-interpreter"
+      },
+      {
+        "case_id": "OW-RAND-00000090-94A728DCB4",
+        "case_seed": "a83aa854f9c95f6d1900dc9ddb148a801554daaa7cc1effbb13c9491f413b37d",
+        "input_sha256": "bf6ba0ef4e4c67dc4730a76b4901c52b187e51638f886813f464b802956d2a1a",
+        "target_id": "phase5-bounded-interpreter"
+      },
+      {
+        "case_id": "OW-RAND-00000091-71B324F499",
+        "case_seed": "4ffb5df2bf07edb28a88ecfdb9651fbfb7ffc773202842676244640a6f303968",
+        "input_sha256": "bf6ba0ef4e4c67dc4730a76b4901c52b187e51638f886813f464b802956d2a1a",
+        "target_id": "js-semantic-workbench-v054"
+      },
+      {
+        "case_id": "OW-RAND-00000092-FE2A786DFD",
+        "case_seed": "8adf5d76f94f7edd0ebb1203c71e1835bce7e1112fb308a8fa9b1a764a8d772a",
+        "input_sha256": "bf6ba0ef4e4c67dc4730a76b4901c52b187e51638f886813f464b802956d2a1a",
+        "target_id": "python-native-semantic-models-v06-v14"
+      },
+      {
+        "case_id": "OW-RAND-00000093-E7191D600A",
+        "case_seed": "633dc39f8610de35ebd84d085e2774cffdebaeed6d8717b9ca02fc0a9b0295a0",
+        "input_sha256": "bf6ba0ef4e4c67dc4730a76b4901c52b187e51638f886813f464b802956d2a1a",
+        "target_id": "python-usg-sem-document-adapters-v15"
+      },
+      {
+        "case_id": "OW-RAND-00000094-E48E73942E",
+        "case_seed": "417528980829d046326f3d66cdaf507691132a7a7af7577cded2bde00c7f75b2",
+        "input_sha256": "bf6ba0ef4e4c67dc4730a76b4901c52b187e51638f886813f464b802956d2a1a",
+        "target_id": "phase2-structured-semantic-reasoning"
+      },
+      {
+        "case_id": "OW-RAND-00000095-5BF74D2E1A",
+        "case_seed": "12625edb99efe8ef3ee6436cc33e0a400036be885f1feee267819722da2a28fe",
+        "input_sha256": "bf6ba0ef4e4c67dc4730a76b4901c52b187e51638f886813f464b802956d2a1a",
+        "target_id": "phase3-canonical-sqlite-store"
+      },
+      {
+        "case_id": "OW-RAND-00000096-1E5F772F35",
+        "case_seed": "769f9754054dc0a49a0ca10a19a099a9ea611ba90b5ae2d438a2d5893d633d73",
+        "input_sha256": "bf6ba0ef4e4c67dc4730a76b4901c52b187e51638f886813f464b802956d2a1a",
+        "target_id": "phase6-candidate-expansion"
+      },
+      {
+        "case_id": "OW-RAND-00000097-F69363B26B",
+        "case_seed": "eacb3d9cc170428c617a26498230caf1131046822bc99f18f798c735b49ab7b5",
+        "input_sha256": "bf6ba0ef4e4c67dc4730a76b4901c52b187e51638f886813f464b802956d2a1a",
+        "target_id": "kernel-lab-local-api-cli"
+      },
+      {
+        "case_id": "OW-RAND-00000098-E98B38EB7E",
+        "case_seed": "9795d085d9410979857c03061a20c650b902d29ced80747b1b7d177bd83f043f",
+        "input_sha256": "bf6ba0ef4e4c67dc4730a76b4901c52b187e51638f886813f464b802956d2a1a",
+        "target_id": "workbench-to-canonical-adapter"
+      },
+      {
+        "case_id": "OW-RAND-00000099-18A75D2D3D",
+        "case_seed": "0dc4ceed6f3724a3803d53a9922fed373f18e07573a753e9d4fae3d23f5f1a7a",
+        "input_sha256": "bf6ba0ef4e4c67dc4730a76b4901c52b187e51638f886813f464b802956d2a1a",
+        "target_id": "python-reference-kernel-v04-v05"
+      },
+      {
+        "case_id": "OW-RAND-00000100-4773D95B9D",
+        "case_seed": "e3279a8746c6a6279efbbcda8ab3db9db76c2ffb6274b20fe396ba86d3122d48",
+        "input_sha256": "be41df2da8462e8f917c7e6b3418731131e42084c53b60d603a06abf7e1a8e5a",
+        "target_id": "phase4-bounded-interpreter"
+      },
+      {
+        "case_id": "OW-RAND-00000101-71317364B7",
+        "case_seed": "a9d611c65e0f104adabfe944a3084892eb70679d9d7b57568801483783f4531f",
+        "input_sha256": "be41df2da8462e8f917c7e6b3418731131e42084c53b60d603a06abf7e1a8e5a",
+        "target_id": "phase5-bounded-interpreter"
+      },
+      {
+        "case_id": "OW-RAND-00000102-A985CD9D65",
+        "case_seed": "b37f517e5e9636531eb6a4450cc0ae00dedf5c51888da9041eb9502d11517406",
+        "input_sha256": "be41df2da8462e8f917c7e6b3418731131e42084c53b60d603a06abf7e1a8e5a",
+        "target_id": "js-semantic-workbench-v054"
+      },
+      {
+        "case_id": "OW-RAND-00000103-E73A245CB2",
+        "case_seed": "19b444aecc39d4fb142f34c8729e4cd32d11e9036e8559ca85f7334a55396ca3",
+        "input_sha256": "be41df2da8462e8f917c7e6b3418731131e42084c53b60d603a06abf7e1a8e5a",
+        "target_id": "python-native-semantic-models-v06-v14"
+      },
+      {
+        "case_id": "OW-RAND-00000104-ACF9F27731",
+        "case_seed": "a00196d38a28d0c329d63e69da9274bc0f5deb72dce06d9794395aa7a8278ccc",
+        "input_sha256": "be41df2da8462e8f917c7e6b3418731131e42084c53b60d603a06abf7e1a8e5a",
+        "target_id": "python-usg-sem-document-adapters-v15"
+      },
+      {
+        "case_id": "OW-RAND-00000105-A493C42A29",
+        "case_seed": "abe4f8363d0639d87c16450d166326c7449fa35698cfcb39af2ad7fee13e093f",
+        "input_sha256": "be41df2da8462e8f917c7e6b3418731131e42084c53b60d603a06abf7e1a8e5a",
+        "target_id": "phase2-structured-semantic-reasoning"
+      },
+      {
+        "case_id": "OW-RAND-00000106-04C4130C72",
+        "case_seed": "281b7be63645296642091f8001d3918b220dd92fafcf4cce94564002ff62183f",
+        "input_sha256": "be41df2da8462e8f917c7e6b3418731131e42084c53b60d603a06abf7e1a8e5a",
+        "target_id": "phase3-canonical-sqlite-store"
+      },
+      {
+        "case_id": "OW-RAND-00000107-E3B624E3D9",
+        "case_seed": "423c7458e5813c155b020089eb160c5f103458ac6bbfb92cc62e4cf2dc66e87b",
+        "input_sha256": "be41df2da8462e8f917c7e6b3418731131e42084c53b60d603a06abf7e1a8e5a",
+        "target_id": "phase6-candidate-expansion"
+      },
+      {
+        "case_id": "OW-RAND-00000108-3134E2FCFD",
+        "case_seed": "c5cc8c2d961e57a69e4d84989e73678cc363c75a98fdc6adaec8a2a05aa63e4c",
+        "input_sha256": "be41df2da8462e8f917c7e6b3418731131e42084c53b60d603a06abf7e1a8e5a",
+        "target_id": "kernel-lab-local-api-cli"
+      },
+      {
+        "case_id": "OW-RAND-00000109-848F5900ED",
+        "case_seed": "0908d1c2579663de245e276ff87c9f06fbb76c7c7f300b8fe2911b8c88ccf3cb",
+        "input_sha256": "be41df2da8462e8f917c7e6b3418731131e42084c53b60d603a06abf7e1a8e5a",
+        "target_id": "workbench-to-canonical-adapter"
+      },
+      {
+        "case_id": "OW-RAND-00000110-20C6DB9577",
+        "case_seed": "40812f37c4eea537cf083045b78175c066ba84bf34baf6f87b8d8204bce515ac",
+        "input_sha256": "be41df2da8462e8f917c7e6b3418731131e42084c53b60d603a06abf7e1a8e5a",
+        "target_id": "python-reference-kernel-v04-v05"
+      },
+      {
+        "case_id": "OW-RAND-00000111-7E1939AA8D",
+        "case_seed": "80e7631c16738f13ada1c54e13ccb780ba547b0d5894b3fe11b83c99536ddd93",
+        "input_sha256": "5c2fcb6f8110d98100b6b5222b05f69495c47bad2567fcb4fab42b9b9a8d821a",
+        "target_id": "phase4-bounded-interpreter"
+      },
+      {
+        "case_id": "OW-RAND-00000112-848BCECA94",
+        "case_seed": "8c82fa1a65430eb67d2c8d5cd0e4044b28e8a3d60aa548a094b2397c6db551cf",
+        "input_sha256": "5c2fcb6f8110d98100b6b5222b05f69495c47bad2567fcb4fab42b9b9a8d821a",
+        "target_id": "phase5-bounded-interpreter"
+      },
+      {
+        "case_id": "OW-RAND-00000113-7434E50E62",
+        "case_seed": "54b6c370939b47b3caa4ef23bf2c9baf3d43069b9dbcf8c7aa6f3b8f373f793a",
+        "input_sha256": "5c2fcb6f8110d98100b6b5222b05f69495c47bad2567fcb4fab42b9b9a8d821a",
+        "target_id": "js-semantic-workbench-v054"
+      },
+      {
+        "case_id": "OW-RAND-00000114-1182179037",
+        "case_seed": "df81639958424d9eb78785c7f2139a898bc9d88cc9b7a6520917e63fcdebf9b3",
+        "input_sha256": "5c2fcb6f8110d98100b6b5222b05f69495c47bad2567fcb4fab42b9b9a8d821a",
+        "target_id": "python-native-semantic-models-v06-v14"
+      },
+      {
+        "case_id": "OW-RAND-00000115-833FB797F0",
+        "case_seed": "1c1752dd1c54f6683cea7c788dac11af4d1f1c9cf100c18373201dc9db73c5fa",
+        "input_sha256": "5c2fcb6f8110d98100b6b5222b05f69495c47bad2567fcb4fab42b9b9a8d821a",
+        "target_id": "python-usg-sem-document-adapters-v15"
+      },
+      {
+        "case_id": "OW-RAND-00000116-A84112EAB0",
+        "case_seed": "16de5097f8dbb137d311cf86a56bd32e7b40f0a47ab145155808e569e6147e80",
+        "input_sha256": "5c2fcb6f8110d98100b6b5222b05f69495c47bad2567fcb4fab42b9b9a8d821a",
+        "target_id": "phase2-structured-semantic-reasoning"
+      },
+      {
+        "case_id": "OW-RAND-00000117-803C8311E0",
+        "case_seed": "ca952a88e8c61bd1e0510ff3b4b9b9e4a0eabfb1daca30aa95afcb8d4d549b8e",
+        "input_sha256": "5c2fcb6f8110d98100b6b5222b05f69495c47bad2567fcb4fab42b9b9a8d821a",
+        "target_id": "phase3-canonical-sqlite-store"
+      },
+      {
+        "case_id": "OW-RAND-00000118-6DC49EB52A",
+        "case_seed": "cdfe75720d1bac84122417b7390091912f0f6985f52238096e588444db9fca23",
+        "input_sha256": "5c2fcb6f8110d98100b6b5222b05f69495c47bad2567fcb4fab42b9b9a8d821a",
+        "target_id": "phase6-candidate-expansion"
+      },
+      {
+        "case_id": "OW-RAND-00000119-0B56BD7A49",
+        "case_seed": "35b570305159ca2b674b94e3b6dd377dd0267a8fcb0eca50d5cb2053ec9b199f",
+        "input_sha256": "5c2fcb6f8110d98100b6b5222b05f69495c47bad2567fcb4fab42b9b9a8d821a",
+        "target_id": "kernel-lab-local-api-cli"
+      },
+      {
+        "case_id": "OW-RAND-00000120-0806F51198",
+        "case_seed": "dab5464b058940fef2afc449b7f984921595e288ea3d19f96eab004e01408636",
+        "input_sha256": "5c2fcb6f8110d98100b6b5222b05f69495c47bad2567fcb4fab42b9b9a8d821a",
+        "target_id": "workbench-to-canonical-adapter"
+      },
+      {
+        "case_id": "OW-RAND-00000121-1CE58E2C8E",
+        "case_seed": "44729dd50d51698c535957f188296cabebb5899e89a5dd9e7c71784c156a8074",
+        "input_sha256": "5c2fcb6f8110d98100b6b5222b05f69495c47bad2567fcb4fab42b9b9a8d821a",
+        "target_id": "python-reference-kernel-v04-v05"
+      },
+      {
+        "case_id": "OW-RAND-00000122-53BB2FE665",
+        "case_seed": "dee0cb01d8626b90868943310dfac1687b2be390bb6bf60364a9328d5d252ec1",
+        "input_sha256": "6984ac6bd33e74e601c87515a6e9dbde3f724447c8bd9ee1f4099579c91e9d04",
+        "target_id": "phase4-bounded-interpreter"
+      },
+      {
+        "case_id": "OW-RAND-00000123-2667B8EEC4",
+        "case_seed": "833117ec709e26f9b9ca3f89be92e56c686f9da78006b8db391e4397280db88c",
+        "input_sha256": "6984ac6bd33e74e601c87515a6e9dbde3f724447c8bd9ee1f4099579c91e9d04",
+        "target_id": "phase5-bounded-interpreter"
+      },
+      {
+        "case_id": "OW-RAND-00000124-501E8A76E2",
+        "case_seed": "b30f2fb40143b9e87c1ef3a306218f2673491788108cc6872d73a34691566fcc",
+        "input_sha256": "6984ac6bd33e74e601c87515a6e9dbde3f724447c8bd9ee1f4099579c91e9d04",
+        "target_id": "js-semantic-workbench-v054"
+      },
+      {
+        "case_id": "OW-RAND-00000125-581821197B",
+        "case_seed": "92574708f01cc6b23686ea2e1f7c26b4ea1f9aceedcbe08e96a50a6d8b39329d",
+        "input_sha256": "6984ac6bd33e74e601c87515a6e9dbde3f724447c8bd9ee1f4099579c91e9d04",
+        "target_id": "python-native-semantic-models-v06-v14"
+      },
+      {
+        "case_id": "OW-RAND-00000126-62A42FE792",
+        "case_seed": "ba2c366f0b82dfbf0840a14c11248f1552f32df3a9a54cfd4e119b3ca536e85d",
+        "input_sha256": "6984ac6bd33e74e601c87515a6e9dbde3f724447c8bd9ee1f4099579c91e9d04",
+        "target_id": "python-usg-sem-document-adapters-v15"
+      },
+      {
+        "case_id": "OW-RAND-00000127-1F0D1C983F",
+        "case_seed": "a4ebafcd7a56a0db16c93dd84fb618c72119c1d9f3878cadfd3ba7858a7a76d5",
+        "input_sha256": "6984ac6bd33e74e601c87515a6e9dbde3f724447c8bd9ee1f4099579c91e9d04",
+        "target_id": "phase2-structured-semantic-reasoning"
+      },
+      {
+        "case_id": "OW-RAND-00000128-31526BFC6F",
+        "case_seed": "4f7f9bf257bd80b951c74ec3331a1d23849b331e04927b95afa11ff1f7ed28da",
+        "input_sha256": "6984ac6bd33e74e601c87515a6e9dbde3f724447c8bd9ee1f4099579c91e9d04",
+        "target_id": "phase3-canonical-sqlite-store"
+      },
+      {
+        "case_id": "OW-RAND-00000129-3A9A98DE48",
+        "case_seed": "070a07afadb2652d070a4a4a2cb8fa1be0df838471de9b59311d8dff14b62fe2",
+        "input_sha256": "6984ac6bd33e74e601c87515a6e9dbde3f724447c8bd9ee1f4099579c91e9d04",
+        "target_id": "phase6-candidate-expansion"
+      },
+      {
+        "case_id": "OW-RAND-00000130-28EE25B0EC",
+        "case_seed": "afcbca78b5c4cd42e86c29ad3a35445dfa8cc0c4886a172c93a06914239b9a0c",
+        "input_sha256": "6984ac6bd33e74e601c87515a6e9dbde3f724447c8bd9ee1f4099579c91e9d04",
+        "target_id": "kernel-lab-local-api-cli"
+      },
+      {
+        "case_id": "OW-RAND-00000131-DB9932EA5C",
+        "case_seed": "d8ba78e8605886e29484edeee3b7252247899099e8ef8f1398117c76840263d4",
+        "input_sha256": "6984ac6bd33e74e601c87515a6e9dbde3f724447c8bd9ee1f4099579c91e9d04",
+        "target_id": "workbench-to-canonical-adapter"
+      },
+      {
+        "case_id": "OW-RAND-00000132-40EA7EB565",
+        "case_seed": "730858618cf5b8b0ad9ddc832253a10ec2c02326457d473224812e99f3cf9662",
+        "input_sha256": "6984ac6bd33e74e601c87515a6e9dbde3f724447c8bd9ee1f4099579c91e9d04",
+        "target_id": "python-reference-kernel-v04-v05"
+      },
+      {
+        "case_id": "OW-RAND-00000133-B35ED92293",
+        "case_seed": "6a226de0ef59df0ef5c26c2f30c8cafdc42604d66febba2a39b2648757c6f8d4",
+        "input_sha256": "6988ce6c451c5e3b2abd3ee8e01aefae2a97fd0d844dce37af1819ac98809fce",
+        "target_id": "phase4-bounded-interpreter"
+      },
+      {
+        "case_id": "OW-RAND-00000134-3FA41E4E39",
+        "case_seed": "4e1d47afc993b28399c6176f977e3b98b2897f7ec91ddb3f9a36bea27eb2cd20",
+        "input_sha256": "6988ce6c451c5e3b2abd3ee8e01aefae2a97fd0d844dce37af1819ac98809fce",
+        "target_id": "phase5-bounded-interpreter"
+      },
+      {
+        "case_id": "OW-RAND-00000135-B3AD61674C",
+        "case_seed": "e467c897badc3c107de89fd91baf84b2b03992fbbc0b9253ab92cee6f034dfc9",
+        "input_sha256": "6988ce6c451c5e3b2abd3ee8e01aefae2a97fd0d844dce37af1819ac98809fce",
+        "target_id": "js-semantic-workbench-v054"
+      },
+      {
+        "case_id": "OW-RAND-00000136-1D23F6F028",
+        "case_seed": "51c6df2ba734a43916089653d8508d33bf36dfc6af05deabca3c51e234751e37",
+        "input_sha256": "6988ce6c451c5e3b2abd3ee8e01aefae2a97fd0d844dce37af1819ac98809fce",
+        "target_id": "python-native-semantic-models-v06-v14"
+      },
+      {
+        "case_id": "OW-RAND-00000137-2E7E5BCA57",
+        "case_seed": "32f7b0b48993883996167227bfc92dac37c44769f00f14a601ce175af104fa7d",
+        "input_sha256": "6988ce6c451c5e3b2abd3ee8e01aefae2a97fd0d844dce37af1819ac98809fce",
+        "target_id": "python-usg-sem-document-adapters-v15"
+      },
+      {
+        "case_id": "OW-RAND-00000138-801F009BDE",
+        "case_seed": "48161693dfd134546e811f634e9addd0d627f3f7feca298f06da53e5351d181d",
+        "input_sha256": "6988ce6c451c5e3b2abd3ee8e01aefae2a97fd0d844dce37af1819ac98809fce",
+        "target_id": "phase2-structured-semantic-reasoning"
+      },
+      {
+        "case_id": "OW-RAND-00000139-B162510EA1",
+        "case_seed": "0200854ca9f4db8717a3d2a362b5ecf0229d85f035e18e3b266837a6cc8a7eb7",
+        "input_sha256": "6988ce6c451c5e3b2abd3ee8e01aefae2a97fd0d844dce37af1819ac98809fce",
+        "target_id": "phase3-canonical-sqlite-store"
+      },
+      {
+        "case_id": "OW-RAND-00000140-EF76CBD104",
+        "case_seed": "c9a84b60c15bdecd41027f3a16264f81c609eb53f161719b22dffe00b7191b23",
+        "input_sha256": "6988ce6c451c5e3b2abd3ee8e01aefae2a97fd0d844dce37af1819ac98809fce",
+        "target_id": "phase6-candidate-expansion"
+      },
+      {
+        "case_id": "OW-RAND-00000141-6D7A3FBE49",
+        "case_seed": "fa4d777100bb79d8ae19d9af59698f5f49941b703e4bfdd34f674f6bf6e0db09",
+        "input_sha256": "6988ce6c451c5e3b2abd3ee8e01aefae2a97fd0d844dce37af1819ac98809fce",
+        "target_id": "kernel-lab-local-api-cli"
+      },
+      {
+        "case_id": "OW-RAND-00000142-7BCAA0E454",
+        "case_seed": "b247f2e130a36193f701c76a2b8750d4ba37d5b08ddc8e1640011ff40323f9ef",
+        "input_sha256": "6988ce6c451c5e3b2abd3ee8e01aefae2a97fd0d844dce37af1819ac98809fce",
+        "target_id": "workbench-to-canonical-adapter"
+      },
+      {
+        "case_id": "OW-RAND-00000143-55157D53F3",
+        "case_seed": "b3ef5337e7e8344d4ddfd9d201af3819bf5ee1b5b8daf911b7ec084359bf99b6",
+        "input_sha256": "6988ce6c451c5e3b2abd3ee8e01aefae2a97fd0d844dce37af1819ac98809fce",
+        "target_id": "python-reference-kernel-v04-v05"
+      },
+      {
+        "case_id": "OW-RAND-00000144-DC041F7BF5",
+        "case_seed": "abd0b693b5a1bf0f5766129dbfe725a540a02ed4b2c9e8e3ab54a5c5586bcd1c",
+        "input_sha256": "3162bd2c45adf80ed37534118c14965e81a1d64282109c7020efe9b2c674aa8a",
+        "target_id": "phase4-bounded-interpreter"
+      },
+      {
+        "case_id": "OW-RAND-00000145-9744E599C4",
+        "case_seed": "2075bde43a4f58c5f2d649b8db74849b2b226367187e6728228fe855dfdb88a9",
+        "input_sha256": "3162bd2c45adf80ed37534118c14965e81a1d64282109c7020efe9b2c674aa8a",
+        "target_id": "phase5-bounded-interpreter"
+      },
+      {
+        "case_id": "OW-RAND-00000146-970DDBA831",
+        "case_seed": "a47c1888b0609f4928afb57e4161767cf8c4c4533f0b6c8d6a5b86532b7c52af",
+        "input_sha256": "3162bd2c45adf80ed37534118c14965e81a1d64282109c7020efe9b2c674aa8a",
+        "target_id": "js-semantic-workbench-v054"
+      },
+      {
+        "case_id": "OW-RAND-00000147-DFFC9AC79B",
+        "case_seed": "60db4c19a8438b7aa410c95f04f0765c20219f1d317f8146ff9cdd43add90375",
+        "input_sha256": "3162bd2c45adf80ed37534118c14965e81a1d64282109c7020efe9b2c674aa8a",
+        "target_id": "python-native-semantic-models-v06-v14"
+      },
+      {
+        "case_id": "OW-RAND-00000148-729F0205F9",
+        "case_seed": "5e36f77526ee2b81649a79bb0da4a9fb444a79809b405b61270a8737a8b26980",
+        "input_sha256": "3162bd2c45adf80ed37534118c14965e81a1d64282109c7020efe9b2c674aa8a",
+        "target_id": "python-usg-sem-document-adapters-v15"
+      },
+      {
+        "case_id": "OW-RAND-00000149-D015C72D31",
+        "case_seed": "6555b3b87237766f177c27eed2c5284c323fdd06e6c68c08ae4adf7c98c8c2da",
+        "input_sha256": "3162bd2c45adf80ed37534118c14965e81a1d64282109c7020efe9b2c674aa8a",
+        "target_id": "phase2-structured-semantic-reasoning"
+      },
+      {
+        "case_id": "OW-RAND-00000150-DFE9376D5D",
+        "case_seed": "c4fd983ff29714d7c6a47fefdcc43efe37e1980140c7a95336561ca45d623c88",
+        "input_sha256": "3162bd2c45adf80ed37534118c14965e81a1d64282109c7020efe9b2c674aa8a",
+        "target_id": "phase3-canonical-sqlite-store"
+      },
+      {
+        "case_id": "OW-RAND-00000151-8957768142",
+        "case_seed": "017ef4c75c1c4589af07af9e9b8e99f3c5f30936263ec9a9680a6399fffc4f10",
+        "input_sha256": "3162bd2c45adf80ed37534118c14965e81a1d64282109c7020efe9b2c674aa8a",
+        "target_id": "phase6-candidate-expansion"
+      },
+      {
+        "case_id": "OW-RAND-00000152-A20FF26EB3",
+        "case_seed": "16fcd08de81a4cd630263aa04ea27e76007b1572e8ad7342a5e262c59a9e27c8",
+        "input_sha256": "3162bd2c45adf80ed37534118c14965e81a1d64282109c7020efe9b2c674aa8a",
+        "target_id": "kernel-lab-local-api-cli"
+      },
+      {
+        "case_id": "OW-RAND-00000153-2CA87CBFEE",
+        "case_seed": "321eb791b623c7957bc60db397aaa534d71af2239e3a3d8a7753680a6cf6bb98",
+        "input_sha256": "3162bd2c45adf80ed37534118c14965e81a1d64282109c7020efe9b2c674aa8a",
+        "target_id": "workbench-to-canonical-adapter"
+      },
+      {
+        "case_id": "OW-RAND-00000154-BFAF47022A",
+        "case_seed": "940b575eea13f20f16e19f0e4f57af6f072f243a2d80009b752d85e8963bbcd6",
+        "input_sha256": "3162bd2c45adf80ed37534118c14965e81a1d64282109c7020efe9b2c674aa8a",
+        "target_id": "python-reference-kernel-v04-v05"
+      },
+      {
+        "case_id": "OW-RAND-00000155-E14D20F66D",
+        "case_seed": "a1718a2494700fd90ec3a34a373c2c05d06b37fc838404777560d3a9a10ea802",
+        "input_sha256": "d7da309fcce1f667a3f9c9cf6fa81f7e13742eb2ea86d71996363b21fd7e40ea",
+        "target_id": "phase4-bounded-interpreter"
+      },
+      {
+        "case_id": "OW-RAND-00000156-030C787C6F",
+        "case_seed": "bb1718b9d0ad6fd8c195b0f4d31c2255b20593dc0df751e478340e8305e22661",
+        "input_sha256": "d7da309fcce1f667a3f9c9cf6fa81f7e13742eb2ea86d71996363b21fd7e40ea",
+        "target_id": "phase5-bounded-interpreter"
+      },
+      {
+        "case_id": "OW-RAND-00000157-59533B7222",
+        "case_seed": "26491a1175a673e02fd06a7e5b0a4e8f5851944a7c7a67c9e2e9ff9a2af287a7",
+        "input_sha256": "d7da309fcce1f667a3f9c9cf6fa81f7e13742eb2ea86d71996363b21fd7e40ea",
+        "target_id": "js-semantic-workbench-v054"
+      },
+      {
+        "case_id": "OW-RAND-00000158-82C138B398",
+        "case_seed": "ac5fbe1f82dd7cd295d486e8a246d6064d01a50b899803d9481b0308022668ae",
+        "input_sha256": "d7da309fcce1f667a3f9c9cf6fa81f7e13742eb2ea86d71996363b21fd7e40ea",
+        "target_id": "python-native-semantic-models-v06-v14"
+      },
+      {
+        "case_id": "OW-RAND-00000159-8FE0354540",
+        "case_seed": "a8936219e88419e56945b88408cd466a44510327107c1165b79a4a8a10182928",
+        "input_sha256": "d7da309fcce1f667a3f9c9cf6fa81f7e13742eb2ea86d71996363b21fd7e40ea",
+        "target_id": "python-usg-sem-document-adapters-v15"
+      },
+      {
+        "case_id": "OW-RAND-00000160-4B355B07A8",
+        "case_seed": "cb2673b69f65e3297890caa1e705e55a6228f12923a3085002e9ed7e0728791d",
+        "input_sha256": "d7da309fcce1f667a3f9c9cf6fa81f7e13742eb2ea86d71996363b21fd7e40ea",
+        "target_id": "phase2-structured-semantic-reasoning"
+      },
+      {
+        "case_id": "OW-RAND-00000161-B105CF4EBF",
+        "case_seed": "c68a787f1423506bd065f67a4f4af5fb8a99bee8fcab2f97d0e33c7767cab99b",
+        "input_sha256": "d7da309fcce1f667a3f9c9cf6fa81f7e13742eb2ea86d71996363b21fd7e40ea",
+        "target_id": "phase3-canonical-sqlite-store"
+      },
+      {
+        "case_id": "OW-RAND-00000162-660ADC2BF8",
+        "case_seed": "6aa38e675fb374664551888e5735fd68d4d804019eebbd451a484ed5bfb2c918",
+        "input_sha256": "d7da309fcce1f667a3f9c9cf6fa81f7e13742eb2ea86d71996363b21fd7e40ea",
+        "target_id": "phase6-candidate-expansion"
+      },
+      {
+        "case_id": "OW-RAND-00000163-352FFAE7D6",
+        "case_seed": "cc83b0a0321c5fe761be96b7166bc80897fa7ceaa5a8750b8badd228e682da9b",
+        "input_sha256": "d7da309fcce1f667a3f9c9cf6fa81f7e13742eb2ea86d71996363b21fd7e40ea",
+        "target_id": "kernel-lab-local-api-cli"
+      },
+      {
+        "case_id": "OW-RAND-00000164-886D09EF09",
+        "case_seed": "fed019fe03b235568ca04192418db045ca8a4edcb8fb2f99df3268f827da3bf3",
+        "input_sha256": "d7da309fcce1f667a3f9c9cf6fa81f7e13742eb2ea86d71996363b21fd7e40ea",
+        "target_id": "workbench-to-canonical-adapter"
+      },
+      {
+        "case_id": "OW-RAND-00000165-85C32DABC1",
+        "case_seed": "2773acd753941d142867f346de79ef279930de02258368a7e9a94bd865e00924",
+        "input_sha256": "d7da309fcce1f667a3f9c9cf6fa81f7e13742eb2ea86d71996363b21fd7e40ea",
+        "target_id": "python-reference-kernel-v04-v05"
+      },
+      {
+        "case_id": "OW-RAND-00000166-B5CBF21BCE",
+        "case_seed": "ce870d5c5a5c298e93a427b79bb634d5319c5f7392ee957172c953f012371c1d",
+        "input_sha256": "629e961ac993a460f612368d3d4a7920ad1841370b2f102dc824d97cae9826d5",
+        "target_id": "phase4-bounded-interpreter"
+      },
+      {
+        "case_id": "OW-RAND-00000167-64CD17900D",
+        "case_seed": "6b17ccce4962ec5b448fca38a28e991bbd958a91e870f2c27f8c71d4179cfdad",
+        "input_sha256": "629e961ac993a460f612368d3d4a7920ad1841370b2f102dc824d97cae9826d5",
+        "target_id": "phase5-bounded-interpreter"
+      },
+      {
+        "case_id": "OW-RAND-00000168-625D5B4881",
+        "case_seed": "9390ddd0070b1e99fa1852cde8175d18aa71403c0b8fb7c3ea9bd219eb2b2010",
+        "input_sha256": "629e961ac993a460f612368d3d4a7920ad1841370b2f102dc824d97cae9826d5",
+        "target_id": "js-semantic-workbench-v054"
+      },
+      {
+        "case_id": "OW-RAND-00000169-6DBD897B10",
+        "case_seed": "9c24d86d54a5009de85ba57a66acf2d1a454cffbfea1107c49e91b695fcbd57e",
+        "input_sha256": "629e961ac993a460f612368d3d4a7920ad1841370b2f102dc824d97cae9826d5",
+        "target_id": "python-native-semantic-models-v06-v14"
+      },
+      {
+        "case_id": "OW-RAND-00000170-D83FEDAE20",
+        "case_seed": "f6c975de4a7e1f6ed28bdae6dbee501310547013f540116a82aa36af5f6d94a2",
+        "input_sha256": "629e961ac993a460f612368d3d4a7920ad1841370b2f102dc824d97cae9826d5",
+        "target_id": "python-usg-sem-document-adapters-v15"
+      },
+      {
+        "case_id": "OW-RAND-00000171-830567FFB4",
+        "case_seed": "64b80b119e65a776570b9d89e8cceb464de1315b3d209f2f23f428edffedc123",
+        "input_sha256": "629e961ac993a460f612368d3d4a7920ad1841370b2f102dc824d97cae9826d5",
+        "target_id": "phase2-structured-semantic-reasoning"
+      },
+      {
+        "case_id": "OW-RAND-00000172-21D9519A94",
+        "case_seed": "d78409193c0266774e60ffa71a6154620d591047fb56207336eec5b5a3ab58d9",
+        "input_sha256": "629e961ac993a460f612368d3d4a7920ad1841370b2f102dc824d97cae9826d5",
+        "target_id": "phase3-canonical-sqlite-store"
+      },
+      {
+        "case_id": "OW-RAND-00000173-DA736B86C1",
+        "case_seed": "767dd34327d02292dd97c95ab1152c4983286bc8b85af4991ef0210a54b13b65",
+        "input_sha256": "629e961ac993a460f612368d3d4a7920ad1841370b2f102dc824d97cae9826d5",
+        "target_id": "phase6-candidate-expansion"
+      },
+      {
+        "case_id": "OW-RAND-00000174-0059D0AC4B",
+        "case_seed": "92fd5d89b513ff8317eac6f64211c774a744da30d1a0fccefc6eb44275ac0c42",
+        "input_sha256": "629e961ac993a460f612368d3d4a7920ad1841370b2f102dc824d97cae9826d5",
+        "target_id": "kernel-lab-local-api-cli"
+      },
+      {
+        "case_id": "OW-RAND-00000175-4DA2EC1EE9",
+        "case_seed": "b4ca6495afb14f4e07cead990b01f414b5799d8a97f5707f138113fcf5945db7",
+        "input_sha256": "629e961ac993a460f612368d3d4a7920ad1841370b2f102dc824d97cae9826d5",
+        "target_id": "workbench-to-canonical-adapter"
+      },
+      {
+        "case_id": "OW-RAND-00000176-B5B6B872C3",
+        "case_seed": "5922236dd21aca256a98ae4b21cac936687eed6ee704eb45cc8242da99ddedcb",
+        "input_sha256": "629e961ac993a460f612368d3d4a7920ad1841370b2f102dc824d97cae9826d5",
+        "target_id": "python-reference-kernel-v04-v05"
+      },
+      {
+        "case_id": "OW-RAND-00000177-92872BB479",
+        "case_seed": "37b6e15f94f995145ba3a4a22d24ee76a06c19e982c7c5656fc6e9cab60e5f61",
+        "input_sha256": "ff21ba534fe1434371ecac6233961bd1846861573ffed31258ec08761ddd27a1",
+        "target_id": "phase4-bounded-interpreter"
+      },
+      {
+        "case_id": "OW-RAND-00000178-35634846C8",
+        "case_seed": "39b1b6a8a942d8a4ccae2a37789695b3c703f479aa3804d12ddd9a34dae429ff",
+        "input_sha256": "ff21ba534fe1434371ecac6233961bd1846861573ffed31258ec08761ddd27a1",
+        "target_id": "phase5-bounded-interpreter"
+      },
+      {
+        "case_id": "OW-RAND-00000179-20E4900389",
+        "case_seed": "3f39756c9994aa98d3269ab1fd26a0f4553f094203e7c745e9a47c16c6fa5834",
+        "input_sha256": "ff21ba534fe1434371ecac6233961bd1846861573ffed31258ec08761ddd27a1",
+        "target_id": "js-semantic-workbench-v054"
+      },
+      {
+        "case_id": "OW-RAND-00000180-59CCCECC0C",
+        "case_seed": "a9a02de73b64c880934e696de018d9e69e13fc64debf17e0dd3c36c06b79a7f8",
+        "input_sha256": "ff21ba534fe1434371ecac6233961bd1846861573ffed31258ec08761ddd27a1",
+        "target_id": "python-native-semantic-models-v06-v14"
+      },
+      {
+        "case_id": "OW-RAND-00000181-B344DDCC5D",
+        "case_seed": "955ece2f3451abdb83b5b67c4782fedc6b9e8762e486495f57c51a2b49819bc9",
+        "input_sha256": "ff21ba534fe1434371ecac6233961bd1846861573ffed31258ec08761ddd27a1",
+        "target_id": "python-usg-sem-document-adapters-v15"
+      },
+      {
+        "case_id": "OW-RAND-00000182-37AA7E5215",
+        "case_seed": "0104b2329effa8a60ed66145f2c10f1c458e7cd5d79d30bd1965e39f528b2b5e",
+        "input_sha256": "ff21ba534fe1434371ecac6233961bd1846861573ffed31258ec08761ddd27a1",
+        "target_id": "phase2-structured-semantic-reasoning"
+      },
+      {
+        "case_id": "OW-RAND-00000183-6E4C13E991",
+        "case_seed": "bae7d6d8dcb6b7b2cf4a373364035c4b4c3214e4049e6b2dd308895dc19feced",
+        "input_sha256": "ff21ba534fe1434371ecac6233961bd1846861573ffed31258ec08761ddd27a1",
+        "target_id": "phase3-canonical-sqlite-store"
+      },
+      {
+        "case_id": "OW-RAND-00000184-124CC5F7C6",
+        "case_seed": "117edf239e753c82e77bc929004fd94ad9c6b2dad49f457ea3c0659bd6492856",
+        "input_sha256": "ff21ba534fe1434371ecac6233961bd1846861573ffed31258ec08761ddd27a1",
+        "target_id": "phase6-candidate-expansion"
+      },
+      {
+        "case_id": "OW-RAND-00000185-8F33DE369A",
+        "case_seed": "88a727b5a7d0cc54408c94f896c31a83e2fd7f99ada6a708d40097aab1e41249",
+        "input_sha256": "ff21ba534fe1434371ecac6233961bd1846861573ffed31258ec08761ddd27a1",
+        "target_id": "kernel-lab-local-api-cli"
+      },
+      {
+        "case_id": "OW-RAND-00000186-D1C0B4FD6F",
+        "case_seed": "c3b0ca6fa0751f189a2a809fc980f37ef3c648a676128f4ca17ac0e626f9a19e",
+        "input_sha256": "ff21ba534fe1434371ecac6233961bd1846861573ffed31258ec08761ddd27a1",
+        "target_id": "workbench-to-canonical-adapter"
+      },
+      {
+        "case_id": "OW-RAND-00000187-478BCE9E84",
+        "case_seed": "feaede71da7b52d3ae5eb99a52c98dc6969f33cb4bb9b1574a0c4f1071b0f03e",
+        "input_sha256": "ff21ba534fe1434371ecac6233961bd1846861573ffed31258ec08761ddd27a1",
+        "target_id": "python-reference-kernel-v04-v05"
+      },
+      {
+        "case_id": "OW-RAND-00000188-9D57C807E8",
+        "case_seed": "345bb5db5ef825fe6fc2ee5b557446fb27bab3c84af5635892ba55131bd74c79",
+        "input_sha256": "7a237a8868b5ad83abe8fc1863f6bcf61f8458d1c3138a4396791cc2df394050",
+        "target_id": "phase4-bounded-interpreter"
+      },
+      {
+        "case_id": "OW-RAND-00000189-1D4C239850",
+        "case_seed": "ee671d2cf35bbbd16bfac501151c02df81bc90edc942ea467d4242e89c75aea5",
+        "input_sha256": "7a237a8868b5ad83abe8fc1863f6bcf61f8458d1c3138a4396791cc2df394050",
+        "target_id": "phase5-bounded-interpreter"
+      },
+      {
+        "case_id": "OW-RAND-00000190-4974B38200",
+        "case_seed": "35a89aa41ca8fe497be3df02bd604cb0d655bd4cc4008b2c93a3060b4323160a",
+        "input_sha256": "7a237a8868b5ad83abe8fc1863f6bcf61f8458d1c3138a4396791cc2df394050",
+        "target_id": "js-semantic-workbench-v054"
+      },
+      {
+        "case_id": "OW-RAND-00000191-7D4202E1D0",
+        "case_seed": "84758d2d869b802d124d3114bc86bddd888dac724f7a6a257b58ed4df96a9bf8",
+        "input_sha256": "7a237a8868b5ad83abe8fc1863f6bcf61f8458d1c3138a4396791cc2df394050",
+        "target_id": "python-native-semantic-models-v06-v14"
+      },
+      {
+        "case_id": "OW-RAND-00000192-FBD486ACE8",
+        "case_seed": "de5d9a3eb997b446ae617364ecaddaf8f14b6e6679e052e98d1aca2513326867",
+        "input_sha256": "7a237a8868b5ad83abe8fc1863f6bcf61f8458d1c3138a4396791cc2df394050",
+        "target_id": "python-usg-sem-document-adapters-v15"
+      },
+      {
+        "case_id": "OW-RAND-00000193-05F9095AF2",
+        "case_seed": "d00045b0862537242fd24982a36a989cc4013d95214fb95d7322e9500a56426f",
+        "input_sha256": "7a237a8868b5ad83abe8fc1863f6bcf61f8458d1c3138a4396791cc2df394050",
+        "target_id": "phase2-structured-semantic-reasoning"
+      },
+      {
+        "case_id": "OW-RAND-00000194-9D4D9A859F",
+        "case_seed": "fc2de469ba50bdbd756f9aa6c578ea82e2ceb83482dc8b59dcd77d75de0583c7",
+        "input_sha256": "7a237a8868b5ad83abe8fc1863f6bcf61f8458d1c3138a4396791cc2df394050",
+        "target_id": "phase3-canonical-sqlite-store"
+      },
+      {
+        "case_id": "OW-RAND-00000195-5E1E3B03DB",
+        "case_seed": "ccfa4d4af3be8c5b18b9f6718e1f8ad3df1e186298a673ee28b3a0c221eba466",
+        "input_sha256": "7a237a8868b5ad83abe8fc1863f6bcf61f8458d1c3138a4396791cc2df394050",
+        "target_id": "phase6-candidate-expansion"
+      },
+      {
+        "case_id": "OW-RAND-00000196-85D18A80EC",
+        "case_seed": "d6d431c4ac98e8c945891e27b2f368a5a7cefc913f99a55f32c60a06a4e073ad",
+        "input_sha256": "7a237a8868b5ad83abe8fc1863f6bcf61f8458d1c3138a4396791cc2df394050",
+        "target_id": "kernel-lab-local-api-cli"
+      },
+      {
+        "case_id": "OW-RAND-00000197-7FF1BA296D",
+        "case_seed": "52744fc7986431c1e153fd9d4f6f4b28814d29cad2b1f70dec524933bf58aa00",
+        "input_sha256": "7a237a8868b5ad83abe8fc1863f6bcf61f8458d1c3138a4396791cc2df394050",
+        "target_id": "workbench-to-canonical-adapter"
+      },
+      {
+        "case_id": "OW-RAND-00000198-6AD788B1D3",
+        "case_seed": "85a5da1d481f29be284b08d4878eb7935dc36232d5df9fdc163b2e9b3aac4bde",
+        "input_sha256": "7a237a8868b5ad83abe8fc1863f6bcf61f8458d1c3138a4396791cc2df394050",
+        "target_id": "python-reference-kernel-v04-v05"
+      },
+      {
+        "case_id": "OW-RAND-00000199-E9411D1FDA",
+        "case_seed": "543643eecbc4d5af50a73efd007eb51dddd7a2ea165dececfd4029e8793b851e",
+        "input_sha256": "6441c98a4179321ce800a31c1d05bb665d11dbe8034b2d9c7e0c6c54d27d2ca2",
+        "target_id": "phase4-bounded-interpreter"
+      },
+      {
+        "case_id": "OW-RAND-00000200-A2745BFE07",
+        "case_seed": "66f2d14410b6006ace125620e46db13926924557796641190ff55e938e72eef0",
+        "input_sha256": "6441c98a4179321ce800a31c1d05bb665d11dbe8034b2d9c7e0c6c54d27d2ca2",
+        "target_id": "phase5-bounded-interpreter"
+      },
+      {
+        "case_id": "OW-RAND-00000201-15A621DAC5",
+        "case_seed": "29cb7cc6597564cadd58cb3c764cb6df5964ff14c26364473c0f2b074a6cce03",
+        "input_sha256": "6441c98a4179321ce800a31c1d05bb665d11dbe8034b2d9c7e0c6c54d27d2ca2",
+        "target_id": "js-semantic-workbench-v054"
+      },
+      {
+        "case_id": "OW-RAND-00000202-0E4DF63FD0",
+        "case_seed": "bbb0d9e7766af4cee6f62eff900e548c27bc8b4f445c8a58ca6baccd9189549b",
+        "input_sha256": "6441c98a4179321ce800a31c1d05bb665d11dbe8034b2d9c7e0c6c54d27d2ca2",
+        "target_id": "python-native-semantic-models-v06-v14"
+      },
+      {
+        "case_id": "OW-RAND-00000203-27BCBC7BB4",
+        "case_seed": "113f4ac3d862d4c9fd67abbedd0229b1bb2f3120919d8872d4023a61fbace116",
+        "input_sha256": "6441c98a4179321ce800a31c1d05bb665d11dbe8034b2d9c7e0c6c54d27d2ca2",
+        "target_id": "python-usg-sem-document-adapters-v15"
+      },
+      {
+        "case_id": "OW-RAND-00000204-BA67889F2E",
+        "case_seed": "119c823fcc452465b7b6b264c971cc2af29bc3546721e547556d1be1b8bef311",
+        "input_sha256": "6441c98a4179321ce800a31c1d05bb665d11dbe8034b2d9c7e0c6c54d27d2ca2",
+        "target_id": "phase2-structured-semantic-reasoning"
+      },
+      {
+        "case_id": "OW-RAND-00000205-F519017858",
+        "case_seed": "3e40d6bd9ccf10ef7777e2dd2b696bd7fed0fc678d49a9e3b75c749e5719717c",
+        "input_sha256": "6441c98a4179321ce800a31c1d05bb665d11dbe8034b2d9c7e0c6c54d27d2ca2",
+        "target_id": "phase3-canonical-sqlite-store"
+      },
+      {
+        "case_id": "OW-RAND-00000206-B3E66AB072",
+        "case_seed": "add3f2d6b9385c8e57eba03e4cb4678ca1bcedd4506852e349d01ae7cd7967b0",
+        "input_sha256": "6441c98a4179321ce800a31c1d05bb665d11dbe8034b2d9c7e0c6c54d27d2ca2",
+        "target_id": "phase6-candidate-expansion"
+      },
+      {
+        "case_id": "OW-RAND-00000207-37CEEB8ACC",
+        "case_seed": "9c7d40b255a93003d6a4edc601efb97049044a159e30423c0b1e30e828d35a15",
+        "input_sha256": "6441c98a4179321ce800a31c1d05bb665d11dbe8034b2d9c7e0c6c54d27d2ca2",
+        "target_id": "kernel-lab-local-api-cli"
+      },
+      {
+        "case_id": "OW-RAND-00000208-3629C339E1",
+        "case_seed": "ce40d935c2334831ac7fa86ad9496d826b857171007dbe75a75a8127b8d9871f",
+        "input_sha256": "6441c98a4179321ce800a31c1d05bb665d11dbe8034b2d9c7e0c6c54d27d2ca2",
+        "target_id": "workbench-to-canonical-adapter"
+      },
+      {
+        "case_id": "OW-RAND-00000209-0D688EEDDA",
+        "case_seed": "877410ca424943681575ccc72f948bd6e91ea032762fbc7147db3a8b69b2d03f",
+        "input_sha256": "6441c98a4179321ce800a31c1d05bb665d11dbe8034b2d9c7e0c6c54d27d2ca2",
+        "target_id": "python-reference-kernel-v04-v05"
+      },
+      {
+        "case_id": "OW-RAND-00000210-9C54889E33",
+        "case_seed": "ecf35ae48abd5e090a0bb355d40004422e57157d8af8ee3fea848a4bf683bb31",
+        "input_sha256": "1222fff5c07d82ad7759989a5f355dda11c49e17d2962613fcec971bb8be45c3",
+        "target_id": "phase4-bounded-interpreter"
+      },
+      {
+        "case_id": "OW-RAND-00000211-AB15BDFFE3",
+        "case_seed": "265e7cfc3400a18f3d7f86c17abf7ff24cfd2dbc04213b84047c6b108d8ea9d8",
+        "input_sha256": "1222fff5c07d82ad7759989a5f355dda11c49e17d2962613fcec971bb8be45c3",
+        "target_id": "phase5-bounded-interpreter"
+      },
+      {
+        "case_id": "OW-RAND-00000212-093D62D1E8",
+        "case_seed": "9bc57e5e2c91a5c8b7dc24526864f92570a4dbf3383fe441f97f91b6476d93dc",
+        "input_sha256": "1222fff5c07d82ad7759989a5f355dda11c49e17d2962613fcec971bb8be45c3",
+        "target_id": "js-semantic-workbench-v054"
+      },
+      {
+        "case_id": "OW-RAND-00000213-599ED6C270",
+        "case_seed": "818190b22651895135054b5831dc12421798c4007781e1543b938614bbcbfbd3",
+        "input_sha256": "1222fff5c07d82ad7759989a5f355dda11c49e17d2962613fcec971bb8be45c3",
+        "target_id": "python-native-semantic-models-v06-v14"
+      },
+      {
+        "case_id": "OW-RAND-00000214-9D4C123894",
+        "case_seed": "a920af4668d6038d6cdeaddbe58852d5b947741094f969fdb0bb6463700e924d",
+        "input_sha256": "1222fff5c07d82ad7759989a5f355dda11c49e17d2962613fcec971bb8be45c3",
+        "target_id": "python-usg-sem-document-adapters-v15"
+      },
+      {
+        "case_id": "OW-RAND-00000215-CAE3E8D338",
+        "case_seed": "5736394baf12bb6465d30758f548b9f226e559067ffa3ccb87e5ba61e36cc084",
+        "input_sha256": "1222fff5c07d82ad7759989a5f355dda11c49e17d2962613fcec971bb8be45c3",
+        "target_id": "phase2-structured-semantic-reasoning"
+      },
+      {
+        "case_id": "OW-RAND-00000216-97F364BB51",
+        "case_seed": "cfa65bee49021812703d3dc8e4023a8f480631b09b8c89c5153aae140c1273f4",
+        "input_sha256": "1222fff5c07d82ad7759989a5f355dda11c49e17d2962613fcec971bb8be45c3",
+        "target_id": "phase3-canonical-sqlite-store"
+      },
+      {
+        "case_id": "OW-RAND-00000217-9A3DB043F7",
+        "case_seed": "5cb62845368354f7f880ddfaa6a64faf570c23cdc187ca2e0ed6935329df1920",
+        "input_sha256": "1222fff5c07d82ad7759989a5f355dda11c49e17d2962613fcec971bb8be45c3",
+        "target_id": "phase6-candidate-expansion"
+      },
+      {
+        "case_id": "OW-RAND-00000218-8CA6F4C3A2",
+        "case_seed": "0d73b8cef1d4c982a99aa1036c67aa95d6e4016ecfb99296454eb2ce61ed85e7",
+        "input_sha256": "1222fff5c07d82ad7759989a5f355dda11c49e17d2962613fcec971bb8be45c3",
+        "target_id": "kernel-lab-local-api-cli"
+      },
+      {
+        "case_id": "OW-RAND-00000219-3CEB16D77B",
+        "case_seed": "1eb771316954674d42fe71037baf0a35f470dc7acc8b20eea0d0d0ab012c8d8b",
+        "input_sha256": "1222fff5c07d82ad7759989a5f355dda11c49e17d2962613fcec971bb8be45c3",
+        "target_id": "workbench-to-canonical-adapter"
+      },
+      {
+        "case_id": "OW-RAND-00000220-C8364C2A06",
+        "case_seed": "ec0f58aa18d682805a29a78c3948cecf1d6680337d00c80816a5e3f6f3570862",
+        "input_sha256": "1222fff5c07d82ad7759989a5f355dda11c49e17d2962613fcec971bb8be45c3",
+        "target_id": "python-reference-kernel-v04-v05"
+      }
+    ],
+    "created_at": "2026-11-27T10:51:23Z",
+    "generator_id": "usg-open-world-compositional-generator",
+    "generator_version": "1.0.1",
+    "jsonl_sha256": "665e10f3ab39ba5bcd39bb38b491e12bba1471b641fb1fa955095045a8fb7f10",
+    "manifest_version": "1.0.0",
+    "master_seed": "5df1bf2f477b4adbf359039292498337c8fa6fd8124b827f704fcb49d7282980",
+    "requested_prompt_count": 20,
+    "seed_mode": "explicit",
+    "target_ids": [
+      "phase4-bounded-interpreter",
+      "phase5-bounded-interpreter",
+      "js-semantic-workbench-v054",
+      "python-native-semantic-models-v06-v14",
+      "python-usg-sem-document-adapters-v15",
+      "phase2-structured-semantic-reasoning",
+      "phase3-canonical-sqlite-store",
+      "phase6-candidate-expansion",
+      "kernel-lab-local-api-cli",
+      "workbench-to-canonical-adapter",
+      "python-reference-kernel-v04-v05"
+    ],
+    "target_matrix": true
+  }
+}
